@@ -1,0 +1,569 @@
+@font-face {
+    src: url('../css/fonts/NanumBarunGothicBold.woff');
+}
+
+.regular-font {
+	-fx-font-family: "NanumBarunGothic";
+}
+
+.medium-font {
+	-fx-font-family: "NanumBarunGothic";
+}
+
+.bold-font {
+	-fx-font-family: "NanumBarunGothic";
+}
+
+/* 경매 목록 -START- */
+/* AuctionListviewController > ListView background color */
+.auction-list-view .list-cell,
+.auction-list-view .list-cell:selected {
+    -fx-background-color: white;
+}
+
+/* AuctionListViewController > ListView top&bottom border */
+.auction-list-view .list-cell {
+	-fx-border-width: 0.0 0.0 0.0 0.0;
+	-fx-border-color: black;
+}
+
+/* AuctionListViewController > ListView > Cell > Button style */
+.auction-list-cell-label {
+    -fx-text-fill :  #2d5fde;
+    -fx-background-color : white ;
+	-fx-border-color : #d7d7d7 ;
+	-fx-border-width: 1.0;
+	-fx-border-radius : 20.0 ;
+	-fx-font-size: 14.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.auction-list-cell-controller-button {
+    -fx-background-color : white;
+    -fx-border-color : #092a4a;
+    -fx-border-radius : 4.0 ;
+    -fx-border-width: 1;
+    -fx-font-size: 20.0px;
+    -fx-text-fill: #092b4b;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.auction-list-cell-controller-button:hover {
+	-fx-border-width: 1 1 1 1;
+    -fx-border-color: #092b4b;
+    -fx-background-color:  #092b4b;
+    -fx-text-fill: white;
+}
+
+.auction-list-cell-controller-button:pressed {
+	-fx-border-width: 1 1 1 1;
+    -fx-border-color: #092b4b;
+    -fx-background-color: #092b4b;
+    -fx-text-fill: white;
+}
+
+.auction-list-cell-monitor-button {
+    -fx-background-color : white;
+    -fx-border-color : #092a4a;
+    -fx-border-width: 1;
+    -fx-border-radius : 4.0 ;
+    -fx-font-size: 14.0px;
+    -fx-text-fill: #092b4b;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.auction-list-cell-monitor-button:hover {
+	-fx-border-width: 1 1 1 1;
+    -fx-border-color: #092b4b;
+    -fx-background-color:  #092b4b;
+    -fx-text-fill: white;
+}
+
+.auction-list-cell-monitor-button:pressed {
+	-fx-border-width: 1 1 1 1;
+    -fx-border-color: #092b4b;
+    -fx-background-color: #092b4b;
+    -fx-text-fill: white;
+}
+
+.auction-list-cell-tts-button {
+    -fx-background-color : white;
+    -fx-border-color : #092a4a;
+    -fx-border-width: 1;
+    -fx-border-radius : 4.0 ;
+    -fx-font-size: 14.0px;
+    -fx-text-fill: #092b4b;
+}
+
+.auction-list-cell-tts-button:hover {
+	-fx-border-width: 1 1 1 1;
+    -fx-border-color: #092b4b;
+    -fx-background-color:  #092b4b;
+    -fx-text-fill: white;
+}
+
+.auction-list-cell-tts-button:pressed {
+	-fx-border-width: 1 1 1 1;
+    -fx-border-color: #092b4b;
+    -fx-background-color: #092b4b;
+    -fx-text-fill: white;
+}
+
+
+/* 경매 목록 -END- */
+
+/* 경매 제어 프로그램 -START- */
+/* AuctionControlViewController > BorderPane > TOP Hbox */
+.control-top-hbox {
+	-fx-border-width: 0.5 0.5 0.5 0.5;
+	-fx-border-color: #d7d7d7;
+}
+
+.control-auction-info-button {
+	-fx-background-color : white ;
+	-fx-border-color : #092a4a;
+	-fx-border-width: 1.0;
+	-fx-border-radius : 4.0 ;
+}
+
+.control-auction-info-button:hover{
+	-fx-border-width: 1.0;
+	-fx-border-color: #092b4b;
+	-fx-background-color:  #092a4a;
+	-fx-background-radius : 4.0 ;
+}
+
+.control-auction-info-button:hover .control-auction-main-button-font {
+	-fx-text-fill: white ;
+}
+
+.control-auction-info-button:hover .control-auction-sub-button-font {
+	-fx-text-fill: #d7d7d7;
+}
+
+.control-auction-lane-label-border {
+    -fx-background-color : white ;
+    -fx-border-color : #d7d7d7 ;
+    -fx-border-width: 0.5;
+    -fx-border-radius : 4.0 ;
+}
+
+.control-auction-status-button {
+	-fx-background-color : #e7e7e7 ;
+	-fx-background-radius: 5.0 ;
+	-fx-border-color : #e7e7e7 ;
+	-fx-border-width: 0.0;
+	-fx-border-radius : 5.0 ;
+	-fx-text-fill: black;
+    -fx-font-size: 13.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-status-button:selected {
+	-fx-background-color : #3f64c3 ;
+	-fx-background-radius: 5.0 ;
+	-fx-text-fill: white;
+    -fx-font-size: 13.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-time-status-button {
+    -fx-background-color : #e7e7e7 ;
+    -fx-background-radius: 3.0 ;
+    -fx-border-color : #e7e7e7 ;
+    -fx-border-width: 0.0;
+    -fx-border-radius : 3.0 ;
+    -fx-text-fill: black;
+    -fx-font-size: 13.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-time-status-button:selected {
+    -fx-background-color : #db2e63 ;
+    -fx-background-radius: 3.0 ;
+    -fx-text-fill: white;
+    -fx-font-size: 13.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-info-gridPane {
+	-fx-border-width: 0.5 0.5 0.0 0.0;
+	-fx-border-color: #d7d7d7;
+}
+
+.control-info-gridPane-top-left-border-line {
+    -fx-border-width: 0.5 0.5 0.0 0.0;
+    -fx-border-color: #d7d7d7;
+}
+
+.control-entry-title-label {
+	-fx-background-color : #f6f7f8 ;
+	-fx-border-width: 0.5 0.5 0.5 0.0;
+	-fx-border-color: #d7d7d7;
+}
+
+.control-entry-data-label {
+	-fx-border-width: 0.0 0.5 0.5 0.0;
+	-fx-border-color: #d7d7d7;
+}
+
+.control-entry-border {
+    -fx-background-color : #f6f7f8 ;
+    -fx-border-width: 0.5 0.5 0.5 0.5;
+    -fx-border-color: #d7d7d7;
+}
+
+.control-entry-data-border {
+    -fx-border-width: 0.0 0.5 0.5 0.5;
+    -fx-border-color: #d7d7d7;
+}
+
+.control-setting-button,
+.control-setting-button:selected:focused:odd:hover {
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 13.0px;
+}
+
+.control-list-view .list-cell {
+	-fx-font-family: "NanumBarunGothic";
+}
+
+.control-info-auction-autostart-on {
+	-fx-background-color : green ;
+	-fx-background-radius : 4.0 ;
+    -fx-font-size: 13.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-info-auction-autostart-off {
+	-fx-background-color : red ;
+	-fx-background-radius : 4.0 ;
+    -fx-font-size: 13.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-popup-button {
+	-fx-background-color : white ;
+	-fx-background-radius : 4.0;
+	-fx-border-radius : 4.0;
+	-fx-border-color : #092a4a;
+	-fx-border-width: 1.0;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 14.0px;
+	-fx-text-fill: #092a4a;
+}
+
+.control-popup-button:hover {
+	-fx-background-color : #092a4a;
+	-fx-background-radius : 4.0;
+	-fx-border-radius : 4.0;
+	-fx-border-color : #092a4a;
+	-fx-border-width: 1.0;
+	-fx-text-fill: white ;
+}
+
+
+
+
+/* 경매 제어 프로그램 -END- */
+
+/* 접속자 모니터링 프로그램 -START- */
+.regular-font {
+	-fx-font-family: "NanumBarunGothic";
+}
+
+.medium-font {
+	-fx-font-family: "NanumBarunGothic";
+}
+
+.bold-font {
+	-fx-font-family: "NanumBarunGothic";
+}
+
+.border-line {
+    -fx-border-width: 1.0 1.0 1.0 1.0;
+    -fx-border-color: black;
+}
+
+.border-left-line {
+	-fx-border-width: 0.0 0.0 0.0 1.0;
+	-fx-border-color: black;
+}
+
+.border-right-line {
+	-fx-border-width: 0.0 1.0 0.0 0.0;
+	-fx-border-color: black;
+}
+
+.border-top-line {
+	-fx-border-width: 1.0 0.0 0.0 0.0;
+	-fx-border-color: black;
+}
+
+.border-bottom-line {
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: black;
+}
+
+.border-right-bottom-line {
+	-fx-border-width: 0.0 1.0 1.0 0.0;
+	-fx-border-color: black;
+}
+
+.border-left-right-bottom {
+	-fx-border-width: 0.0 1.0 1.0 1.0;
+	-fx-border-color: black;
+}
+
+#monitor-table .table-column {
+	-fx-alignment: CENTER;
+}
+
+#monitor-table {
+	-fx-focus-color: transparent;
+	-fx-border-color: #d7d7d7;
+	-fx-border-width: 0.5;
+	-fx-background-insets: 0.0 0.0 0.0 0.0;
+}
+
+/* 접속자 모니터링 프로그램 -END- */
+
+.login-btn{
+	-fx-border-width: 0 0 0 0;
+    -fx-border-color: #b0b0b0;
+    -fx-border-style: solid ;
+    -fx-background-color:  #092a4a;
+    -fx-font-family: "NanumBarunGothic";
+    -fx-font-size: 20.0px;
+    -fx-text-fill: white;
+    -fx-padding: -50 -50 -50 -50;
+}
+.login-btn:hover {
+	-fx-border-width: 1 1 1 1;
+    -fx-border-color: #092b4b;
+    -fx-background-color:  #ffffff;
+    -fx-text-fill: #092b4b;
+}
+
+.login-btn:pressed {
+    -fx-scale-y: 0.95;
+    -fx-scale-x: 0.95;
+    -fx-border-width: 1 1 1 1;
+    -fx-border-color: #092b4b;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #092b4b;
+}
+
+.copyright{
+    -fx-font-family: "NanumBarunGothic";
+    -fx-font-size: 18.0px;
+    -fx-text-fill: #777777;
+}
+
+.version-name{
+    -fx-font-family: "NanumBarunGothic";
+    -fx-font-size: 18.0px;
+    -fx-text-fill: #777777;
+}
+
+.list-border-top-bottom-line {
+    -fx-border-width: 1.0 0.0 1.0 0.0;
+    -fx-border-color: #d7d7d7;
+}
+
+.list-border-bottom-line {
+    -fx-border-width: 0.0 0.0 1.0 0.0;
+    -fx-border-color: #d7d7d7;
+}
+
+.list-border-line {
+    -fx-border-width: 1.0 1.0 1.0 1.0;
+    -fx-border-color: #d7d7d7;
+}
+
+.auction-name-label {
+    -fx-font-size: 22.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.auction-time-label {
+    -fx-font-size: 18.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.auction-tts-label {
+    -fx-text-fill: red;
+    -fx-font-size: 14.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-entry-title-label-font {
+    -fx-text-fill: black;
+    -fx-font-size: 14.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-entry-data-label-font {
+    -fx-text-fill: black;
+    -fx-font-size: 14.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-info-button-font {
+    -fx-text-fill: black;
+    -fx-font-size: 13.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-sub-title-font {
+    -fx-text-fill: black;
+    -fx-font-size: 12.0px;
+    -fx-background-color: #f6f7f8;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-current-time-info-border {
+    -fx-border-width: 1.0;
+    -fx-border-radius : 4.0 ;
+    -fx-border-color : #495057 ;
+    -fx-background-color : #495057 ;
+    -fx-background-radius: 4.0 ;
+}
+
+.control-auction-current-time-info-font {
+    -fx-border-width: 1.0;
+    -fx-border-radius : 4.0 ;
+    -fx-border-color : #495057 ;
+    -fx-background-color : #495057 ;
+    -fx-background-radius: 4.0 ;
+    -fx-text-fill: white;
+    -fx-font-size: 18.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-setting-label-font {
+    -fx-text-fill: black;
+    -fx-font-size: 13.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-info-label-font {
+    -fx-text-fill: black;
+    -fx-font-size: 16.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-result-label-font {
+    -fx-text-fill: black;
+    -fx-font-size: 20.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-main-button-font {
+    -fx-text-fill: #092a4a;
+    -fx-font-size: 16.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-main-button-font:hover {
+    -fx-text-fill: white;
+}
+
+.control-auction-main-label-font {
+    -fx-text-fill: black;
+    -fx-font-size: 16.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-main-label-font-white {
+    -fx-text-fill: white ;
+    -fx-font-size: 16.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+
+.control-auction-result-button-font {
+    -fx-text-fill: black;
+    -fx-font-size: 16.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-result-column-font {
+	-fx-text-fill: #092a4a;
+    -fx-font-size: 16.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-auction-sub-button-font {
+    -fx-text-fill: #777777;
+    -fx-font-size: 16.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-result-summary-font {
+    -fx-text-fill: black;
+    -fx-font-size: 15.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+
+.control-result-info-border {
+    -fx-border-width: 1.0;
+    -fx-border-color : #d7d7d7 ;
+    -fx-background-color : white ;
+}
+
+.control-connect-info-border {
+    -fx-border-width: 1.0;
+    -fx-border-color : #d7d7d7 ;
+    -fx-background-color : #f6f7f8 ;
+}
+
+.control-connect-info-border-ah {
+    -fx-border-width: 1.0;
+    -fx-border-color : #d7d7d7 ;
+    -fx-background-color : #d7d7d7 ;
+}
+
+.control-connect-info-border-pc {
+    -fx-border-width: 1.0;
+    -fx-border-color : #1b94dc ;
+    -fx-background-color : #1b94dc ;
+}
+
+.control-connect-info-border-and {
+    -fx-border-width: 1.0;
+    -fx-border-color : #33cc33 ;
+    -fx-background-color : #33cc33 ;
+}
+
+.control-connect-info-border-ios {
+    -fx-border-width: 1.0;
+    -fx-border-color : #ffcc00 ;
+    -fx-background-color : #ffcc00 ;
+}
+
+.control-result-table-border {
+    -fx-border-width: 0.5 0.5 0.5 0.5;
+    -fx-border-color : #d7d7d7 ;
+    -fx-background-color : #f6f7f8 ;
+}
+
+.control-connector-border {
+    -fx-border-width: 1.0;
+    -fx-border-color : #31bf45 ;
+    -fx-background-color : #31bf45 ;
+}
+
+.control-connect-info-font {
+    -fx-text-fill: white;
+    -fx-font-size: 18.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+.control-connect-info-serve {
+    -fx-text-fill: white;
+    -fx-font-size: 14.0px;
+    -fx-font-family: "NanumBarunGothic";
+}
+.scroll-pane {
+   -fx-background: #FFFFFF;
+}

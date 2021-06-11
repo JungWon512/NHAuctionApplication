@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="mRootAnchorPane" maxHeight="768.0" maxWidth="1160.0" minHeight="768.0" minWidth="1160.0" prefHeight="768.0" prefWidth="1160.0" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.glovis.controller.controller.AuctionConnectController">
+   <children>
+      <GridPane fx:id="mRootGridPane" layoutX="10.0" layoutY="10.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="-Infinity" prefWidth="1024.0" />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" vgrow="ALWAYS" />
+            <RowConstraints minHeight="-Infinity" prefHeight="608.0" vgrow="ALWAYS" />
+         </rowConstraints>
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" styleClass="control-top-hbox" GridPane.columnSpan="10">
+               <children>
+                  <Label styleClass="control-entry-title-label-font" text="경매정보 | ">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="mAuctionTypeLabel" alignment="CENTER" minHeight="-Infinity" prefWidth="80.0" text="실시간">
+                     <padding>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                     </padding>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="control-auction-lane-label-border" />
+                        <String fx:value="control-auction-info-button-font" />
+                     </styleClass>
+                  </Label>
+                  <Label fx:id="mAuctionLaneNameLabel" alignment="CENTER" minHeight="-Infinity" prefWidth="80.0" text="중형차">
+                     <padding>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="control-auction-lane-label-border" />
+                        <String fx:value="control-auction-info-button-font" />
+                     </styleClass>
+                  </Label>
+                  <Label fx:id="mAuctionNameLabel" maxWidth="1.7976931348623157E308" styleClass="control-entry-title-label-font" text="양산 경매장 화요일 정기 경매 - 844회차" wrapText="true" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="10" GridPane.rowIndex="1">
+               <children>
+                  <Button fx:id="mStartMonitorButton" minHeight="-Infinity" mnemonicParsing="false" onAction="#onStartMonitor" prefWidth="140.0" text="모니터링 시작">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <styleClass>
+                        <String fx:value="control-auction-info-button" />
+                        <String fx:value="control-auction-main-button-font" />
+                     </styleClass>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </Button>
+                  <Button minHeight="-Infinity" mnemonicParsing="false" onAction="#onRefreshGridView" prefWidth="140.0" text="화면 정리">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                     <styleClass>
+                        <String fx:value="control-auction-info-button" />
+                        <String fx:value="control-auction-main-button-font" />
+                     </styleClass>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </Button>
+                  <Label fx:id="mConnectBidderCountLabel" alignment="CENTER" minHeight="-Infinity" prefWidth="140.0" text="접속 : 0명">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                     <styleClass>
+                        <String fx:value="control-connect-info-border" />
+                        <String fx:value="control-auction-main-label-font" />
+                     </styleClass>
+                  </Label>
+                  <Label fx:id="mBiddingCountLabel" alignment="CENTER" minHeight="-Infinity" prefWidth="140.0" text="응찰 : 0명">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="control-connect-info-border" />
+                        <String fx:value="control-auction-main-label-font" />
+                     </styleClass>
+                  </Label>
+                  <Label fx:id="mConnectAhCountLabel" alignment="CENTER" minHeight="-Infinity" prefWidth="128.0" style="-fx-background-color: #1c3262;" text="AH : 0명">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="control-connect-info-border-ah" />
+                        <String fx:value="control-auction-main-label-font-white" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="mConnectPcCountLabel" alignment="CENTER" minHeight="-Infinity" prefWidth="128.0" text="PC : 0명">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="control-connect-info-border-pc" />
+                        <String fx:value="control-auction-main-label-font-white" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="mConnectANDCountLabel" alignment="CENTER" minHeight="-Infinity" prefWidth="128.0" text="AND : 0명">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="control-connect-info-border-and" />
+                        <String fx:value="control-auction-main-label-font-white" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="mConnectiOSCountLabel" alignment="CENTER" minHeight="-Infinity" prefWidth="128.0" text="iOS : 0명">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="control-connect-info-border-ios" />
+                        <String fx:value="control-auction-main-label-font-white" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="5.0" right="5.0" />
+               </padding>
+            </HBox>
+            <ScrollPane fx:id="mScrollPane" style="-fx-region-background: white;" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" />
+               </GridPane.margin>
+               <styleClass>
+                  <String fx:value="control-top-hbox" />
+                  <String fx:value="scroll-pane" />
+               </styleClass></ScrollPane>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

@@ -1,0 +1,799 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="768.0" maxWidth="1024.0" minHeight="768.0" minWidth="1024.0" prefHeight="768.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.glovis.controller.controller.AuctionControlController">
+   <children>
+      <BorderPane layoutX="127.0" layoutY="121.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <HBox alignment="CENTER" maxHeight="80.0" minHeight="-Infinity" prefHeight="60.0" BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane prefWidth="200.0" HBox.hgrow="NEVER">
+                     <children>
+                        <ImageView fitHeight="60.0" fitWidth="180.0" layoutX="-1.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../resource/logo.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </AnchorPane>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label fx:id="mLabelCurrentTime" alignment="CENTER_RIGHT" contentDisplay="CENTER" lineSpacing="10.0" maxWidth="1.7976931348623157E308" styleClass="control-auction-current-time-info-font" text="현재시간 00:00:00">
+                           <font>
+                              <Font name="System Bold" size="25.0" />
+                           </font>
+                           <padding>
+                              <Insets bottom="5.0" left="30.0" right="30.0" top="5.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="CENTER" onMouseClicked="#onMouseClickedSetting" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resource/setting.png" />
+                                 </image>
+                              </ImageView>
+                              <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="regular-font" text="환경설정" textAlignment="CENTER">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" onMouseClicked="#onMouseClickedMessage" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resource/message.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="regular-font" text="메시지">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" onMouseClicked="#onMouseClickedShutdown" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resource/shutdown.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="regular-font" text="종료">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </HBox>
+               </children>
+            </HBox>
+         </top>
+         <center>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox maxHeight="40.0" minHeight="40.0" styleClass="control-top-hbox">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" maxHeight="40.0" minHeight="40.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label alignment="CENTER" styleClass="control-entry-title-label-font" text="경매정보 |">
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                              <Button fx:id="mBtnAuctionType" mnemonicParsing="false">
+                                 <styleClass>
+                                    <String fx:value="control-auction-lane-label-border" />
+                                    <String fx:value="control-auction-info-button-font" />
+                                 </styleClass>
+                              </Button>
+                              <Button fx:id="mBtnAuctionLaneName" mnemonicParsing="false">
+                                 <styleClass>
+                                    <String fx:value="control-auction-lane-label-border" />
+                                    <String fx:value="control-auction-info-button-font" />
+                                 </styleClass>
+                              </Button>
+                              <Label fx:id="mLabelAuctionInfoDetail" styleClass="control-entry-title-label-font" />
+                           </children>
+                        </HBox>
+                        <HBox fx:id="mHboxAuctionAutoStart" alignment="CENTER" prefHeight="100.0" prefWidth="120.0" styleClass="control-info-auction-autostart-on">
+                           <children>
+                              <Label fx:id="mLabelAuctionStartAuto" text="경매자동시작 ON" textFill="WHITE" />
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </HBox.margin>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <GridPane alignment="CENTER" prefHeight="100.0" VBox.vgrow="ALWAYS">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="250.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="150.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="출품번호">
+                           <styleClass>
+                              <String fx:value="control-entry-border" />
+                              <String fx:value="control-entry-title-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="차량명" GridPane.columnIndex="1">
+                           <styleClass>
+                              <String fx:value="control-entry-title-label" />
+                              <String fx:value="control-entry-title-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="변경사항" GridPane.columnIndex="2">
+                           <styleClass>
+                              <String fx:value="control-entry-title-label" />
+                              <String fx:value="control-entry-title-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="출품자" GridPane.columnIndex="3">
+                           <styleClass>
+                              <String fx:value="control-entry-title-label" />
+                              <String fx:value="control-entry-title-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="연식" GridPane.columnIndex="4">
+                           <styleClass>
+                              <String fx:value="control-entry-title-label" />
+                              <String fx:value="control-entry-title-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="평가점" GridPane.columnIndex="5">
+                           <styleClass>
+                              <String fx:value="control-entry-title-label" />
+                              <String fx:value="control-entry-title-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="부재자" GridPane.columnIndex="6">
+                           <styleClass>
+                              <String fx:value="control-entry-title-label" />
+                              <String fx:value="control-entry-title-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="시작가" GridPane.columnIndex="7">
+                           <styleClass>
+                              <String fx:value="control-entry-title-label" />
+                              <String fx:value="control-entry-title-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="희망가" GridPane.columnIndex="8">
+                           <styleClass>
+                              <String fx:value="control-entry-title-label" />
+                              <String fx:value="control-entry-title-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelEntryNum1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-entry-data-border" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCarName1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelChangeContext1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelExhibitorName1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCarYear1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelEvalPoint1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelAbsenteePrice1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelStartPrice1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="7" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelHopePrice1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="8" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelEntryNum2" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-entry-data-border" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCarName2" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelChangeContext2" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelExhibitorName2" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCarYear2" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelEvalPoint2" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelAbsenteePrice2" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelStartPrice2" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="7" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelHopePrice2" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="8" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelEntryNum3" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-entry-data-border" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCarName3" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelChangeContext3" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelExhibitorName3" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCarYear3" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelEvalPoint3" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelAbsenteePrice3" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelStartPrice3" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="7" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelHopePrice3" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="8" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelEntryNum4" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-entry-data-border" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCarName4" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelChangeContext4" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelExhibitorName4" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCarYear4" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelEvalPoint4" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelAbsenteePrice4" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelStartPrice4" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="7" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelHopePrice4" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="8" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelEntryNum5" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="5">
+                           <styleClass>
+                              <String fx:value="control-entry-data-border" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCarName5" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelChangeContext5" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelExhibitorName5" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="5">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCarYear5" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4" GridPane.rowIndex="5">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelEvalPoint5" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="5">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelAbsenteePrice5" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="5">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelStartPrice5" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="7" GridPane.rowIndex="5">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelHopePrice5" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="8" GridPane.rowIndex="5">
+                           <styleClass>
+                              <String fx:value="control-entry-data-label" />
+                              <String fx:value="control-entry-data-label-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelNoEntryData" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="출품목록이 없습니다." visible="false" GridPane.columnSpan="9" GridPane.rowIndex="1" GridPane.rowSpan="5">
+                           <styleClass>
+                              <String fx:value="control-entry-data-border" />
+                              <String fx:value="control-entry-title-label-font" />
+                           </styleClass></Label>
+                     </children>
+                  </GridPane>
+                  <GridPane prefHeight="200.0" VBox.vgrow="ALWAYS">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="70.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="70.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="110.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="120.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="120.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="출품차량" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane-top-left-border-line" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="출품번호" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelAuctionEntryNum" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-info-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="현재가격" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelCurrentPrice" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-info-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="희망가격" GridPane.columnIndex="4" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelHopePrice" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4" GridPane.rowIndex="5">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-info-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="경매진행 상태" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <HBox alignment="CENTER" spacing="5.0" styleClass="control-info-gridPane" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                           <children>
+                              <ToggleButton fx:id="mBtnAuctionStatusStart" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-status-button" text="시작" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="-10.0" right="-10.0" />
+                                 </padding>
+                              </ToggleButton>
+                              <ToggleButton fx:id="mBtnAuctionStatusAutoRaise" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-status-button" text="자동&#10;상승&#10;" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="-10.0" right="-10.0" />
+                                 </padding>
+                              </ToggleButton>
+                              <ToggleButton fx:id="mBtnAuctionStatusProgress" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-status-button" text="진행" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="-10.0" right="-10.0" />
+                                 </padding>
+                              </ToggleButton>
+                              <ToggleButton fx:id="mBtnAuctionStatusRaceCondition" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-status-button" text="경합" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="-10.0" right="-10.0" />
+                                 </padding>
+                              </ToggleButton>
+                              <ToggleButton fx:id="mBtnAuctionStatusSuccessBid" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-status-button" text="낙찰" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="-10.0" right="-10.0" />
+                                 </padding>
+                              </ToggleButton>
+                              <ToggleButton fx:id="mBtnAuctionStatusFailBid" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-status-button" text="유찰" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="-10.0" right="-10.0" />
+                                 </padding>
+                              </ToggleButton>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </padding>
+                        </HBox>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="응찰자수" GridPane.columnIndex="5" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelNumberBidders" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-info-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="낙/유찰 시간" GridPane.columnIndex="5" GridPane.rowIndex="4">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <HBox alignment="CENTER" spacing="5.0" styleClass="control-info-gridPane" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                           <children>
+                              <ToggleButton fx:id="mBtnEntryTime5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-time-status-button" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="mBtnEntryTime4" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-time-status-button" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="mBtnEntryTime3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-time-status-button" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="mBtnEntryTime2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-time-status-button" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="mBtnEntryTime1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="control-auction-time-status-button" HBox.hgrow="ALWAYS" />
+                           </children>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </HBox>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="권리자 정보" GridPane.columnIndex="6" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <GridPane alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.rowSpan="3" GridPane.valignment="CENTER">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                          </rowConstraints>
+                           <children>
+                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="권리" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="control-info-gridPane" />
+                                    <String fx:value="control-auction-sub-title-font" />
+                                 </styleClass></Label>
+                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="회원번호" GridPane.columnIndex="1">
+                                 <styleClass>
+                                    <String fx:value="control-info-gridPane" />
+                                    <String fx:value="control-auction-sub-title-font" />
+                                 </styleClass></Label>
+                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="제1순위" GridPane.rowIndex="1">
+                                 <styleClass>
+                                    <String fx:value="control-info-gridPane" />
+                                    <String fx:value="control-auction-sub-title-font" />
+                                 </styleClass></Label>
+                              <Label fx:id="mLabelRank1MemberNum" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <styleClass>
+                                    <String fx:value="control-info-gridPane" />
+                                    <String fx:value="control-entry-data-label-font" />
+                                 </styleClass></Label>
+                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="제2순위" GridPane.rowIndex="2">
+                                 <styleClass>
+                                    <String fx:value="control-info-gridPane" />
+                                    <String fx:value="control-auction-sub-title-font" />
+                                 </styleClass></Label>
+                              <Label fx:id="mLabelRank2MemberNum" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <styleClass>
+                                    <String fx:value="control-info-gridPane" />
+                                    <String fx:value="control-entry-data-label-font" />
+                                 </styleClass></Label>
+                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="제3순위" GridPane.rowIndex="3">
+                                 <styleClass>
+                                    <String fx:value="control-info-gridPane" />
+                                    <String fx:value="control-auction-sub-title-font" />
+                                 </styleClass></Label>
+                              <Label fx:id="mLabelRank3MemberNum" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <styleClass>
+                                    <String fx:value="control-info-gridPane" />
+                                    <String fx:value="control-entry-data-label-font" />
+                                 </styleClass></Label>
+                           </children>
+                           <GridPane.margin>
+                              <Insets left="1.0" />
+                           </GridPane.margin>
+                        </GridPane>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="총 출품 차량" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelTotalEntryCount" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-info-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="완료" GridPane.columnIndex="8">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelFinishEntryCount" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="8" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-info-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="잔여" GridPane.columnIndex="9">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelLeftoverEntry" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="9" GridPane.rowIndex="1">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-info-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="경매운영" GridPane.columnIndex="7" GridPane.columnSpan="3" GridPane.rowIndex="2">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="control-info-gridPane" GridPane.columnIndex="7" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.rowSpan="6" GridPane.valignment="CENTER">
+                           <children>
+                              <VBox fx:id="mBtnAuctionStartVBox" alignment="CENTER" prefHeight="150.0" styleClass="control-auction-info-button">
+                                 <children>
+                                    <Label fx:id="mAuctionStartButtonLabel" styleClass="control-auction-main-button-font" text="경매시작" />
+                                    <Label fx:id="mAuctionStartDescLabel" styleClass="control-auction-sub-button-font" text="[현재 : 경매 정지 상태]" />
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="mBtnAuctionAutoStartVBox" alignment="CENTER" prefHeight="150.0" styleClass="control-auction-info-button">
+                                 <children>
+                                    <Label fx:id="mAuctionAutoStartButtonLabel" styleClass="control-auction-main-button-font" text="출품번호 자동상승" />
+                                    <Label fx:id="mAuctionAutoStartDescLabel" styleClass="control-auction-sub-button-font" text="[현재 : 자동상승 ON]" />
+                                 </children>
+                              </VBox>
+                              <Button fx:id="mBtnAuctionForced" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionAuctionForced" prefHeight="150.0" text="강제유찰 [F5]&#10;" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="control-auction-main-button-font" />
+                                    <String fx:value="control-auction-info-button" />
+                                 </styleClass></Button>
+                           </children>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="경매설정" GridPane.columnSpan="4" GridPane.rowIndex="6">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane-top-left-border-line" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="기준금액" GridPane.rowIndex="7">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane-top-left-border-line" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelBasePrice" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-setting-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="상승금액" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelRisingPrice" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="7">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-setting-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="경매시간" GridPane.rowIndex="8">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane-top-left-border-line" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelNextEntryTime" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-setting-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="자동상승" GridPane.columnIndex="2" GridPane.rowIndex="8">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelAutoRiseCount" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="8">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-setting-label-font" />
+                           </styleClass></Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="낙찰회원" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="6">
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-auction-sub-title-font" />
+                           </styleClass></Label>
+                        <Label fx:id="mLabelSuccessBidMember" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="7" GridPane.rowSpan="2">
+                           <font>
+                              <Font name="Roboto Bold" size="13.0" />
+                           </font>
+                           <styleClass>
+                              <String fx:value="control-info-gridPane" />
+                              <String fx:value="control-result-label-font" />
+                           </styleClass></Label>
+                        <GridPane fx:id="mGridPaneCarImage" styleClass="control-info-gridPane-top-left-border-line" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.rowSpan="5" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ImageView fx:id="mCarImageView" pickOnBounds="true" styleClass="control-info-gridPane" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                           </children>
+                           <padding>
+                              <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                           </padding>
+                           <opaqueInsets>
+                              <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                           </opaqueInsets>
+                        </GridPane>
+                     </children>
+                     <styleClass>
+                        <String fx:value="regular-font" />
+                        <String fx:value="control-entry-data-border" />
+                     </styleClass>
+                  </GridPane>
+               </children>
+            </VBox>
+         </center>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </BorderPane>
+   </children>
+</AnchorPane>
