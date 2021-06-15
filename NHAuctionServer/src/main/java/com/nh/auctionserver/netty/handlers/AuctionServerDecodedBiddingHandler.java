@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
-import com.nh.share.bidder.models.Bidding;
 import com.nh.share.code.GlobalDefineCode;
+import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ConnectionInfo;
 
 import io.netty.channel.ChannelHandler.Sharable;
@@ -55,9 +55,7 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 
 				mLogger.debug("HazelcastMessage ADD : " + bidding.getEncodedMessage());
 
-				if (bidding.getPriceInt() >= Integer.valueOf(mAuctionScheduler.getAuctionState().getCurrentPrice())
-						&& bidding.getPriceInt() <= Integer
-								.valueOf(mAuctionScheduler.getAuctionState().getNextPrice())) {
+				if (bidding.getPriceInt() >= Integer.valueOf(mAuctionScheduler.getAuctionState().getStartPrice())) {
 					mAuctionServer.itemAdded(bidding.getEncodedMessage());
 				}
 			}

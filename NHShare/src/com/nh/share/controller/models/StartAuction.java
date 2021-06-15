@@ -8,25 +8,15 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 제어프로그램 -> 서버
  * 
- * CS|출품번호
+ * CA|출품번호
  *
  */
 public class StartAuction implements FromAuctionController {
-    public static final char TYPE = 'S';
-    private String mFlagAutoMode; // 자동 진행 여부
+    public static final char TYPE = 'A';
     private String mEntryNum; // 출품번호
 
-    public StartAuction(String flagAutoMode, String entryNum) {
-        mFlagAutoMode = flagAutoMode;
+    public StartAuction(String entryNum) {
         mEntryNum = entryNum;
-    }
-
-    public String getFlagAutoMode() {
-        return mFlagAutoMode;
-    }
-
-    public void setFlagAutoMode(String flagAutoMode) {
-        this.mFlagAutoMode = flagAutoMode;
     }
 
     public String getEntryNum() {
@@ -39,6 +29,6 @@ public class StartAuction implements FromAuctionController {
 
     @Override
     public String getEncodedMessage() {
-        return String.format("%c%c%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mFlagAutoMode, AuctionShareSetting.DELIMITER, mEntryNum);
+        return String.format("%c%c%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mEntryNum);
     }
 }

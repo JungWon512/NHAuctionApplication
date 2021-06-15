@@ -7,12 +7,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Base64.Encoder;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -20,9 +18,6 @@ import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.nh.share.api.GlobalDefine;
-import com.nh.share.code.GlobalDefineCode;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -726,113 +721,6 @@ public class CommonUtils {
 
     /**
      * 
-     * @MethodName getImageFilePath
-     * @Description 이미지 파일명으로 이미지 파일 경로 확인 처리
-     * 
-     * @param positionCode 거점 코드(ex. 1100)
-     * @param fileName     이미지 파일명(ex. 1906B2007_01.jpg)
-     * @return
-     */
-    public synchronized String getImageFilePath(String positionCode, String fileName) {
-        String result = null;
-        String centerPath = null;
-        String imagePath = null;
-        
-        /*
-         * 20.11.24 상품번호체계 변경에 따른 로직 수정
-         * AS-IS : 2010053008_02_03_M.jpg
-         * TO-BE : B201100002_02_02_M.jpg
-         */
-        String regExp = "^[0-9]*$";
-        String firstStr = fileName.substring(0, 1);
-        if (firstStr.matches(regExp)) {
-        	// 숫자
-        	imagePath = fileName.substring(0, 4);
-        }else {
-        	// 숫자아님
-        	imagePath = fileName.substring(1, 5);
-        }
-        
-        if (positionCode.equals(GlobalDefineCode.AUCTION_HOUSE_HWADONG)) {
-            centerPath = GlobalDefineCode.AUCTION_HOUSE_HWADONG;
-        } else if (positionCode.equals(GlobalDefineCode.AUCTION_HOUSE_HWASUN)) {
-            centerPath = GlobalDefineCode.AUCTION_HOUSE_HWASUN;
-        } else if (positionCode.equals(GlobalDefineCode.AUCTION_HOUSE_JANGSU)) {
-            centerPath = GlobalDefineCode.AUCTION_HOUSE_JANGSU;
-        }
-
-        result = GlobalDefine.getInstance().getBaseDomain() + "/FileUpDown/" + centerPath + "/carimg/" + imagePath + "/"
-                + fileName;
-
-        return result;
-    }
-
-    /**
-     * 
-     * @MethodName getEvalImageFilePath
-     * @Description 차량전개도 이미지 파일명으로 차량 전개도 이미지 파일 경로 확인 처리
-     * 
-     * @param positionCode 거점 코드(ex. 1100)
-     * @param fileName     이미지 파일명(ex. 1906B2007_01.jpg)
-     * @return
-     */
-    public synchronized String getEvalImageFilePath(String positionCode, String fileName) {
-        String result = null;
-        String centerPath = null;
-        String imagePath = null;
-
-        /*
-         * 20.11.24 상품번호체계 변경에 따른 로직 수정
-         * AS-IS : 2010053008_02_03_M.jpg
-         * TO-BE : B201100002_02_02_M.jpg
-         */
-        String regExp = "^[0-9]*$";
-        String firstStr = fileName.substring(0, 1);
-        if (firstStr.matches(regExp)) {
-        	// 숫자
-        	imagePath = fileName.substring(0, 4);
-        }else {
-        	// 숫자아님
-        	imagePath = fileName.substring(1, 5);
-        }
-
-        if (positionCode.equals(GlobalDefineCode.AUCTION_HOUSE_HWADONG)) {
-            centerPath = GlobalDefineCode.AUCTION_HOUSE_HWADONG;
-        } else if (positionCode.equals(GlobalDefineCode.AUCTION_HOUSE_HWASUN)) {
-            centerPath = GlobalDefineCode.AUCTION_HOUSE_HWASUN;
-        } else if (positionCode.equals(GlobalDefineCode.AUCTION_HOUSE_JANGSU)) {
-            centerPath = GlobalDefineCode.AUCTION_HOUSE_JANGSU;
-        }
-
-        result = GlobalDefine.getInstance().getBaseDomain() + "/FileUpDown/" + centerPath + "/valimg/" + imagePath + "/"
-                + fileName;
-
-        return result;
-    }
-
-    /**
-     * 
-     * @MethodName getTtsFilePath
-     * @Description TTS 파일명으로 TTS 파일 경로 확인 처리
-     * 
-     * @param fileName 이미지 파일명(ex. 20191217_20_6_A_1002.wav)
-     * @return
-     */
-
-    public synchronized String getTtsFilePath(String fileName) {
-        String result = null;
-        String centerPath = null;
-        String imagePath = null;
-
-        imagePath = fileName.substring(0, fileName.lastIndexOf("_"));
-
-        result = GlobalDefine.getInstance().getBaseDomain() + "/FileUpDown/TTS/" + imagePath + "/" + fileName;
-
-        return result;
-    }
-
-    /**
-     * 
      * @MethodName getDelegateCarImage
      * @Description 차량 대표 이미지 추출 처리
      *
@@ -874,84 +762,6 @@ public class CommonUtils {
         }
 
         return carImagesSize;
-    }
-
-    public synchronized String getURLCarImage(String centerPositionCode, String imageList) {
-        String carImagePath = null;
-
-        if (imageList.length() > 0 && imageList.contains(",")) {
-            imageList = imageList.replace("[", "");
-            imageList = imageList.replace("]", "");
-            String[] carImageList = imageList.split(",");
-            if (carImageList.length > 0) {
-                carImagePath = carImageList[0];
-            }
-        } else {
-            carImagePath = getImageFilePath(centerPositionCode, imageList);
-        }
-
-        return carImagePath;
-    }
-
-    public synchronized String getURLEvalImage(String centerPositionCode, String imageList) {
-        String evalImagePath = null;
-
-        if (imageList.length() > 0 && imageList.contains(",")) {
-            imageList = imageList.replace("[", "");
-            imageList = imageList.replace("]", "");
-            String[] carImageList = imageList.split(",");
-            if (carImageList.length > 0) {
-                evalImagePath = carImageList[0];
-            }
-        } else {
-
-            evalImagePath = getEvalImageFilePath(centerPositionCode, imageList);
-        }
-
-        return evalImagePath;
-    }
-
-    /**
-     * 
-     * @MethodName getDelegateCarImage
-     * @Description 차량 이미지
-     *
-     * @param imageList 차량 이미지 리스트
-     */
-    public synchronized List<String> getURLCarImages(String centerPositionCode, String imageList) {
-
-        List<String> resultList = null;
-
-        if (imageList.length() > 0) {
-            if (imageList.contains(",")) {
-                imageList = imageList.replace("[", "");
-                imageList = imageList.replace("]", "");
-                String[] carImageList = imageList.split(",");
-
-                if (carImageList.length > 0) {
-
-                    resultList = new ArrayList<String>();
-
-                    for (int i = 0; carImageList.length > i; i++) {
-                        String imgURL = GlobalDefine.getInstance().getBaseDomain()
-                                + getImageFilePath(centerPositionCode, carImageList[i]);
-                        if (imgURL != null && imgURL.length() > 0) {
-                            resultList.add(imgURL);
-                        }
-                    }
-                }
-            } else {
-                resultList = new ArrayList<String>();
-
-                String imgURL = GlobalDefine.getInstance().getBaseDomain()
-                        + getImageFilePath(centerPositionCode, imageList);
-                if (imgURL != null && imgURL.length() > 0) {
-                    resultList.add(imgURL);
-                }
-            }
-        }
-
-        return resultList;
     }
 
     /**

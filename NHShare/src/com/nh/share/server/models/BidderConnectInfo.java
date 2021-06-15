@@ -6,14 +6,15 @@ import com.nh.share.setting.AuctionShareSetting;
 /**
  * 접속자 정보 전송
  * 
- * 공통 -> 서버
+ * 경매서버 -> 공통
  * 
- * OI|회원(사원)번호|접속요청채널(6001/6002/6003/6004/6005)|사용채널(AH/PC/ANDROID/IOS)|응찰상태(Y/N)
+ * OI|회원(사원)번호|접속요청채널(6001/6002/6003/6004)|사용채널(ANDROID/IOS/WEB)|응찰상태(N : 일반 / B
+ * : 응찰 / O : 종료)
  *
  */
 public class BidderConnectInfo implements FromAuctionServer {
 	public static final char TYPE = 'I';
-	private String mUserNo; // 회원(사원)번호
+	private String mUserNo; // 회원번호
 	private String mChannel; // 접속 요청 채널
 	private String mOS; // 사용 채널
 	private String mStatus; // 응찰 상태

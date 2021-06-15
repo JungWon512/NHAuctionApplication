@@ -47,15 +47,7 @@ public final class AuctionServerDecodedStartAuctionHandler extends SimpleChannel
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, StartAuction auctionStart) throws Exception {
-		mLogger.info("경매 자동 진행 모드 : " + auctionStart.getFlagAutoMode());
 		mLogger.info("경매 진행 시작 : " + auctionStart.getEntryNum());
-
-		// 경매 자동 시작 여부 확인
-		if (auctionStart.getFlagAutoMode().equals("Y")) {
-			AuctionServerSetting.AUCTION_AUTO_MODE = true;
-		} else {
-			AuctionServerSetting.AUCTION_AUTO_MODE = false;
-		}
 
 		if (AuctionServerSetting.AUCTION_START_STATUS) {
 			mLogger.info("경매가 이미 시작된 상태입니다.");

@@ -7,12 +7,6 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.nh.share.api.ActionResultListener;
-import com.nh.share.api.ActionRuler;
-import com.nh.share.api.request.ActionFileDownload;
-import com.nh.share.api.response.ResponseFileDownload;
-import com.nh.share.interfaces.FileDownLoadListener;
-
 public class FileUtils {
     private static final Logger mLogger = LoggerFactory.getLogger(FileUtils.class);
 
@@ -98,126 +92,6 @@ public class FileUtils {
             }
         } catch (Exception e) {
             e.getStackTrace();
-        }
-    }
-
-    /**
-     * 
-     * @MethodName carImageFileDownload
-     * @Description 출품 데이터의 차량 이미지 다운로드 처리
-     *
-     * @return String 차량 이미지 URL
-     */
-    public synchronized void carImageFileDownload(String positionCode, String tempPath, String fileName, int retryCount, ActionResultListener<ResponseFileDownload> actionResultFileDownLoadListener,
-            FileDownLoadListener fileDownLoadListener) {
-        if (fileName != null && !fileName.equals("") && !fileName.equals("null") && !fileName.equals(null)) {
-            File file = new File(tempPath, fileName);
-
-            if (!file.exists()) {
-                String url = CommonUtils.getInstance().getImageFilePath(positionCode, fileName);
-
-                if (url != null && !url.equals("") && !url.equals("null") && !url.equals(null)) {
-                    fileName = url.substring(url.lastIndexOf("/") + 1);
-
-                    mLogger.debug("carImageFileDownload URL : " + url);
-                    ActionRuler.getInstance().addAction(new ActionFileDownload(url, tempPath, fileName, retryCount, actionResultFileDownLoadListener, fileDownLoadListener, "차량이미지"));
-                    ActionRuler.getInstance().runNext();
-                }
-            } else {
-                if (fileDownLoadListener != null) {
-                    fileDownLoadListener.OnFileDownloadListener("이미 생성 된 " + tempPath + fileName + " 파일이 존재합니다.");
-                }
-                
-                ResponseFileDownload responseFileDownload = new ResponseFileDownload();
-                responseFileDownload.setFilePath(tempPath + fileName);
-                responseFileDownload.setSuccess(true);
-
-                actionResultFileDownLoadListener.onResponseResult(responseFileDownload);
-            }
-        } else {
-            if (fileDownLoadListener != null) {
-                fileDownLoadListener.OnFileDownloadListener("carImageFileDownload file name is null!");
-            }
-            actionResultFileDownLoadListener.onResponseError("carImageFileDownload file name is null!");
-        }
-    }
-
-    /**
-     * 
-     * @MethodName carEvalImageFileDownload
-     * @Description 출품 데이터의 차량 전개도 이미지 다운로드 처리
-     *
-     * @return String 차량 전개도 이미지 URL
-     */
-    public synchronized void carEvalImageFileDownload(String positionCode, String tempPath, String fileName, int retryCount, ActionResultListener<ResponseFileDownload> actionResultFileDownLoadListener,
-            FileDownLoadListener fileDownLoadListener) {
-        if (fileName != null && !fileName.equals("") && !fileName.equals("null") && !fileName.equals(null)) {
-            File file = new File(tempPath, fileName);
-
-            if (!file.exists()) {
-                String url = CommonUtils.getInstance().getEvalImageFilePath(positionCode, fileName);
-
-                if (url != null && !url.equals("") && !url.equals("null") && !url.equals(null)) {
-                    fileName = url.substring(url.lastIndexOf("/") + 1);
-
-                    mLogger.debug("carEvalImageFileDownload URL : " + url);
-                    ActionRuler.getInstance().addAction(new ActionFileDownload(url, tempPath, fileName, retryCount, actionResultFileDownLoadListener, fileDownLoadListener, "전개도"));
-                    ActionRuler.getInstance().runNext();
-                }
-            } else {
-                if (fileDownLoadListener != null) {
-                    fileDownLoadListener.OnFileDownloadListener("이미 생성 된 " + tempPath + fileName + " 파일이 존재합니다.");
-                }
-                ResponseFileDownload responseFileDownload = new ResponseFileDownload();
-                responseFileDownload.setFilePath(tempPath + fileName);
-                responseFileDownload.setSuccess(true);
-
-                actionResultFileDownLoadListener.onResponseResult(responseFileDownload);
-            }
-        } else {
-            if (fileDownLoadListener != null) {
-                fileDownLoadListener.OnFileDownloadListener("carEvalImageFileDownload file name is null!");
-            }
-            actionResultFileDownLoadListener.onResponseError("carEvalImageFileDownload file name is null!");
-        }
-    }
-
-    /**
-     * 
-     * @MethodName ttsFileDownload
-     * @Description 출품 데이터의 TTS 파일 다운로드
-     *
-     * @return String TTS 파일 URL
-     */
-    public synchronized void ttsFileDownload(String tempPath, String fileName, int retryCount, ActionResultListener<ResponseFileDownload> actionResultFileDownLoadListener, FileDownLoadListener fileDownLoadListener) {
-        if (fileName != null && !fileName.equals("") && !fileName.equals("null") && !fileName.equals(null)) {
-            File file = new File(tempPath, fileName);
-
-            if (!file.exists()) {
-                String url = CommonUtils.getInstance().getTtsFilePath(fileName);
-
-                if (url != null && !url.equals("") && !url.equals("null") && !url.equals(null)) {
-
-                    mLogger.debug("ttsFileDownload URL : " + url);
-
-                    ActionRuler.getInstance().addAction(new ActionFileDownload(url, tempPath, fileName, retryCount, actionResultFileDownLoadListener, fileDownLoadListener, "TTS"));
-                    ActionRuler.getInstance().runNext();
-                }
-            } else {
-                if (fileDownLoadListener != null) {
-                    fileDownLoadListener.OnFileDownloadListener("이미 생성 된 " + tempPath + fileName + " 파일이 존재합니다.");
-                }
-                ResponseFileDownload responseFileDownload = new ResponseFileDownload();
-                responseFileDownload.setFilePath(tempPath + fileName);
-                responseFileDownload.setSuccess(true);
-
-                actionResultFileDownLoadListener.onResponseResult(responseFileDownload);
-            }
-        } else {
-            if (fileDownLoadListener != null) {
-                fileDownLoadListener.OnFileDownloadListener("ttsFileDownload file name is null!");
-            }
-            actionResultFileDownLoadListener.onResponseError("ttsFileDownload file name is null!");
         }
     }
 }

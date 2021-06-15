@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.common.interfaces.NettyControllable;
+import com.nh.share.common.CommonMessageParser;
+import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.server.ServerMessageParser;
 import com.nh.share.server.interfaces.FromAuctionServer;
 
@@ -37,6 +39,9 @@ public final class AuctionClientInboundDecoder extends MessageToMessageDecoder<S
         switch (message.charAt(0)) {
         case FromAuctionServer.ORIGIN:
             out.add(ServerMessageParser.parse(message));
+            break;
+        case FromAuctionCommon.ORIGIN:
+            out.add(CommonMessageParser.parse(message));
             break;
         default:
             break;

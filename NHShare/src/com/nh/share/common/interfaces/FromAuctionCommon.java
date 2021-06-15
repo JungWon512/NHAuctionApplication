@@ -23,6 +23,6 @@ public interface FromAuctionCommon extends NettySendable {
 	 *  }
 	 * 
 	 */
-	static final char ORIGIN = 'M';
+	static final char ORIGIN = 'A';
 }
 

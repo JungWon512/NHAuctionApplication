@@ -8,11 +8,11 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 제어프로그램 -> 서버
  * 
- * CO|메시지내용 
+ * CT|메시지내용 
  *
  */
 public class ToastMessageRequest implements FromAuctionController {
-	public static final char TYPE = 'O';
+	public static final char TYPE = 'T';
 	private String mMessage;	// 메시지 내용 
 	
 	public ToastMessageRequest(String message) {

@@ -11,7 +11,7 @@ import com.nh.share.server.interfaces.FromAuctionServer;
  *
  */
 public class AuctionCheckSession implements FromAuctionServer {
-	public static final char TYPE = 'K';
+	public static final char TYPE = 'S';
 
 	public AuctionCheckSession() {
 	}

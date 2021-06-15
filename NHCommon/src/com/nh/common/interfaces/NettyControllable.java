@@ -1,16 +1,14 @@
 package com.nh.common.interfaces;
 
 import com.nh.common.AuctionShareNettyClient;
-import com.nh.share.server.models.AbsenteeUserInfo;
+import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.common.models.Bidding;
+import com.nh.share.common.models.CurrentEntryInfo;
+import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
-import com.nh.share.server.models.AuctionStatus;
-import com.nh.share.server.models.BidderConnectInfo;
-import com.nh.share.server.models.CurrentSetting;
 import com.nh.share.server.models.ExceptionCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
-import com.nh.share.server.models.ResponseConnectionInfo;
-import com.nh.share.server.models.ResponseEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 
 import io.netty.channel.Channel;
@@ -41,23 +39,19 @@ public interface NettyControllable {
 
 	public void onActiveChannel();
 
+	public void onAuctionStatus(AuctionStatus auctionStatus); // 현재 경매 상태
+
+	public void onCurrentEntryInfo(CurrentEntryInfo currentEntryInfo); // 현재 출품 정보
+
 	public void onAuctionCountDown(AuctionCountDown auctionCountDown); // 경매 시작 카운트 다운 정보
 
-	public void onAuctionStatus(AuctionStatus auctionStatus); // 경매 상태 정보 전송
-
-	public void onCurrentSetting(CurrentSetting currentSetting); // 경매 환경 설정 정보
-
-	public void onResponseCarInfo(ResponseEntryInfo responseCarInfo); // 출품 정보
+	public void onBidding(Bidding bidding); // 응찰 정보
 
 	public void onToastMessage(ToastMessage toastMessage); // 메시지 전송
 
-	public void onConnectorInfo(BidderConnectInfo bidderConnectInfo); // 응찰자 접속 정보
-
-	public void onResponseConnectionInfo(ResponseConnectionInfo responseConnectionInfo); // 접속 정보 응답
-
 	public void onFavoriteCarInfo(FavoriteEntryInfo favoriteCarInfo); // 관심 출품 정보
 
-	public void onAbsenteeUserInfo(AbsenteeUserInfo absenteeUserInfo); // 부재자 입찰 참여 여부 정보
+	public void onResponseConnectionInfo(ResponseConnectionInfo responseConnectionInfo); // 접속 정보 인증 응답
 
 	public void onExceptionCode(ExceptionCode exceptionCode); // 예외 상황 전송
 

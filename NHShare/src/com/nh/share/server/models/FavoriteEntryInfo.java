@@ -4,11 +4,11 @@ import com.nh.share.server.interfaces.FromAuctionServer;
 import com.nh.share.setting.AuctionShareSetting;
 
 /**
- * 관심차량 여부에 대한 정보 전송 처리
+ * 관심 출품 여부에 대한 정보 전송 처리
  * 
  * 서버 -> 응찰기
  * 
- * SF|출품번호|관심차량 여부(Y/N)
+ * SF|출품번호|관심 출품 여부(Y/N)
  *
  */
 public class FavoriteEntryInfo implements FromAuctionServer {

@@ -6,16 +6,16 @@ import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.setting.AuctionShareSetting;
 
 /**
- * 경매 서버 접속 정보 유효 확인 처리
+ * 경매 서버 접속 정보 유효 응답 처리
  * 
- * 서버 -> 공통
+ * 공통 -> 경매서버
  * 
- * MR|회원(사원)번호
+ * AA|회원번호
  *
  */
 public class AuctionReponseSession implements FromAuctionCommon, Serializable {
     private static final long serialVersionUID = 4703227204913480226L;
-    public static final char TYPE = 'R';
+    public static final char TYPE = 'A';
     private String mUserNo; // 회원(사원)번호
     private String mChannel; // 접속 요청 채널
     private String mOS; // 사용 채널

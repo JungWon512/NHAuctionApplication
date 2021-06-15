@@ -10,13 +10,13 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 공통 -> 서버
  * 
- * OI|회원(사원)번호|접속요청채널(6001/6002/6003/6004/6005)|사용채널(PC/ANDROID/IOS)|관전여부(Y/N)
+ * AI|회원번호|접속요청채널(6001/6002/6003/6004/6005)|사용채널(PC/ANDROID/IOS)|관전여부(Y/N)
  *
  */
 public class ConnectionInfo implements FromAuctionCommon, Serializable {
     private static final long serialVersionUID = 4703227204913480236L;
     public static final char TYPE = 'I';
-    private String mUserNo; // 회원(사원)번호
+    private String mUserNo; // 회원번호
     private String mChannel; // 접속 요청 채널
     private String mOS; // 사용 채널
     private String mWatcher; // 관전자여부

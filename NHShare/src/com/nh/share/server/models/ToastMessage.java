@@ -12,7 +12,7 @@ import com.nh.share.setting.AuctionShareSetting;
  *
  */
 public class ToastMessage implements FromAuctionServer {
-	public static final char TYPE = 'O';
+	public static final char TYPE = 'T';
 	private String mMessage; // 메시지 내용
 
 	public ToastMessage() {

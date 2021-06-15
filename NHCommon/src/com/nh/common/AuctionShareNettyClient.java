@@ -5,16 +5,14 @@ import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.nh.common.handlers.AuctionClientDecodedAbsenteeUserInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedAuctionStatusHandler;
-import com.nh.common.handlers.AuctionClientDecodedBidderConnectInfoHandler;
+import com.nh.common.handlers.AuctionClientDecodedBiddingHandler;
 import com.nh.common.handlers.AuctionClientDecodedCheckSessionHandler;
 import com.nh.common.handlers.AuctionClientDecodedCountDownHandler;
-import com.nh.common.handlers.AuctionClientDecodedCurrentSettingHandler;
+import com.nh.common.handlers.AuctionClientDecodedCurrentEntryInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedExceptionCodeHandler;
 import com.nh.common.handlers.AuctionClientDecodedFavoriteEntryInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedResponseConnectionInfoHandler;
-import com.nh.common.handlers.AuctionClientDecodedResponseEntryInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedToastMessageHandler;
 import com.nh.common.handlers.AuctionClientInboundDecoder;
 import com.nh.common.interfaces.NettyClientShutDownListener;
@@ -89,14 +87,12 @@ public class AuctionShareNettyClient {
 							// pipeline.addLast(new ReadTimeoutHandler(15));
 							pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
 							pipeline.addLast(new AuctionClientInboundDecoder(controller));
+							pipeline.addLast(new AuctionClientDecodedCurrentEntryInfoHandler(controller)); // 현재 출품 정보
+							pipeline.addLast(new AuctionClientDecodedBiddingHandler(controller)); // 응찰 정보
 							pipeline.addLast(new AuctionClientDecodedCountDownHandler(controller)); // 경매 시작 카운트 다운 기능
 							pipeline.addLast(new AuctionClientDecodedFavoriteEntryInfoHandler(controller)); // 관심출품 정보
-							pipeline.addLast(new AuctionClientDecodedAbsenteeUserInfoHandler(controller)); // 부재자 입찰 여부
 							pipeline.addLast(new AuctionClientDecodedAuctionStatusHandler(controller)); // 경매 상태 정보 전송
-							pipeline.addLast(new AuctionClientDecodedCurrentSettingHandler(controller)); // 경매 환경 설정 정보
-							pipeline.addLast(new AuctionClientDecodedResponseEntryInfoHandler(controller)); // 출품 정보 전송
 							pipeline.addLast(new AuctionClientDecodedToastMessageHandler(controller)); // 메시지 전송 처리
-							pipeline.addLast(new AuctionClientDecodedBidderConnectInfoHandler(controller)); // 응찰 접속자
 							pipeline.addLast(new AuctionClientDecodedResponseConnectionInfoHandler(controller)); // 접속응답처리
 							pipeline.addLast(new AuctionClientDecodedExceptionCodeHandler(controller)); // 예외 상황 전송
 							pipeline.addLast(new AuctionClientDecodedCheckSessionHandler(controller)); // 경매 서버 접속 유효 확인

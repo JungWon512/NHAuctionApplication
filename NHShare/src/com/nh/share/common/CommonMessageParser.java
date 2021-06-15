@@ -2,8 +2,11 @@ package com.nh.share.common;
 
 import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.common.models.AuctionReponseSession;
-import com.nh.share.common.models.EntryInfo;
+import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.common.models.CurrentEntryInfo;
+import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.setting.AuctionShareSetting;
 
 /**
@@ -16,12 +19,18 @@ public class CommonMessageParser {
 	public static FromAuctionCommon parse(String message) {
 		String[] messages = message.split(AuctionShareSetting.DELIMITER_REGEX);
 		switch (messages[0].charAt(1)) {
-		case EntryInfo.TYPE: // 출품 정보 요청
-			return new EntryInfo(messages[1]);
-		case ConnectionInfo.TYPE: // 접속 정보 전송
-			return new ConnectionInfo(messages[1], messages[2], messages[3], messages[4]);
+		case AuctionStatus.TYPE: // 경매 상태 정보 전송
+			return new AuctionStatus(messages);
+		case Bidding.TYPE:
+            return new Bidding(messages[1], messages[2], messages[3], messages[4], messages[5]);
+		case CurrentEntryInfo.TYPE: // 접속 정보 전송
+			return new CurrentEntryInfo(messages);
 		case AuctionReponseSession.TYPE: // 접속 응답 처리
 			return new AuctionReponseSession(messages[1], messages[2], messages[3]);
+		case ConnectionInfo.TYPE: // 접속 정보 응답 처리
+			return new ConnectionInfo(messages[1], messages[2], messages[3], messages[4]);
+		case ResponseConnectionInfo.TYPE: // 접속 정보 응답 처리
+			return new ResponseConnectionInfo(messages[1]);
 		default:
 			return null;
 		}

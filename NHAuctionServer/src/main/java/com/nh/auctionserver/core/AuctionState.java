@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.auctionserver.setting.AuctionServerSetting;
-import com.nh.share.api.model.AuctionEntryInformationResult;
 import com.nh.share.code.GlobalDefineCode;
-import com.nh.share.server.models.AuctionStatus;
+import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.controller.models.EntryInfo;
 
 public class AuctionState {
 	private final Logger mLogger = LoggerFactory.getLogger(AuctionState.class);
@@ -16,24 +16,17 @@ public class AuctionState {
 	private boolean mSettingsInformationLoaded = false;
 	private boolean mEntryInformationLoaded = false;
 	private boolean mEntryFavoriteCarInfoLoaded = true;
-	private boolean mAbsenteeAuctionBidInfoLoaded = false;
 	private boolean mCheckSettingsInformation = false;
 	private boolean mCheckEntryInformation = false;
 	private boolean mCheckEntryFavoriteCarInfo = false;
-	private boolean mCheckAbsenteeAuctionBidInfo = false;
-
-	private long mRemainMilliSeconds = AuctionServerSetting.AUCTION_TIME; // 경매 진행 남은 시간
-	private long mBiddingRemainMilliSeconds = AuctionServerSetting.DEFAULT_CHECK_DELAY_TIME; // 경매 응찰 정보 수집 남은 시간
 
 	// 경매 시작 카운트 다운 시간
 	private int mAuctionCountDownTime = AuctionServerSetting.COUNT_DOWN_TIME;
 
 	private String mEntryNum; // 현재 진행 중인 출품번호
-	private String mEntrySeqNum; // 현재 진행 중인 출품순번
-	private String mCurrentPrice; // 현재 응찰 가격
+	private String mStartPrice; // 현재 응찰 가격
 	private String mCurrentBidderCount; // 현재 응찰자 수
 	private String mState = GlobalDefineCode.AUCTION_STATUS_NONE; // 경매상태
-	private String mNextPrice; // 다음 응찰 가격
 	private String mRank1MemberNum = ""; // 1순위 회원번호
 	private String mRank2MemberNum = ""; // 2순위 회원번호
 	private String mRank3MemberNum = ""; // 3순위 회원번호
@@ -49,13 +42,7 @@ public class AuctionState {
 	private String mRank3BidPrice = ""; // 3순위 응찰가
 	private String mRank4BidPrice = ""; // 4순위 응찰가
 	private String mRank5BidPrice = ""; // 5순위 응찰가
-	private String mNextEntryNum; // 다음 출품 번호
-	private String mNextEntrySeqNum; // 다음 출품 순번
-	private String mNextEntryPositionCode; // 다음 출품 차량 거점 코드
-	private String mNextEntryCarInfo; // 다음 출품 차량 정보
-	private String mNextEntryTtsInfo; // 다음 출품 차량 TTS 정보
-	private String mNextEntryImageInfo; // 다음 출품 차량 이미지 정보
-	private String mNextEntryEvalImageInfo; // 다음 출품 차량 차량 전개도 이미지 정보
+	private String mEntryPositionCode; // 출품 정보 거점 코드
 	private String mFinishEntryCount; // 경매 진행 완료 출품수
 	private String mRemainEntryCount; // 경매 잔여 출품수
 
@@ -63,27 +50,24 @@ public class AuctionState {
 	private String mAuctionCountDownStatus = GlobalDefineCode.AUCTION_COUNT_DOWN_READY;
 
 	// 현재 출품 차량 정보
-	private AuctionEntryInformationResult mCurrentEntryInfo;
+	private EntryInfo mCurrentEntryInfo;
 
 	public AuctionState(Auctioneer auctioneer) {
 		mAuctioneer = auctioneer;
 	}
 
 	public AuctionStatus getAuctionStatus() {
-		AuctionStatus auctionStatus = new AuctionStatus(mEntryNum, mCurrentPrice, mCurrentBidderCount, mState,
-				mNextPrice, String.valueOf(mRemainMilliSeconds), mRank1MemberNum, mRank2MemberNum, mRank3MemberNum,
-				mFinishEntryCount, mRemainEntryCount);
+		AuctionStatus auctionStatus = new AuctionStatus(mEntryNum, mStartPrice, mCurrentBidderCount, mState,
+				mRank1MemberNum, mRank2MemberNum, mRank3MemberNum, mFinishEntryCount, mRemainEntryCount);
 
 		return auctionStatus;
 	}
 
 	public void setAuctionStatus(AuctionStatus auctionStatus) {
 		mEntryNum = auctionStatus.getEntryNum();
-		mCurrentPrice = auctionStatus.getCurrentPrice();
+		mStartPrice = auctionStatus.getStartPrice();
 		mCurrentBidderCount = auctionStatus.getCurrentBidderCount();
 		mState = auctionStatus.getState();
-		mNextPrice = auctionStatus.getNextPrice();
-		mRemainMilliSeconds = Long.valueOf(auctionStatus.getTime());
 		mRank1MemberNum = auctionStatus.getRank1MemberNum();
 		mRank2MemberNum = auctionStatus.getRank1MemberNum();
 		mRank3MemberNum = auctionStatus.getRank1MemberNum();
@@ -99,35 +83,15 @@ public class AuctionState {
 		this.mEntryNum = entryNum;
 	}
 
-	public String getEntrySeqNum() {
-		return mEntrySeqNum;
+	public String getStartPrice() {
+		return mStartPrice;
 	}
 
-	public void setEntrySeqNum(String entrySeqNum) {
-		this.mEntrySeqNum = entrySeqNum;
-	}
+	public void setStartPrice(String startPrice) {
+		this.mStartPrice = startPrice;
 
-	public String getCurrentPrice() {
-		return mCurrentPrice;
-	}
-
-	public void setCurrentPrice(String currentPrice) {
-		this.mCurrentPrice = currentPrice;
-
-		mLogger.debug("setCurrentPrice : " + mCurrentPrice);
-		mLogger.debug("현재 가격을 " + mCurrentPrice + "만원으로 설정");
-
-		// 현재가 기준 상승 가격 확인
-		if (Integer.valueOf(mCurrentPrice) >= AuctionServerSetting.AUCTION_MAX_BASE_PRICE) {
-			AuctionServerSetting.AUCTION_CURRENT_RISING_PRICE = AuctionServerSetting.AUCTION_MAX_RISING_PRICE;
-		} else if (Integer.valueOf(mCurrentPrice) >= AuctionServerSetting.AUCTION_BASE_PRICE) {
-			AuctionServerSetting.AUCTION_CURRENT_RISING_PRICE = AuctionServerSetting.AUCTION_MORE_RISING_PRICE;
-		} else {
-			AuctionServerSetting.AUCTION_CURRENT_RISING_PRICE = AuctionServerSetting.AUCTION_BELOW_RISING_PRICE;
-		}
-
-		this.mNextPrice = String
-				.valueOf((Integer.valueOf(mCurrentPrice) + AuctionServerSetting.AUCTION_CURRENT_RISING_PRICE));
+		mLogger.debug("시작 가격을 " + mStartPrice + "만원으로 설정");
+		AuctionServerSetting.AUCTION_START_PRICE = Integer.valueOf(mStartPrice);
 	}
 
 	public String getCurrentBidderCount() {
@@ -136,14 +100,6 @@ public class AuctionState {
 
 	public void setCurrentBidderCount(String currentBidderCount) {
 		this.mCurrentBidderCount = currentBidderCount;
-	}
-
-	public String getNextPrice() {
-		return mNextPrice;
-	}
-
-	public void setNextPrice(String nextPrice) {
-		this.mNextPrice = nextPrice;
 	}
 
 	public String getRank1MemberNum() {
@@ -266,60 +222,12 @@ public class AuctionState {
 		this.mRank5BidPrice = rank5BidPrice;
 	}
 
-	public String getNextEntryNum() {
-		return mNextEntryNum;
+	public String getEntryPositionCode() {
+		return mEntryPositionCode;
 	}
 
-	public void setNextEntryNum(String nextEntryNum) {
-		this.mNextEntryNum = nextEntryNum;
-	}
-
-	public String getNextEntrySeqNum() {
-		return mNextEntrySeqNum;
-	}
-
-	public void setNextEntrySeqNum(String nextEntrySeqNum) {
-		this.mNextEntrySeqNum = nextEntrySeqNum;
-	}
-
-	public String getNextEntryPositionCode() {
-		return mNextEntryPositionCode;
-	}
-
-	public void setNextEntryPositionCode(String nextEntryPositionCode) {
-		this.mNextEntryPositionCode = nextEntryPositionCode;
-	}
-
-	public String getNextEntryCarName() {
-		return mNextEntryCarInfo;
-	}
-
-	public void setNextEntryCarName(String nextEntryCarName) {
-		this.mNextEntryCarInfo = nextEntryCarName;
-	}
-
-	public String getNextEntryTtsInfo() {
-		return mNextEntryTtsInfo;
-	}
-
-	public void setNextEntryTtsInfo(String nextEntryTtsInfo) {
-		this.mNextEntryTtsInfo = nextEntryTtsInfo;
-	}
-
-	public String getNextEntryImageInfo() {
-		return mNextEntryImageInfo;
-	}
-
-	public void setNextEntryImageInfo(String nextEntryImageInfo) {
-		this.mNextEntryImageInfo = nextEntryImageInfo;
-	}
-
-	public String getNextEntryEvalImageInfo() {
-		return mNextEntryEvalImageInfo;
-	}
-
-	public void setNextEntryEvalImageInfo(String nextEntryEvalImageInfo) {
-		this.mNextEntryEvalImageInfo = nextEntryEvalImageInfo;
+	public void setEntryPositionCode(String entryPositionCode) {
+		this.mEntryPositionCode = entryPositionCode;
 	}
 
 	public String getFinishEntryCount() {
@@ -362,10 +270,6 @@ public class AuctionState {
 		mEntryFavoriteCarInfoLoaded = true;
 	}
 
-	public void setAbsenteeAuctionBidInfoLoad() {
-		mAbsenteeAuctionBidInfoLoaded = true;
-	}
-
 	public void setCheckSettingsInformation() {
 		mCheckSettingsInformation = true;
 	}
@@ -376,10 +280,6 @@ public class AuctionState {
 
 	public void setCheckFavoriteCarInfo() {
 		mCheckEntryFavoriteCarInfo = true;
-	}
-
-	public void setCheckAbsenteeAuctionBidInfo() {
-		mCheckAbsenteeAuctionBidInfo = true;
 	}
 
 	/**
@@ -396,11 +296,9 @@ public class AuctionState {
 		mLogger.debug("경매 설정 정보 확인 여부 : " + mCheckSettingsInformation);
 		mLogger.debug("경매 출품 정보 확인 여부 : " + mCheckEntryInformation);
 		mLogger.debug("경매 관심차량 정보 확인 여부 : " + mCheckEntryFavoriteCarInfo);
-		mLogger.debug("경매 부재자 입찰 정보 확인 여부 : " + mCheckAbsenteeAuctionBidInfo);
 		mLogger.debug("================CheckAuctionData[ End ]================");
 
-		if (mCheckSettingsInformation && mCheckEntryInformation && mCheckEntryFavoriteCarInfo
-				&& mCheckAbsenteeAuctionBidInfo) {
+		if (mCheckSettingsInformation && mCheckEntryInformation && mCheckEntryFavoriteCarInfo) {
 			result = true;
 		} else {
 			result = false;
@@ -422,11 +320,9 @@ public class AuctionState {
 		mLogger.debug("경매 설정 정보 로딩 상태 : " + mSettingsInformationLoaded);
 		mLogger.debug("경매 출품 정보 로딩 상태 : " + mEntryInformationLoaded);
 		mLogger.debug("경매 관심차량 정보 로딩 상태 : " + mEntryFavoriteCarInfoLoaded);
-		mLogger.debug("경매 부재자 입찰 정보 로딩 상태 : " + mAbsenteeAuctionBidInfoLoaded);
 		mLogger.debug("================AuctionDataLoadingCompleted[ End ]================");
 
-		if (mSettingsInformationLoaded && mEntryInformationLoaded && mEntryFavoriteCarInfoLoaded
-				&& mAbsenteeAuctionBidInfoLoaded) {
+		if (mSettingsInformationLoaded && mEntryInformationLoaded && mEntryFavoriteCarInfoLoaded) {
 			result = true;
 		} else {
 			result = false;
@@ -453,17 +349,8 @@ public class AuctionState {
 	 * @return boolean 자동 상승 처리 필요 여부
 	 *
 	 */
-	public boolean onStart() {
-		if (AuctionServerSetting.AUCTION_AUTO_RISE_COUNT > 0) {
-			this.mState = GlobalDefineCode.AUCTION_STATUS_SLOWDOWN;
-
-			return true;
-		} else {
-			this.mState = GlobalDefineCode.AUCTION_STATUS_START;
-
-			return false;
-		}
-
+	public void onStart() {
+		this.mState = GlobalDefineCode.AUCTION_STATUS_START;
 	}
 
 	/**
@@ -474,16 +361,6 @@ public class AuctionState {
 	 */
 	public void onStop() {
 		this.mState = GlobalDefineCode.AUCTION_STATUS_STOP;
-	}
-
-	/**
-	 * 
-	 * @MethodName onSlowDown
-	 * @Description 경매 자동 상승 상태
-	 *
-	 */
-	public void onSlowDown() {
-		this.mState = GlobalDefineCode.AUCTION_STATUS_SLOWDOWN;
 	}
 
 	/**
@@ -578,116 +455,12 @@ public class AuctionState {
 
 	/**
 	 * 
-	 * @MethodName setRemainTime
-	 * @Description 경매 진행 남은 시간 설정 처리
-	 *
-	 * @param seconds
-	 */
-	public void setRemainTime(long seconds) {
-		this.mRemainMilliSeconds = seconds;
-	}
-
-	/**
-	 * 
-	 * @MethodName getRemainTime
-	 * @Description 경매 진행 남은 시간 반환 처리
-	 *
-	 * @return Long 경매 남은 시간(ms)
-	 */
-	public long getRemainTime() {
-		return mRemainMilliSeconds;
-	}
-
-	/**
-	 * 
-	 * @MethodName decreaseRemainTime
-	 * @Description 경매 남은 시간 감소 처리
-	 *
-	 */
-	public void decreaseRemainTime() {
-		if (mRemainMilliSeconds > 0) {
-			this.mRemainMilliSeconds = mRemainMilliSeconds - AuctionServerSetting.REMAIN_CHECK_DELAY_TIME;
-		}
-
-		// mLogger.debug("Auction resetRemainTime : " + this.mRemainMilliSeconds);
-	}
-
-	/**
-	 * 
-	 * @MethodName resetRemainTime
-	 * @Description 경매 남은 시간 Reset 처리
-	 *
-	 */
-	public void resetRemainTime() {
-		// 경매 진행 혹은 경쟁 상태에서 현재가격이 희망가 이상일 경우 낙/유찰 지연 시간으로 경매 진행 시간 변경 처리
-		if ((getAuctionState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)
-				|| getAuctionState().equals(GlobalDefineCode.AUCTION_STATUS_COMPETITIVE))
-				&& Integer.valueOf(getCurrentPrice()) > Integer.valueOf(getCurrentEntryInfo().getAuctionHopePrice())) {
-			this.mRemainMilliSeconds = AuctionServerSetting.AUCTION_DETERMINE_TIME
-					+ AuctionServerSetting.DEFAULT_CHECK_DELAY_TIME;
-		} else {
-			this.mRemainMilliSeconds = AuctionServerSetting.AUCTION_TIME
-					+ AuctionServerSetting.DEFAULT_CHECK_DELAY_TIME;
-		}
-
-		mLogger.debug("Auction resetRemainTime : " + this.mRemainMilliSeconds);
-	}
-
-	/**
-	 * 
-	 * @MethodName setBiddingRemainTime
-	 * @Description 경매 응찰 정보 수집 남은 시간 설정 처리
-	 *
-	 * @param seconds 남은 시간(ms)
-	 */
-	public void setBiddingRemainTime(long seconds) {
-		this.mBiddingRemainMilliSeconds = seconds;
-		mLogger.debug("Set BiddingRemainMilliSeconds : " + this.mBiddingRemainMilliSeconds);
-	}
-
-	/**
-	 * 
-	 * @MethodName getBiddingRemainTime
-	 * @Description 경매 응찰 정보 수집 남은 시간 반환 처리
-	 *
-	 * @return Long 남은 시간(ms)
-	 */
-	public long getBiddingRemainTime() {
-		return mBiddingRemainMilliSeconds;
-	}
-
-	/**
-	 * 
-	 * @MethodName decreaseBiddingRemainTime
-	 * @Description 경매 응찰 정보 수집 남은 시간 감소 처리
-	 *
-	 */
-	public void decreaseBiddingRemainTime() {
-		if (mBiddingRemainMilliSeconds > 0) {
-			this.mBiddingRemainMilliSeconds = mBiddingRemainMilliSeconds - AuctionServerSetting.REMAIN_CHECK_DELAY_TIME;
-		}
-		mLogger.debug("decreaseBiddingRemainTime : " + this.mBiddingRemainMilliSeconds);
-	}
-
-	/**
-	 * 
-	 * @MethodName resetBiddingRemainTime
-	 * @Description 경매 응찰 정보 수집 시간 Reset 처리
-	 *
-	 */
-	public void resetBiddingRemainTime() {
-		this.mBiddingRemainMilliSeconds = AuctionServerSetting.DEFAULT_CHECK_DELAY_TIME;
-		mLogger.debug("resetBiddingRemainTime : " + this.mBiddingRemainMilliSeconds);
-	}
-
-	/**
-	 * 
 	 * @MethodName getCurrentEntryInfo
 	 * @Description 현재 출품 정보 반환 처리
 	 *
-	 * @return AuctionEntryInformationResult 현재 출품 정보
+	 * @return EntryInfo 현재 출품 정보
 	 */
-	public AuctionEntryInformationResult getCurrentEntryInfo() {
+	public EntryInfo getCurrentEntryInfo() {
 		return mCurrentEntryInfo;
 	}
 
@@ -730,151 +503,17 @@ public class AuctionState {
 	 * @MethodName setCurrentEntryInfo
 	 * @Description 현재 출품 정보 설정 처리
 	 *
-	 * @param entryInfo   출품 정보
-	 * @param isLastEntry 마지막 출품 정보 여부
+	 * @param entryInfo 출품 정보
 	 */
-	public void setCurrentEntryInfo(AuctionEntryInformationResult entryInfo, boolean isLastEntry) {
+	public void setCurrentEntryInfo(EntryInfo entryInfo) {
 		this.mCurrentEntryInfo = entryInfo;
 
-		resetRemainTime();
-
-		// 출품 차량의 시작가 기준으로 상승 가격 설정 처리
-		if (Integer.valueOf(entryInfo.getAuctionStartPrice()) >= AuctionServerSetting.AUCTION_MAX_BASE_PRICE) {
-			AuctionServerSetting.AUCTION_CURRENT_RISING_PRICE = AuctionServerSetting.AUCTION_MAX_RISING_PRICE;
-		} else if (Integer.valueOf(entryInfo.getAuctionStartPrice()) >= AuctionServerSetting.AUCTION_BASE_PRICE) {
-			AuctionServerSetting.AUCTION_CURRENT_RISING_PRICE = AuctionServerSetting.AUCTION_MORE_RISING_PRICE;
-		} else {
-			AuctionServerSetting.AUCTION_CURRENT_RISING_PRICE = AuctionServerSetting.AUCTION_BELOW_RISING_PRICE;
-		}
-
-		this.mEntryNum = mCurrentEntryInfo.getAuctionEntryNum();
-		this.mEntrySeqNum = mCurrentEntryInfo.getAuctionEntrySeq();
-		this.mCurrentPrice = mCurrentEntryInfo.getAuctionStartPrice();
-		this.mNextPrice = String.valueOf((Integer.valueOf(mCurrentEntryInfo.getAuctionStartPrice())
-				+ AuctionServerSetting.AUCTION_CURRENT_RISING_PRICE));
-
+		this.mEntryNum = mCurrentEntryInfo.getEntryNum();
+		this.mStartPrice = mCurrentEntryInfo.getStartPrice();
 		this.mFinishEntryCount = String.valueOf(AuctionServerSetting.AUCTION_ENTRY_FINISH_COUNT + 1);
 		AuctionServerSetting.AUCTION_ENTRY_FINISH_COUNT = Integer.valueOf(mFinishEntryCount);
 		this.mRemainEntryCount = String.valueOf(AuctionServerSetting.AUCTION_ENTRY_TOTAL_COUNT
 				- Long.valueOf(AuctionServerSetting.AUCTION_ENTRY_FINISH_COUNT));
 		AuctionServerSetting.AUCTION_ENTRY_REMAIN_COUNT = Integer.valueOf(mRemainEntryCount);
-
-		if (isLastEntry) {
-			this.mNextEntryNum = null;
-			this.mNextEntrySeqNum = null;
-			this.mNextEntryPositionCode = null;
-			this.mNextEntryCarInfo = null;
-			this.mNextEntryTtsInfo = null;
-			this.mNextEntryImageInfo = null;
-			this.mNextEntryEvalImageInfo = null;
-
-			this.mCurrentEntryInfo.setNextEntryNum(mNextEntryNum);
-			this.mCurrentEntryInfo.setNextEntrySeqNum(mNextEntrySeqNum);
-			this.mCurrentEntryInfo.setNextEntryPositionCode(mNextEntryPositionCode);
-			this.mCurrentEntryInfo.setNextEntryCarName(mNextEntryCarInfo);
-			this.mCurrentEntryInfo.setNextEntryTtsInfo(mNextEntryTtsInfo);
-			this.mCurrentEntryInfo.setNextEntryImageInfo(mNextEntryImageInfo);
-			this.mCurrentEntryInfo.setNextEntryEvalImageInfo(mNextEntryEvalImageInfo);
-		} else {
-			this.mNextEntrySeqNum = String.valueOf(Integer.valueOf(mEntrySeqNum) + 1);
-			this.mNextEntrySeqNum = validEntrySeqNum(mNextEntrySeqNum);
-
-			if (mNextEntrySeqNum != null) {
-				this.mNextEntryPositionCode = mAuctioneer.getEntryCarInfo(mNextEntrySeqNum).getAuctionPositionCode();
-				this.mNextEntryNum = mAuctioneer.getEntryCarInfo(mNextEntrySeqNum).getAuctionEntryNum();
-				this.mNextEntryCarInfo = "[" + mAuctioneer.getEntryCarInfo(mNextEntrySeqNum).getVendorName() + "]"
-						+ mAuctioneer.getEntryCarInfo(mNextEntrySeqNum).getCarName();
-
-				this.mNextEntryTtsInfo = mAuctioneer.getEntryCarInfo(mNextEntrySeqNum).getTtsFilePath();
-
-				if (mAuctioneer.getEntryCarInfo(mNextEntrySeqNum).getCarImageList().size() > 0) {
-					this.mNextEntryImageInfo = mAuctioneer.getEntryCarInfo(mNextEntrySeqNum).getCarImageList().get(0)
-							.getImageFileName();
-				} else {
-					this.mNextEntryImageInfo = null;
-				}
-
-				this.mNextEntryEvalImageInfo = mAuctioneer.getEntryCarInfo(mNextEntrySeqNum).getCarEvalLayoutImage();
-
-				this.mCurrentEntryInfo.setNextEntryNum(mNextEntryNum);
-				this.mCurrentEntryInfo.setNextEntrySeqNum(mNextEntrySeqNum);
-				this.mCurrentEntryInfo.setNextEntryPositionCode(mNextEntryPositionCode);
-				this.mCurrentEntryInfo.setNextEntryCarName(mNextEntryCarInfo);
-				this.mCurrentEntryInfo.setNextEntryTtsInfo(mNextEntryTtsInfo);
-				this.mCurrentEntryInfo.setNextEntryImageInfo(mNextEntryImageInfo);
-				this.mCurrentEntryInfo.setNextEntryEvalImageInfo(mNextEntryEvalImageInfo);
-			}
-		}
-	}
-
-	public AuctionEntryInformationResult getResponseCarInfo(AuctionEntryInformationResult entryInfo) {
-		String selectSeqNum;
-
-		selectSeqNum = String.valueOf(Integer.valueOf(entryInfo.getAuctionEntrySeq()) + 1);
-		selectSeqNum = validEntrySeqNum(selectSeqNum);
-
-		if (selectSeqNum != null) {
-			entryInfo.setNextEntryPositionCode(mAuctioneer.getEntryCarInfo(selectSeqNum).getAuctionPositionCode());
-			entryInfo.setNextEntryNum(mAuctioneer.getEntryCarInfo(selectSeqNum).getAuctionEntryNum());
-			entryInfo.setNextEntryCarName("[" + mAuctioneer.getEntryCarInfo(selectSeqNum).getVendorName() + "]"
-					+ mAuctioneer.getEntryCarInfo(selectSeqNum).getCarName());
-			entryInfo.setNextEntryTtsInfo(mAuctioneer.getEntryCarInfo(selectSeqNum).getTtsFilePath());
-
-			if (mAuctioneer.getEntryCarInfo(selectSeqNum).getCarImageList().size() > 0) {
-				entryInfo.setNextEntryImageInfo(
-						mAuctioneer.getEntryCarInfo(selectSeqNum).getCarImageList().get(0).getImageFileName());
-			} else {
-				entryInfo.setNextEntryImageInfo(null);
-			}
-
-			entryInfo.setNextEntryEvalImageInfo(mAuctioneer.getEntryCarInfo(selectSeqNum).getCarEvalLayoutImage());
-			entryInfo.setNextEntrySeqNum(selectSeqNum);
-		}
-
-		return entryInfo;
-	}
-
-	/**
-	 * 
-	 * @MethodName validEntryNum
-	 * @Description 출품 번호가 유효한지 확인
-	 *
-	 * @param entryNum
-	 * @return entryNum 유효한 출품 번호 반환
-	 */
-	private String validEntryNum(String entryNum) {
-		int remainEntryCount = Integer.valueOf(mRemainEntryCount);
-
-		for (int i = 0; i < remainEntryCount; i++) {
-			if (mAuctioneer.getEntryCarInfo(entryNum) != null) {
-				return entryNum;
-			} else {
-				entryNum = String.valueOf(Integer.valueOf(entryNum) + 1);
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * 
-	 * @MethodName validEntrySeqNum
-	 * @Description 출품 순번이 유효한지 확인
-	 *
-	 * @param entrySeqNum
-	 * @return entrySeqNum 유효한 출품 순번 반환
-	 */
-	private String validEntrySeqNum(String entrySeqNum) {
-		int remainEntryCount = Integer.valueOf(mRemainEntryCount);
-
-		for (int i = 0; i < remainEntryCount; i++) {
-			if (mAuctioneer.getEntryCarInfo(entrySeqNum) != null) {
-				return entrySeqNum;
-			} else {
-				entrySeqNum = String.valueOf(Integer.valueOf(entrySeqNum) + 1);
-			}
-		}
-
-		return null;
 	}
 }

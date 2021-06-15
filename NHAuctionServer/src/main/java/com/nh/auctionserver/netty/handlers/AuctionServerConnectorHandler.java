@@ -10,12 +10,10 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.ConnectionInfo;
-import com.nh.share.server.models.AbsenteeUserInfo;
+import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
-import com.nh.share.server.models.CurrentSetting;
 import com.nh.share.server.models.FavoriteEntryInfo;
-import com.nh.share.server.models.ResponseConnectionInfo;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -85,27 +83,13 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 							mAuctionScheduler.getAuctionCountDownTime()).getEncodedMessage() + "\r\n");
 				}
 
-				// 관심 차량 정보 필요 대상 추출 및 관련 정보 전송 처리
-				if (mAuctionScheduler.containFavoriteCarInfoMap(mAuctionScheduler.getAuctionState().getEntryNum(),
-						connectorInfo.getUserNo())) {
-					ctx.writeAndFlush(new FavoriteEntryInfo(mAuctionScheduler.getAuctionState().getEntryNum(), "Y")
-							.getEncodedMessage() + "\r\n");
-				}
+//				// 관심 차량 정보 필요 대상 추출 및 관련 정보 전송 처리
+//				if (mAuctionScheduler.containFavoriteCarInfoMap(mAuctionScheduler.getAuctionState().getEntryNum(),
+//						connectorInfo.getUserNo())) {
+//					ctx.writeAndFlush(new FavoriteEntryInfo(mAuctionScheduler.getAuctionState().getEntryNum(), "Y")
+//							.getEncodedMessage() + "\r\n");
+//				}
 
-				// 부재자 입찰 참여 여부 관련 정보 확인 및 전송 처리
-				AbsenteeUserInfo absenteeUserInfo = mAuctionScheduler.containBidAbsenteeUserInfo(
-						mAuctionScheduler.getAuctionState().getEntryNum(), connectorInfo.getUserNo());
-
-				if (absenteeUserInfo != null) {
-					ctx.writeAndFlush(absenteeUserInfo.getEncodedMessage() + "\r\n");
-				}
-
-				ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState().getCurrentEntryInfo()
-						.toResponseCarInfo().getEncodedMessage() + "\r\n");
-
-				// 정상 접속자 초기 경매 상태 정보 전달 처리
-				ctx.channel().writeAndFlush(
-						mAuctionScheduler.getAuctionState().getAuctionStatus().getEncodedMessage() + "\r\n");
 			} else if (connectorInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
 				mLogger.info("Controller Channel Count : " + mControllerChannels.size());
 
@@ -151,32 +135,6 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					} else {
 						auctionStartStatus = "N";
 					}
-
-					if (AuctionServerSetting.AUCTION_AUTO_MODE) {
-						auctionAutoMode = "Y";
-					} else {
-						auctionAutoMode = "N";
-					}
-
-					// 경매 설정 정보 전달
-					ctx.channel()
-							.writeAndFlush(new CurrentSetting(String.valueOf(AuctionServerSetting.AUCTION_BASE_PRICE),
-									String.valueOf(AuctionServerSetting.AUCTION_MORE_RISING_PRICE),
-									String.valueOf(AuctionServerSetting.AUCTION_BELOW_RISING_PRICE),
-									String.valueOf(AuctionServerSetting.AUCTION_MAX_RISING_PRICE),
-									String.valueOf(AuctionServerSetting.AUCTION_TIME),
-									String.valueOf(AuctionServerSetting.AUCTION_DETERMINE_TIME),
-									String.valueOf(AuctionServerSetting.AUCTION_NEXT_DELAY_TIME),
-									String.valueOf(AuctionServerSetting.AUCTION_AUTO_RISE_COUNT), auctionStartStatus,
-									auctionAutoMode).getEncodedMessage() + "\r\n");
-
-					// 정상 접속자 초기 경매 출품 정보 1건 전달 처리
-					ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState().getCurrentEntryInfo()
-							.toResponseCarInfo().getEncodedMessage() + "\r\n");
-
-					// 정상 접속자 초기 경매 상태 정보 전달 처리
-					ctx.channel().writeAndFlush(
-							mAuctionScheduler.getAuctionState().getAuctionStatus().getEncodedMessage() + "\r\n");
 				}
 			} else if (connectorInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
 				// 접속 처리 결과 응답 처리
@@ -200,12 +158,6 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 							mAuctionScheduler.getAuctionCountDownTime()).getEncodedMessage() + "\r\n");
 				}
 
-				ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState().getCurrentEntryInfo()
-						.toResponseCarInfo().getEncodedMessage() + "\r\n");
-
-				// 정상 접속자 초기 경매 상태 정보 전달 처리
-				ctx.channel().writeAndFlush(
-						mAuctionScheduler.getAuctionState().getAuctionStatus().getEncodedMessage() + "\r\n");
 			} else if (connectorInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_RESULT_MONITOR)) {
 				// 접속 처리 결과 응답 처리
 				ctx.channel().writeAndFlush(
@@ -221,12 +173,6 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					mAuctionResultMonitorChannels.add(ctx.channel());
 				}
 
-				ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState().getCurrentEntryInfo()
-						.toResponseCarInfo().getEncodedMessage() + "\r\n");
-
-				// 정상 접속자 초기 경매 상태 정보 전달 처리
-				ctx.channel().writeAndFlush(
-						mAuctionScheduler.getAuctionState().getAuctionStatus().getEncodedMessage() + "\r\n");
 			} else if (connectorInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR)) {
 				// 접속 처리 결과 응답 처리
 				ctx.channel().writeAndFlush(
@@ -287,8 +233,8 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 							mAuctionScheduler.getAuctionCountDownTime()).getEncodedMessage() + "\r\n");
 				}
 
-				ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState().getCurrentEntryInfo()
-						.toResponseCarInfo().getEncodedMessage() + "\r\n");
+				// 현재 출품 정보 전송
+				ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState().getCurrentEntryInfo().getEncodedMessage() + "\r\n");
 
 				// 정상 접속자 초기 경매 상태 정보 전달 처리
 				ctx.channel().writeAndFlush(
@@ -308,8 +254,8 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					mAuctionResultMonitorChannels.add(ctx.channel());
 				}
 
-				ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState().getCurrentEntryInfo()
-						.toResponseCarInfo().getEncodedMessage() + "\r\n");
+				// 현재 출품 정보 전송
+				ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState().getCurrentEntryInfo().getEncodedMessage() + "\r\n");
 
 				// 정상 접속자 초기 경매 상태 정보 전달 처리
 				ctx.channel().writeAndFlush(

@@ -5,8 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.nh.share.bidder.BidderMessageParser;
-import com.nh.share.bidder.interfaces.FromAuctionBidder;
 import com.nh.share.common.CommonMessageParser;
 import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.controller.ControllerMessageParser;
@@ -33,10 +31,6 @@ public final class AuctionServerInboundDecoder extends MessageToMessageDecoder<S
         case FromAuctionCommon.ORIGIN:
             FromAuctionCommon commonParsedMessage = CommonMessageParser.parse(message);
             out.add(commonParsedMessage);
-            break;
-        case FromAuctionBidder.ORIGIN:
-            FromAuctionBidder bidderParsedMessage = BidderMessageParser.parse(message);
-            out.add(bidderParsedMessage);
             break;
         case FromAuctionController.ORIGIN:
             FromAuctionController controllerParsedMessage = ControllerMessageParser.parse(message);
