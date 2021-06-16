@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.auction.controller.SampleController">
+   <children>
+      <SplitPane dividerPositions="0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      	<items>
+      		<ListView fx:id="logListView" styleClass="sub-view" />
+      		<AnchorPane maxWidth="300.0" minWidth="300.0" styleClass="sub-view">
+      			<children>
+      				<VBox alignment="CENTER" maxWidth="300.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      					<children>
+      						<GridPane>
+      							<VBox.margin>
+      								<Insets />
+      							</VBox.margin>
+      							<columnConstraints>
+      								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+      								<ColumnConstraints halignment="RIGHT" />
+      							</columnConstraints>
+      							<rowConstraints>
+      								<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+      							</rowConstraints>
+      							<children>
+      								<Button fx:id="btnSendEntryInfo" contentDisplay="RIGHT" graphicTextGap="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="46.0" text="전송" GridPane.columnSpan="2">
+      									<opaqueInsets>
+      										<Insets />
+      									</opaqueInsets>
+      								</Button>
+      								<ImageView fx:id="imgSendData" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+      									<image>
+      										<Image url="@../../../../resources/images/ic_send.png" />
+      									</image>
+      									<GridPane.margin>
+      										<Insets right="11.0" />
+      									</GridPane.margin>
+      								</ImageView>
+      							</children>
+      						</GridPane>
+      						<GridPane>
+      							<columnConstraints>
+      								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+      								<ColumnConstraints halignment="RIGHT" />
+      							</columnConstraints>
+      							<rowConstraints>
+      								<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+      							</rowConstraints>
+      							<children>
+      								<Button fx:id="btnStart" contentDisplay="RIGHT" graphicTextGap="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="46.0" text="시작" GridPane.columnSpan="2">
+								
+								</Button>
+      								<ImageView fx:id="imgStart" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+      									<image>
+      										<Image url="@../../../../resources/images/ic_play.png" />
+      									</image>
+      									<GridPane.margin>
+      										<Insets right="11.0" />
+      									</GridPane.margin>
+      								</ImageView>
+      							</children>
+      						</GridPane>
+      						<GridPane>
+      							<columnConstraints>
+      								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+      								<ColumnConstraints halignment="RIGHT" />
+      							</columnConstraints>
+      							<rowConstraints>
+      								<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+      							</rowConstraints>
+      							<children>
+      								<Button fx:id="btnStop" contentDisplay="RIGHT" graphicTextGap="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="46.0" text="종료" GridPane.columnSpan="2">
+      									<opaqueInsets>
+      										<Insets />
+      									</opaqueInsets>
+      								</Button>
+      								<ImageView fx:id="imgStop" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+      									<image>
+      										<Image url="@../../../../resources/images/ic_check.png" />
+      									</image>
+      									<GridPane.margin>
+      										<Insets right="11.0" />
+      									</GridPane.margin>
+      								</ImageView>
+      							</children>
+      						</GridPane>
+      						<GridPane>
+      							<columnConstraints>
+      								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+      								<ColumnConstraints halignment="RIGHT" />
+      							</columnConstraints>
+      							<rowConstraints>
+      								<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+      							</rowConstraints>
+      							<children>
+      								<Button fx:id="btnPass" contentDisplay="RIGHT" graphicTextGap="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="46.0" text="강제유찰" GridPane.columnSpan="2">
+      									<opaqueInsets>
+      										<Insets />
+      									</opaqueInsets>
+      								</Button>
+      								<ImageView fx:id="imgPass" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+      									<image>
+      										<Image url="@../../../../resources/images/ic_close.png" />
+      									</image>
+      									<GridPane.margin>
+      										<Insets right="11.0" />
+      									</GridPane.margin>
+      								</ImageView>
+      							</children>
+      						</GridPane>
+      						<HBox alignment="CENTER" maxHeight="90.0" prefHeight="90.0" spacing="3.0">
+      							<children>
+      								<Label fx:id="cnt_5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="count-bar" HBox.hgrow="ALWAYS" />
+      								<Label fx:id="cnt_4" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="count-bar" HBox.hgrow="ALWAYS" />
+      								<Label fx:id="cnt_3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="count-bar" HBox.hgrow="ALWAYS" />
+      								<Label fx:id="cnt_2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="count-bar" HBox.hgrow="ALWAYS" />
+      								<Label fx:id="cnt_1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="count-bar" HBox.hgrow="ALWAYS" />
+      							</children>
+      						</HBox>
+      					</children>
+      					<opaqueInsets>
+      						<Insets />
+      					</opaqueInsets>
+      					<padding>
+      						<Insets left="30.0" right="30.0" />
+      					</padding>
+      				</VBox>
+                  <GridPane layoutX="-4.099999904632568" layoutY="398.8999938964844" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+            				<Button fx:id="btnSendMessage" graphicTextGap="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="36.0" text="메세지 전송" GridPane.columnSpan="2">
+            					<opaqueInsets>
+            						<Insets />
+            					</opaqueInsets>
+                           <graphic>
+                              <ImageView fx:id="imgStart1" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../resources/images/ic_msg_s.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+            				</Button>
+                     </children>
+                  </GridPane>
+      			</children>
+      		</AnchorPane>
+      	</items>
+      	<styleClass>
+      		<String fx:value="base-pane" />
+      		<String fx:value="split-pane-divider" />
+      	</styleClass>
+      	<padding>
+      		<Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+      	</padding>
+      </SplitPane>
+      <Label fx:id="sendMsgComplete" alignment="CENTER" maxWidth="130.0" opacity="0.77" prefHeight="30.0" styleClass="toast-message" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+   </children>
+</AnchorPane>
