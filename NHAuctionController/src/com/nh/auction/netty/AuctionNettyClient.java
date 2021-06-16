@@ -1,6 +1,5 @@
 package com.nh.auction.netty;
 
-
 import com.nh.auction.interfaces.NettyControllable;
 import com.nh.auction.interfaces.NettySendable;
 import com.nh.auction.netty.handlers.AuctionClientDecodedHandler;
@@ -21,6 +20,8 @@ import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 
 public class AuctionNettyClient {
 
@@ -37,27 +38,29 @@ public class AuctionNettyClient {
 
 	private void createNettyClient(String host, int port, NettyControllable controller) {
 
-		
 		group = new NioEventLoopGroup();
 
 		try {
 
 			Bootstrap b = new Bootstrap();
-			
-			b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000).handler(new ChannelInitializer<SocketChannel>() {
-				@Override
-				public void initChannel(SocketChannel ch) throws Exception {
 
-					ChannelPipeline pipeline = ch.pipeline();
-					pipeline.addLast(new AuctionClientInboundDecoder(controller));
-					pipeline.addLast(new DelimiterBasedFrameDecoder(NETTY_INFO.NETTY_MAX_FRAME_LENGTH, Delimiters.lineDelimiter()));
-					pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
-					pipeline.addLast(new AuctionClientInboundDecoder(controller));
-					pipeline.addLast(new AuctionClientDecodedHandler(controller));
-					pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
+			b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true)
+					.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+					.handler(new ChannelInitializer<SocketChannel>() {
+						@Override
+						public void initChannel(SocketChannel ch) throws Exception {
 
-				}
-			});
+							ChannelPipeline pipeline = ch.pipeline();
+							pipeline.addLast(new AuctionClientInboundDecoder(controller));
+							pipeline.addLast(new DelimiterBasedFrameDecoder(NETTY_INFO.NETTY_MAX_FRAME_LENGTH,
+									Delimiters.lineDelimiter()));
+							pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
+							pipeline.addLast(new AuctionClientInboundDecoder(controller));
+							pipeline.addLast(new AuctionClientDecodedHandler(controller));
+							pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
+
+						}
+					});
 
 			channel = b.connect(host, port).sync().channel();
 

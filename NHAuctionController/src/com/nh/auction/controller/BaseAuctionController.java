@@ -9,7 +9,7 @@ import com.nh.auction.models.Bidding;
 import com.nh.auction.models.ConnectionInfo;
 import com.nh.auction.models.ExceptionCode;
 import com.nh.auction.models.ToastMessage;
-import com.nh.auction.netty.AuctionNettyClient;
+import com.nh.auction.netty.AuctionDelegate;
 import com.nh.auction.utils.GlobalDefine.NETTY_INFO;
 
 import io.netty.channel.Channel;
@@ -20,14 +20,11 @@ public class BaseAuctionController implements NettyControllable {
 
 	protected Stage mStage; // 현재 Stage
 
-	protected AuctionNettyClient mClient; // 네티 접속 객체
-
 	/**
 	 * 소켓 서버 접속
 	 */
 	protected void createClient() {
-		mClient = new AuctionNettyClient.Builder(NETTY_INFO.AUCTION_HOST, NETTY_INFO.AUCTION_PORT).setController(this)
-				.buildAndRun();
+		AuctionDelegate.getInstance().createClients(NETTY_INFO.AUCTION_HOST, NETTY_INFO.AUCTION_PORT,this);
 	}
 
 	@Override

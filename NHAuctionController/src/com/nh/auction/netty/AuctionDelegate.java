@@ -6,6 +6,8 @@ public class AuctionDelegate {
 
 	private static AuctionDelegate instance = null;
 
+	private AuctionNettyClient mClient; // 네티 접속 객체
+
 	public static synchronized AuctionDelegate getInstance() {
 
 		if (instance == null) {
@@ -16,16 +18,22 @@ public class AuctionDelegate {
 	}
 
 	/**
-	 * 서버 접속
+	 * @Description 서버 접속
 	 * @param host_
 	 * @param port_
 	 * @param controllable
 	 */
-	private void createClients(String host_, int port_, NettyControllable controllable) {
+	public void createClients(String host_, int port_, NettyControllable controllable) {
 
-		AuctionNettyClient client = new AuctionNettyClient.Builder(host_, port_)
-				.setController(controllable)
-				.buildAndRun();
+		mClient = new AuctionNettyClient.Builder(host_, port_).setController(controllable).buildAndRun();
 
 	}
+
+	/**
+	 * @Description 네티 접속 해제
+	 */
+	public void disconnect() {
+		mClient.stopClient();
+	}
+
 }
