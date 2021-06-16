@@ -1,0 +1,106 @@
+@font-face {
+    src: url('../css/fonts/NanumBarunGothicBold.woff');
+}
+
+.date-chooser {
+    -fx-skin: "com.glovis.auction.calendar.CalendarChooserSkin";
+    -fx-background-color:  #0b2a4f;
+    -fx-alignment: center ;
+    -fx-padding: -10 -10 -10 -10;
+}
+
+/*타이틀 년도/월 */
+.title-hox { 
+	-fx-font-family: "NanumBarunGothic";
+    -fx-background-color: transparent  ;
+    -fx-font-size: 17px ;
+}
+
+.title-hox > .label { 
+    -fx-background-color: transparent ;
+    -fx-text-fill: white ;
+    -fx-font-size: 22px ;
+}
+
+.title-hox > .button { 
+    -fx-background-color: transparent ;
+}
+
+/*일월화수목금토 */
+.weekday-cell { 
+    -fx-background-color: transparent ;
+}
+.weekday-cell > *{ 
+	-fx-text-fill: white;
+	-fx-font-size: 16px ;
+}
+
+.calendar-cell { 
+    -fx-background-color: transparent;
+	-fx-alignment: center ;
+}
+.calendar-cell .label{ 
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 14px ;
+	-fx-alignment: center ;
+	-fx-font-family: "NanumBarunGothic";
+}
+
+.calendar-cell .label:hover { 
+    -fx-background-color: white  ; 
+    -fx-background-radius: 100px;
+   	-fx-background-insets: 3 2 3 2 ;
+	-fx-max-height: 50px;
+	-fx-max-width: 50px;
+	-fx-alignment: center ;
+	-fx-text-fill: black ;   
+	-fx-font-family: "NanumBarunGothic";
+}
+/* 일자 선택 */
+
+.calendar-cell-selected .label{ 
+ 	-fx-background-radius: 100px;
+   	-fx-background-insets: 3 2 3 2 ;
+   	-fx-max-height: 50px;
+	-fx-max-width: 50px;
+	-fx-alignment: center   ;
+    -fx-background-color: #ffffff; 
+    -fx-text-fill: #000000 ;
+}
+
+.calendar-cell-today .label { 
+	-fx-border-color:  #44c7f7;
+    -fx-background-color: #44c7f7;  
+	 -fx-background-radius: 100px;
+   	-fx-background-insets: 3 2 3 2 ;
+   	-fx-max-height: 50px;
+	-fx-max-width: 50px;
+	-fx-alignment: center;
+	-fx-text-fill: #ffffff ;
+	-fx-border-width: 0;
+}
+
+/*이전달,다음달 요일 */
+.calendar-cell-inactive { 
+    -fx-background-color: transparent ;
+}
+.calendar-cell-inactive .label{ 
+    -fx-text-fill: #717dd9 ;
+    -fx-font-size: 14px ;
+}
+/*경매 일 */
+.calendar-cell-auction-day { 
+	 -fx-background-color: transparent;
+	-fx-alignment: center ;
+}
+.calendar-cell-auction-day .label{ 
+	-fx-border-color:  #e76683;
+	-fx-background-color: #e76683;  
+	-fx-background-insets: 3 2 3 2 ;
+	-fx-background-radius: 100px;
+   	-fx-max-height: 50px;
+	-fx-max-width: 50px;
+	-fx-alignment: center;
+	-fx-text-fill: #ffffff ;
+	-fx-border-width: 0;
+}

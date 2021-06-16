@@ -1,0 +1,622 @@
+@font-face {
+    src: url('../css/fonts/NanumBarunGothicBold.woff');
+}
+@font-face {
+    src: url('../css/fonts/Roboto-Bold.ttf');
+}
+
+
+.root-main-pane :disabled{
+		-fx-opacity: 1;
+}
+
+.auction-simulation-title {
+	-fx-text-fill: red;
+	-fx-font-size: 40px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-border-color: red;
+	-fx-alignment: center;
+	-fx-border-insets: 20 20 20 20;
+	-fx-border-width: 2px;
+	-fx-padding: 0 0 0 0;
+}
+
+.auction-header-position-name{
+	-fx-text-fill: #092b4b;
+	-fx-font-size: 40px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-padding: -50 -50 -50 0;
+}
+.auction-title-user-profile-border{
+	-fx-image:  url("../resources/images/bg_user_border.png");
+	-fx-background-repeat: no-repeat ;
+}
+.auction-title-user-profile{
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+-fx-padding: 10;
+-fx-background-color: firebrick;
+-fx-background-radius: 55;
+}
+.auction-title-user-text{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 16px;
+	-fx-text-fill: #092b4b;
+}
+.auction-title-user-text-sub{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 16px;
+	-fx-text-fill: #092b4b;
+}
+.auction-title-user-number{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 14px;
+	-fx-text-fill: #092b4b;
+	-fx-padding: -6 0 0 0;
+}
+.auction-title-menu-btn{
+	-fx-border-width: 1 1 1 1;
+    -fx-border-color: #b0b0b0;
+    -fx-border-style: solid ;
+	-fx-background-color:  #f9f9f9;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 16px;
+	-fx-text-fill: #092b4b;
+}
+.auction-title-menu-btn:hover{
+	-fx-background-color:  #ffffff;
+}
+ .auction-title-menu-btn:pressed {
+	 -fx-background-color: #f9f9f9;
+    -fx-scale-y: 0.95;
+    -fx-scale-x: 0.95;
+}
+
+.auction-empty-content{
+	-fx-background-color:  #081c38;
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 25px;
+	-fx-font-family: "NanumBarunGothic";
+}
+
+.auction-status-content{
+	-fx-background-color: #1c3262;
+}
+.auction-status-content-entry-number{
+	-fx-background-image: url("../resources/images/bg_auction_entry_number.png") ;
+	-fx-background-size: 100% 100%;
+	-fx-font-family: "NanumBarunGothic";
+}
+.auction-status-content-entry-number-text{
+	-fx-font-family: "Roboto";
+	-fx-font-size: 110px;
+	-fx-padding: -100;
+}
+.auction-status-content-status{
+	-fx-background-image: url("../resources/images/bg_auction_status_ing.png") ;
+	-fx-background-size: 100% 100%;
+}
+.auction-status-content-status-text{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 45px;
+	-fx-padding: -100;
+}
+
+.auction-status-content-lane-text{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 55px;
+	-fx-padding: -50 0 -50 0;
+}
+
+.auction-status-content-count-default{
+	-fx-image:  url("../resources/images/icon_auction_count_0.png");
+}
+.auction-status-content-count-1{
+	-fx-image:  url("../resources/images/icon_auction_count_1.png");
+}
+.auction-status-content-count-2{
+	-fx-image:  url("../resources/images/icon_auction_count_2.png");
+}
+.auction-status-content-count-3{
+	-fx-image:  url("../resources/images/icon_auction_count_3.png");
+}
+
+.auction-status-content-top-default{
+	-fx-image:  url("../resources/images/icon_auc_top_off.png");
+}
+.auction-status-content-top-on{
+	-fx-image:  url("../resources/images/icon_auc_top_on.gif");
+	-fx-opacity: 1;
+}
+
+.auction-status-content-price{
+	-fx-background-image: url("../resources/images/bg_auction_price.png") ;
+	-fx-background-size: 100% 100%;
+}
+.auction-status-content-price-text{
+	-fx-font-family: "Roboto";
+	-fx-font-size: 110px;
+	-fx-padding: -100;
+}
+.auction-status-content-price-bg{
+	-fx-background-image: url("../resources/images/icon_bg_price.png") ;
+	-fx-background-size: 100% 100%;
+}
+.auction-status-content-price-comma{
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 50px;
+	-fx-padding: 0 0 -15 0;
+}
+.auction-status-content-price-unit{
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 15px;
+	-fx-font-family: "NanumBarunGothic";
+}
+
+.auction-house-bid-button{
+	-fx-background-image: url("../resources/images/img_bid.png") ;
+	-fx-background-size: 100% 100%;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 50px;
+	-fx-padding: -50 -50 -50 -50;
+}
+.auction-house-bid-button .text{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 2em;
+}
+
+.auction-bid-button{
+	-fx-background-image: url("../resources/images/img_bid.png") ;
+	-fx-background-size: 100% 100%;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 50px;
+	-fx-padding: -50 -50 -50 -50;
+}
+
+.auction-watch-button{
+	-fx-border-width: 1 1 1 1;
+    -fx-border-color: #3712a7;
+    -fx-border-style: solid ;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-background-color: #3712a7;
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 54px;
+	-fx-padding: -50 -50 -50 -50;
+}
+
+.auction-bid-button .text{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 2em;
+}
+.auction-watch-button .text{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 2em;
+}
+
+.auction-bid-button:hover{
+	  -fx-background-color: #249ced;
+}
+.auction-bid-button:pressed{
+	-fx-background-color: #356499;
+    -fx-scale-y: 0.95;
+    -fx-scale-x: 0.95;
+}
+.auction-car-info-name-bg{
+	-fx-background-color: #243967;
+}
+
+.auction-car-info-name-text{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 40px;
+	-fx-text-fill: #ffffff;
+	-fx-background-color: #243967;
+	-fx-padding: -10 0 -10 -10;
+}
+
+.auction-car-info-detail{
+	-fx-background-color: #f6f6f6;
+	
+}
+.auction-car-info-detail-main{
+	-fx-background-color: #f6f6f6;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 32px;
+	-fx-text-fill: #072448;
+	-fx-padding: -10 -10 -10 -10;
+}
+.auction-car-info-detail-sub{
+	-fx-background-color: #f6f6f6;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 30px;
+	-fx-text-fill: #072448;
+	-fx-padding: 0 0 0 0;
+}
+
+.auction-car-info-eval{
+	-fx-background-color: #1c3262;
+}
+.auction-car-info-eval-main{
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 50px;
+	-fx-padding: 0;
+}
+.auction-car-info-eval-sub{
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-font-size: 50px;
+	-fx-padding: 0;
+}
+.auction-next-car{
+	-fx-background-color: #072348;
+}
+.auction-next-car-title{
+	-fx-font-size: 30px;
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-padding: -10 0 -10 0;
+}
+.auction-next-car-icon{
+	-fx-image:  url("../resources/images/icon_next_car.png");
+}
+.auction-next-car-entry-number{
+	-fx-font-size: 30px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #ffffff;
+	-fx-padding: -10 0 -10 0;
+}
+.auction-next-car-name{
+	-fx-font-size: 19px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #ffffff;
+	-fx-padding: -10 0 -10 0;
+}
+
+.auction-bg-img-count{
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 50px;
+    -fx-border-radius: 50px;
+    -fx-border-width: 5px;
+    -fx-border-color: #ffffff;
+}
+
+.auction-car-change-bg{
+	-fx-background-color: #0c2952;
+}
+.auction-car-change-column-1{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 16px;
+	-fx-padding: -10 -10 -10 -10;
+	-fx-background-color: #434141;
+}
+.auction-car-change-column-2{
+	-fx-background-color: #0c2952;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 16px;
+	-fx-padding: 0 10 0 10;
+}
+
+.auction-change-lane-empty{
+	-fx-border-color:   #828181;
+    -fx-border-width: 1 1 1 1;
+	-fx-background-color:  #111b28;
+	-fx-font-size: 28px;
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "NanumBarunGothic";
+}
+.auction-lane-change-title{
+	-fx-background-color: #0c2952;
+	-fx-font-size: 36px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #ffffff;
+}
+
+.auction-lane-change-a-default{
+	-fx-image:  url("../resources/images/icon_lane_a_off.png");
+}
+.auction-lane-change-b-default{
+	-fx-image:  url("../resources/images/icon_lane_b_off.png");
+}
+.auction-lane-change-c-default{
+	-fx-image:  url("../resources/images/icon_lane_c_off.png");
+}
+.auction-lane-change-d-default{
+	-fx-image:  url("../resources/images/icon_lane_d_off.png");
+}
+
+.auction-lane-change-a-active{
+	-fx-image:  url("../resources/images/icon_lane_a_on.png");
+}
+.auction-lane-change-b-active{
+	-fx-image:  url("../resources/images/icon_lane_b_on.png");
+}
+.auction-lane-change-c-active{
+	-fx-image:  url("../resources/images/icon_lane_c_on.png");
+}
+.auction-lane-change-d-active{
+	-fx-image:  url("../resources/images/icon_lane_d_on.png");
+}
+
+.auction-lane-change{
+	-fx-background-color: #4f4f4f;
+}
+
+.auction-lane-change-name{
+	-fx-font-size: 26px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #ffffff;
+	-fx-padding: -30 0 -30 0 ;
+}
+
+.auction-lane-change-entry-number{
+	-fx-font-size: 24px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #ffffff;
+	-fx-background-color:  #434141;
+	-fx-padding: -30 -30 -30 -30;
+}
+.auction-change-lane-active{
+	-fx-background-color:  #249ced;
+	   -fx-border-color:    #111b28;
+   -fx-border-width: 1 1 1 1;
+}
+.auction-change-lane-inactive{
+	-fx-background-color:  #3a556f;
+	   -fx-border-color:    #111b28;
+      -fx-border-width: 1 1 1 1;
+}
+.auction-change-lane-active:disabled{
+ 	-fx-background-color: linear-gradient(to bottom, #249ced 55%, #3a556f 45%);
+	-fx-border-color:    #111b28;
+    -fx-border-width: 1 1 1 1;
+    
+}
+.auction-change-lane-active .label:disabled{
+	-fx-opacity: 1;
+	-fx-text-fill:  #ffffff  ;
+}
+.auction-change-lane-inactive:hover{
+   -fx-border-color:   #f6f6f6;
+   -fx-border-width: 1 1 1 1;
+}
+
+.auction-change-lane-inactive:pressed{
+   -fx-border-color:  #f6f6f6;
+     -fx-border-width: 1 1 1 1;
+     -fx-scale-y: 0.95;
+    -fx-scale-x: 0.95;
+}
+
+.auction-change-lane-entry-number-inactive{
+	-fx-background-color:  #434141;
+}
+.auction-lane-change-line{
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: #303030;
+    -fx-border-style: solid ;
+}
+
+.auction-center-position-bundang{
+	-fx-image:  url("../resources/images/icon_center_bundang.png");
+	visibility: visible ;
+}
+.auction-center-position-sihwa{
+	-fx-image:  url("../resources/images/icon_center_sihwa.png");
+	visibility: visible ;
+}
+.auction-center-position-yangsan{
+	-fx-image:  url("../resources/images/icon_center_yangsan.png");
+	visibility: visible ;
+}
+.auction-bg-completed-text{
+	-fx-background-image: url("../resources/images/bg_auction_completed.png");
+	-fx-background-repeat: no-repeat ;
+	-fx-background-size: 100% 100%;
+	-fx-font-size: 30px;
+	-fx-font-family: "NanumBarunGothic";
+}
+
+.auction-icon-message{
+	-fx-image:  url("../resources/images/icon_toast_message.png");
+}
+
+.auction-message{
+	-fx-hgap: 20px;
+    -fx-padding: 30 100 30 100;
+    -fx-background-color: #c9e1f8;
+    -fx-background-radius: 20 20 0 0;
+    -fx-border-radius: 50px;
+    -fx-border-width: 1 0 1 0;
+    -fx-font-family: "NanumBarunGothic";
+    -fx-border-color: #c9e1f8;
+	-fx-font-size: 17px;
+}
+
+.auction-bg-completed-text .text{
+	-fx-fill: #ff0000;
+    -fx-stroke: white;
+    -fx-stroke-borders: yellow;
+    -fx-stroke-width: 1px;
+}
+
+.auction-competitive-gif{
+	-fx-background-image: url("../resources/images/bg_auction_competitive.gif");
+	-fx-background-size: 100% 100%;
+}
+
+.border-line-position-all {
+    -fx-border-width: 1 1 1 1;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+.border-line-position-left {
+    -fx-border-width: 0 0 0 1;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+.border-line-position-right-bottom-left  {
+    -fx-border-width: 0 1 1 1;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-bottom-left {
+    -fx-border-width: 1 0 1 1;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-right-left {
+    -fx-border-width: 1 1 0 1;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-bottom {
+    -fx-border-width: 1 0 1 0;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-right-bottom {
+    -fx-border-width: 1 1 1 0;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-right-bottom-left {
+    -fx-border-width: 1 0 1 1;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+.border-line-position-right-bottom {
+    -fx-border-width: 0 1 1 0;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+.border-line-position-top {
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+.border-line-position-bottom {
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+
+.border-line-position-right-bottom-left {
+    -fx-border-width: 0 1 1 1;
+    -fx-border-color: #63758b;
+    -fx-border-style: solid ;
+}
+
+.tutorial-auction-img-count-text-bg{
+	-fx-background-color: #ffffff;
+    -fx-background-radius: 50px;
+    -fx-border-radius: 50px;
+    -fx-border-width: 5px;
+    -fx-border-color: #ffffff;
+}
+.tutorial-auction-img-count-text-bg > .label{
+	-fx-font-size: 16px;
+	-fx-font-family: "NanumBarunGothic"
+}
+.tutorial-auction-text > .label{
+	-fx-font-size: 22px;
+	-fx-font-family: "NanumBarunGothic"
+}
+
+.tutorial-auction-close{
+	-fx-background-color: #ffffff;
+	-fx-font-size: 22px;
+	-fx-text-fill: #3f64c3;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-padding: 10px 35px 10px 35px;
+    -fx-border-width: 2px;
+    -fx-border-color: #3f64c3;
+}
+
+.tutorial-auction-close:hover {
+    -fx-background-color: #3f64c3;
+    -fx-text-fill: #ffffff;
+    -fx-border-width: 2px;
+    -fx-border-color: #3f64c3;
+}
+
+.tutorial-auction-close:pressed{
+    -fx-scale-y: 0.95;
+    -fx-scale-x: 0.95;
+}
+
+.auction-countdown-title-text{
+	-fx-background-color: transparent ;
+	-fx-font-size: 75px;
+	-fx-text-fill: #ffffff;
+		-fx-font-family: "NanumBarunGothic";
+}
+.auction-countdown-time-text{
+    -fx-background-color: transparent ;
+    -fx-font-size: 60px;
+    -fx-text-fill: #ffffff;
+        -fx-font-family: "NanumBarunGothic";
+}
+.auction-countdown-text{
+	-fx-background-color: #00000044;
+	-fx-font-size: 260px;
+	-fx-text-fill: #ffffff;
+	-fx-padding: -100 -100 -100 -100;
+	-fx-font-family: "Roboto";
+}
+.auction-countdown-dot{
+	-fx-background-color: transparent ;
+	-fx-font-size: 50px;
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "Roboto";
+}
+.auction-countdown-sub{
+	-fx-background-color: transparent ;
+	-fx-font-size: 30px;
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "NanumBarunGothic";
+}
+.auction-countdown-bg{
+		-fx-background-color: #0b2a4f;
+		-fx-opacity : 0.9;
+}
+.test{
+ 	-fx-background-image: url("../resources/images/bg_user_border.png");
+	-fx-background-size: 100% 100%;
+}
+
+.lane-button {
+    -fx-border-width: 1 1 1 1;
+    -fx-border-color: #b0b0b0;
+    -fx-background-color:  #092a4a;
+    -fx-font-family: "NanumBarunGothic";
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-padding: 5 20 5 20;
+}
+.lane-button:hover{
+    -fx-border-width: 0 0 0 0;
+    -fx-border-color: #092b4b;
+    -fx-background-color:  #249ced;
+    -fx-text-fill: white;
+}
+ .lane-button:pressed {
+    -fx-border-width: 0 0 0 0;
+    -fx-border-color: #092b4b;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #092a4a;
+}
+
+.bid-screen-background {
+	-fx-background-image: url("../resources/images/bg_bid_screen.png") ;
+	-fx-background-size: 100% 100%;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}

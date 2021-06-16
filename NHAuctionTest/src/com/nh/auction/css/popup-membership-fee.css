@@ -1,0 +1,157 @@
+@font-face {
+    src: url('../css/fonts/NanumBarunGothicBold.woff');
+}
+
+.dialog-pane{
+    -fx-background-color: #ffffff;
+    -fx-padding: 0;
+}
+.dialog-pane  .content{
+     -fx-padding: 0;
+}
+.dialog-pane > .button-bar > .container {
+    -fx-padding: 0;
+}
+.bg-root {
+    -fx-background-color: #ffffff;
+}
+.root-content-line {
+	-fx-border-width: 1 1 0 1;
+    -fx-border-color: #d7d7d7;
+}
+
+.bg-col {
+    -fx-background-color: #f2f0f0;
+}
+.bg-col-7777777 {
+    -fx-background-color: #777777;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+}
+.btn-ok{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-background-color: #3f64c3;
+    -fx-text-fill: #ffffff;
+    -fx-border-width: 1 1 1 1;
+    -fx-border-color: #3f64c3;
+     -fx-font-size: 19px;
+}
+.title{
+	-fx-font-size: 25px;
+	-fx-text-fill: #222222;
+	-fx-font-family: "NanumBarunGothic";
+}
+.user-info{
+	-fx-font-size: 19px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-padding: -3 0 -3 0;
+}
+.base-text{
+	-fx-font-size: 15px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-padding: -3 0 -3 0;
+	-fx-text-fill: #222222;
+}
+.base-text-bold{
+	-fx-font-size: 15px;
+	-fx-font-family: "NanumBarunGothic";
+}
+.base-text-777777{
+	-fx-text-fill: #777777;
+	-fx-font-size: 15px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-padding: -3 0 -3 0;
+}
+
+.base-text-red{
+	-fx-font-size: 15px;
+	-fx-text-fill: #ff0000;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-padding: -3 0 -3 0;
+}
+.user-info-date{
+	-fx-font-size: 24px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #ff0000;
+	-fx-padding: -3 0 -3 0;
+}
+.user-info-date-end{
+	-fx-font-size: 24px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #000000;
+	-fx-padding: -3 0 -3 0;
+}
+.price{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-padding: -10 0 -10 0;
+	-fx-font-size: 15px;
+}
+
+.help-text{
+	-fx-font-size: 15px;
+	-fx-text-fill: #777777;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-padding: 0 -10 0 0;
+}
+.help-text-bold{
+	-fx-font-size: 15px;
+	-fx-font-weight: 50;
+	-fx-text-fill: #777777;
+	-fx-font-family: "NanumBarunGothic";
+}
+.call{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-padding: -10 -10 -10 -10;
+	-fx-font-size: 16px;
+}
+.check-box-text{
+	-fx-font-size: 15px;
+	-fx-font-family: "NanumBarunGothic";
+	-fx-text-fill: #222222;
+	-fx-padding: 0 0 -10 0;
+}
+.check-box-text .box{
+	-fx-border-color: #d7d7d7;
+	-fx-background-color: transparent;
+}
+
+.border-line-position-all {
+    -fx-border-width: 1 1 1 1;
+    -fx-border-color: #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-left {
+    -fx-border-width: 0 0 0 1;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-right-left {
+    -fx-border-width: 1 1 0 1;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-bottom {
+    -fx-border-width: 1 0 1 0;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-right-bottom {
+    -fx-border-width: 1 1 1 0;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-right-bottom-left {
+    -fx-border-width: 1 0 1 1;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-right-bottom {
+    -fx-border-width: 0 1 1 0;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-bottom {
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}

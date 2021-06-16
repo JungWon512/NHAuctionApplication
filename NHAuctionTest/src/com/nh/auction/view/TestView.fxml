@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="mRoot" maxHeight="738.0" maxWidth="1119.0" minHeight="400.0" minWidth="600.0" prefHeight="738.0" prefWidth="1057.0" styleClass="root-intro-pane" stylesheets="@../css/auction.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.auction.controller.TestController">
+   <children>
+      <Button fx:id="mConnectButton" layoutX="327.0" layoutY="38.0" mnemonicParsing="false" onAction="#onConnectServer" prefHeight="54.0" prefWidth="106.0" text="접속" />
+      <Button layoutX="546.0" layoutY="23.0" mnemonicParsing="false" onAction="#onSendEntryData" prefHeight="71.0" prefWidth="147.0" text="출품자료전송" />
+      <Button layoutX="704.0" layoutY="106.0" mnemonicParsing="false" onAction="#onStartAuction" prefHeight="71.0" prefWidth="147.0" text="시작" />
+      <Button layoutX="863.0" layoutY="106.0" mnemonicParsing="false" onAction="#onStopAuction" prefHeight="71.0" prefWidth="147.0" text="정지" />
+      <Button layoutX="704.0" layoutY="23.0" mnemonicParsing="false" onAction="#onBidding" prefHeight="71.0" prefWidth="147.0" text="응찰시도" />
+      <Button layoutX="546.0" layoutY="106.0" mnemonicParsing="false" onAction="#onNextEntryReady" prefHeight="71.0" prefWidth="147.0" text="다음출품준비" />
+      <Button layoutX="863.0" layoutY="23.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="147.0" text="Button" />
+      <TextField fx:id="mIpTextField" layoutX="28.0" layoutY="38.0" prefHeight="41.0" prefWidth="189.0" />
+      <TextField fx:id="mPortTextField" layoutX="226.0" layoutY="38.0" prefHeight="41.0" prefWidth="85.0" />
+      <Label layoutX="107.0" layoutY="14.0" text="접속IP" />
+      <Label layoutX="246.0" layoutY="14.0" text="접속Port" />
+      <Button fx:id="mClearButton" layoutX="889.0" layoutY="670.0" mnemonicParsing="false" onAction="#onClearText" prefHeight="48.0" prefWidth="132.0" text="Clear" />
+      <TextArea fx:id="mLogTextArea" layoutX="28.0" layoutY="243.0" prefHeight="413.0" prefWidth="995.0" wrapText="true" />
+      <TextField fx:id="mUserMemNumTextField" layoutX="28.0" layoutY="121.0" prefHeight="41.0" prefWidth="282.0" />
+      <Label layoutX="137.0" layoutY="97.0" text="통합고객번호" />
+      <Button fx:id="mDisConnectButton1" layoutX="327.0" layoutY="110.0" mnemonicParsing="false" onAction="#onDisConnectServer" prefHeight="54.0" prefWidth="106.0" text="접속끊기" />
+   </children>
+</AnchorPane>

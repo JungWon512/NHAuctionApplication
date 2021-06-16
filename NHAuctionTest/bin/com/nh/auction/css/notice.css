@@ -1,0 +1,78 @@
+@font-face {
+    src: url('../css/fonts/NanumBarunGothicBold.woff');
+}
+
+.dialog-pane{
+    -fx-background-color: #ffffff;
+    -fx-padding: 0;
+}
+.dialog-pane  .content{
+     -fx-padding: 0;
+}
+.dialog-pane > .button-bar > .container {
+    -fx-padding: 0;
+}
+.bg-root {
+    -fx-background-color: #ffffff;
+}
+.root-content-line {
+    -fx-border-color: #d7d7d7;
+}
+
+.btn-today-ok{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-background-color: #ffffff;
+    -fx-text-fill: #000000;
+    -fx-border-color: #d7d7d7;
+    -fx-font-size: 19px;
+    -fx-border-width: 0 0 1 1;
+}
+
+.btn-ok{
+	-fx-font-family: "NanumBarunGothic";
+	-fx-background-color: #3f64c3;
+    -fx-text-fill: #ffffff;
+     -fx-font-size: 19px;
+    -fx-border-width: 0 0 0 0;
+}
+
+.border-line-position-all {
+    -fx-border-width: 1 1 1 1;
+    -fx-border-color: #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-left {
+    -fx-border-width: 0 0 0 1;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-right-left {
+    -fx-border-width: 1 1 0 1;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-bottom {
+    -fx-border-width: 1 0 1 0;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-right-bottom {
+    -fx-border-width: 1 1 1 0;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-top-right-bottom-left {
+    -fx-border-width: 1 0 1 1;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-right-bottom {
+    -fx-border-width: 0 1 1 0;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
+.border-line-position-bottom {
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color:  #d7d7d7;
+    -fx-border-style: solid ;
+}
