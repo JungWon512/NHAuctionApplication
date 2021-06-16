@@ -119,7 +119,6 @@ public class SampleController extends BaseAuctionController implements Initializ
 				//dismiss loading
 				CommonUtils.getInstance().dismissLoadingDialog();
 
-				AuctionDelegate.getInstance().sendMessage(new ResponseConnectionInfo("2000"));
 			}
 		});
 
