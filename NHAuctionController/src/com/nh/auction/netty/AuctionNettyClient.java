@@ -69,15 +69,6 @@ public class AuctionNettyClient {
 	}
 
 	/**
-	 * 객체를 송신할 때 사용한다.
-	 * 
-	 * @param message 보낼 객체
-	 */
-	public void sendMessage(NettySendable object) {
-		sendMessage(object.getEncodedMessage());
-	}
-
-	/**
 	 * 문자열을 송신할 때 사용한다.
 	 * 
 	 * @param message 보낼 문자열
@@ -100,6 +91,27 @@ public class AuctionNettyClient {
 	 */
 	public int getPort() {
 		return port;
+
+	}
+	
+	/**
+	 * 접속 상태 확인
+	 * @return
+	 */
+	public boolean isEmptyChannel() {
+		if (channel != null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * 접속 상태 확인
+	 * @return
+	 */
+	public Channel getChannel() {
+		return channel;
 	}
 
 	/**

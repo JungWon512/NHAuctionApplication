@@ -11,7 +11,9 @@ import com.nh.auction.interfaces.BooleanListener;
 import com.nh.auction.interfaces.StringListener;
 import com.nh.auction.models.AuctionCountDown;
 import com.nh.auction.models.EntryInfoToServer;
+import com.nh.auction.models.ResponseConnectionInfo;
 import com.nh.auction.models.TestDataInfo;
+import com.nh.auction.netty.AuctionDelegate;
 import com.nh.auction.utils.CommonUtils;
 import com.nh.auction.utils.MoveStageUtil;
 import com.nh.auction.utils.TestUtil;
@@ -110,12 +112,14 @@ public class SampleController extends BaseAuctionController implements Initializ
 		TestUtil.getInstance().sendData(new StringListener() {
 			@Override
 			public void callBack(String str) {
-				
+
 				addLogItem(str);
 				// testData
 				readyProduct();
 				//dismiss loading
 				CommonUtils.getInstance().dismissLoadingDialog();
+
+				AuctionDelegate.getInstance().sendMessage(new ResponseConnectionInfo("2000"));
 			}
 		});
 
