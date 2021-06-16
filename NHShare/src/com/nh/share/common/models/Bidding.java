@@ -10,7 +10,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 응찰기 -> 서버 -> 제어
  * 
- * BB|접속채널|경매회원번호|부재자여부(Y/N)|응찰금액(만원)|출품번호
+ * BB|접속채널|경매회원번호|응찰금액(만원)|출품번호
  *
  */
 public class Bidding implements FromAuctionCommon, Serializable {
@@ -18,17 +18,15 @@ public class Bidding implements FromAuctionCommon, Serializable {
 	public static final char TYPE = 'B';
 	private String mChannel;
 	private String mUserNo;
-	private String mAbsentee;
 	private String mPrice;
 	private String mBiddingTime;
 	private String mEntryNum;
 
 	private int mPriceInt;
 
-	public Bidding(String channel, String userNo, String absentee, String price, String entryNum) {
+	public Bidding(String channel, String userNo, String entryNum, String price) {
 		mChannel = channel;
 		mUserNo = userNo;
-		mAbsentee = absentee;
 		mPrice = price;
 		mEntryNum = entryNum;
 
@@ -49,14 +47,6 @@ public class Bidding implements FromAuctionCommon, Serializable {
 
 	public void setUserNo(String userNo) {
 		this.mUserNo = userNo;
-	}
-
-	public String getAbsentee() {
-		return mAbsentee;
-	}
-
-	public void setAbsentee(String absentee) {
-		this.mAbsentee = absentee;
 	}
 
 	public String getPrice() {
@@ -85,10 +75,9 @@ public class Bidding implements FromAuctionCommon, Serializable {
 	}
 
 	public String getBiddingInfoForLog() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mChannel,
-				AuctionShareSetting.DELIMITER, mUserNo, AuctionShareSetting.DELIMITER, mAbsentee,
-				AuctionShareSetting.DELIMITER, mPrice, AuctionShareSetting.DELIMITER, mEntryNum,
-				AuctionShareSetting.DELIMITER, mBiddingTime);
+		return String.format("%c%c%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mChannel,
+				AuctionShareSetting.DELIMITER, mUserNo, AuctionShareSetting.DELIMITER, mEntryNum,
+				AuctionShareSetting.DELIMITER, mPrice);
 	}
 
 	public String getEntryNum() {
@@ -101,8 +90,8 @@ public class Bidding implements FromAuctionCommon, Serializable {
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mChannel,
-				AuctionShareSetting.DELIMITER, mUserNo, AuctionShareSetting.DELIMITER, mAbsentee,
-				AuctionShareSetting.DELIMITER, mPrice, AuctionShareSetting.DELIMITER, mEntryNum);
+		return String.format("%c%c%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mChannel,
+				AuctionShareSetting.DELIMITER, mUserNo, AuctionShareSetting.DELIMITER, mEntryNum,
+				AuctionShareSetting.DELIMITER, mPrice);
 	}
 }

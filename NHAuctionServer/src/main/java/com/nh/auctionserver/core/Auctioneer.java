@@ -31,6 +31,7 @@ import com.nh.share.controller.models.StartAuction;
 import com.nh.share.controller.models.ToastMessageRequest;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
+import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 
@@ -39,17 +40,10 @@ import io.netty.channel.ChannelId;
 public class Auctioneer {
 	private final Logger mLogger = LoggerFactory.getLogger(Auctioneer.class);
 
-	private final long CHECK_READY_AUCTION_TIME = 1000;
 	public final String SYSTEM_USER_NAME = "SYSTEM";
-	private final long AUCTION_FINISH_DELAY_TIME = 3000;
-
-	private final int CHECK_TIME_COUNT = 3;
 
 	private AuctionServer mAuctionServer;
 
-	private String mAuctionCode;
-	private String mAuctionRound;
-	private String mAuctionLaneCode;
 	private Map<ChannelId, ConnectionInfo> mConnectorInfoMap;
 
 	private boolean mIsRequestAuctionStop = false; // 경매 자동 시작 정지 요청 Flag
@@ -158,7 +152,7 @@ public class Auctioneer {
 	public synchronized void passAuction() {
 		mIsRequestAuctionPass = true;
 	}
-
+	
 	public synchronized void broadcastToastMessage(ToastMessageRequest requestToastMessage) {
 		ToastMessage toastMessage = new ToastMessage(requestToastMessage.getMessage());
 
@@ -182,7 +176,33 @@ public class Auctioneer {
 	/**
 	 * 
 	 * @MethodName readyEntryInfo
-	 * @Description 경매 출품 정보 설정 처리
+	 * @Description 경매 출품번호에 해당하는 출품 정보 설정 처리
+	 *
+	 */
+	public synchronized void readyEntryInfo(String entryNum) {
+		// 경매 응찰 정보 Reset
+		resetAuctionData();
+
+		EntryInfo entryInfo = mAuctionEntryRepository.popEntry(entryNum);
+
+		if (mAuctionEntryRepository.getTotalCount() >= 1) {
+			mAuctionState.setCurrentEntryInfo(entryInfo);
+		} else {
+			// 마지막 차량 일 경우 수행 처리 로직 개발 필요
+		}
+
+		mAuctionState.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.size()));
+
+		mLogger.debug(entryInfo.getEntryNum() + "번 출품 상품이 경매 준비되었습니다.");
+		mAuctionState.onReady();
+		
+		mAuctionServer.itemAdded(new CurrentEntryInfo(mAuctionState.getCurrentEntryInfo()).getEncodedMessage());
+	}
+	
+	/**
+	 * 
+	 * @MethodName readyEntryInfo
+	 * @Description 경매 출품 정보 설정 처리(순차적)
 	 *
 	 */
 	public synchronized void readyEntryInfo() {
@@ -201,8 +221,26 @@ public class Auctioneer {
 
 		mLogger.debug(entryInfo.getEntryNum() + "번 출품 상품이 경매 준비되었습니다.");
 		mAuctionState.onReady();
+		
+		mAuctionServer.itemAdded(new CurrentEntryInfo(mAuctionState.getCurrentEntryInfo()).getEncodedMessage());
 	}
 
+	/**
+	 * 
+	 * @MethodName addEntryInfo
+	 * @Description 출품 자료 전송에 따른 출품 자료 추가 처리
+	 *
+	 * @param entryInfo
+	 * @return
+	 */
+	public void addEntryInfo(EntryInfo entryInfo) {
+		mAuctionEntryRepository.pushEntry(entryInfo);
+		
+		if(entryInfo.getIsLastEntry().equals("Y")) {
+			readyEntryInfo();
+		}
+	}
+	
 	/**
 	 * 
 	 * @MethodName getEntryInfo
@@ -285,7 +323,7 @@ public class Auctioneer {
 	public synchronized void setAllBidding(Bidding bidding) {
 		// 동일가 응찰자 정보 수집
 		if (!mCurrentBidderMap.containsKey(bidding.getUserNo())
-				|| (mCurrentBidderMap.containsKey(bidding.getUserNo()) && bidding.getAbsentee().equals("Y"))) {
+				|| (mCurrentBidderMap.containsKey(bidding.getUserNo()))) {
 			mCurrentBidderMap.put(bidding.getUserNo(), bidding);
 			mAuctionState.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.size()));
 

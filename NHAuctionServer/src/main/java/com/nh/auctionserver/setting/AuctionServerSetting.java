@@ -28,7 +28,5 @@ public class AuctionServerSetting {
     public static int AUCTION_ENTRY_REMAIN_COUNT = 0; // 경매 남은 출품 차량 수
     public static int AUCTION_ENTRY_FINISH_COUNT = -1; // 경매 종료 출품 차량 수
 
-    public static boolean AUCTION_START_STATUS = false; // 경매 시작/정지 상태
-    
     public static int AUCTION_START_PRICE = 0; // 경매 시작가
 }

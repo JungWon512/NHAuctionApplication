@@ -22,7 +22,7 @@ public class AuctionClientDecodedFavoriteEntryInfoHandler extends SimpleChannelI
         mLogger.info("AuctionClientDecodedFavoriteCarInfoHandler:channelRead0 : " + favoriteCarInfo.getEncodedMessage());
 
         if (mController != null) {
-            mController.onFavoriteCarInfo(favoriteCarInfo);
+            mController.onFavoriteEntryInfo(favoriteCarInfo);
         }
     }
 }

@@ -1,17 +1,18 @@
-package com.nh.share.common.models;
+package com.nh.share.server.models;
 
-import com.nh.share.common.interfaces.FromAuctionCommon;
+import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.server.interfaces.FromAuctionServer;
 import com.nh.share.setting.AuctionShareSetting;
 
 /**
  * 현재 출품 정보 전송
  * 
- * 경매서버/제어프로그램 -> 공통
+ * 경매서버 -> 공통
  * 
- * CI|출품번호|출품유형|개체번호|출하주|생년월일|성별|중량|KPN|산차|어미|특이사항|경매일시|출품상태|시작가
+ * SC|출품번호|출품유형|개체번호|출하주|생년월일|성별|중량|KPN|산차|어미|특이사항|경매일시|출품상태|시작가
  *
  */
-public class CurrentEntryInfo implements FromAuctionCommon {
+public class CurrentEntryInfo implements FromAuctionServer {
 	public static final char TYPE = 'C';
 	private String mEntryNum; // 출품 번호
 	private String mEntryType; // 출품 유형(큰소/송아지/육우)
@@ -65,6 +66,24 @@ public class CurrentEntryInfo implements FromAuctionCommon {
 		mEntryStatus = messages[13];
 		mStartPrice = messages[14];
 		mIsLastEntry = messages[15];
+	}
+	
+	public CurrentEntryInfo(EntryInfo entryInfo) {
+		mEntryNum = entryInfo.getEntryNum();
+		mEntryType = entryInfo.getEntryType();
+		mIndNum = entryInfo.getIndNum();
+		mExhibitor = entryInfo.getExhibitor();
+		mBirthday = entryInfo.getBirthday();
+		mGender = entryInfo.getGender();
+		mWeight = entryInfo.getWeight();
+		mKpn = entryInfo.getKpn();
+		mCavingNum = entryInfo.getCavingNum();
+		mMother = entryInfo.getMother();
+		mNote = entryInfo.getNote();
+		mAuctDateTime = entryInfo.getAuctDateTime();
+		mEntryStatus = entryInfo.getEntryStatus();
+		mStartPrice = entryInfo.getStartPrice();
+		mIsLastEntry = entryInfo.getIsLastEntry();
 	}
 
 	public String getEntryNum() {

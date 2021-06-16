@@ -7,9 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
-import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.share.common.models.ConnectionInfo;
-import com.nh.share.controller.models.StartAuction;
+import com.nh.share.controller.models.ReadyEntryInfo;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,8 +17,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 
 @Sharable
-public final class AuctionServerDecodedStartAuctionHandler extends SimpleChannelInboundHandler<StartAuction> {
-	private final Logger mLogger = LoggerFactory.getLogger(AuctionServerDecodedStartAuctionHandler.class);
+public final class AuctionServerDecodedReadyEntryInfoHandler extends SimpleChannelInboundHandler<ReadyEntryInfo> {
+	private final Logger mLogger = LoggerFactory.getLogger(AuctionServerDecodedReadyEntryInfoHandler.class);
 
 	private final AuctionServer mAuctionServer;
 	private final Auctioneer mAuctionScheduler;
@@ -31,7 +30,7 @@ public final class AuctionServerDecodedStartAuctionHandler extends SimpleChannel
 	private ChannelGroup mConnectionMonitorChannels = null;
 	private Map<ChannelId, ConnectionInfo> mConnectorInfoMap;
 
-	public AuctionServerDecodedStartAuctionHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
+	public AuctionServerDecodedReadyEntryInfoHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
 			Map<ChannelId, ConnectionInfo> connectorInfoMap, ChannelGroup controllerChannels,
 			ChannelGroup bidderChannels, ChannelGroup watcherChannels, ChannelGroup auctionResultMonitorChannels,
 			ChannelGroup connectionMonitorChannels) {
@@ -46,14 +45,14 @@ public final class AuctionServerDecodedStartAuctionHandler extends SimpleChannel
 	}
 
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, StartAuction auctionStart) throws Exception {
-		mLogger.info("경매 진행 시작 : " + auctionStart.getEntryNum());
+	protected void channelRead0(ChannelHandlerContext ctx, ReadyEntryInfo readyEntryInfo) throws Exception {
+		mLogger.info((readyEntryInfo.getEntryNum() + "출품번호 경매 준비 요청"));
 
 		if (mControllerChannels.contains(ctx.channel()) == true) {
-			mLogger.info("정상 채널에서 경매 시작을 요청하였습니다.");
-			mAuctionServer.itemAdded(auctionStart.getEncodedMessage());
+			mLogger.info("정상 채널에서 경매 준비를 요청하였습니다.");
+			mAuctionServer.itemAdded(readyEntryInfo.getEncodedMessage());
 		} else {
-			mLogger.info("비정상 채널에서 경매 시작을 요청하였으나, 요청이 거부되었습니다.");
+			mLogger.info("비정상 채널에서 경매 준비 요청하였으나, 요청이 거부되었습니다.");
 		}
 	}
 }

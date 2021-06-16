@@ -29,7 +29,9 @@ public class GlobalDefineCode {
 	// iOS 채널
 	public static final String USE_CHANNEL_IOS = "IOS";
 	// WEB 채널
-	public static final String USE_CHANNEL_WEB = "PC";
+	public static final String USE_CHANNEL_WEB = "WEB";
+	// 관리자 채널
+	public static final String USE_CHANNEL_MANAGE = "MANAGE";
 
 	// 경매 진행 상태
 	public static final String AUCTION_STATUS_NONE = "8001";

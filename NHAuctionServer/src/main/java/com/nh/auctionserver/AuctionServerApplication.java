@@ -28,9 +28,13 @@ public class AuctionServerApplication {
 				runningError();
 			}
 		} else {
-			// 'java -jar AuctionServer.jar [port] [auctionCode] [auctionRound] [auctionLaneCode]'
-			if (args.length == 4) {
-				runServer(args);
+			// 'java -jar AuctionServer.jar start [port]'
+			if (args.length == 2) {
+				if (args[0].toString().contains("start")) {
+					runServer(args);
+				} else {
+					runningError();					
+				}
 			} else {
 				runningError();
 			}
@@ -82,7 +86,7 @@ public class AuctionServerApplication {
 
 		if (args.length > 0) {
 			try {
-				port = Integer.parseInt(args[0]);
+				port = Integer.parseInt(args[1]);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -91,18 +95,6 @@ public class AuctionServerApplication {
 		}
 
 		AuctionServer.Builder server = new AuctionServer.Builder(port);
-
-		if (args.length > 1) {
-			server.setAuctionCode(args[3]);
-		}
-
-		if (args.length > 2) {
-			server.setAuctionRound(args[4]);
-		}
-
-		if (args.length > 3) {
-			server.setAuctionLaneCode(args[5]);
-		}
 
 		mLogger.info("Auction Server Start!!");
 		mServer = server.buildAndRun();

@@ -126,15 +126,6 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					if (!mControllerChannels.contains(ctx.channel())) {
 						mControllerChannels.add(ctx.channel());
 					}
-
-					String auctionStartStatus;
-					String auctionAutoMode;
-
-					if (AuctionServerSetting.AUCTION_START_STATUS) {
-						auctionStartStatus = "Y";
-					} else {
-						auctionStartStatus = "N";
-					}
 				}
 			} else if (connectorInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
 				// 접속 처리 결과 응답 처리

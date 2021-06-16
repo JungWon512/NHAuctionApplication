@@ -49,9 +49,7 @@ public final class AuctionServerDecodedStopAuctionHandler extends SimpleChannelI
 	protected void channelRead0(ChannelHandlerContext ctx, StopAuction pauseAuction) throws Exception {
 		mLogger.info("경매 진행 정지 : " + (pauseAuction.getEntryNum()));
 
-		if (!AuctionServerSetting.AUCTION_START_STATUS) {
-			mLogger.info("경매가 정지된 상태입니다.");
-		} else if (mControllerChannels.contains(ctx.channel()) == true) {
+		if (mControllerChannels.contains(ctx.channel()) == true) {
 			mLogger.info("정상 채널에서 경매 정지를 요청하였습니다.");
 			mAuctionServer.itemAdded(pauseAuction.getEncodedMessage());
 		} else {

@@ -34,6 +34,22 @@ public class AuctionEntryRepository {
 		return null;
 	}
 
+	public synchronized EntryInfo popEntry(String entryNum) {
+		EntryInfo entryInfo = null;
+
+		if (mEntryList != null && mEntryList.size() > 0) {
+			for (int i = 0; i < mEntryList.size(); i++) {
+				if (mEntryList.get(i).getEntryNum().equals(entryNum)) {
+					entryInfo = mEntryList.get(i);
+					mEntryList.remove(i);
+					mTotalCount -= 1;
+				}
+			}
+		}
+
+		return entryInfo;
+	}
+
 	public synchronized EntryInfo popEntry() {
 		EntryInfo entry = mEntryList.get(0);
 		mEntryList.remove(0);
@@ -44,5 +60,7 @@ public class AuctionEntryRepository {
 	public synchronized void pushEntry(EntryInfo entry) {
 		mEntryList.add(entry);
 		mTotalCount += 1;
+
+		System.out.println("출품 자료가 추가되었습니다.(자료수 : " + mTotalCount + ")");
 	}
 }

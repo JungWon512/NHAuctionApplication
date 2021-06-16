@@ -10,7 +10,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 공통 -> 서버
  * 
- * AI|회원번호|접속요청채널(6001/6002/6003/6004/6005)|사용채널(PC/ANDROID/IOS)|관전여부(Y/N)
+ * AI|회원번호|접속요청채널(6001/6002/6003/6004/6005)|사용채널(ANDROID/IOS/WEB/MANAGE)|관전여부(Y/N)
  *
  */
 public class ConnectionInfo implements FromAuctionCommon, Serializable {

@@ -7,6 +7,7 @@ import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.PassAuction;
+import com.nh.share.controller.models.ReadyEntryInfo;
 import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.controller.models.StartAuction;
 import com.nh.share.controller.models.StopAuction;
@@ -41,6 +42,8 @@ public class ControllerMessageParser {
 			return new RequestLogout(messages[1]);
 		case EntryInfo.TYPE: // 출품 정보 전송
 			return new EntryInfo(messages);
+		case ReadyEntryInfo.TYPE: // 출품 정보 경매 준비 요청
+			return new ReadyEntryInfo(messages[1]);
 		default:
 			throw null;
 		}

@@ -14,7 +14,9 @@ import com.nh.auctionserver.netty.handlers.AuctionServerConnectorHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionResponseSessionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedBiddingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedEditSettingHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedEntryInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedPassAuctionHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedReadyEntryInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRequestLogoutHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedStartAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedStopAuctionHandler;
@@ -28,13 +30,13 @@ import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ConnectionInfo;
-import com.nh.share.common.models.CurrentEntryInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.ControllerMessageParser;
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.PassAuction;
+import com.nh.share.controller.models.ReadyEntryInfo;
 import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.controller.models.StartAuction;
 import com.nh.share.controller.models.StopAuction;
@@ -44,6 +46,7 @@ import com.nh.share.server.interfaces.FromAuctionServer;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
+import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ExceptionCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.ToastMessage;
@@ -83,35 +86,24 @@ public class AuctionServer {
 
 	private Auctioneer mAuctioneer;
 
-	private Map<ChannelId, ConnectionInfo> mConnectorInfoMap;
-
-	private String mAuctionCode;
-	private String mAuctionRound;
-	private String mAuctionLaneCode;
+	private Map<ChannelId, ConnectionInfo> mConnectorInfoMap = new HashMap<ChannelId, ConnectionInfo>();
 
 	private boolean mWaitServerShutDown = false;
 
 	private Map<Integer, Object> mBiddingInfoMap = new HashMap<Integer, Object>();
 
 	private AuctionServer(Builder builder) {
-		this(builder.port, builder.auctionCode, builder.auctionRound, builder.auctionLaneCode, builder.portCount);
+		this(builder.port, builder.portCount);
 	}
 
-	private AuctionServer(int port, String auctionCode, String auctionRound, String auctionLaneCode, int portCount) {
+	private AuctionServer(int port, int portCount) {
 		try {
 			mLogger.info("======= Auctoin Server Informations[Start] =======");
 			mLogger.info("Server Host : " + InetAddress.getLocalHost());
 			mLogger.info("Server Port : " + port);
-			mLogger.info("Auction Code : " + auctionCode);
-			mLogger.info("Auction Round : " + auctionRound);
-			mLogger.info("Auction Lane Code : " + auctionLaneCode);
 			mLogger.info("======= Auctoin Server Informations[End] =======");
 
-			mAuctionCode = auctionCode;
-			mAuctionRound = auctionRound;
-			mAuctionLaneCode = auctionLaneCode;
-
-			createAuctioneer(this, auctionCode, auctionRound, auctionLaneCode);
+			createAuctioneer(this);
 			createNettyServer(port);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -119,8 +111,7 @@ public class AuctionServer {
 		}
 	}
 
-	private void createAuctioneer(AuctionServer auctionServer, String auctionCode, String auctionRound,
-			String auctionLaneCode) {
+	private void createAuctioneer(AuctionServer auctionServer) {
 		mAuctioneer = new Auctioneer(this);
 	}
 
@@ -174,6 +165,9 @@ public class AuctionServer {
 						pipeline.addLast(new AuctionServerConnectorHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
 								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+						pipeline.addLast(new AuctionServerDecodedEntryInfoHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
+								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
 						pipeline.addLast(new AuctionServerDecodedBiddingHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
 								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
@@ -184,6 +178,9 @@ public class AuctionServer {
 								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
 								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
 						pipeline.addLast(new AuctionServerDecodedStopAuctionHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
+								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+						pipeline.addLast(new AuctionServerDecodedReadyEntryInfoHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
 								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
 						pipeline.addLast(new AuctionServerDecodedStartAuctionHandler(AuctionServer.this, mAuctioneer,
@@ -322,26 +319,35 @@ public class AuctionServer {
 			if (serverParsedMessage instanceof FavoriteEntryInfo) {
 				channelItemWriteAndFlush(((FavoriteEntryInfo) serverParsedMessage));
 			}
+			
+			if (serverParsedMessage instanceof CurrentEntryInfo) {
+				channelItemWriteAndFlush(((CurrentEntryInfo) serverParsedMessage));
+			}
 
 			if (serverParsedMessage instanceof ExceptionCode) {
 				channelItemWriteAndFlush(((ExceptionCode) serverParsedMessage));
 			}
-			
+
 			if (serverParsedMessage instanceof AuctionCheckSession) {
 				channelItemWriteAndFlush(((AuctionCheckSession) serverParsedMessage));
 			}
-			
+
 			if (serverParsedMessage instanceof BidderConnectInfo) {
 				channelItemWriteAndFlush(((BidderConnectInfo) serverParsedMessage));
 			}
 			break;
-			
+
 		case FromAuctionController.ORIGIN:
 			FromAuctionController controllerParsedMessage = ControllerMessageParser.parse(event);
 
 			if (controllerParsedMessage instanceof EditSetting) {
 			}
 
+			if (controllerParsedMessage instanceof ReadyEntryInfo) {
+				mLogger.info("경매 준비 요청 출품 번호 : " + ((ReadyEntryInfo) controllerParsedMessage).getEntryNum());
+				mAuctioneer.readyEntryInfo(((ReadyEntryInfo) controllerParsedMessage).getEntryNum());
+			}
+			
 			if (controllerParsedMessage instanceof PassAuction) {
 				mLogger.info("경매 유찰 : " + ((PassAuction) controllerParsedMessage).getEntryNum());
 				mAuctioneer.passAuction();
@@ -360,20 +366,19 @@ public class AuctionServer {
 					mAuctioneer.startAuction();
 				} else {
 					mAuctioneer.startAuctionCountDown();
-				}				
+				}
 			}
 
 			if (controllerParsedMessage instanceof ToastMessageRequest) {
-				mAuctioneer.broadcastToastMessage((ToastMessageRequest)controllerParsedMessage);
+				mAuctioneer.broadcastToastMessage((ToastMessageRequest) controllerParsedMessage);
 			}
 
 			if (controllerParsedMessage instanceof RequestLogout) {
-				
-				
+
 			}
 
 			if (controllerParsedMessage instanceof EntryInfo) {
-				
+				mAuctioneer.addEntryInfo((EntryInfo) controllerParsedMessage);
 			}
 			break;
 		case FromAuctionCommon.ORIGIN:
@@ -466,6 +471,19 @@ public class AuctionServer {
 							mConnectionMonitorChannels.writeAndFlush(message + "\r\n");
 						}
 						break;
+					case CurrentEntryInfo.TYPE: // 현재 출품 정보 전송
+						if (mBidderChannels != null && mBidderChannels.size() > 0) {
+							mBidderChannels.writeAndFlush(message + "\r\n");
+						}
+						
+						if (mWatcherChannels != null && mWatcherChannels.size() > 0) {
+							mWatcherChannels.writeAndFlush(message + "\r\n");
+						}
+						
+						if (mControllerChannels != null && mControllerChannels.size() > 0) {
+							mControllerChannels.writeAndFlush(message + "\r\n");
+						}
+						break;
 					case AuctionCheckSession.TYPE: // 접속 유효 확인 처리
 						if (mBidderChannels != null && mBidderChannels.size() > 0) {
 							mBidderChannels.writeAndFlush(message + "\r\n");
@@ -502,11 +520,6 @@ public class AuctionServer {
 				@Override
 				public void run() {
 					switch (splitMessages[0].charAt(1)) {
-					case CurrentEntryInfo.TYPE: // 현재 출품 정보 전송
-						if (mBidderChannels != null && mBidderChannels.size() > 0) {
-							mBidderChannels.writeAndFlush(message + "\r\n");
-						}
-						break;
 					case ResponseConnectionInfo.TYPE: // 접속 인승 결과 전송
 						if (mBidderChannels != null && mBidderChannels.size() > 0) {
 							mBidderChannels.writeAndFlush(message + "\r\n");
@@ -560,28 +573,10 @@ public class AuctionServer {
 
 	public static class Builder {
 		private final int port;
-		private String auctionCode; // 경매 구분 코드(실시간 / SPOT)
-		private String auctionRound; // 경매 회차 정보
-		private String auctionLaneCode; // 경매 레인 코드
 		private int portCount = 1;
 
 		public Builder(int port) {
 			this.port = port;
-		}
-
-		public Builder setAuctionCode(String auctionCode) {
-			this.auctionCode = auctionCode;
-			return this;
-		}
-
-		public Builder setAuctionRound(String auctionRound) {
-			this.auctionRound = auctionRound;
-			return this;
-		}
-
-		public Builder setAuctionLaneCode(String auctionLaneCode) {
-			this.auctionLaneCode = auctionLaneCode;
-			return this;
 		}
 
 		public Builder setPortCount(int portCount) {

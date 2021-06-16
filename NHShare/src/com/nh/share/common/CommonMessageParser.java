@@ -5,7 +5,6 @@ import com.nh.share.common.models.AuctionReponseSession;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ConnectionInfo;
-import com.nh.share.common.models.CurrentEntryInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.setting.AuctionShareSetting;
 
@@ -22,9 +21,7 @@ public class CommonMessageParser {
 		case AuctionStatus.TYPE: // 경매 상태 정보 전송
 			return new AuctionStatus(messages);
 		case Bidding.TYPE:
-            return new Bidding(messages[1], messages[2], messages[3], messages[4], messages[5]);
-		case CurrentEntryInfo.TYPE: // 접속 정보 전송
-			return new CurrentEntryInfo(messages);
+            return new Bidding(messages[1], messages[2], messages[3], messages[4]);
 		case AuctionReponseSession.TYPE: // 접속 응답 처리
 			return new AuctionReponseSession(messages[1], messages[2], messages[3]);
 		case ConnectionInfo.TYPE: // 접속 정보 응답 처리

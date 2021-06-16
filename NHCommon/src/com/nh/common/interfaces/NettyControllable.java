@@ -3,10 +3,10 @@ package com.nh.common.interfaces;
 import com.nh.common.AuctionShareNettyClient;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
-import com.nh.share.common.models.CurrentEntryInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
+import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ExceptionCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.ToastMessage;
@@ -49,7 +49,7 @@ public interface NettyControllable {
 
 	public void onToastMessage(ToastMessage toastMessage); // 메시지 전송
 
-	public void onFavoriteCarInfo(FavoriteEntryInfo favoriteCarInfo); // 관심 출품 정보
+	public void onFavoriteEntryInfo(FavoriteEntryInfo favoriteEntryInfo); // 관심 출품 정보
 
 	public void onResponseConnectionInfo(ResponseConnectionInfo responseConnectionInfo); // 접속 정보 인증 응답
 
