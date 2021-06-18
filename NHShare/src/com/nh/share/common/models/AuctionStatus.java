@@ -6,13 +6,16 @@ import com.nh.share.setting.AuctionShareSetting;
 /**
  * 경매 상태 정보 전송
  * 
- * 서버 -> 공통
+ * 경매서버/제어프로그램 -> 공통
  * 
- * SA|출품번호|시작가|현재응찰자수|경매상태(NONE/READY/START/PROGRESS/COMPETITIVE/SUCCESS/FAIL/STOP/COMPLETED/FINISH)|1순위회원번호|2순위회원번호|3순위회원번호|경매진행완료출품수|경매잔여출품수
+ * AS | 경매거점코드 | 출품번호 | 시작가 | 현재응찰자수 | 경매상태(NONE / READY / START / PROGRESS /
+ * COMPETITIVE / SUCCESS / FAIL / STOP / COMPLETED / FINISH) | 1순위회원번호 | 2순위회원번호
+ * | 3순위회원번호 | 경매진행완료출품수 | 경매잔여출품수
  *
  */
 public class AuctionStatus implements FromAuctionCommon {
 	public static final char TYPE = 'S';
+	private String mAuctionHouseCode; // 거점코드
 	private String mEntryNum; // 출품번호
 	private String mStartPrice; // 시작가
 	private String mCurrentBidderCount; // 현재 응찰자 수
@@ -28,8 +31,9 @@ public class AuctionStatus implements FromAuctionCommon {
 
 	}
 
-	public AuctionStatus(String entryNum, String startPrice, String currentBidderCount, String state, String rank1,
-			String rank2, String rank3, String finishEntryCount, String remainEntryCount) {
+	public AuctionStatus(String auctionHouseCode, String entryNum, String startPrice, String currentBidderCount,
+			String state, String rank1, String rank2, String rank3, String finishEntryCount, String remainEntryCount) {
+		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 		mStartPrice = startPrice;
 		mCurrentBidderCount = currentBidderCount;
@@ -42,15 +46,24 @@ public class AuctionStatus implements FromAuctionCommon {
 	}
 
 	public AuctionStatus(String[] messages) {
-		mEntryNum = messages[1];
-		mStartPrice = messages[2];
-		mCurrentBidderCount = messages[3];
-		mState = messages[4];
-		mRank1MemberNum = messages[5];
-		mRank2MemberNum = messages[6];
-		mRank3MemberNum = messages[7];
-		mFinishEntryCount = messages[8];
-		mRemainEntryCount = messages[9];
+		mAuctionHouseCode = messages[1];
+		mEntryNum = messages[2];
+		mStartPrice = messages[3];
+		mCurrentBidderCount = messages[4];
+		mState = messages[5];
+		mRank1MemberNum = messages[6];
+		mRank2MemberNum = messages[7];
+		mRank3MemberNum = messages[8];
+		mFinishEntryCount = messages[9];
+		mRemainEntryCount = messages[10];
+	}
+
+	public String getAuctionHouseCode() {
+		return mAuctionHouseCode;
+	}
+
+	public void setAuctionHouseCode(String auctionHouseCode) {
+		this.mAuctionHouseCode = auctionHouseCode;
 	}
 
 	public String getEntryNum() {
@@ -127,11 +140,11 @@ public class AuctionStatus implements FromAuctionCommon {
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
-				mEntryNum, AuctionShareSetting.DELIMITER, mStartPrice, AuctionShareSetting.DELIMITER,
-				mCurrentBidderCount, AuctionShareSetting.DELIMITER, mState, AuctionShareSetting.DELIMITER,
-				mRank1MemberNum, AuctionShareSetting.DELIMITER, mRank2MemberNum, AuctionShareSetting.DELIMITER,
-				mRank3MemberNum, AuctionShareSetting.DELIMITER, mFinishEntryCount, AuctionShareSetting.DELIMITER,
-				mRemainEntryCount);
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
+				AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mEntryNum,
+				AuctionShareSetting.DELIMITER, mStartPrice, AuctionShareSetting.DELIMITER, mCurrentBidderCount,
+				AuctionShareSetting.DELIMITER, mState, AuctionShareSetting.DELIMITER, mRank1MemberNum,
+				AuctionShareSetting.DELIMITER, mRank2MemberNum, AuctionShareSetting.DELIMITER, mRank3MemberNum,
+				AuctionShareSetting.DELIMITER, mFinishEntryCount, AuctionShareSetting.DELIMITER, mRemainEntryCount);
 	}
 }

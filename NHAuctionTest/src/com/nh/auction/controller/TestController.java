@@ -19,12 +19,13 @@ import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionReponseSession;
 import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.ExceptionCode;
+import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 
@@ -155,19 +156,31 @@ public class TestController extends CommonController implements Initializable {
 	}
 
 	private void putText(String text) {
-		String result = null;
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				String result = null;
 
-		if (mLogTextArea.getText().length() > 0) {
-			result = "\n" + text;
-		} else {
-			result = text;
-		}
+				if (mLogTextArea.getText().length() > 0) {
+					result = "\n" + text;
+				} else {
+					result = text;
+				}
 
-		mLogTextArea.appendText(result);
+				mLogTextArea.appendText(result);
+			}
+		});
 	}
 
 	private void clearText() {
-		mLogTextArea.setText("");
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				mLogTextArea.setText("");
+			}
+		});
 	}
 
 	@Override
@@ -229,6 +242,12 @@ public class TestController extends CommonController implements Initializable {
 	}
 
 	@Override
+	public void onBidding(Bidding bidding) {
+		super.onBidding(bidding);
+		putText(bidding.getEncodedMessage());
+	}
+
+	@Override
 	public void onToastMessage(ToastMessage toastMessage) {
 		super.onToastMessage(toastMessage);
 		putText(toastMessage.getEncodedMessage());
@@ -247,9 +266,9 @@ public class TestController extends CommonController implements Initializable {
 	}
 
 	@Override
-	public void onExceptionCode(ExceptionCode exceptionCode) {
-		super.onExceptionCode(exceptionCode);
-		putText(exceptionCode.getEncodedMessage());
+	public void onResponseCode(ResponseCode responseCode) {
+		super.onResponseCode(responseCode);
+		putText(responseCode.getEncodedMessage());
 	}
 
 	@Override
@@ -287,7 +306,7 @@ public class TestController extends CommonController implements Initializable {
 				String array[] = line.split(",");
 
 				mEntryRepository.add(new EntryInfo(array[1], array[2], array[3], array[4], array[5], array[6], array[7],
-						array[8], array[9], array[10], array[11], array[12], array[13], array[14], "N"));
+						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], "N"));
 			}
 
 			System.out.println("mEntryRepository Size : " + mEntryRepository.size());

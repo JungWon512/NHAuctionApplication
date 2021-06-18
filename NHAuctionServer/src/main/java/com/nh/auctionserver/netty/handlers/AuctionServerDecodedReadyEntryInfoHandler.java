@@ -23,32 +23,33 @@ public final class AuctionServerDecodedReadyEntryInfoHandler extends SimpleChann
 	private final AuctionServer mAuctionServer;
 	private final Auctioneer mAuctionScheduler;
 
-	private ChannelGroup mControllerChannels = null;
-	private ChannelGroup mBidderChannels = null;
-	private ChannelGroup mWatcherChannels = null;
-	private ChannelGroup mAuctionResultMonitorChannels = null;
-	private ChannelGroup mConnectionMonitorChannels = null;
-	private Map<ChannelId, ConnectionInfo> mConnectorInfoMap;
+	private Map<String, ChannelGroup> mControllerChannelsMap = null;
+	private Map<String, ChannelGroup> mBidderChannelsMap = null;
+	private Map<String, ChannelGroup> mWatcherChannelsMap = null;
+	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
+	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
+	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
 
 	public AuctionServerDecodedReadyEntryInfoHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectorInfoMap, ChannelGroup controllerChannels,
-			ChannelGroup bidderChannels, ChannelGroup watcherChannels, ChannelGroup auctionResultMonitorChannels,
-			ChannelGroup connectionMonitorChannels) {
+			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
+			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
+			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
+			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
 		mAuctionServer = auctionServer;
-		mConnectorInfoMap = connectorInfoMap;
+		mConnectionInfoMap = connectionInfoMap;
 		mAuctionScheduler = auctionSchedule;
-		mControllerChannels = controllerChannels;
-		mBidderChannels = bidderChannels;
-		mWatcherChannels = watcherChannels;
-		mAuctionResultMonitorChannels = auctionResultMonitorChannels;
-		mConnectionMonitorChannels = connectionMonitorChannels;
+		mControllerChannelsMap = controllerChannelsMap;
+		mBidderChannelsMap = bidderChannelsMap;
+		mWatcherChannelsMap = watcherChannelsMap;
+		mAuctionResultMonitorChannelsMap = auctionResultMonitorChannelsMap;
+		mConnectionMonitorChannelsMap = connectionMonitorChannelsMap;
 	}
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, ReadyEntryInfo readyEntryInfo) throws Exception {
 		mLogger.info((readyEntryInfo.getEntryNum() + "출품번호 경매 준비 요청"));
 
-		if (mControllerChannels.contains(ctx.channel()) == true) {
+		if (mControllerChannelsMap.get(readyEntryInfo.getAuctionHouseCode()).contains(ctx.channel()) == true) {
 			mLogger.info("정상 채널에서 경매 준비를 요청하였습니다.");
 			mAuctionServer.itemAdded(readyEntryInfo.getEncodedMessage());
 		} else {

@@ -8,29 +8,44 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 공통
  * 
- * OI|회원(사원)번호|접속요청채널(6001/6002/6003/6004)|사용채널(ANDROID/IOS/WEB)|응찰상태(N : 일반 / B
- * : 응찰 / O : 종료)
+ * SI | 경매거점코드 | 회원번호 | 접속요청채널(6001/6002/6003/6004) | 사용채널(ANDROID/IOS/WEB) |
+ * 상태(N : 미응찰 / B : 응찰) | 응찰가격
  *
  */
 public class BidderConnectInfo implements FromAuctionServer {
 	public static final char TYPE = 'I';
+	private String mAuctionHouseCode; // 거점코드
 	private String mUserNo; // 회원번호
 	private String mChannel; // 접속 요청 채널
 	private String mOS; // 사용 채널
 	private String mStatus; // 응찰 상태
+	private String mBidPrice; // 응찰 상태
 
-	public BidderConnectInfo(String userNo, String channel, String os, String status) {
+	public BidderConnectInfo(String auctionHouseCode, String userNo, String channel, String os, String status,
+			String bidPrice) {
+		mAuctionHouseCode = auctionHouseCode;
 		mUserNo = userNo;
 		mChannel = channel;
 		mOS = os;
 		mStatus = status;
+		mBidPrice = bidPrice;
 	}
 
 	public BidderConnectInfo(String[] messages) {
-		mUserNo = messages[1];
-		mChannel = messages[2];
-		mOS = messages[3];
-		mStatus = messages[4];
+		mAuctionHouseCode = messages[1];
+		mUserNo = messages[2];
+		mChannel = messages[3];
+		mOS = messages[4];
+		mStatus = messages[5];
+		mBidPrice = messages[6];
+	}
+
+	public String getAuctionHouseCode() {
+		return mAuctionHouseCode;
+	}
+
+	public void setAuctionHouseCode(String auctionHouseCode) {
+		this.mAuctionHouseCode = auctionHouseCode;
 	}
 
 	public String getUserNo() {
@@ -65,10 +80,19 @@ public class BidderConnectInfo implements FromAuctionServer {
 		this.mStatus = status;
 	}
 
+	public String getBidPrice() {
+		return mBidPrice;
+	}
+
+	public void setBidPrice(String bidPrice) {
+		this.mBidPrice = bidPrice;
+	}
+
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mUserNo,
-				AuctionShareSetting.DELIMITER, mChannel, AuctionShareSetting.DELIMITER, mOS,
-				AuctionShareSetting.DELIMITER, mStatus);
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
+				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mUserNo, AuctionShareSetting.DELIMITER, mChannel,
+				AuctionShareSetting.DELIMITER, mOS, AuctionShareSetting.DELIMITER, mStatus,
+				AuctionShareSetting.DELIMITER, mBidPrice);
 	}
 }

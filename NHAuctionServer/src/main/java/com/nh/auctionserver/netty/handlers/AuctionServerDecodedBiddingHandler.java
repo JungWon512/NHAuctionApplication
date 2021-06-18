@@ -10,6 +10,7 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.server.models.ResponseCode;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -24,40 +25,50 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 	private final AuctionServer mAuctionServer;
 	private final Auctioneer mAuctionScheduler;
 
-	private ChannelGroup mControllerChannels = null;
-	private ChannelGroup mBidderChannels = null;
-	private ChannelGroup mWatcherChannels = null;
-	private ChannelGroup mAuctionResultMonitorChannels = null;
-	private ChannelGroup mConnectionMonitorChannels = null;
-	private Map<ChannelId, ConnectionInfo> mConnectorInfoMap;
+	private Map<String, ChannelGroup> mControllerChannelsMap = null;
+	private Map<String, ChannelGroup> mBidderChannelsMap = null;
+	private Map<String, ChannelGroup> mWatcherChannelsMap = null;
+	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
+	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
+	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
 
 	public AuctionServerDecodedBiddingHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectorInfoMap, ChannelGroup controllerChannels,
-			ChannelGroup bidderChannels, ChannelGroup watcherChannels, ChannelGroup auctionResultMonitorChannels,
-			ChannelGroup connectionMonitorChannels) {
+			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
+			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
+			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
+			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
 		mAuctionServer = auctionServer;
-		mConnectorInfoMap = connectorInfoMap;
+		mConnectionInfoMap = connectionInfoMap;
 		mAuctionScheduler = auctionSchedule;
-		mControllerChannels = controllerChannels;
-		mBidderChannels = bidderChannels;
-		mWatcherChannels = watcherChannels;
-		mAuctionResultMonitorChannels = auctionResultMonitorChannels;
-		mConnectionMonitorChannels = connectionMonitorChannels;
+		mControllerChannelsMap = controllerChannelsMap;
+		mBidderChannelsMap = bidderChannelsMap;
+		mWatcherChannelsMap = watcherChannelsMap;
+		mAuctionResultMonitorChannelsMap = auctionResultMonitorChannelsMap;
+		mConnectionMonitorChannelsMap = connectionMonitorChannelsMap;
 	}
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, Bidding bidding) throws Exception {
-		if (mConnectorInfoMap.containsKey(ctx.channel().id()) && mBidderChannels.contains(ctx.channel())) {
-			if (mAuctionScheduler.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_START)
-					|| mAuctionScheduler.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)
-					|| mAuctionScheduler.getCurrentAuctionStatus()
-							.equals(GlobalDefineCode.AUCTION_STATUS_COMPETITIVE)) {
+		if (mConnectionInfoMap.containsKey(ctx.channel().id())
+				&& mBidderChannelsMap.get(bidding.getAuctionHouseCode()).contains(ctx.channel())) {
+			if (mAuctionScheduler.getCurrentAuctionStatus(bidding.getAuctionHouseCode())
+					.equals(GlobalDefineCode.AUCTION_STATUS_START)
+					|| mAuctionScheduler.getCurrentAuctionStatus(bidding.getAuctionHouseCode())
+							.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 
-				mLogger.debug("HazelcastMessage ADD : " + bidding.getEncodedMessage());
+				mLogger.debug("Message ADD : " + bidding.getEncodedMessage());
 
-				if (bidding.getPriceInt() >= Integer.valueOf(mAuctionScheduler.getAuctionState().getStartPrice())) {
+				if (bidding.getPriceInt() >= Integer
+						.valueOf(mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getStartPrice())) {
 					mAuctionServer.itemAdded(bidding.getEncodedMessage());
+				} else {
+					mLogger.debug("=============================================");
+					mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+					mLogger.debug("=============================================");
+					ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage() + "\r\n");
 				}
+			} else {
+				ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage() + "\r\n");
 			}
 		} else {
 			mLogger.debug("=============================================");

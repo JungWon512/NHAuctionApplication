@@ -10,7 +10,7 @@ import com.nh.common.handlers.AuctionClientDecodedBiddingHandler;
 import com.nh.common.handlers.AuctionClientDecodedCheckSessionHandler;
 import com.nh.common.handlers.AuctionClientDecodedCountDownHandler;
 import com.nh.common.handlers.AuctionClientDecodedCurrentEntryInfoHandler;
-import com.nh.common.handlers.AuctionClientDecodedExceptionCodeHandler;
+import com.nh.common.handlers.AuctionClientDecodedResponseCodeHandler;
 import com.nh.common.handlers.AuctionClientDecodedFavoriteEntryInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedResponseConnectionInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedToastMessageHandler;
@@ -94,7 +94,7 @@ public class AuctionShareNettyClient {
 							pipeline.addLast(new AuctionClientDecodedAuctionStatusHandler(controller)); // 경매 상태 정보 전송
 							pipeline.addLast(new AuctionClientDecodedToastMessageHandler(controller)); // 메시지 전송 처리
 							pipeline.addLast(new AuctionClientDecodedResponseConnectionInfoHandler(controller)); // 접속응답처리
-							pipeline.addLast(new AuctionClientDecodedExceptionCodeHandler(controller)); // 예외 상황 전송
+							pipeline.addLast(new AuctionClientDecodedResponseCodeHandler(controller)); // 예외 상황 전송
 							pipeline.addLast(new AuctionClientDecodedCheckSessionHandler(controller)); // 경매 서버 접속 유효 확인
 																										// 처리
 

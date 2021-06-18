@@ -4,21 +4,31 @@ import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.setting.AuctionShareSetting;
 
 /**
- * 강제 유찰 처리 기능  
+ * 강제 유찰 처리 기능
  * 
- * 제어프로그램 -> 서버
+ * 제어프로그램 -> 경매서버
  * 
- * CP|출품번호
+ * CP | 경매거점코드 | 출품번호
  *
  */
 public class PassAuction implements FromAuctionController {
 	public static final char TYPE = 'P';
-	private String mEntryNum;	// 출품 번호 
-	
-	public PassAuction(String entryNum) {
+	private String mAuctionHouseCode; // 거점코드
+	private String mEntryNum; // 출품 번호
+
+	public PassAuction(String auctionHouseCode, String entryNum) {
+		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 	}
-		
+
+	public String getAuctionHouseCode() {
+		return mAuctionHouseCode;
+	}
+
+	public void setAuctionHouseCode(String auctionHouseCode) {
+		this.mAuctionHouseCode = auctionHouseCode;
+	}
+
 	public String getEntryNum() {
 		return mEntryNum;
 	}
@@ -29,7 +39,8 @@ public class PassAuction implements FromAuctionController {
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mEntryNum);
+		return String.format("%c%c%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode,
+				AuctionShareSetting.DELIMITER, mEntryNum);
 	}
 
 }

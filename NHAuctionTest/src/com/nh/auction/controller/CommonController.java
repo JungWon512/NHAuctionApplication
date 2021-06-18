@@ -16,7 +16,7 @@ import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.ExceptionCode;
+import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
@@ -200,7 +200,7 @@ public class CommonController implements NettyControllable {
 	}
 
 	@Override
-    public void onExceptionCode(ExceptionCode exceptionCode) {
+    public void onResponseCode(ResponseCode exceptionCode) {
         dismissLoadingDialog();
     }
 

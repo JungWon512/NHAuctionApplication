@@ -8,29 +8,41 @@ import com.nh.share.setting.AuctionShareSetting;
 /**
  * 경매 응찰 처리 기능
  * 
- * 응찰기 -> 서버 -> 제어
+ * 응찰기 -> 경매서버 -> 제어
  * 
- * BB|접속채널|경매회원번호|응찰금액(만원)|출품번호
+ * AB | 경매거점코드 | 접속채널(ANDROID/IOS/WEB) | 경매회원번호 | 출품번호 | 응찰금액(만원) | 신규응찰여부(Y/N)
  *
  */
 public class Bidding implements FromAuctionCommon, Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final char TYPE = 'B';
+	private String mAuctionHouseCode;
 	private String mChannel;
 	private String mUserNo;
 	private String mPrice;
 	private String mBiddingTime;
 	private String mEntryNum;
+	private String mIsNewBid;
 
 	private int mPriceInt;
 
-	public Bidding(String channel, String userNo, String entryNum, String price) {
+	public Bidding(String auctionHouseCode, String channel, String userNo, String entryNum, String price,
+			String isNewBid) {
+		mAuctionHouseCode = auctionHouseCode;
 		mChannel = channel;
 		mUserNo = userNo;
 		mPrice = price;
 		mEntryNum = entryNum;
-
 		mPriceInt = Integer.parseInt(mPrice);
+		mIsNewBid = isNewBid;
+	}
+
+	public String getAuctionHouseCode() {
+		return mAuctionHouseCode;
+	}
+
+	public void setAuctionHouseCode(String auctionHouseCode) {
+		this.mAuctionHouseCode = auctionHouseCode;
 	}
 
 	public String getChannel() {
@@ -66,6 +78,14 @@ public class Bidding implements FromAuctionCommon, Serializable {
 		this.mPriceInt = price;
 	}
 
+	public String getIsNewBid() {
+		return mIsNewBid;
+	}
+
+	public void setIsNewBid(String isNewBid) {
+		this.mIsNewBid = isNewBid;
+	}
+
 	public String getBiddingTime() {
 		return mBiddingTime;
 	}
@@ -75,9 +95,10 @@ public class Bidding implements FromAuctionCommon, Serializable {
 	}
 
 	public String getBiddingInfoForLog() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mChannel,
-				AuctionShareSetting.DELIMITER, mUserNo, AuctionShareSetting.DELIMITER, mEntryNum,
-				AuctionShareSetting.DELIMITER, mPrice);
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
+				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mChannel, AuctionShareSetting.DELIMITER, mUserNo,
+				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mPrice,
+				AuctionShareSetting.DELIMITER, mIsNewBid);
 	}
 
 	public String getEntryNum() {
@@ -90,8 +111,9 @@ public class Bidding implements FromAuctionCommon, Serializable {
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mChannel,
-				AuctionShareSetting.DELIMITER, mUserNo, AuctionShareSetting.DELIMITER, mEntryNum,
-				AuctionShareSetting.DELIMITER, mPrice);
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
+				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mChannel, AuctionShareSetting.DELIMITER, mUserNo,
+				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mPrice,
+				AuctionShareSetting.DELIMITER, mIsNewBid);
 	}
 }

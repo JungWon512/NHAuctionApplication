@@ -9,6 +9,24 @@ package com.nh.share.code;
  */
 public class GlobalDefineCode {
 	// 경매장 거점 코드
+	public enum AUCTION_HOUSE {
+		AUCTION_HOUSE_HWADONG("1100"),
+		AUCTION_HOUSE_HWASUN("2100"),
+		AUCTION_HOUSE_JANGSU("3100");
+	    
+	    private final String value;
+	    
+		AUCTION_HOUSE(String value){
+	        this.value = value;
+	            
+	    }
+	    
+	    public String getValue(){
+	        return value;
+	    }
+	 
+	}
+	
 	public static final String AUCTION_HOUSE_HWADONG = "1100";
 	public static final String AUCTION_HOUSE_HWASUN = "2100";
 	public static final String AUCTION_HOUSE_JANGSU = "3100";
@@ -34,16 +52,13 @@ public class GlobalDefineCode {
 	public static final String USE_CHANNEL_MANAGE = "MANAGE";
 
 	// 경매 진행 상태
-	public static final String AUCTION_STATUS_NONE = "8001";
+	public static final String AUCTION_STATUS_NONE = "8001"; // 출품 자료 이관 전 상태
 	public static final String AUCTION_STATUS_READY = "8002"; // 경매 준비 상태
 	public static final String AUCTION_STATUS_START = "8003"; // 경매 시작 상태
 	public static final String AUCTION_STATUS_PROGRESS = "8004"; // 경매 진행 상태
-	public static final String AUCTION_STATUS_COMPETITIVE = "8005"; // 경매 경쟁 상태
-	public static final String AUCTION_STATUS_SUCCESS = "8006"; // 경매 낙찰 상태
-	public static final String AUCTION_STATUS_FAIL = "8007"; // 경매 유찰 상태
-	public static final String AUCTION_STATUS_STOP = "8008"; // 경매 정지 상태
-	public static final String AUCTION_STATUS_COMPLETED = "8009"; // 경매 출품 건 완료 상태
-	public static final String AUCTION_STATUS_FINISH = "8010"; // 경매 종료 상태
+	public static final String AUCTION_STATUS_PASS = "8005"; // 경매 출품 건 강제 유찰
+	public static final String AUCTION_STATUS_COMPLETED = "8006"; // 경매 출품 건 완료 상태
+	public static final String AUCTION_STATUS_FINISH = "8007"; // 경매 종료 상태
 
 	// 경매 시작 카운트 다운 상태
 	public static final String AUCTION_COUNT_DOWN_READY = "R"; // 경매 시작 카운트 다운 준비 상태
@@ -59,11 +74,13 @@ public class GlobalDefineCode {
 	public static final String CONNECT_EXPIRE_WATCHER = "2005"; // 관전자 접속 만료
 
 	// 요청 결과 미존재
-	public static final String RESPONSE_REQUEST_NOT_RESULT_EXCEPTION = "4001";
+	public static final String RESPONSE_REQUEST_NOT_RESULT = "4001";
 	// 요청 실패
-	public static final String RESPONSE_REQUEST_FAIL_EXCEPTION = "4002";
-	// 중복 로그인
-	public static final String RESPONSE_DUPLECATE_ACCOUNT_EXCEPTION = "5001";
+	public static final String RESPONSE_REQUEST_FAIL = "4002";
+	// 시작가 이하 응찰 시도
+	public static final String RESPONSE_REQUEST_BIDDING_LOW_PRICE = "4003";
+	// 출품 이관 전 상태
+	public static final String RESPONSE_NOT_TRANSMISSION_ENTRY_INFO = "4004";
 
 	// 프로그램 사용자 로그인 요청 타입
 	public static final String AUCTION_LOGIN_TYPE_MANAGER = "MANAGER"; // 관리자

@@ -52,18 +52,23 @@ public class AuctionState {
 	// 현재 출품 차량 정보
 	private EntryInfo mCurrentEntryInfo;
 
-	public AuctionState(Auctioneer auctioneer) {
+	// 거점코드
+	private String mAuctionHouseCode;
+
+	public AuctionState(String auctionHouseCode, Auctioneer auctioneer) {
 		mAuctioneer = auctioneer;
+		mAuctionHouseCode = auctionHouseCode;
 	}
 
 	public AuctionStatus getAuctionStatus() {
-		AuctionStatus auctionStatus = new AuctionStatus(mEntryNum, mStartPrice, mCurrentBidderCount, mState,
-				mRank1MemberNum, mRank2MemberNum, mRank3MemberNum, mFinishEntryCount, mRemainEntryCount);
+		AuctionStatus auctionStatus = new AuctionStatus(mAuctionHouseCode, mEntryNum, mStartPrice, mCurrentBidderCount,
+				mState, mRank1MemberNum, mRank2MemberNum, mRank3MemberNum, mFinishEntryCount, mRemainEntryCount);
 
 		return auctionStatus;
 	}
 
 	public void setAuctionStatus(AuctionStatus auctionStatus) {
+		mAuctionHouseCode = auctionStatus.getAuctionHouseCode();
 		mEntryNum = auctionStatus.getEntryNum();
 		mStartPrice = auctionStatus.getStartPrice();
 		mCurrentBidderCount = auctionStatus.getCurrentBidderCount();
@@ -355,12 +360,12 @@ public class AuctionState {
 
 	/**
 	 * 
-	 * @MethodName onStop
-	 * @Description 경매 정지 상태
+	 * @MethodName onPass
+	 * @Description 경매 출품 건 강제 유찰 상테
 	 *
 	 */
-	public void onStop() {
-		this.mState = GlobalDefineCode.AUCTION_STATUS_STOP;
+	public void onPass() {
+		this.mState = GlobalDefineCode.AUCTION_STATUS_PASS;
 	}
 
 	/**
@@ -371,36 +376,6 @@ public class AuctionState {
 	 */
 	public void onProgress() {
 		this.mState = GlobalDefineCode.AUCTION_STATUS_PROGRESS;
-	}
-
-	/**
-	 * 
-	 * @MethodName onCompetitive
-	 * @Description 경매 경쟁 상태
-	 *
-	 */
-	public void onCompetitive() {
-		this.mState = GlobalDefineCode.AUCTION_STATUS_COMPETITIVE;
-	}
-
-	/**
-	 * 
-	 * @MethodName onSuccess
-	 * @Description 경매 낙찰 상태
-	 *
-	 */
-	public void onSuccess() {
-		this.mState = GlobalDefineCode.AUCTION_STATUS_SUCCESS;
-	}
-
-	/**
-	 * 
-	 * @MethodName onFail
-	 * @Description 경매 유찰 상태
-	 *
-	 */
-	public void onFail() {
-		this.mState = GlobalDefineCode.AUCTION_STATUS_FAIL;
 	}
 
 	/**
@@ -430,6 +405,7 @@ public class AuctionState {
 	 *
 	 */
 	public void onAuctionCountDownReady() {
+		this.mAuctionCountDownTime = AuctionServerSetting.COUNT_DOWN_TIME;
 		this.mAuctionCountDownStatus = GlobalDefineCode.AUCTION_COUNT_DOWN_READY;
 	}
 

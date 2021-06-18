@@ -47,7 +47,7 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.ExceptionCode;
+import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
@@ -59,7 +59,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -71,26 +70,26 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
-import io.netty.util.concurrent.DefaultEventExecutor;
 
 public class AuctionServer {
+	// new DefaultChannelGroup(new DefaultEventExecutor());
 	private final Logger mLogger = LoggerFactory.getLogger(AuctionServer.class);
 
 	private EventLoopGroup mBossGroup;
 	private EventLoopGroup mWorkerGroup;
-	private ChannelGroup mControllerChannels = new DefaultChannelGroup(new DefaultEventExecutor());
-	private ChannelGroup mBidderChannels = new DefaultChannelGroup(new DefaultEventExecutor());
-	private ChannelGroup mWatcherChannels = new DefaultChannelGroup(new DefaultEventExecutor());
-	private ChannelGroup mAuctionResultMonitorChannels = new DefaultChannelGroup(new DefaultEventExecutor());
-	private ChannelGroup mConnectionMonitorChannels = new DefaultChannelGroup(new DefaultEventExecutor());
+	private Map<String, ChannelGroup> mControllerChannelsMap = new HashMap<String, ChannelGroup>();
+	private Map<String, ChannelGroup> mBidderChannelsMap = new HashMap<String, ChannelGroup>();
+	private Map<String, ChannelGroup> mWatcherChannelsMap = new HashMap<String, ChannelGroup>();
+	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = new HashMap<String, ChannelGroup>();
+	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = new HashMap<String, ChannelGroup>();
 
-	private Auctioneer mAuctioneer;
+	private static Auctioneer mAuctioneer;
 
 	private Map<ChannelId, ConnectionInfo> mConnectorInfoMap = new HashMap<ChannelId, ConnectionInfo>();
 
 	private boolean mWaitServerShutDown = false;
 
-	private Map<Integer, Object> mBiddingInfoMap = new HashMap<Integer, Object>();
+	private Map<String, Map<Integer, Object>> mBiddingInfoMap = new HashMap<String, Map<Integer, Object>>();
 
 	private AuctionServer(Builder builder) {
 		this(builder.port, builder.portCount);
@@ -163,38 +162,38 @@ public class AuctionServer {
 						pipeline.addLast(new AuctionServerInboundDecoder());
 
 						pipeline.addLast(new AuctionServerConnectorHandler(AuctionServer.this, mAuctioneer,
-								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedEntryInfoHandler(AuctionServer.this, mAuctioneer,
-								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedBiddingHandler(AuctionServer.this, mAuctioneer,
-								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedEditSettingHandler(AuctionServer.this, mAuctioneer,
-								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedPassAuctionHandler(AuctionServer.this, mAuctioneer,
-								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedStopAuctionHandler(AuctionServer.this, mAuctioneer,
-								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedReadyEntryInfoHandler(AuctionServer.this, mAuctioneer,
-								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedStartAuctionHandler(AuctionServer.this, mAuctioneer,
-								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedToastMessageRequestHandler(AuctionServer.this,
-								mAuctioneer, mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mAuctioneer, mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedAuctionResponseSessionHandler(AuctionServer.this,
-								mAuctioneer, mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mAuctioneer, mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedRequestLogoutHandler(AuctionServer.this, mAuctioneer,
-								mConnectorInfoMap, mControllerChannels, mBidderChannels, mWatcherChannels,
-								mAuctionResultMonitorChannels, mConnectionMonitorChannels));
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 
 						pipeline.addFirst(new StringEncoder(CharsetUtil.UTF_8));
 					}
@@ -209,98 +208,92 @@ public class AuctionServer {
 
 	public void stopServer() {
 		mLogger.debug("Auction server stop!!");
-		if (mAuctioneer.getAuctionState().getAuctionState() == null
-				|| !mAuctioneer.getAuctionState().getAuctionState().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
-			mLogger.debug("Auction server disconnect all channel!!");
-			if (mBidderChannels.size() > 0) {
-				mBidderChannels.close();
+		mLogger.debug("Auction server disconnect all channel!!");
+		if (mBidderChannelsMap.size() > 0) {
+			for (String key : mBidderChannelsMap.keySet()) {
+				mBidderChannelsMap.get(key).close();
 				mWaitServerShutDown = true;
-			}
-
-			if (mWatcherChannels.size() > 0) {
-				mWatcherChannels.close();
-				mWaitServerShutDown = true;
-			}
-
-			if (mControllerChannels.size() > 0) {
-				mControllerChannels.close();
-				mWaitServerShutDown = true;
-			}
-
-			if (mAuctionResultMonitorChannels.size() > 0) {
-				mAuctionResultMonitorChannels.close();
-				mWaitServerShutDown = true;
-			}
-
-			if (mConnectionMonitorChannels.size() > 0) {
-				mConnectionMonitorChannels.close();
-				mWaitServerShutDown = true;
-			}
-
-			mBossGroup.shutdownGracefully();
-			mWorkerGroup.shutdownGracefully();
-
-			if (!mWaitServerShutDown) {
-				mLogger.info(
-						"************************************* Bye Auction World! **************************************");
-
-				System.exit(0);
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @MethodName getControllerChannels
-	 * @Description 현재 제어프로그램의 채널 그룹을 반환 처리
-	 *
-	 * @return ChannelGroup 제어프로그램 채널 그룹
-	 */
-	public ChannelGroup getControllerChannels() {
-		return mControllerChannels;
-	}
-
-	public void entryAdded(Object event) {
-		if (event instanceof Bidding) {
-			mLogger.debug("EntryAdded : " + ((Bidding) event).getEncodedMessage());
-			if (mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)
-					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_SUCCESS)
-					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FAIL)
-					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
-				mLogger.debug("경매 출품 단위 완료/낙찰/유찰/종료 상태, skip setBidding");
-			} else {
-				mAuctioneer.setBidding((Bidding) event);
 			}
 		}
 
-		if (event instanceof ConnectionInfo) {
-			mLogger.debug("ConnectionInfo entryAdded : " + ((ConnectionInfo) event).getEncodedMessage());
-			mLogger.debug("ConnectorInfoMap size : " + mConnectorInfoMap.size());
-
-			if (((ConnectionInfo) event).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
-				if (mConnectionMonitorChannels != null && mConnectionMonitorChannels.size() > 0) {
-					mConnectionMonitorChannels.writeAndFlush(new BidderConnectInfo(((ConnectionInfo) event).getUserNo(),
-							((ConnectionInfo) event).getChannel(), ((ConnectionInfo) event).getOS(), "N")
-									.getEncodedMessage()
-							+ "\r\n");
-				}
+		if (mWatcherChannelsMap.size() > 0) {
+			for (String key : mWatcherChannelsMap.keySet()) {
+				mWatcherChannelsMap.get(key).close();
+				mWaitServerShutDown = true;
 			}
 		}
-	}
 
-	public void entryUpdated(Object event) {
-		mLogger.debug("EntryUpdated : " + ((Bidding) event).getEncodedMessage());
-		if (event instanceof Bidding) {
-			if (mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)
-					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_SUCCESS)
-					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FAIL)
-					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
-				mLogger.debug("경매 출품 단위 완료/낙찰/유찰/종료 상태, skip setBidding");
-			} else {
-				mAuctioneer.setBidding((Bidding) event);
+		if (mControllerChannelsMap.size() > 0) {
+			for (String key : mControllerChannelsMap.keySet()) {
+				mControllerChannelsMap.get(key).close();
+				mWaitServerShutDown = true;
 			}
 		}
+
+		if (mAuctionResultMonitorChannelsMap.size() > 0) {
+			for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
+				mAuctionResultMonitorChannelsMap.get(key).close();
+				mWaitServerShutDown = true;
+			}
+		}
+
+		if (mConnectionMonitorChannelsMap.size() > 0) {
+			for (String key : mConnectionMonitorChannelsMap.keySet()) {
+				mConnectionMonitorChannelsMap.get(key).close();
+				mWaitServerShutDown = true;
+			}
+		}
+
+		mBossGroup.shutdownGracefully();
+		mWorkerGroup.shutdownGracefully();
+
+		mLogger.info("************************************* Bye Auction World! **************************************");
+
+		System.exit(0);
 	}
+
+//	public void entryAdded(Object event) {
+//		if (event instanceof Bidding) {
+//			mLogger.debug("EntryAdded : " + ((Bidding) event).getEncodedMessage());
+//			if (mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)
+//					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_SUCCESS)
+//					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FAIL)
+//					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
+//				mLogger.debug("경매 출품 단위 완료/낙찰/유찰/종료 상태, skip setBidding");
+//			} else {
+//				mAuctioneer.setBidding((Bidding) event);
+//			}
+//		}
+//
+//		if (event instanceof ConnectionInfo) {
+//			mLogger.debug("ConnectionInfo entryAdded : " + ((ConnectionInfo) event).getEncodedMessage());
+//			mLogger.debug("ConnectorInfoMap size : " + mConnectorInfoMap.size());
+//
+//			if (((ConnectionInfo) event).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+//				if (mConnectionMonitorChannelsMap != null && mConnectionMonitorChannelsMap.size() > 0) {
+//					mConnectionMonitorChannelsMap
+//							.writeAndFlush(new BidderConnectInfo(((ConnectionInfo) event).getUserNo(),
+//									((ConnectionInfo) event).getChannel(), ((ConnectionInfo) event).getOS(), "N", "0")
+//											.getEncodedMessage()
+//									+ "\r\n");
+//				}
+//			}
+//		}
+//	}
+//
+//	public void entryUpdated(Object event) {
+//		mLogger.debug("EntryUpdated : " + ((Bidding) event).getEncodedMessage());
+//		if (event instanceof Bidding) {
+//			if (mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)
+//					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_SUCCESS)
+//					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FAIL)
+//					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
+//				mLogger.debug("경매 출품 단위 완료/낙찰/유찰/종료 상태, skip setBidding");
+//			} else {
+//				mAuctioneer.setBidding((Bidding) event);
+//			}
+//		}
+//	}
 
 	public void itemAdded(String event) {
 		// mLogger.debug("HazelcastBiddings itemAdded : " + event.getItem());
@@ -319,13 +312,13 @@ public class AuctionServer {
 			if (serverParsedMessage instanceof FavoriteEntryInfo) {
 				channelItemWriteAndFlush(((FavoriteEntryInfo) serverParsedMessage));
 			}
-			
+
 			if (serverParsedMessage instanceof CurrentEntryInfo) {
 				channelItemWriteAndFlush(((CurrentEntryInfo) serverParsedMessage));
 			}
 
-			if (serverParsedMessage instanceof ExceptionCode) {
-				channelItemWriteAndFlush(((ExceptionCode) serverParsedMessage));
+			if (serverParsedMessage instanceof ResponseCode) {
+				channelItemWriteAndFlush(((ResponseCode) serverParsedMessage));
 			}
 
 			if (serverParsedMessage instanceof AuctionCheckSession) {
@@ -344,29 +337,39 @@ public class AuctionServer {
 			}
 
 			if (controllerParsedMessage instanceof ReadyEntryInfo) {
+				mLogger.info("경매 준비 요청 거점코드 : " + ((ReadyEntryInfo) controllerParsedMessage).getAuctionHouseCode());
 				mLogger.info("경매 준비 요청 출품 번호 : " + ((ReadyEntryInfo) controllerParsedMessage).getEntryNum());
-				mAuctioneer.readyEntryInfo(((ReadyEntryInfo) controllerParsedMessage).getEntryNum());
+				mAuctioneer.readyEntryInfo(((ReadyEntryInfo) controllerParsedMessage).getAuctionHouseCode(),
+						((ReadyEntryInfo) controllerParsedMessage).getEntryNum());
 			}
-			
+
 			if (controllerParsedMessage instanceof PassAuction) {
-				mLogger.info("경매 유찰 : " + ((PassAuction) controllerParsedMessage).getEntryNum());
-				mAuctioneer.passAuction();
+				mLogger.info("경매 유찰 요청 거점코드 : " + ((PassAuction) controllerParsedMessage).getAuctionHouseCode());
+				mLogger.info("경매 유찰 요청 : " + ((PassAuction) controllerParsedMessage).getEntryNum());
+				mAuctioneer.passAuction(((PassAuction) controllerParsedMessage).getAuctionHouseCode());
 			}
 
 			if (controllerParsedMessage instanceof StopAuction) {
-				mLogger.info("경매 진행 정지 : " + ((StopAuction) controllerParsedMessage).getEntryNum());
-				mAuctioneer.stopAuction();
+				mLogger.info("경매 진행 정지 요청 거점코드 : " + ((StopAuction) controllerParsedMessage).getAuctionHouseCode());
+				mLogger.info("경매 진행 정지 요청 : " + ((StopAuction) controllerParsedMessage).getEntryNum());
+
+				if (mAuctioneer.getCurrentAuctionStatus(((StopAuction) controllerParsedMessage).getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+					mAuctioneer.stopAuction(((StopAuction) controllerParsedMessage).getAuctionHouseCode());
+				} else {
+					mConnectionMonitorChannelsMap.get(((StopAuction) controllerParsedMessage).getAuctionHouseCode())
+							.writeAndFlush(
+									new ResponseCode(((StopAuction) controllerParsedMessage).getAuctionHouseCode(),
+											GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage()
+											+ "\r\n");
+				}
 			}
 
 			if (controllerParsedMessage instanceof StartAuction) {
-				mLogger.info("경매 진행 시작 : " + ((StartAuction) controllerParsedMessage).getEntryNum());
-
+				mLogger.info("경매 진행 시작 요청 거점코드 : " + ((StartAuction) controllerParsedMessage).getAuctionHouseCode());
+				mLogger.info("경매 진행 시작 요청 : " + ((StartAuction) controllerParsedMessage).getEntryNum());
+				mAuctioneer.startAuction(((StartAuction) controllerParsedMessage).getAuctionHouseCode());
 				// 경매 최초 시작 여부 확인 후 카운트 다운 상황인지 일반 경매 시작 상황인지 확인
-				if (mAuctioneer.getAuctionCountDownStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN_COMPLETED)) {
-					mAuctioneer.startAuction();
-				} else {
-					mAuctioneer.startAuctionCountDown();
-				}
 			}
 
 			if (controllerParsedMessage instanceof ToastMessageRequest) {
@@ -378,38 +381,47 @@ public class AuctionServer {
 			}
 
 			if (controllerParsedMessage instanceof EntryInfo) {
-				mAuctioneer.addEntryInfo((EntryInfo) controllerParsedMessage);
+				mAuctioneer.addEntryInfo(((EntryInfo) controllerParsedMessage).getAuctionHouseCode(),
+						(EntryInfo) controllerParsedMessage);
 			}
 			break;
 		case FromAuctionCommon.ORIGIN:
 			FromAuctionCommon commonParsedMessage = CommonMessageParser.parse(event);
 
 			if (commonParsedMessage instanceof AuctionStatus) {
-				mAuctioneer.setAuctionStatus((AuctionStatus) commonParsedMessage);
+				mAuctioneer.setAuctionStatus(((AuctionStatus) commonParsedMessage).getAuctionHouseCode(),
+						(AuctionStatus) commonParsedMessage);
 
 				channelItemWriteAndFlush((AuctionStatus) commonParsedMessage);
 			}
 
 			if (commonParsedMessage instanceof Bidding) { // Bidding은 경매가 시작한 후에만 수신되도록 한다.
-				if (mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_START)
-						|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)
-						|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_COMPETITIVE)) {
+				if (mAuctioneer.getCurrentAuctionStatus(((Bidding) commonParsedMessage).getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_START)
+						|| mAuctioneer.getCurrentAuctionStatus(((Bidding) commonParsedMessage).getAuctionHouseCode())
+								.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 
 					((Bidding) commonParsedMessage).setBiddingTime(
 							LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
 
-					if (!mBiddingInfoMap.containsKey(((Bidding) commonParsedMessage).getPriceInt())) {
-						mBiddingInfoMap.put(((Bidding) commonParsedMessage).getPriceInt(),
-								(Bidding) commonParsedMessage);
-						entryAdded((Bidding) commonParsedMessage);
+					if (!mBiddingInfoMap.get(((Bidding) commonParsedMessage).getAuctionHouseCode())
+							.containsKey(((Bidding) commonParsedMessage).getPriceInt())) {
+						mBiddingInfoMap.get(((Bidding) commonParsedMessage).getAuctionHouseCode())
+								.put(((Bidding) commonParsedMessage).getPriceInt(), (Bidding) commonParsedMessage);
+						// entryAdded((Bidding) commonParsedMessage);
+						((Bidding) commonParsedMessage).setIsNewBid("Y");
 					} else {
-						entryUpdated((Bidding) commonParsedMessage);
+						// entryUpdated((Bidding) commonParsedMessage);
+						((Bidding) commonParsedMessage).setIsNewBid("N");
 					}
 
-					mConnectionMonitorChannels
-							.writeAndFlush(new BidderConnectInfo(((Bidding) commonParsedMessage).getUserNo(),
-									GlobalDefineCode.CONNECT_CHANNEL_BIDDER,
-									((Bidding) commonParsedMessage).getChannel(), "B").getEncodedMessage() + "\r\n");
+					channelItemWriteAndFlush(((Bidding) commonParsedMessage));
+					
+					channelItemWriteAndFlush((new BidderConnectInfo(((Bidding) commonParsedMessage).getAuctionHouseCode(),
+							((Bidding) commonParsedMessage).getUserNo(),
+							GlobalDefineCode.CONNECT_CHANNEL_BIDDER,
+							((Bidding) commonParsedMessage).getChannel(), "B",
+							((Bidding) commonParsedMessage).getPrice())).getEncodedMessage());
 				}
 			}
 			break;
@@ -428,84 +440,171 @@ public class AuctionServer {
 				public void run() {
 					switch (splitMessages[0].charAt(1)) {
 					case AuctionCountDown.TYPE: // 경매 시작 카운트 다운 정보 전송
-						if (mBidderChannels != null && mBidderChannels.size() > 0) {
-							mBidderChannels.writeAndFlush(message + "\r\n");
+						if (mBidderChannelsMap != null) {
+							for (String key : mBidderChannelsMap.keySet()) {
+								if (mBidderChannelsMap.get(key).size() > 0) {
+									mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mWatcherChannels != null && mWatcherChannels.size() > 0) {
-							mWatcherChannels.writeAndFlush(message + "\r\n");
+						if (mControllerChannelsMap != null) {
+							for (String key : mControllerChannelsMap.keySet()) {
+								if (mControllerChannelsMap.get(key).size() > 0) {
+									mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
+						}
+						
+						if (mWatcherChannelsMap != null) {
+							for (String key : mWatcherChannelsMap.keySet()) {
+								if (mWatcherChannelsMap.get(key).size() > 0) {
+									mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 						break;
 					case ToastMessage.TYPE: // 메시지 전송 처리
-						if (mBidderChannels != null && mBidderChannels.size() > 0) {
-							mBidderChannels.writeAndFlush(message + "\r\n");
+						if (mBidderChannelsMap != null) {
+							for (String key : mBidderChannelsMap.keySet()) {
+								if (mBidderChannelsMap.get(key).size() > 0) {
+									mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 						break;
 					case FavoriteEntryInfo.TYPE: // 관심출품 여부 정보
-						if (mBidderChannels != null && mBidderChannels.size() > 0) {
-							mBidderChannels.writeAndFlush(message + "\r\n");
+						if (mBidderChannelsMap != null) {
+							for (String key : mBidderChannelsMap.keySet()) {
+								if (mBidderChannelsMap.get(key).size() > 0) {
+									mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mWatcherChannels != null && mWatcherChannels.size() > 0) {
-							mWatcherChannels.writeAndFlush(message + "\r\n");
+						if (mWatcherChannelsMap != null) {
+							for (String key : mWatcherChannelsMap.keySet()) {
+								if (mWatcherChannelsMap.get(key).size() > 0) {
+									mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 						break;
-					case ExceptionCode.TYPE: // 예외 상황 전송 처리
-						if (mBidderChannels != null && mBidderChannels.size() > 0) {
-							mBidderChannels.writeAndFlush(message + "\r\n");
+					case ResponseCode.TYPE: // 예외 상황 전송 처리
+						if (mBidderChannelsMap != null) {
+							for (String key : mBidderChannelsMap.keySet()) {
+								if (mBidderChannelsMap.get(key).size() > 0) {
+									mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mWatcherChannels != null && mWatcherChannels.size() > 0) {
-							mWatcherChannels.writeAndFlush(message + "\r\n");
+						if (mWatcherChannelsMap != null) {
+							for (String key : mWatcherChannelsMap.keySet()) {
+								if (mWatcherChannelsMap.get(key).size() > 0) {
+									mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mControllerChannels != null && mControllerChannels.size() > 0) {
-							mControllerChannels.writeAndFlush(message + "\r\n");
+						if (mControllerChannelsMap != null) {
+							for (String key : mControllerChannelsMap.keySet()) {
+								if (mControllerChannelsMap.get(key).size() > 0) {
+									mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mAuctionResultMonitorChannels != null && mAuctionResultMonitorChannels.size() > 0) {
-							mAuctionResultMonitorChannels.writeAndFlush(message + "\r\n");
+						if (mAuctionResultMonitorChannelsMap != null) {
+							for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
+								if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
+									mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mConnectionMonitorChannels != null && mConnectionMonitorChannels.size() > 0) {
-							mConnectionMonitorChannels.writeAndFlush(message + "\r\n");
+						if (mConnectionMonitorChannelsMap != null) {
+							for (String key : mConnectionMonitorChannelsMap.keySet()) {
+								if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
+									mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 						break;
 					case CurrentEntryInfo.TYPE: // 현재 출품 정보 전송
-						if (mBidderChannels != null && mBidderChannels.size() > 0) {
-							mBidderChannels.writeAndFlush(message + "\r\n");
+						if (mBidderChannelsMap != null) {
+							for (String key : mBidderChannelsMap.keySet()) {
+								if (mBidderChannelsMap.get(key).size() > 0) {
+									mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
-						
-						if (mWatcherChannels != null && mWatcherChannels.size() > 0) {
-							mWatcherChannels.writeAndFlush(message + "\r\n");
+
+						if (mWatcherChannelsMap != null) {
+							for (String key : mWatcherChannelsMap.keySet()) {
+								if (mWatcherChannelsMap.get(key).size() > 0) {
+									mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
-						
-						if (mControllerChannels != null && mControllerChannels.size() > 0) {
-							mControllerChannels.writeAndFlush(message + "\r\n");
+
+						if (mControllerChannelsMap != null) {
+							for (String key : mControllerChannelsMap.keySet()) {
+								if (mControllerChannelsMap.get(key).size() > 0) {
+									mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 						break;
 					case AuctionCheckSession.TYPE: // 접속 유효 확인 처리
-						if (mBidderChannels != null && mBidderChannels.size() > 0) {
-							mBidderChannels.writeAndFlush(message + "\r\n");
+						if (mBidderChannelsMap != null) {
+							for (String key : mBidderChannelsMap.keySet()) {
+								if (mBidderChannelsMap.get(key).size() > 0) {
+									mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mWatcherChannels != null && mWatcherChannels.size() > 0) {
-							mWatcherChannels.writeAndFlush(message + "\r\n");
+						if (mWatcherChannelsMap != null) {
+							for (String key : mWatcherChannelsMap.keySet()) {
+								if (mWatcherChannelsMap.get(key).size() > 0) {
+									mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mControllerChannels != null && mControllerChannels.size() > 0) {
-							mControllerChannels.writeAndFlush(message + "\r\n");
+						if (mControllerChannelsMap != null) {
+							for (String key : mControllerChannelsMap.keySet()) {
+								if (mControllerChannelsMap.get(key).size() > 0) {
+									mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mAuctionResultMonitorChannels != null && mAuctionResultMonitorChannels.size() > 0) {
-							mAuctionResultMonitorChannels.writeAndFlush(message + "\r\n");
+						if (mAuctionResultMonitorChannelsMap != null) {
+							for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
+								if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
+									mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mConnectionMonitorChannels != null && mConnectionMonitorChannels.size() > 0) {
-							mConnectionMonitorChannels.writeAndFlush(message + "\r\n");
+						if (mConnectionMonitorChannelsMap != null) {
+							for (String key : mConnectionMonitorChannelsMap.keySet()) {
+								if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
+									mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 						break;
 					case BidderConnectInfo.TYPE: // 접속자 정보 전송
+						if (mConnectionMonitorChannelsMap != null) {
+							for (String key : mConnectionMonitorChannelsMap.keySet()) {
+								if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
+									mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
+						}
 						break;
 					}
 				}
@@ -521,46 +620,86 @@ public class AuctionServer {
 				public void run() {
 					switch (splitMessages[0].charAt(1)) {
 					case ResponseConnectionInfo.TYPE: // 접속 인승 결과 전송
-						if (mBidderChannels != null && mBidderChannels.size() > 0) {
-							mBidderChannels.writeAndFlush(message + "\r\n");
+						if (mBidderChannelsMap != null) {
+							for (String key : mBidderChannelsMap.keySet()) {
+								if (mBidderChannelsMap.get(key).size() > 0) {
+									mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mConnectionMonitorChannels != null && mConnectionMonitorChannels.size() > 0) {
-							mConnectionMonitorChannels.writeAndFlush(message + "\r\n");
+						if (mConnectionMonitorChannelsMap != null) {
+							for (String key : mConnectionMonitorChannelsMap.keySet()) {
+								if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
+									mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mWatcherChannels != null && mWatcherChannels.size() > 0) {
-							mWatcherChannels.writeAndFlush(message + "\r\n");
+						if (mWatcherChannelsMap != null) {
+							for (String key : mWatcherChannelsMap.keySet()) {
+								if (mWatcherChannelsMap.get(key).size() > 0) {
+									mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mAuctionResultMonitorChannels != null && mAuctionResultMonitorChannels.size() > 0) {
-							mAuctionResultMonitorChannels.writeAndFlush(message + "\r\n");
+						if (mAuctionResultMonitorChannelsMap != null) {
+							for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
+								if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
+									mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 						break;
 					case Bidding.TYPE: // 응찰 정보 전송
-						if (mControllerChannels != null && mControllerChannels.size() > 0) {
-							mControllerChannels.writeAndFlush(message + "\r\n");
+						if (mControllerChannelsMap != null) {
+							for (String key : mControllerChannelsMap.keySet()) {
+								if (mControllerChannelsMap.get(key).size() > 0) {
+									mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 						break;
 					case AuctionStatus.TYPE: // 현재 경매 상태 전송
-						if (mBidderChannels != null && mBidderChannels.size() > 0) {
-							mBidderChannels.writeAndFlush(message + "\r\n");
+						if (mBidderChannelsMap != null) {
+							for (String key : mBidderChannelsMap.keySet()) {
+								if (mBidderChannelsMap.get(key).size() > 0) {
+									mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mControllerChannels != null && mControllerChannels.size() > 0) {
-							mControllerChannels.writeAndFlush(message + "\r\n");
+						if (mControllerChannelsMap != null) {
+							for (String key : mControllerChannelsMap.keySet()) {
+								if (mControllerChannelsMap.get(key).size() > 0) {
+									mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mConnectionMonitorChannels != null && mConnectionMonitorChannels.size() > 0) {
-							mConnectionMonitorChannels.writeAndFlush(message + "\r\n");
+						if (mConnectionMonitorChannelsMap != null) {
+							for (String key : mConnectionMonitorChannelsMap.keySet()) {
+								if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
+									mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mWatcherChannels != null && mWatcherChannels.size() > 0) {
-							mWatcherChannels.writeAndFlush(message + "\r\n");
+						if (mWatcherChannelsMap != null) {
+							for (String key : mWatcherChannelsMap.keySet()) {
+								if (mWatcherChannelsMap.get(key).size() > 0) {
+									mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 
-						if (mAuctionResultMonitorChannels != null && mAuctionResultMonitorChannels.size() > 0) {
-							mAuctionResultMonitorChannels.writeAndFlush(message + "\r\n");
+						if (mAuctionResultMonitorChannelsMap != null) {
+							for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
+								if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
+									mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
 						}
 						break;
 					}
@@ -611,16 +750,18 @@ public class AuctionServer {
 			mLogger.debug("ConnectorInfoMap size : " + mConnectorInfoMap.size());
 		}
 
-		if (mBidderChannels.find(channelId) != null) {
-			mBidderChannels.find(channelId).close();
+		if (mBidderChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
+			if (mBidderChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
+				mBidderChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
+			}
 		}
 	}
 
-	public void resetBiddingInfoMap() {
-		if (mBiddingInfoMap != null) {
-			mBiddingInfoMap.clear();
+	public void resetBiddingInfoMap(String auctionHouseCode) {
+		if (mBiddingInfoMap.containsKey(auctionHouseCode) && mBiddingInfoMap.get(auctionHouseCode) != null) {
+			mBiddingInfoMap.get(auctionHouseCode).clear();
 		} else {
-			mBiddingInfoMap = new HashMap<Integer, Object>();
+			mBiddingInfoMap.put(auctionHouseCode, new HashMap<Integer, Object>());
 		}
 	}
 }

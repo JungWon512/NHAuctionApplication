@@ -26,24 +26,24 @@ public class ControllerMessageParser {
 		switch (messages[0].charAt(1)) {
 		case EditSetting.TYPE: // 경매 설정 변경 처리
 			Map<String, String> settings = new HashMap<>();
-			for (int i = 1; i < messages.length; i = i + 2) {
+			for (int i = 2; i < messages.length; i = i + 2) {
 				settings.put(messages[i], messages[i + 1]);
 			}
-			return new EditSetting(settings);
+			return new EditSetting(messages[1], settings);
 		case PassAuction.TYPE: // 강제 유찰 처리
-			return new PassAuction(messages[1]);
+			return new PassAuction(messages[1], messages[2]);
 		case StopAuction.TYPE: // 경매 정치 기능
-			return new StopAuction(messages[1]);
+			return new StopAuction(messages[1], messages[2]);
 		case StartAuction.TYPE: // 경매 시작 처리
-			return new StartAuction(messages[1]);
+			return new StartAuction(messages[1], messages[2]);
 		case ToastMessageRequest.TYPE: // 메시지 전송 요청
-			return new ToastMessageRequest(messages[1]);
+			return new ToastMessageRequest(messages[1], messages[2]);
 		case RequestLogout.TYPE: // 로그아웃 처리 요청
-			return new RequestLogout(messages[1]);
+			return new RequestLogout(messages[1], messages[2]);
 		case EntryInfo.TYPE: // 출품 정보 전송
 			return new EntryInfo(messages);
 		case ReadyEntryInfo.TYPE: // 출품 정보 경매 준비 요청
-			return new ReadyEntryInfo(messages[1]);
+			return new ReadyEntryInfo(messages[1], messages[2]);
 		default:
 			throw null;
 		}

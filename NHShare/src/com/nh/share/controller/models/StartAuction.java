@@ -6,29 +6,40 @@ import com.nh.share.setting.AuctionShareSetting;
 /**
  * 경매 시작 처리 기능
  * 
- * 제어프로그램 -> 서버
+ * 제어프로그램 -> 경매서버
  * 
- * CA|출품번호
+ * CA | 경매거점코드 | 출품번호
  *
  */
 public class StartAuction implements FromAuctionController {
-    public static final char TYPE = 'A';
-    private String mEntryNum; // 출품번호
+	public static final char TYPE = 'A';
+	private String mAuctionHouseCode; // 거점코드
+	private String mEntryNum; // 출품번호
 
-    public StartAuction(String entryNum) {
-        mEntryNum = entryNum;
-    }
+	public StartAuction(String auctionHouseCode, String entryNum) {
+		mAuctionHouseCode = auctionHouseCode;
+		mEntryNum = entryNum;
+	}
 
-    public String getEntryNum() {
-        return mEntryNum;
-    }
+	public String getAuctionHouseCode() {
+		return mAuctionHouseCode;
+	}
 
-    public void setEntryNum(String entryNum) {
-        this.mEntryNum = entryNum;
-    }
+	public void setAuctionHouseCode(String auctionHouseCode) {
+		this.mAuctionHouseCode = auctionHouseCode;
+	}
 
-    @Override
-    public String getEncodedMessage() {
-        return String.format("%c%c%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mEntryNum);
-    }
+	public String getEntryNum() {
+		return mEntryNum;
+	}
+
+	public void setEntryNum(String entryNum) {
+		this.mEntryNum = entryNum;
+	}
+
+	@Override
+	public String getEncodedMessage() {
+		return String.format("%c%c%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode,
+				AuctionShareSetting.DELIMITER, mEntryNum);
+	}
 }

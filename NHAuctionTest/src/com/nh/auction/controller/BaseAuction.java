@@ -27,7 +27,7 @@ import com.nh.share.controller.models.StopAuction;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.ExceptionCode;
+import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 
@@ -43,7 +43,8 @@ public class BaseAuction {
 	}
 
 	public static class Auction implements NettyControllable {
-
+		private boolean mIsBidder = true;
+		
 		private Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 		public List<AuctionShareNettyClient> clients = new LinkedList<>(); // 서버 접속된 클라이언트
@@ -544,11 +545,13 @@ public class BaseAuction {
 				watchMode = "Y";
 			}
 
-//			data = new ConnectionInfo(userMemNum, GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER,
-//					GlobalDefineCode.USE_CHANNEL_MANAGE, watchMode).getEncodedMessage() + "\r\n";
-			
-			data = new ConnectionInfo(userMemNum, GlobalDefineCode.CONNECT_CHANNEL_BIDDER,
-					GlobalDefineCode.USE_CHANNEL_ANDROID, watchMode).getEncodedMessage() + "\r\n";
+			if (mIsBidder) {
+				data = new ConnectionInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, userMemNum, GlobalDefineCode.CONNECT_CHANNEL_BIDDER,
+				GlobalDefineCode.USE_CHANNEL_ANDROID, watchMode).getEncodedMessage() + "\r\n";
+			} else {
+				data = new ConnectionInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, userMemNum, GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER,
+						GlobalDefineCode.USE_CHANNEL_MANAGE, watchMode).getEncodedMessage() + "\r\n";
+			}
 			
 			channel.writeAndFlush(data);
 			
@@ -556,7 +559,7 @@ public class BaseAuction {
 		}
 
 		public String onBidding(Channel channel, String connectChannel, String userMemNum, String entryNum, String price) {
-			String data = new Bidding(connectChannel, userMemNum, entryNum, price).getEncodedMessage() + "\r\n";
+			String data = new Bidding(GlobalDefineCode.AUCTION_HOUSE_HWADONG, connectChannel, userMemNum, entryNum, price, "Y").getEncodedMessage() + "\r\n";
 			channel.writeAndFlush(data);
 			
 			return data;
@@ -583,21 +586,21 @@ public class BaseAuction {
 		}
 		
 		public String onNextEntryReady(Channel channel, String entrySeq) {
-			String data = new ReadyEntryInfo(entrySeq).getEncodedMessage() + "\r\n";
+			String data = new ReadyEntryInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage() + "\r\n";
 			channel.writeAndFlush(data);
 			
 			return data;
 		}
 		
 		public String onStartAuction(Channel channel, String entrySeq) {
-			String data = new StartAuction(entrySeq).getEncodedMessage() + "\r\n";
+			String data = new StartAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage() + "\r\n";
 			channel.writeAndFlush(data);
 			
 			return data;
 		}
 		
 		public String onPauseAuction(Channel channel, String entrySeq) {
-			String data = new StopAuction(entrySeq).getEncodedMessage() + "\r\n";
+			String data = new StopAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage() + "\r\n";
 			channel.writeAndFlush(data);
 			
 			return data;
@@ -656,8 +659,8 @@ public class BaseAuction {
 		}
 
 		@Override
-		public void onExceptionCode(ExceptionCode exceptionCode) {
-			mViewListener.onExceptionCode(exceptionCode);
+		public void onResponseCode(ResponseCode exceptionCode) {
+			mViewListener.onResponseCode(exceptionCode);
 		}
 
 		@Override

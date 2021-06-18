@@ -14,6 +14,7 @@ import com.nh.share.setting.AuctionShareSetting;
  */
 public class CurrentEntryInfo implements FromAuctionServer {
 	public static final char TYPE = 'C';
+	private String mAuctionHouseCode; // 거점코드
 	private String mEntryNum; // 출품 번호
 	private String mEntryType; // 출품 유형(큰소/송아지/육우)
 	private String mIndNum; // 개체번호
@@ -30,9 +31,10 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	private String mStartPrice; // 시작가
 	private String mIsLastEntry; // 마지막 출품 여부
 
-	public CurrentEntryInfo(String entryNum, String entryType, String indNum, String exhibitor, String birthday, String gender,
-			String weight, String kpn, String cavingNum, String mother, String note, String auctDateTime,
-			String entryStatus, String startPrice, String isLastEntry) {
+	public CurrentEntryInfo(String auctionHouseCode, String entryNum, String entryType, String indNum, String exhibitor,
+			String birthday, String gender, String weight, String kpn, String cavingNum, String mother, String note,
+			String auctDateTime, String entryStatus, String startPrice, String isLastEntry) {
+		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 		mEntryType = entryType;
 		mIndNum = indNum;
@@ -51,24 +53,26 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	}
 
 	public CurrentEntryInfo(String[] messages) {
-		mEntryNum = messages[1];
-		mEntryType = messages[2];
-		mIndNum = messages[3];
-		mExhibitor = messages[4];
-		mBirthday = messages[5];
-		mGender = messages[6];
-		mWeight = messages[7];
-		mKpn = messages[8];
-		mCavingNum = messages[9];
-		mMother = messages[10];
-		mNote = messages[11];
-		mAuctDateTime = messages[12];
-		mEntryStatus = messages[13];
-		mStartPrice = messages[14];
-		mIsLastEntry = messages[15];
+		mAuctionHouseCode = messages[1];
+		mEntryNum = messages[2];
+		mEntryType = messages[3];
+		mIndNum = messages[4];
+		mExhibitor = messages[5];
+		mBirthday = messages[6];
+		mGender = messages[7];
+		mWeight = messages[8];
+		mKpn = messages[9];
+		mCavingNum = messages[10];
+		mMother = messages[11];
+		mNote = messages[12];
+		mAuctDateTime = messages[13];
+		mEntryStatus = messages[14];
+		mStartPrice = messages[15];
+		mIsLastEntry = messages[16];
 	}
-	
+
 	public CurrentEntryInfo(EntryInfo entryInfo) {
+		mAuctionHouseCode = entryInfo.getAuctionHouseCode();
 		mEntryNum = entryInfo.getEntryNum();
 		mEntryType = entryInfo.getEntryType();
 		mIndNum = entryInfo.getIndNum();
@@ -84,6 +88,14 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mEntryStatus = entryInfo.getEntryStatus();
 		mStartPrice = entryInfo.getStartPrice();
 		mIsLastEntry = entryInfo.getIsLastEntry();
+	}
+
+	public String getAuctionHouseCode() {
+		return mAuctionHouseCode;
+	}
+
+	public void setAuctionHouseCode(String auctionHouseCode) {
+		this.mAuctionHouseCode = auctionHouseCode;
 	}
 
 	public String getEntryNum() {
@@ -208,15 +220,15 @@ public class CurrentEntryInfo implements FromAuctionServer {
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
-				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mEntryType,
-				AuctionShareSetting.DELIMITER, mIndNum, AuctionShareSetting.DELIMITER, mExhibitor,
-				AuctionShareSetting.DELIMITER, mBirthday, AuctionShareSetting.DELIMITER, mGender,
-				AuctionShareSetting.DELIMITER, mWeight, AuctionShareSetting.DELIMITER, mKpn,
-				AuctionShareSetting.DELIMITER, mCavingNum, AuctionShareSetting.DELIMITER, mMother,
-				AuctionShareSetting.DELIMITER, mNote, AuctionShareSetting.DELIMITER, mAuctDateTime,
-				AuctionShareSetting.DELIMITER, mEntryStatus, AuctionShareSetting.DELIMITER, mStartPrice,
-				AuctionShareSetting.DELIMITER, mIsLastEntry);
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
+				AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mEntryNum,
+				AuctionShareSetting.DELIMITER, mEntryType, AuctionShareSetting.DELIMITER, mIndNum,
+				AuctionShareSetting.DELIMITER, mExhibitor, AuctionShareSetting.DELIMITER, mBirthday,
+				AuctionShareSetting.DELIMITER, mGender, AuctionShareSetting.DELIMITER, mWeight,
+				AuctionShareSetting.DELIMITER, mKpn, AuctionShareSetting.DELIMITER, mCavingNum,
+				AuctionShareSetting.DELIMITER, mMother, AuctionShareSetting.DELIMITER, mNote,
+				AuctionShareSetting.DELIMITER, mAuctDateTime, AuctionShareSetting.DELIMITER, mEntryStatus,
+				AuctionShareSetting.DELIMITER, mStartPrice, AuctionShareSetting.DELIMITER, mIsLastEntry);
 	}
 
 }
