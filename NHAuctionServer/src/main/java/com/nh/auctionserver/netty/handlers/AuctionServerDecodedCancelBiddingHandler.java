@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.code.GlobalDefineCode;
-import com.nh.share.common.models.Bidding;
+import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.server.models.ResponseCode;
 
@@ -19,8 +19,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 
 @Sharable
-public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInboundHandler<Bidding> {
-	private final Logger mLogger = LoggerFactory.getLogger(AuctionServerDecodedBiddingHandler.class);
+public final class AuctionServerDecodedCancelBiddingHandler extends SimpleChannelInboundHandler<CancelBidding> {
+	private final Logger mLogger = LoggerFactory.getLogger(AuctionServerDecodedCancelBiddingHandler.class);
 
 	private final AuctionServer mAuctionServer;
 	private final Auctioneer mAuctionScheduler;
@@ -32,7 +32,7 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
 	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
 
-	public AuctionServerDecodedBiddingHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
+	public AuctionServerDecodedCancelBiddingHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
 			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
 			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
 			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
@@ -48,31 +48,25 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 	}
 
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, Bidding bidding) throws Exception {
+	protected void channelRead0(ChannelHandlerContext ctx, CancelBidding cancelBidding) throws Exception {
 		if (mConnectionInfoMap.containsKey(ctx.channel().id())
-				&& mBidderChannelsMap.get(bidding.getAuctionHouseCode()).contains(ctx.channel())) {
-			if (mAuctionScheduler.getCurrentAuctionStatus(bidding.getAuctionHouseCode())
+				&& mBidderChannelsMap.get(cancelBidding.getAuctionHouseCode()).contains(ctx.channel())) {
+			if (mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
 					.equals(GlobalDefineCode.AUCTION_STATUS_START)
-					|| mAuctionScheduler.getCurrentAuctionStatus(bidding.getAuctionHouseCode())
+					|| mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
 							.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 
-				mLogger.debug("Message ADD : " + bidding.getEncodedMessage());
+				mLogger.debug("Message ADD : " + cancelBidding.getEncodedMessage());
 
-				if (bidding.getPriceInt() >= Integer
-						.valueOf(mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getStartPrice())) {
-					mAuctionServer.itemAdded(bidding.getEncodedMessage());
-				} else {
-					mLogger.debug("=============================================");
-					mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
-					mLogger.debug("=============================================");
-					ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage() + "\r\n");
-				}
+				mAuctionServer.itemAdded(cancelBidding.getEncodedMessage());
+
 			} else {
-				ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage() + "\r\n");
+				ctx.writeAndFlush(new ResponseCode(cancelBidding.getAuctionHouseCode(),
+						GlobalDefineCode.RESPONSE_DENIED_CANCEL_BIDDING).getEncodedMessage() + "\r\n");
 			}
 		} else {
 			mLogger.debug("=============================================");
-			mLogger.debug("유효하지 않은 채널에서 응찰을 시도 : " + ctx.channel().id());
+			mLogger.debug("유효하지 않은 채널로 응찰 취소 요청 : " + ctx.channel().id());
 			mLogger.debug(ctx.channel().id() + "를 Close 처리하였습니다.");
 			mLogger.debug("=============================================");
 			ctx.close();

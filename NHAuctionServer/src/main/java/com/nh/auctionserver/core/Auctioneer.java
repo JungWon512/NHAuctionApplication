@@ -55,11 +55,9 @@ public class Auctioneer {
 	private static AuctionEntryRepository mAuctionEntryRepository = new AuctionEntryRepository();
 
 	private Map<String, ScheduledExecutorService> mStartCountDownServiceMap = new HashMap<String, ScheduledExecutorService>();
-	private Map<String, ScheduledFuture<?>> mStartCountDownJobMap = new HashMap<String, ScheduledFuture<?>>(); // 경매 시작
-																												// 카운트
-																												// 다운 시간
-																												// 처리
-																												// Job
+	private Map<String, ScheduledExecutorService> mNextEntryIntervalServiceMap = new HashMap<String, ScheduledExecutorService>();
+	private Map<String, ScheduledFuture<?>> mStartCountDownJobMap = new HashMap<String, ScheduledFuture<?>>();
+	private Map<String, ScheduledFuture<?>> mNextEntryIntervalJobMap = new HashMap<String, ScheduledFuture<?>>();
 
 	private ScheduledExecutorService mCheckSessionService = Executors.newScheduledThreadPool(5);
 	private ScheduledFuture<?> mCheckSessionTimerJob; // 유효 세션 확인 Job
@@ -199,6 +197,21 @@ public class Auctioneer {
 						AuctionServerSetting.COUNT_DOWN_DELAY_TIME, TimeUnit.MILLISECONDS));
 	}
 
+	public void runNextEntryInterval(String auctionHouseCode) {
+		if (mNextEntryIntervalJobMap.containsKey(auctionHouseCode)) {
+			mNextEntryIntervalJobMap.get(auctionHouseCode).cancel(true);
+		}
+		
+		if (!mNextEntryIntervalServiceMap.containsKey(auctionHouseCode)) {
+			mNextEntryIntervalServiceMap.put(auctionHouseCode, Executors.newScheduledThreadPool(5));
+		}
+		
+		mNextEntryIntervalJobMap.put(auctionHouseCode,
+				mNextEntryIntervalServiceMap.get(auctionHouseCode).scheduleAtFixedRate(
+						new AuctionNextEntryIntervalTimerJob(auctionHouseCode), AuctionServerSetting.AUCTION_NEXT_ENTRY_DELAY_TIME,
+						AuctionServerSetting.AUCTION_NEXT_ENTRY_DELAY_TIME, TimeUnit.MILLISECONDS));
+	}
+	
 	/**
 	 * 
 	 * @MethodName readyEntryInfo
@@ -569,6 +582,9 @@ public class Auctioneer {
 								mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
 					}
 				}
+				
+				// 다음 출품 준비 시간 동작
+				runNextEntryInterval(auctionHouseCode);
 
 				mStartCountDownJobMap.get(auctionHouseCode).cancel(true);
 			} else {
@@ -584,6 +600,30 @@ public class Auctioneer {
 		}
 	}
 
+	/**
+	 * 
+	 * @ClassName Auctioneer.java
+	 * @Description 다음 출품 정보 준비 딜레이 처리 클래스
+	 * @author 박종식
+	 * @since 2021.06.24
+	 */
+	private class AuctionNextEntryIntervalTimerJob implements Runnable {
+		String auctionHouseCode;
+
+		public AuctionNextEntryIntervalTimerJob(String auctionHouseCode) {
+			this.auctionHouseCode = auctionHouseCode;
+		}
+
+		@Override
+		public void run() {
+			mLogger.debug("다음 출품 준비");
+
+			readyEntryInfo(auctionHouseCode);
+			
+			mNextEntryIntervalJobMap.get(auctionHouseCode).cancel(true);
+		}
+	}
+	
 	private void writeLog(String auctionHouseCode) {
 		// 로그 Write 처리
 		Runnable createLogContentRunnable = new Runnable() {

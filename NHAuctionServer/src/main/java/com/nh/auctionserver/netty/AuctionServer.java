@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.handlers.AuctionServerConnectorHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionResponseSessionHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionResultHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedBiddingHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedCancelBiddingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedEditSettingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedEntryInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedPassAuctionHandler;
@@ -27,8 +29,10 @@ import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.CommonMessageParser;
 import com.nh.share.common.interfaces.FromAuctionCommon;
+import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
+import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.ControllerMessageParser;
@@ -38,6 +42,7 @@ import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.PassAuction;
 import com.nh.share.controller.models.ReadyEntryInfo;
 import com.nh.share.controller.models.RequestLogout;
+import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.controller.models.StartAuction;
 import com.nh.share.controller.models.StopAuction;
 import com.nh.share.controller.models.ToastMessageRequest;
@@ -47,8 +52,8 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 
@@ -183,6 +188,12 @@ public class AuctionServer {
 								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
 								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedStartAuctionHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedAuctionResultHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedCancelBiddingHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
 								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedToastMessageRequestHandler(AuctionServer.this,
@@ -360,8 +371,7 @@ public class AuctionServer {
 					mConnectionMonitorChannelsMap.get(((StopAuction) controllerParsedMessage).getAuctionHouseCode())
 							.writeAndFlush(
 									new ResponseCode(((StopAuction) controllerParsedMessage).getAuctionHouseCode(),
-											GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage()
-											+ "\r\n");
+											GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage() + "\r\n");
 				}
 			}
 
@@ -383,6 +393,10 @@ public class AuctionServer {
 			if (controllerParsedMessage instanceof EntryInfo) {
 				mAuctioneer.addEntryInfo(((EntryInfo) controllerParsedMessage).getAuctionHouseCode(),
 						(EntryInfo) controllerParsedMessage);
+			}
+			
+			if (controllerParsedMessage instanceof SendAuctionResult) {
+				channelItemWriteAndFlush(((SendAuctionResult)controllerParsedMessage).getConvertAuctionResult());
 			}
 			break;
 		case FromAuctionCommon.ORIGIN:
@@ -416,12 +430,32 @@ public class AuctionServer {
 					}
 
 					channelItemWriteAndFlush(((Bidding) commonParsedMessage));
-					
-					channelItemWriteAndFlush((new BidderConnectInfo(((Bidding) commonParsedMessage).getAuctionHouseCode(),
-							((Bidding) commonParsedMessage).getUserNo(),
-							GlobalDefineCode.CONNECT_CHANNEL_BIDDER,
-							((Bidding) commonParsedMessage).getChannel(), "B",
-							((Bidding) commonParsedMessage).getPrice())).getEncodedMessage());
+
+					channelItemWriteAndFlush(
+							(new BidderConnectInfo(((Bidding) commonParsedMessage).getAuctionHouseCode(),
+									((Bidding) commonParsedMessage).getUserNo(),
+									GlobalDefineCode.CONNECT_CHANNEL_BIDDER,
+									((Bidding) commonParsedMessage).getChannel(), "B",
+									((Bidding) commonParsedMessage).getPrice())).getEncodedMessage());
+				}
+			}
+
+			if (commonParsedMessage instanceof CancelBidding) { // Bidding은 경매가 시작한 후에만 수신되도록 한다.
+				if (mAuctioneer.getCurrentAuctionStatus(((CancelBidding) commonParsedMessage).getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_START)
+						|| mAuctioneer.getCurrentAuctionStatus(((CancelBidding) commonParsedMessage).getAuctionHouseCode())
+								.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+
+					((CancelBidding) commonParsedMessage).setCancelBiddingTime(
+							LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+
+					channelItemWriteAndFlush(((CancelBidding) commonParsedMessage));
+
+					channelItemWriteAndFlush(
+							(new BidderConnectInfo(((CancelBidding) commonParsedMessage).getAuctionHouseCode(),
+									((CancelBidding) commonParsedMessage).getUserNo(),
+									GlobalDefineCode.CONNECT_CHANNEL_BIDDER,
+									((CancelBidding) commonParsedMessage).getChannel(), "C", "0")).getEncodedMessage());
 				}
 			}
 			break;
@@ -455,7 +489,7 @@ public class AuctionServer {
 								}
 							}
 						}
-						
+
 						if (mWatcherChannelsMap != null) {
 							for (String key : mWatcherChannelsMap.keySet()) {
 								if (mWatcherChannelsMap.get(key).size() > 0) {
@@ -682,6 +716,50 @@ public class AuctionServer {
 							for (String key : mConnectionMonitorChannelsMap.keySet()) {
 								if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
 									mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
+						}
+
+						if (mWatcherChannelsMap != null) {
+							for (String key : mWatcherChannelsMap.keySet()) {
+								if (mWatcherChannelsMap.get(key).size() > 0) {
+									mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
+						}
+
+						if (mAuctionResultMonitorChannelsMap != null) {
+							for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
+								if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
+									mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
+						}
+						break;
+						
+					case CancelBidding.TYPE: // 응찰 취소 정보 전송
+						if (mControllerChannelsMap != null) {
+							for (String key : mControllerChannelsMap.keySet()) {
+								if (mControllerChannelsMap.get(key).size() > 0) {
+									mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
+						}
+
+						if (mConnectionMonitorChannelsMap != null) {
+							for (String key : mConnectionMonitorChannelsMap.keySet()) {
+								if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
+									mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
+						}
+						break;
+						
+					case AuctionResult.TYPE: // 경매 낙유찰 결과 전송
+						if (mBidderChannelsMap != null) {
+							for (String key : mBidderChannelsMap.keySet()) {
+								if (mBidderChannelsMap.get(key).size() > 0) {
+									mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
 								}
 							}
 						}

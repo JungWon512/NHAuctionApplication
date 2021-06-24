@@ -1,14 +1,16 @@
 package com.nh.common.interfaces;
 
 import com.nh.common.AuctionShareNettyClient;
+import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
+import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
 
 import io.netty.channel.Channel;
@@ -47,9 +49,13 @@ public interface NettyControllable {
 
 	public void onBidding(Bidding bidding); // 응찰 정보
 
+	public void onCancelBidding(CancelBidding cancelBidding); // 응찰 취소
+
 	public void onToastMessage(ToastMessage toastMessage); // 메시지 전송
 
 	public void onFavoriteEntryInfo(FavoriteEntryInfo favoriteEntryInfo); // 관심 출품 정보
+
+	public void onAuctionResult(AuctionResult auctionResult); // 경매 낙유찰 결과 전송
 
 	public void onResponseConnectionInfo(ResponseConnectionInfo responseConnectionInfo); // 접속 정보 인증 응답
 

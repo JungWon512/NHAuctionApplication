@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
+import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
+import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
@@ -209,7 +211,17 @@ public class CommonController implements NettyControllable {
         dismissLoadingDialog();
     }
 
-    protected void dismissLoadingDialog() {
+    @Override
+	public void onCancelBidding(CancelBidding cancelBidding) {
+		
+	}
+
+	@Override
+	public void onAuctionResult(AuctionResult auctionResult) {
+		
+	}
+
+	protected void dismissLoadingDialog() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {

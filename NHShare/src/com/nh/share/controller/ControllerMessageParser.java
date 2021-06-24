@@ -9,6 +9,7 @@ import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.PassAuction;
 import com.nh.share.controller.models.ReadyEntryInfo;
 import com.nh.share.controller.models.RequestLogout;
+import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.controller.models.StartAuction;
 import com.nh.share.controller.models.StopAuction;
 import com.nh.share.controller.models.ToastMessageRequest;
@@ -44,6 +45,8 @@ public class ControllerMessageParser {
 			return new EntryInfo(messages);
 		case ReadyEntryInfo.TYPE: // 출품 정보 경매 준비 요청
 			return new ReadyEntryInfo(messages[1], messages[2]);
+		case SendAuctionResult.TYPE: // 낙유찰 결과 전송
+			return new SendAuctionResult(messages);
 		default:
 			throw null;
 		}

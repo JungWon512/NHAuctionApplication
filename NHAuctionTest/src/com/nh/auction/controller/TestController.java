@@ -18,15 +18,17 @@ import org.slf4j.LoggerFactory;
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionReponseSession;
+import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
+import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
 
 import io.netty.channel.Channel;
@@ -110,15 +112,15 @@ public class TestController extends CommonController implements Initializable {
 	@FXML
 	private void onSendEntryData(ActionEvent ev) {
 		int recordCount = 0;
-		
+
 		loadEntryData();
-		
+
 		if (mConnectChannel != null) {
-			for(int i = 0; i < mEntryRepository.size(); i++) {
+			for (int i = 0; i < mEntryRepository.size(); i++) {
 				putText(BaseAuction.getAuctionInstance().onSendEntryData(mConnectChannel, mEntryRepository.get(i)));
 				recordCount++;
 			}
-			
+
 			putText("출품 자료 총 " + recordCount + "건이 전송 되었습니다.");
 		}
 	}
@@ -132,14 +134,11 @@ public class TestController extends CommonController implements Initializable {
 	}
 
 	@FXML
-	private void onNextEntryReady(ActionEvent ev) {
-		if(!mCurrentEntryInfo.getIsLastEntry().equals("Y")) {
-			putText(BaseAuction.getAuctionInstance().onNextEntryReady(mConnectChannel, String.valueOf((Integer.valueOf(mCurrentEntryInfo.getEntryNum()) + 1))));
-		} else {
-			putText("더 이상 진행할 출품 정보가 없습니다.");
-		}
+	private void onCancelBidding(ActionEvent ev) {
+		putText(BaseAuction.getAuctionInstance().onCancelBidding(mConnectChannel, mCurrentEntryInfo.getEntryNum(),
+				mUserMemNumTextField.getText().trim(), GlobalDefineCode.USE_CHANNEL_ANDROID, "0"));
 	}
-	
+
 	@FXML
 	private void onStartAuction(ActionEvent ev) {
 		putText(BaseAuction.getAuctionInstance().onStartAuction(mConnectChannel, mCurrentEntryInfo.getEntryNum()));
@@ -151,13 +150,19 @@ public class TestController extends CommonController implements Initializable {
 	}
 
 	@FXML
+	private void onSendAuctionResult(ActionEvent ev) {
+		putText(BaseAuction.getAuctionInstance().onSendAuctionResult(mConnectChannel, mCurrentEntryInfo.getEntryNum(),
+				"01", mUserMemNumTextField.getText().trim(), "450"));
+	}
+
+	@FXML
 	protected void onClearText(ActionEvent ev) {
 		clearText();
 	}
 
 	private void putText(String text) {
 		Platform.runLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				String result = null;
@@ -175,7 +180,7 @@ public class TestController extends CommonController implements Initializable {
 
 	private void clearText() {
 		Platform.runLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				mLogTextArea.setText("");
@@ -294,11 +299,23 @@ public class TestController extends CommonController implements Initializable {
 						+ "\r\n");
 	}
 
+	@Override
+	public void onCancelBidding(CancelBidding cancelBidding) {
+		super.onCancelBidding(cancelBidding);
+		putText("응찰 취소 요청 : " + cancelBidding.getEncodedMessage());
+	}
+
+	@Override
+	public void onAuctionResult(AuctionResult auctionResult) {
+		super.onAuctionResult(auctionResult);
+		putText("경매 낙유찰 정보 수신 : " + auctionResult.getEncodedMessage());
+	}
+
 	private void loadEntryData() {
 		BufferedReader tmpBuffer = null;
 
 		try {
-			tmpBuffer = Files.newBufferedReader(Paths.get("D:\\Project\\농협중앙회\\경매시스템\\testData.txt"));
+			tmpBuffer = Files.newBufferedReader(Paths.get("C:\\testData.txt"));
 			// Charset.forName("UTF-8");
 			String line = "";
 

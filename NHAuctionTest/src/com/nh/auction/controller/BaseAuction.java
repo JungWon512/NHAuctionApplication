@@ -16,19 +16,22 @@ import com.nh.common.AuctionShareNettyClient;
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
 import com.nh.share.code.GlobalDefineCode;
+import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
+import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.ReadyEntryInfo;
+import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.controller.models.StartAuction;
 import com.nh.share.controller.models.StopAuction;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
 
 import io.netty.channel.Channel;
@@ -44,7 +47,7 @@ public class BaseAuction {
 
 	public static class Auction implements NettyControllable {
 		private boolean mIsBidder = true;
-		
+
 		private Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 		public List<AuctionShareNettyClient> clients = new LinkedList<>(); // 서버 접속된 클라이언트
@@ -368,7 +371,6 @@ public class BaseAuction {
 			return this.mFavoriteEntryInfo;
 		}
 
-
 		// 차초기화 - 차량 정보 변수 삭제
 		public void setClearVariable() {
 
@@ -538,7 +540,7 @@ public class BaseAuction {
 		public String onConnectionInfo(String userMemNum, Channel channel, int activeChannelPort) {
 			String watchMode = "N"; // 관전 모드 여부
 			String data = null;
-			
+
 			if (isBidMode) {
 				watchMode = "N";
 			} else {
@@ -546,25 +548,40 @@ public class BaseAuction {
 			}
 
 			if (mIsBidder) {
-				data = new ConnectionInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, userMemNum, GlobalDefineCode.CONNECT_CHANNEL_BIDDER,
-				GlobalDefineCode.USE_CHANNEL_ANDROID, watchMode).getEncodedMessage() + "\r\n";
+				data = new ConnectionInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, userMemNum,
+						GlobalDefineCode.CONNECT_CHANNEL_BIDDER, GlobalDefineCode.USE_CHANNEL_ANDROID, watchMode)
+								.getEncodedMessage()
+						+ "\r\n";
 			} else {
-				data = new ConnectionInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, userMemNum, GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER,
-						GlobalDefineCode.USE_CHANNEL_MANAGE, watchMode).getEncodedMessage() + "\r\n";
+				data = new ConnectionInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, userMemNum,
+						GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER, GlobalDefineCode.USE_CHANNEL_MANAGE, watchMode)
+								.getEncodedMessage()
+						+ "\r\n";
 			}
-			
+
 			channel.writeAndFlush(data);
-			
+
 			return data;
 		}
 
-		public String onBidding(Channel channel, String connectChannel, String userMemNum, String entryNum, String price) {
-			String data = new Bidding(GlobalDefineCode.AUCTION_HOUSE_HWADONG, connectChannel, userMemNum, entryNum, price, "Y").getEncodedMessage() + "\r\n";
+		public String onBidding(Channel channel, String connectChannel, String userMemNum, String entryNum,
+				String price) {
+			String data = new Bidding(GlobalDefineCode.AUCTION_HOUSE_HWADONG, connectChannel, userMemNum, entryNum,
+					price, "Y").getEncodedMessage() + "\r\n";
 			channel.writeAndFlush(data);
-			
+
 			return data;
 		}
-		
+
+		public String onCancelBidding(Channel channel, String userNo, String connectChannel, String entryNum,
+				String cancelBiddingTime) {
+			String data = new CancelBidding(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entryNum, userNo, connectChannel, cancelBiddingTime)
+					.getEncodedMessage() + "\r\n";
+			channel.writeAndFlush(data);
+
+			return data;
+		}
+
 //		public String onSendEntryData(Channel channel, List<EntryInfo> entryDataList) {
 //			for(int i = 0; i < entryDataList.size(); i++) {
 //				String data = new EntryInfo(entryDataList.get(i).getEntryNum(), entryDataList.get(i).getEntryType(), entryDataList.get(i).getIndNum(), entryDataList.get(i).getExhibitor(), entryDataList.get(i).getBirthday(), entryDataList.get(i).getGender(),
@@ -576,36 +593,48 @@ public class BaseAuction {
 //			
 //			return true;
 //		}
-		
+
 		public String onSendEntryData(Channel channel, EntryInfo entryData) {
 			String data = entryData.getEncodedMessage() + "\r\n";
-			
+
 			channel.writeAndFlush(data);
-			
+
 			return data;
 		}
-		
+
 		public String onNextEntryReady(Channel channel, String entrySeq) {
-			String data = new ReadyEntryInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage() + "\r\n";
+			String data = new ReadyEntryInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage()
+					+ "\r\n";
 			channel.writeAndFlush(data);
-			
+
 			return data;
 		}
-		
+
 		public String onStartAuction(Channel channel, String entrySeq) {
-			String data = new StartAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage() + "\r\n";
+			String data = new StartAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage()
+					+ "\r\n";
 			channel.writeAndFlush(data);
-			
+
 			return data;
 		}
-		
+
 		public String onPauseAuction(Channel channel, String entrySeq) {
-			String data = new StopAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage() + "\r\n";
+			String data = new StopAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage()
+					+ "\r\n";
 			channel.writeAndFlush(data);
-			
+
 			return data;
 		}
-		
+
+		public String onSendAuctionResult(Channel channel, String entryNum, String resultCode, String successBidder,
+				String successBidPrice) {
+			String data = new SendAuctionResult(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entryNum, resultCode,
+					successBidder, successBidPrice).getEncodedMessage() + "\r\n";
+			channel.writeAndFlush(data);
+
+			return data;
+		}
+
 		// [Interface CallBack 데이터 처리는 ViewAuctionRealTimeController / AuctionController
 		// / CommonController ( 공통 ) 에서 처리]
 		// ==============================================================
@@ -634,7 +663,7 @@ public class BaseAuction {
 
 			mViewListener.onCurrentEntryInfo(currentEntryInfo);
 		}
-		
+
 		@Override
 		public void onAuctionStatus(AuctionStatus auctionStatus) {
 			mAuctionStatus = auctionStatus;
@@ -687,6 +716,17 @@ public class BaseAuction {
 		public void onBidding(Bidding bidding) {
 			mViewListener.onBidding(bidding);
 		}
+
+		@Override
+		public void onCancelBidding(CancelBidding cancelBidding) {
+			mViewListener.onCancelBidding(cancelBidding);
+		}
+
+		@Override
+		public void onAuctionResult(AuctionResult auctionResult) {
+			mViewListener.onAuctionResult(auctionResult);
+		}
+
 	}
 
 }

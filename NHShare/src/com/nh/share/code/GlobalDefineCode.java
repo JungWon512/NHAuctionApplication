@@ -81,6 +81,8 @@ public class GlobalDefineCode {
 	public static final String RESPONSE_REQUEST_BIDDING_LOW_PRICE = "4003";
 	// 출품 이관 전 상태
 	public static final String RESPONSE_NOT_TRANSMISSION_ENTRY_INFO = "4004";
+	// 응찰 취소 불가
+	public static final String RESPONSE_DENIED_CANCEL_BIDDING = "4005";
 
 	// 프로그램 사용자 로그인 요청 타입
 	public static final String AUCTION_LOGIN_TYPE_MANAGER = "MANAGER"; // 관리자

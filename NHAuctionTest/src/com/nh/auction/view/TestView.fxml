@@ -13,8 +13,8 @@
       <Button layoutX="704.0" layoutY="106.0" mnemonicParsing="false" onAction="#onStartAuction" prefHeight="71.0" prefWidth="147.0" text="시작" />
       <Button layoutX="863.0" layoutY="106.0" mnemonicParsing="false" onAction="#onStopAuction" prefHeight="71.0" prefWidth="147.0" text="정지" />
       <Button layoutX="704.0" layoutY="23.0" mnemonicParsing="false" onAction="#onBidding" prefHeight="71.0" prefWidth="147.0" text="응찰시도" />
-      <Button layoutX="546.0" layoutY="106.0" mnemonicParsing="false" onAction="#onNextEntryReady" prefHeight="71.0" prefWidth="147.0" text="다음출품준비" />
-      <Button layoutX="863.0" layoutY="23.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="147.0" text="Button" />
+      <Button layoutX="546.0" layoutY="106.0" mnemonicParsing="false" onAction="#onCancelBidding" prefHeight="71.0" prefWidth="147.0" text="응찰취소" />
+      <Button layoutX="863.0" layoutY="23.0" mnemonicParsing="false" onAction="#onSendAuctionResult" prefHeight="71.0" prefWidth="147.0" text="낙유찰결과전송" />
       <TextField fx:id="mIpTextField" layoutX="28.0" layoutY="38.0" prefHeight="41.0" prefWidth="189.0" />
       <TextField fx:id="mPortTextField" layoutX="226.0" layoutY="38.0" prefHeight="41.0" prefWidth="85.0" />
       <Label layoutX="107.0" layoutY="14.0" text="접속IP" />

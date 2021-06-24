@@ -5,13 +5,15 @@ import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.common.handlers.AuctionClientDecodedAuctionResultHandler;
 import com.nh.common.handlers.AuctionClientDecodedAuctionStatusHandler;
 import com.nh.common.handlers.AuctionClientDecodedBiddingHandler;
+import com.nh.common.handlers.AuctionClientDecodedCancelBiddingHandler;
 import com.nh.common.handlers.AuctionClientDecodedCheckSessionHandler;
 import com.nh.common.handlers.AuctionClientDecodedCountDownHandler;
 import com.nh.common.handlers.AuctionClientDecodedCurrentEntryInfoHandler;
-import com.nh.common.handlers.AuctionClientDecodedResponseCodeHandler;
 import com.nh.common.handlers.AuctionClientDecodedFavoriteEntryInfoHandler;
+import com.nh.common.handlers.AuctionClientDecodedResponseCodeHandler;
 import com.nh.common.handlers.AuctionClientDecodedResponseConnectionInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedToastMessageHandler;
 import com.nh.common.handlers.AuctionClientInboundDecoder;
@@ -96,7 +98,9 @@ public class AuctionShareNettyClient {
 							pipeline.addLast(new AuctionClientDecodedResponseConnectionInfoHandler(controller)); // 접속응답처리
 							pipeline.addLast(new AuctionClientDecodedResponseCodeHandler(controller)); // 예외 상황 전송
 							pipeline.addLast(new AuctionClientDecodedCheckSessionHandler(controller)); // 경매 서버 접속 유효 확인
-																										// 처리
+							pipeline.addLast(new AuctionClientDecodedAuctionResultHandler(controller)); // 낙유찰 정보
+							pipeline.addLast(new AuctionClientDecodedCancelBiddingHandler(controller)); // 응찰 취소 정보
+
 
 							pipeline.addFirst(new StringEncoder(CharsetUtil.UTF_8));
 						}
