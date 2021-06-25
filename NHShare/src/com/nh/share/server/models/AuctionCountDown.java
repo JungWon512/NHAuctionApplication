@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 공통
  * 
- * SD | 경매거점코드 | 유형(S : 시작 / F : 종료) | 상태구분(R : 준비 / C : 카운트다운 / F : 카운트다운 완료) |
+ * SD | 경매거점코드 | 상태구분(R : 준비 / C : 카운트다운 / F : 카운트다운 완료) |
  * 카운트다운 시간(second)
  *
  */

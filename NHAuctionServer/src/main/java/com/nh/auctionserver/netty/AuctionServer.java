@@ -53,6 +53,7 @@ import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
@@ -339,6 +340,10 @@ public class AuctionServer {
 			if (serverParsedMessage instanceof BidderConnectInfo) {
 				channelItemWriteAndFlush(((BidderConnectInfo) serverParsedMessage));
 			}
+			
+			if (serverParsedMessage instanceof RequestAuctionResult) {
+				channelItemWriteAndFlush(((RequestAuctionResult) serverParsedMessage));
+			}
 			break;
 
 		case FromAuctionController.ORIGIN:
@@ -357,7 +362,17 @@ public class AuctionServer {
 			if (controllerParsedMessage instanceof PassAuction) {
 				mLogger.info("경매 유찰 요청 거점코드 : " + ((PassAuction) controllerParsedMessage).getAuctionHouseCode());
 				mLogger.info("경매 유찰 요청 : " + ((PassAuction) controllerParsedMessage).getEntryNum());
-				mAuctioneer.passAuction(((PassAuction) controllerParsedMessage).getAuctionHouseCode());
+				
+				if (mAuctioneer.getCurrentAuctionStatus(((PassAuction) controllerParsedMessage).getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_READY) || mAuctioneer.getCurrentAuctionStatus(((PassAuction) controllerParsedMessage).getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+					mAuctioneer.passAuction(((PassAuction) controllerParsedMessage).getAuctionHouseCode());
+				} else {
+					mControllerChannelsMap.get(((PassAuction) controllerParsedMessage).getAuctionHouseCode())
+					.writeAndFlush(
+							new ResponseCode(((PassAuction) controllerParsedMessage).getAuctionHouseCode(),
+									GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage() + "\r\n");
+				}
 			}
 
 			if (controllerParsedMessage instanceof StopAuction) {
@@ -368,7 +383,7 @@ public class AuctionServer {
 						.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 					mAuctioneer.stopAuction(((StopAuction) controllerParsedMessage).getAuctionHouseCode());
 				} else {
-					mConnectionMonitorChannelsMap.get(((StopAuction) controllerParsedMessage).getAuctionHouseCode())
+					mControllerChannelsMap.get(((StopAuction) controllerParsedMessage).getAuctionHouseCode())
 							.writeAndFlush(
 									new ResponseCode(((StopAuction) controllerParsedMessage).getAuctionHouseCode(),
 											GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage() + "\r\n");
@@ -378,8 +393,16 @@ public class AuctionServer {
 			if (controllerParsedMessage instanceof StartAuction) {
 				mLogger.info("경매 진행 시작 요청 거점코드 : " + ((StartAuction) controllerParsedMessage).getAuctionHouseCode());
 				mLogger.info("경매 진행 시작 요청 : " + ((StartAuction) controllerParsedMessage).getEntryNum());
-				mAuctioneer.startAuction(((StartAuction) controllerParsedMessage).getAuctionHouseCode());
-				// 경매 최초 시작 여부 확인 후 카운트 다운 상황인지 일반 경매 시작 상황인지 확인
+				
+				if (mAuctioneer.getCurrentAuctionStatus(((StartAuction) controllerParsedMessage).getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_READY)) {
+					mAuctioneer.startAuction(((StartAuction) controllerParsedMessage).getAuctionHouseCode());
+				} else {
+					mControllerChannelsMap.get(((StartAuction) controllerParsedMessage).getAuctionHouseCode())
+					.writeAndFlush(
+							new ResponseCode(((StartAuction) controllerParsedMessage).getAuctionHouseCode(),
+									GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage() + "\r\n");
+				}
 			}
 
 			if (controllerParsedMessage instanceof ToastMessageRequest) {
@@ -396,7 +419,11 @@ public class AuctionServer {
 			}
 			
 			if (controllerParsedMessage instanceof SendAuctionResult) {
+				// 결과 Broadcast
 				channelItemWriteAndFlush(((SendAuctionResult)controllerParsedMessage).getConvertAuctionResult());
+				
+				// 다음 출품 건 준비
+				mAuctioneer.runNextEntryInterval(((SendAuctionResult) controllerParsedMessage).getAuctionHouseCode());
 			}
 			break;
 		case FromAuctionCommon.ORIGIN:
@@ -582,6 +609,15 @@ public class AuctionServer {
 							}
 						}
 
+						if (mControllerChannelsMap != null) {
+							for (String key : mControllerChannelsMap.keySet()) {
+								if (mControllerChannelsMap.get(key).size() > 0) {
+									mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+								}
+							}
+						}
+						break;
+					case RequestAuctionResult.TYPE: // 낙유찰 정보 전송 요청
 						if (mControllerChannelsMap != null) {
 							for (String key : mControllerChannelsMap.keySet()) {
 								if (mControllerChannelsMap.get(key).size() > 0) {

@@ -13,6 +13,7 @@ import com.nh.common.handlers.AuctionClientDecodedCheckSessionHandler;
 import com.nh.common.handlers.AuctionClientDecodedCountDownHandler;
 import com.nh.common.handlers.AuctionClientDecodedCurrentEntryInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedFavoriteEntryInfoHandler;
+import com.nh.common.handlers.AuctionClientDecodedRequestAuctionResultHandler;
 import com.nh.common.handlers.AuctionClientDecodedResponseCodeHandler;
 import com.nh.common.handlers.AuctionClientDecodedResponseConnectionInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedToastMessageHandler;
@@ -100,6 +101,7 @@ public class AuctionShareNettyClient {
 							pipeline.addLast(new AuctionClientDecodedCheckSessionHandler(controller)); // 경매 서버 접속 유효 확인
 							pipeline.addLast(new AuctionClientDecodedAuctionResultHandler(controller)); // 낙유찰 정보
 							pipeline.addLast(new AuctionClientDecodedCancelBiddingHandler(controller)); // 응찰 취소 정보
+							pipeline.addLast(new AuctionClientDecodedRequestAuctionResultHandler(controller)); // 낙유찰 정보 요청
 
 
 							pipeline.addFirst(new StringEncoder(CharsetUtil.UTF_8));

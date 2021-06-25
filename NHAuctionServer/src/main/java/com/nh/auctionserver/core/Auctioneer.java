@@ -31,8 +31,10 @@ import com.nh.share.controller.models.ToastMessageRequest;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
+import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
+import com.sun.swing.internal.plaf.synth.resources.synth;
 
 import io.netty.channel.ChannelId;
 
@@ -169,6 +171,20 @@ public class Auctioneer {
 	 */
 	public synchronized void passAuction(String auctionHouseCode) {
 		mIsRequestAuctionPassMap.put(auctionHouseCode, true);
+
+		if (mAuctionServer != null) {
+			// 경매 출품 건 유찰로 상태 변경
+			mAuctionStateMap.get(auctionHouseCode).onPass();
+
+			if (mAuctionServer != null) {
+				mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+				
+				// 낙유찰 정보 전송 요청
+				mAuctionServer.itemAdded(new RequestAuctionResult(auctionHouseCode,
+						mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEntryNum())
+								.getEncodedMessage());
+			}
+		}
 	}
 
 	public synchronized void broadcastToastMessage(ToastMessageRequest requestToastMessage) {
@@ -197,21 +213,22 @@ public class Auctioneer {
 						AuctionServerSetting.COUNT_DOWN_DELAY_TIME, TimeUnit.MILLISECONDS));
 	}
 
-	public void runNextEntryInterval(String auctionHouseCode) {
+	public synchronized void runNextEntryInterval(String auctionHouseCode) {
 		if (mNextEntryIntervalJobMap.containsKey(auctionHouseCode)) {
 			mNextEntryIntervalJobMap.get(auctionHouseCode).cancel(true);
 		}
-		
+
 		if (!mNextEntryIntervalServiceMap.containsKey(auctionHouseCode)) {
 			mNextEntryIntervalServiceMap.put(auctionHouseCode, Executors.newScheduledThreadPool(5));
 		}
-		
+
 		mNextEntryIntervalJobMap.put(auctionHouseCode,
 				mNextEntryIntervalServiceMap.get(auctionHouseCode).scheduleAtFixedRate(
-						new AuctionNextEntryIntervalTimerJob(auctionHouseCode), AuctionServerSetting.AUCTION_NEXT_ENTRY_DELAY_TIME,
+						new AuctionNextEntryIntervalTimerJob(auctionHouseCode),
+						AuctionServerSetting.AUCTION_NEXT_ENTRY_DELAY_TIME,
 						AuctionServerSetting.AUCTION_NEXT_ENTRY_DELAY_TIME, TimeUnit.MILLISECONDS));
 	}
-	
+
 	/**
 	 * 
 	 * @MethodName readyEntryInfo
@@ -580,11 +597,13 @@ public class Auctioneer {
 					if (mAuctionServer != null) {
 						mAuctionServer.itemAdded(
 								mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+
+						// 낙유찰 정보 전송 요청
+						mAuctionServer.itemAdded(new RequestAuctionResult(auctionHouseCode,
+								mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEntryNum())
+										.getEncodedMessage());
 					}
 				}
-				
-				// 다음 출품 준비 시간 동작
-				runNextEntryInterval(auctionHouseCode);
 
 				mStartCountDownJobMap.get(auctionHouseCode).cancel(true);
 			} else {
@@ -619,11 +638,11 @@ public class Auctioneer {
 			mLogger.debug("다음 출품 준비");
 
 			readyEntryInfo(auctionHouseCode);
-			
+
 			mNextEntryIntervalJobMap.get(auctionHouseCode).cancel(true);
 		}
 	}
-	
+
 	private void writeLog(String auctionHouseCode) {
 		// 로그 Write 처리
 		Runnable createLogContentRunnable = new Runnable() {

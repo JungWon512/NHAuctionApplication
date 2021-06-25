@@ -20,6 +20,7 @@ import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 import com.nh.share.utils.CommonUtils;
@@ -198,6 +199,11 @@ public class CommonController implements NettyControllable {
 
     @Override
 	public void onBidding(Bidding bidding) {
+		
+	}
+
+	@Override
+	public void onRequestAuctionResult(RequestAuctionResult requestAuctionResult) {
 		
 	}
 

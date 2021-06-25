@@ -10,6 +10,7 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
 
@@ -60,6 +61,8 @@ public interface NettyControllable {
 	public void onResponseConnectionInfo(ResponseConnectionInfo responseConnectionInfo); // 접속 정보 인증 응답
 
 	public void onResponseCode(ResponseCode responseCode); // 응답 코드 전송
+
+	public void onRequestAuctionResult(RequestAuctionResult requestAuctionResult); // 낙유찰 정보 요청
 
 	public void onConnectionException(int port); // netty Connection Exception 시 전송
 

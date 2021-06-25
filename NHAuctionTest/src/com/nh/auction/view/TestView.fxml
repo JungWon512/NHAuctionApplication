@@ -20,9 +20,10 @@
       <Label layoutX="107.0" layoutY="14.0" text="접속IP" />
       <Label layoutX="246.0" layoutY="14.0" text="접속Port" />
       <Button fx:id="mClearButton" layoutX="889.0" layoutY="670.0" mnemonicParsing="false" onAction="#onClearText" prefHeight="48.0" prefWidth="132.0" text="Clear" />
-      <TextArea fx:id="mLogTextArea" layoutX="28.0" layoutY="243.0" prefHeight="413.0" prefWidth="995.0" wrapText="true" />
+      <TextArea fx:id="mLogTextArea" layoutX="28.0" layoutY="284.0" prefHeight="372.0" prefWidth="995.0" wrapText="true" />
       <TextField fx:id="mUserMemNumTextField" layoutX="28.0" layoutY="121.0" prefHeight="41.0" prefWidth="282.0" />
       <Label layoutX="137.0" layoutY="97.0" text="통합고객번호" />
       <Button fx:id="mDisConnectButton1" layoutX="327.0" layoutY="110.0" mnemonicParsing="false" onAction="#onDisConnectServer" prefHeight="54.0" prefWidth="106.0" text="접속끊기" />
+      <Button layoutX="546.0" layoutY="190.0" mnemonicParsing="false" onAction="#onPass" prefHeight="71.0" prefWidth="147.0" text="강제유찰" />
    </children>
 </AnchorPane>

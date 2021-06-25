@@ -83,6 +83,10 @@ public class GlobalDefineCode {
 	public static final String RESPONSE_NOT_TRANSMISSION_ENTRY_INFO = "4004";
 	// 응찰 취소 불가
 	public static final String RESPONSE_DENIED_CANCEL_BIDDING = "4005";
+	// 정상 응찰 응답
+	public static final String RESPONSE_SUCCESS_BIDDING = "4006";
+	// 정상 응찰 취소 응답 
+	public static final String RESPONSE_SUCCESS_CANCEL_BIDDING = "4007";
 
 	// 프로그램 사용자 로그인 요청 타입
 	public static final String AUCTION_LOGIN_TYPE_MANAGER = "MANAGER"; // 관리자

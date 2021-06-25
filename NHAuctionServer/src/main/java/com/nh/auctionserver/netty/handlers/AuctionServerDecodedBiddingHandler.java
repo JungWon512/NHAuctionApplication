@@ -60,6 +60,10 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 
 				if (bidding.getPriceInt() >= Integer
 						.valueOf(mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getStartPrice())) {
+					
+					ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+							GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage() + "\r\n");
+					
 					mAuctionServer.itemAdded(bidding.getEncodedMessage());
 				} else {
 					mLogger.debug("=============================================");

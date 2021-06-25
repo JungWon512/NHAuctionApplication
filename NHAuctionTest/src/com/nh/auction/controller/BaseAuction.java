@@ -23,6 +23,7 @@ import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.PassAuction;
 import com.nh.share.controller.models.ReadyEntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.controller.models.StartAuction;
@@ -31,6 +32,7 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
 
@@ -46,7 +48,7 @@ public class BaseAuction {
 	}
 
 	public static class Auction implements NettyControllable {
-		private boolean mIsBidder = true;
+		private boolean mIsBidder = false;
 
 		private Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -575,8 +577,8 @@ public class BaseAuction {
 
 		public String onCancelBidding(Channel channel, String userNo, String connectChannel, String entryNum,
 				String cancelBiddingTime) {
-			String data = new CancelBidding(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entryNum, userNo, connectChannel, cancelBiddingTime)
-					.getEncodedMessage() + "\r\n";
+			String data = new CancelBidding(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entryNum, userNo, connectChannel,
+					cancelBiddingTime).getEncodedMessage() + "\r\n";
 			channel.writeAndFlush(data);
 
 			return data;
@@ -620,6 +622,14 @@ public class BaseAuction {
 
 		public String onPauseAuction(Channel channel, String entrySeq) {
 			String data = new StopAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage()
+					+ "\r\n";
+			channel.writeAndFlush(data);
+
+			return data;
+		}
+
+		public String onPassAuction(Channel channel, String entrySeq) {
+			String data = new PassAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq).getEncodedMessage()
 					+ "\r\n";
 			channel.writeAndFlush(data);
 
@@ -715,6 +725,11 @@ public class BaseAuction {
 		@Override
 		public void onBidding(Bidding bidding) {
 			mViewListener.onBidding(bidding);
+		}
+
+		@Override
+		public void onRequestAuctionResult(RequestAuctionResult requestAuctionResult) {
+			mViewListener.onRequestAuctionResult(requestAuctionResult);
 		}
 
 		@Override

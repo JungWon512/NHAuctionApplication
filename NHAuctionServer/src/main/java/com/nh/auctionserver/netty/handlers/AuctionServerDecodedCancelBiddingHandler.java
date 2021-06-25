@@ -58,6 +58,9 @@ public final class AuctionServerDecodedCancelBiddingHandler extends SimpleChanne
 
 				mLogger.debug("Message ADD : " + cancelBidding.getEncodedMessage());
 
+				ctx.writeAndFlush(new ResponseCode(cancelBidding.getAuctionHouseCode(),
+						GlobalDefineCode.RESPONSE_SUCCESS_CANCEL_BIDDING).getEncodedMessage() + "\r\n");
+				
 				mAuctionServer.itemAdded(cancelBidding.getEncodedMessage());
 
 			} else {

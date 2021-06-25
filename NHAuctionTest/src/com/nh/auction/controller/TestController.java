@@ -28,6 +28,7 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
 
@@ -150,6 +151,11 @@ public class TestController extends CommonController implements Initializable {
 	}
 
 	@FXML
+	private void onPass(ActionEvent ev) {
+		putText(BaseAuction.getAuctionInstance().onPassAuction(mConnectChannel, mCurrentEntryInfo.getEntryNum()));
+	}
+	
+	@FXML
 	private void onSendAuctionResult(ActionEvent ev) {
 		putText(BaseAuction.getAuctionInstance().onSendAuctionResult(mConnectChannel, mCurrentEntryInfo.getEntryNum(),
 				"01", mUserMemNumTextField.getText().trim(), "450"));
@@ -250,6 +256,12 @@ public class TestController extends CommonController implements Initializable {
 	public void onBidding(Bidding bidding) {
 		super.onBidding(bidding);
 		putText(bidding.getEncodedMessage());
+	}
+
+	@Override
+	public void onRequestAuctionResult(RequestAuctionResult requestAuctionResult) {
+		super.onRequestAuctionResult(requestAuctionResult);
+		putText(requestAuctionResult.getEncodedMessage());
 	}
 
 	@Override

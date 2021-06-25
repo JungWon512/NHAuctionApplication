@@ -5,8 +5,9 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.RequestAuctionResult;
+import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 
@@ -28,6 +29,8 @@ public class ServerMessageParser {
 			return new BidderConnectInfo(messages);
 		case CurrentEntryInfo.TYPE: // 접속 정보 전송
 			return new CurrentEntryInfo(messages);
+		case RequestAuctionResult.TYPE: // 낙유찰 결과 전송 요청
+			return new RequestAuctionResult(messages[1], messages[2]);
 		default:
 			return null;
 		}
