@@ -117,6 +117,7 @@ public class AuctionMessageController implements Initializable {
 		if(msg != null && msg.length() > 0) {
 			msgListView.getItems().add(msg);
 			msgListView.scrollTo(msgListView.getItems().size() -1);
+			textFieldAddMessage.setText("");
 		}
 		
 	}

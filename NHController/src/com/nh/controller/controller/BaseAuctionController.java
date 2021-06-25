@@ -122,6 +122,8 @@ public class BaseAuctionController implements NettyControllable {
 		// AUCTION_STATUS_COMPLETED = "8006" // 경매 출품 건 완료 상태
 		// AUCTION_STATUS_FINISH = "8007" // 경매 종료 상태
 
+		mAuctionStatus = auctionStatus;
+		
 		switch (auctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_NONE:
 			addLogItem(mResMsg.getString("msg.auction.status.none"));
@@ -146,7 +148,6 @@ public class BaseAuctionController implements NettyControllable {
 			break;
 		}
 
-		mAuctionStatus = auctionStatus;
 	}
 
 	@Override
@@ -170,6 +171,8 @@ public class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onBidding(Bidding bidding) {
 		addLogItem(mResMsg.getString("msg.auction.get.bidding") + bidding.getEncodedMessage());
+		//TODO 시간 추후제거
+		bidding.setBiddingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
 		setAllBidding(bidding);
 	}
 
@@ -228,7 +231,8 @@ public class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onRequestAuctionResult(RequestAuctionResult requestAuctionResult) {
 		//낙유찰 결과 전송
-		calculationRankingAndLog(mCurrentEntryInfo);
+		addLogItem("#### " + mAuctionStatus.getState());
+		calculationRankingAndLog(mCurrentEntryInfo,true);
 	}
 	
 	@Override
@@ -287,7 +291,7 @@ public class BaseAuctionController implements NettyControllable {
 	/**
 	 * 랭킹 , 로그파일 
 	 */
-	protected void calculationRankingAndLog(CurrentEntryInfo currentEntryInfo) {
+	protected void calculationRankingAndLog(CurrentEntryInfo currentEntryInfo,boolean isPass) {
 
 		//순위 정렬
 		List<Bidding> list = new ArrayList<Bidding>();
@@ -298,7 +302,7 @@ public class BaseAuctionController implements NettyControllable {
 
 		boolean isSuccess = false;	//낙찰 :true , 유찰 : false
 
-		if(!CommonUtils.getInstance().isListEmpty(rankBiddingDataList)) {
+		if(!isPass && !CommonUtils.getInstance().isListEmpty(rankBiddingDataList)) {
 
 			//1순위 데이터
 			Bidding biddingUser = rankBiddingDataList.get(0);
@@ -486,7 +490,7 @@ public class BaseAuctionController implements NettyControllable {
 
 			logContent.append(SUB_LINE);
 
-			if(!CommonUtils.getInstance().isListEmpty(biddingList)) {
+			if(isSuccess && !CommonUtils.getInstance().isListEmpty(biddingList)) {
 				
 				for (int i = 0; i < biddingList.size(); i++) {
 					logContent.append(ENTER_LINE);
@@ -497,7 +501,7 @@ public class BaseAuctionController implements NettyControllable {
 				}
 				logContent.append(ENTER_LINE);
 			}else {
-				logContent.append(ENTER_LINE + mResMsg.getString("log.auction.result.fail"));
+				logContent.append(ENTER_LINE + mResMsg.getString("log.auction.result.fail") + ENTER_LINE);
 			}
 
 			if(!CommonUtils.getInstance().isListEmpty(mBeForeBidderDataList)) {
