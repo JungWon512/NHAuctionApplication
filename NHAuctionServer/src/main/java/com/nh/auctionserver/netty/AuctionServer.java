@@ -374,7 +374,7 @@ public class AuctionServer {
 									GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage() + "\r\n");
 				}
 			}
-
+   
 			if (controllerParsedMessage instanceof StopAuction) {
 				mLogger.info("경매 진행 정지 요청 거점코드 : " + ((StopAuction) controllerParsedMessage).getAuctionHouseCode());
 				mLogger.info("경매 진행 정지 요청 : " + ((StopAuction) controllerParsedMessage).getEntryNum());
