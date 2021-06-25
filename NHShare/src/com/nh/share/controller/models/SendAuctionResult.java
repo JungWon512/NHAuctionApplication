@@ -18,8 +18,10 @@ public class SendAuctionResult implements FromAuctionController {
 	private String mEntryNum; // 출품 번호
 	private String mResultCode; // 낙,유찰 결과 코드
 	private String mSuccessBidder; // 낙찰자 회원번호
-	private String mSuccessBidPrice; // 낙찰금액
+	private String mSuccessBidPrice; 
 
+	public SendAuctionResult() {}
+	
 	public SendAuctionResult(String auctionHouseCode, String entryNum, String resultCode, String successBidder,
 			String successBidPrice) {
 		mAuctionHouseCode = auctionHouseCode;

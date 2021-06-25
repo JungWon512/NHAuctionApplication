@@ -1,6 +1,7 @@
 package com.nh.share.common.models;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.setting.AuctionShareSetting;
@@ -13,7 +14,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * AB | 경매거점코드 | 접속채널(ANDROID/IOS/WEB) | 경매회원번호 | 출품번호 | 응찰금액(만원) | 신규응찰여부(Y/N)
  *
  */
-public class Bidding implements FromAuctionCommon, Serializable {
+public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidding> {
 	private static final long serialVersionUID = 1L;
 	public static final char TYPE = 'B';
 	private String mAuctionHouseCode;
@@ -115,5 +116,25 @@ public class Bidding implements FromAuctionCommon, Serializable {
 				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mChannel, AuctionShareSetting.DELIMITER, mUserNo,
 				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mPrice,
 				AuctionShareSetting.DELIMITER, mIsNewBid, AuctionShareSetting.DELIMITER, mBiddingTime);
+	}
+
+	@Override
+	public int compareTo(Bidding bidding) {
+		return this.getUserNo().compareTo(bidding.getUserNo());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.getUserNo());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Bidding))
+			return false;
+
+		Bidding p = (Bidding) obj;
+
+		return this.getUserNo().equals(p.getUserNo());
 	}
 }

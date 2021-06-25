@@ -73,6 +73,10 @@ public class GlobalDefineCode {
 	public static final String CONNECT_RUN_FAIL = "2004"; // 프로그램 실행 불가
 	public static final String CONNECT_EXPIRE_WATCHER = "2005"; // 관전자 접속 만료
 
+	//경매 결과 코드
+	public static final String AUCTION_RESULT_CODE_SUCCESS = "01";		//낙찰
+	public static final String AUCTION_RESULT_CODE_FAIL = "02";			//유찰
+	
 	// 요청 결과 미존재
 	public static final String RESPONSE_REQUEST_NOT_RESULT = "4001";
 	// 요청 실패

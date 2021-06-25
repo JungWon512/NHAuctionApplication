@@ -18,6 +18,8 @@ public class AuctionResult implements FromAuctionCommon {
 	private String mResultCode; // 낙,유찰 결과 코드
 	private String mSuccessBidder; // 낙찰자 회원번호
 	private String mSuccessBidPrice; // 낙찰금액
+	
+	public AuctionResult() {}
 
 	public AuctionResult(String auctionHouseCode, String entryNum, String resultCode, String successBidder,
 			String successBidPrice) {

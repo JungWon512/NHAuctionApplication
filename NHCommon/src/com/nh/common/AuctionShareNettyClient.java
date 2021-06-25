@@ -170,6 +170,18 @@ public class AuctionShareNettyClient {
 	public Channel getChannel() {
 		return channel;
 	}
+	
+	/**
+	 * 접속 상태 확인
+	 * @return
+	 */
+	public boolean isEmptyChannel() {
+		if (channel != null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	public static class Builder {
 		private final String host;
