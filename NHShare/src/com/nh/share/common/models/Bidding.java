@@ -98,7 +98,7 @@ public class Bidding implements FromAuctionCommon, Serializable {
 		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
 				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mChannel, AuctionShareSetting.DELIMITER, mUserNo,
 				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mPrice,
-				AuctionShareSetting.DELIMITER, mIsNewBid);
+				AuctionShareSetting.DELIMITER, mIsNewBid, AuctionShareSetting.DELIMITER, mBiddingTime);
 	}
 
 	public String getEntryNum() {
@@ -114,6 +114,6 @@ public class Bidding implements FromAuctionCommon, Serializable {
 		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
 				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mChannel, AuctionShareSetting.DELIMITER, mUserNo,
 				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mPrice,
-				AuctionShareSetting.DELIMITER, mIsNewBid);
+				AuctionShareSetting.DELIMITER, mIsNewBid, AuctionShareSetting.DELIMITER, mBiddingTime);
 	}
 }
