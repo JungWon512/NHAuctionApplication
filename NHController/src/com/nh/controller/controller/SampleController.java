@@ -375,6 +375,11 @@ public class SampleController extends BaseAuctionController implements Initializ
 			btnSendEntryInfo.setDisable(false);	// 출품자료 전송
 			btnConnection.setVisible(false);	// 접속 버튼
 			btnDisConnect.setVisible(true);		// 접속 해제 버튼
+			
+			for(int i = 0; cntList.size() > i ; i++) {	// count bar
+				cntList.get(i).setDisable(true);
+			}
+
 		} else {
 			tfIp.setDisable(false);
 			tfPort.setDisable(false);
