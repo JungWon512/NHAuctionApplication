@@ -31,6 +31,10 @@ public class EntryInfo implements FromAuctionController {
 	private String mStartPrice; // 시작가
 	private String mIsLastEntry; // 마지막 출품 여부
 
+	public EntryInfo() {
+
+	}
+
 	public EntryInfo(String auctionHouseCode, String entryNum, String entryType, String indNum, String exhibitor,
 			String birthday, String gender, String weight, String kpn, String cavingNum, String mother, String note,
 			String auctDateTime, String entryStatus, String startPrice, String isLastEntry) {

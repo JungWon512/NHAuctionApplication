@@ -40,7 +40,7 @@ public class ControllerMessageParser {
 		case ToastMessageRequest.TYPE: // 메시지 전송 요청
 			return new ToastMessageRequest(messages[1], messages[2]);
 		case RequestLogout.TYPE: // 로그아웃 처리 요청
-			return new RequestLogout(messages[1], messages[2]);
+			return new RequestLogout(messages[1], messages[2], messages[3]);
 		case EntryInfo.TYPE: // 출품 정보 전송
 			return new EntryInfo(messages);
 		case ReadyEntryInfo.TYPE: // 출품 정보 경매 준비 요청

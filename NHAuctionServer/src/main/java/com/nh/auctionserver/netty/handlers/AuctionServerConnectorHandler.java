@@ -10,8 +10,10 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
+import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 
 import io.netty.channel.ChannelHandler.Sharable;
@@ -64,6 +66,9 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 		// 같은 회원번호로 접속 시도 시 중복 접속으로 간주
 		if (!mConnectionInfoMap.containsKey(ctx.channel().id()) && !mConnectionInfoMap.containsValue(connectionInfo)) {
 			if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+				mLogger.debug("CONNECT_CHANNEL_BIDDER SIZE : "
+						+ mBidderChannelsMap.size());
+
 				// 접속 처리 결과 응답 처리
 				ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 						GlobalDefineCode.CONNECT_SUCCESS).getEncodedMessage() + "\r\n");
@@ -140,13 +145,25 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 								ctx.writeAndFlush(new ResponseCode(connectionInfo.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage() + "\r\n");
 							} else {
 								if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
-									ctx.writeAndFlush(
-											new CurrentEntryInfo(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
-													.getCurrentEntryInfo()).getEncodedMessage() + "\r\n");
+									if(mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode()).equals(GlobalDefineCode.AUCTION_STATUS_PASS)
+											|| mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode()).equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+										// 정상 접속자 초기 경매 상태 정보 전달 처리
+										ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+												.getAuctionStatus().getEncodedMessage() + "\r\n");
+										
+										// 낙유찰 정보 수신이 필요한 경우 확인
+										ctx.writeAndFlush(new RequestAuctionResult(connectionInfo.getAuctionHouseCode(),
+												mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()).getAuctionStatus().getEntryNum())
+														.getEncodedMessage());
+									} else {
+										ctx.writeAndFlush(
+												new CurrentEntryInfo(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+														.getCurrentEntryInfo()).getEncodedMessage() + "\r\n");
 
-									// 정상 접속자 초기 경매 상태 정보 전달 처리
-									ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
-											.getAuctionStatus().getEncodedMessage() + "\r\n");
+										// 정상 접속자 초기 경매 상태 정보 전달 처리
+										ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+												.getAuctionStatus().getEncodedMessage() + "\r\n");
+									}
 								}
 							}
 						}
@@ -176,13 +193,25 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 						ctx.writeAndFlush(new ResponseCode(connectionInfo.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage() + "\r\n");
 					} else {
 						if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
-							ctx.writeAndFlush(
-									new CurrentEntryInfo(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
-											.getCurrentEntryInfo()).getEncodedMessage() + "\r\n");
+							if(mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode()).equals(GlobalDefineCode.AUCTION_STATUS_PASS)
+									|| mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode()).equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+								// 정상 접속자 초기 경매 상태 정보 전달 처리
+								ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+										.getAuctionStatus().getEncodedMessage() + "\r\n");
+								
+								// 낙유찰 정보 수신이 필요한 경우 확인
+								ctx.writeAndFlush(new RequestAuctionResult(connectionInfo.getAuctionHouseCode(),
+										mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()).getAuctionStatus().getEntryNum())
+												.getEncodedMessage());
+							} else {
+								ctx.writeAndFlush(
+										new CurrentEntryInfo(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+												.getCurrentEntryInfo()).getEncodedMessage() + "\r\n");
 
-							// 정상 접속자 초기 경매 상태 정보 전달 처리
-							ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
-									.getAuctionStatus().getEncodedMessage() + "\r\n");
+								// 정상 접속자 초기 경매 상태 정보 전달 처리
+								ctx.channel().writeAndFlush(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+										.getAuctionStatus().getEncodedMessage() + "\r\n");
+							}
 						}
 					}
 				}
@@ -385,6 +414,8 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 		}
 
 		if (mConnectionInfoMap.containsKey(ctx.channel().id())) {
+			mAuctionServer.logoutMember(new RequestLogout(mConnectionInfoMap.get(ctx.channel().id()).getAuctionHouseCode(), mConnectionInfoMap.get(ctx.channel().id()).getUserNo(), mConnectionInfoMap.get(ctx.channel().id()).getChannel()));
+
 			mConnectionInfoMap.remove(ctx.channel().id());
 
 			if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {

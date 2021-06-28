@@ -48,7 +48,7 @@ public class BaseAuction {
 	}
 
 	public static class Auction implements NettyControllable {
-		private boolean mIsBidder = true;
+		private boolean mIsBidder = false;
 
 		private Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -434,6 +434,7 @@ public class BaseAuction {
 
 			for (int i = 0; clients.size() > i; i++) {
 				clients.get(i).stopClient(listener_);
+				clients.remove(i);
 			}
 		}
 

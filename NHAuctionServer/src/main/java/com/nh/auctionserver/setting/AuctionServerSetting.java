@@ -19,7 +19,7 @@ public class AuctionServerSetting {
     public static long COUNT_DOWN_DELAY_TIME = 1000; // 경매 카운트 다운 간격 시간(ms)
     public static int COUNT_DOWN_TIME = 10; // 경매 카운트 다운 시간(second)
     
-    public static long AUCTION_NEXT_ENTRY_DELAY_TIME = 5000; // 다음 출품 준비 딜레이 시간(ms)
+    public static long AUCTION_NEXT_ENTRY_DELAY_TIME = 3000; // 다음 출품 준비 딜레이 시간(ms)
     
     public static long BASE_DELAY_TIME = 0; // 타이머 동작 시작 딜레이 시간(ms)
     
