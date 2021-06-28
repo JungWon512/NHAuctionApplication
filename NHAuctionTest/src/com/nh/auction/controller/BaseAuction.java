@@ -48,7 +48,7 @@ public class BaseAuction {
 	}
 
 	public static class Auction implements NettyControllable {
-		private boolean mIsBidder = false;
+		private boolean mIsBidder = true;
 
 		private Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -569,7 +569,7 @@ public class BaseAuction {
 		public String onBidding(Channel channel, String connectChannel, String userMemNum, String entryNum,
 				String price) {
 			String data = new Bidding(GlobalDefineCode.AUCTION_HOUSE_HWADONG, connectChannel, userMemNum, entryNum,
-					price, "Y").getEncodedMessage() + "\r\n";
+					price, "Y", null).getEncodedMessage() + "\r\n";
 			channel.writeAndFlush(data);
 
 			return data;

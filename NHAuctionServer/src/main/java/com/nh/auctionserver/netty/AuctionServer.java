@@ -458,6 +458,8 @@ public class AuctionServer {
 
 					channelItemWriteAndFlush(((Bidding) commonParsedMessage));
 
+					mLogger.debug("Bidding Data : " + ((Bidding) commonParsedMessage).getEncodedMessage());
+					
 					channelItemWriteAndFlush(
 							(new BidderConnectInfo(((Bidding) commonParsedMessage).getAuctionHouseCode(),
 									((Bidding) commonParsedMessage).getUserNo(),
@@ -477,7 +479,7 @@ public class AuctionServer {
 							LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
 
 					channelItemWriteAndFlush(((CancelBidding) commonParsedMessage));
-
+					
 					channelItemWriteAndFlush(
 							(new BidderConnectInfo(((CancelBidding) commonParsedMessage).getAuctionHouseCode(),
 									((CancelBidding) commonParsedMessage).getUserNo(),
@@ -727,6 +729,7 @@ public class AuctionServer {
 							for (String key : mControllerChannelsMap.keySet()) {
 								if (mControllerChannelsMap.get(key).size() > 0) {
 									mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+									mLogger.debug("Send Bidding Data : " + message);
 								}
 							}
 						}

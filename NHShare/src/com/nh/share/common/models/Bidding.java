@@ -28,7 +28,7 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 	private int mPriceInt;
 
 	public Bidding(String auctionHouseCode, String channel, String userNo, String entryNum, String price,
-			String isNewBid) {
+			String isNewBid, String biddingTime) {
 		mAuctionHouseCode = auctionHouseCode;
 		mChannel = channel;
 		mUserNo = userNo;
@@ -36,6 +36,7 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 		mEntryNum = entryNum;
 		mPriceInt = Integer.parseInt(mPrice);
 		mIsNewBid = isNewBid;
+		mBiddingTime = biddingTime;
 	}
 
 	public String getAuctionHouseCode() {
@@ -96,7 +97,7 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 	}
 
 	public String getBiddingInfoForLog() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
 				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mChannel, AuctionShareSetting.DELIMITER, mUserNo,
 				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mPrice,
 				AuctionShareSetting.DELIMITER, mIsNewBid, AuctionShareSetting.DELIMITER, mBiddingTime);
@@ -112,7 +113,7 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
 				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mChannel, AuctionShareSetting.DELIMITER, mUserNo,
 				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mPrice,
 				AuctionShareSetting.DELIMITER, mIsNewBid, AuctionShareSetting.DELIMITER, mBiddingTime);

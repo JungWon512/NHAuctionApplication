@@ -23,7 +23,7 @@ public class CommonMessageParser {
 		case AuctionStatus.TYPE: // 경매 상태 정보 전송
 			return new AuctionStatus(messages);
 		case Bidding.TYPE:
-			return new Bidding(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6]);
+			return new Bidding(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6], messages[7]);
 		case AuctionReponseSession.TYPE: // 접속 응답 처리
 			return new AuctionReponseSession(messages[1], messages[2], messages[3]);
 		case ConnectionInfo.TYPE: // 접속 정보 응답 처리
