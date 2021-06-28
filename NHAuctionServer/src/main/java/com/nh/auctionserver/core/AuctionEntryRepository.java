@@ -84,31 +84,20 @@ public class AuctionEntryRepository {
 
 	public synchronized EntryInfo popEntry(String auctionHouseCode) {
 		EntryInfo entryInfo = null;
-		System.out.println("1111111111111111111111111111111111111111");
-		
+
 		if (mEntryListMap != null) {
-			System.out.println("22222222222222222222222222222222222222");
-			System.out.println("mEntryListMap size : " + mEntryListMap.size());
-			
-			System.out.println("auctionHouseCode : " + auctionHouseCode);
-			
 			for(String key : mEntryListMap.keySet()) {
 				System.out.println("mEntryListMap key : " + key);
 				System.out.println("mEntryListMap value size : " + mEntryListMap.get(key).size());
 			}
 			
 			if (mEntryListMap.containsKey(auctionHouseCode)) {
-				System.out.println("33333333333333333333333333333333333333");
 				entryInfo = mEntryListMap.get(auctionHouseCode).get(0);
-				System.out.println("44444444444444444444444444444444444444");
-				System.out.println("4444444444444 popEntry entryInfo : " + entryInfo);
 				mEntryListMap.get(auctionHouseCode).remove(0);
 				mTotalCountMap.put(auctionHouseCode, mTotalCountMap.get(auctionHouseCode) - 1);
 			}
 		}
 
-		System.out.println("55555555555555555555555555555555555555555");
-		System.out.println("5555555555555 popEntry entryInfo : " + entryInfo);
 		return entryInfo;
 	}
 
