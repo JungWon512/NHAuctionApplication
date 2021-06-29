@@ -3,10 +3,7 @@ package com.nh.controller.utils;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,11 +33,11 @@ public class TestUtil {
 		List<EntryInfo> entryRepository = new ArrayList<EntryInfo>();
 		
 		BufferedReader tmpBuffer = null;
-
+		
 		try {
 			
-			URL url = this.getClass().getClassLoader().getResource("com/nh/controller/utils/testData.txt");
-			tmpBuffer = Files.newBufferedReader(Paths.get(url.toURI()));
+			tmpBuffer =new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream( "testData.txt"), "UTF-8"));
+
 			String line = "";
 
 			while ((line = tmpBuffer.readLine()) != null) {
@@ -62,9 +59,6 @@ public class TestUtil {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {

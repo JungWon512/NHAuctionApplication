@@ -1,5 +1,6 @@
 package com.nh.controller.controller;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class SampleController extends BaseAuctionController implements Initializ
 	public void initialize(URL location, ResourceBundle resources) {
 
 		System.out.println("SampleController initialize");
-
+		
 		// get ResMsg
 		if (resources != null) {
 			mResMsg = resources;
@@ -127,9 +128,7 @@ public class SampleController extends BaseAuctionController implements Initializ
 		Thread thread = new Thread("server") {
 			@Override
 			public void run() {
-
-				createClient(tfIp.getText().trim(), Integer.parseInt(tfPort.getText().trim()), tfId.getText().trim(),
-						"N");
+				createClient(tfIp.getText().trim(), Integer.parseInt(tfPort.getText().trim()), tfId.getText().trim(),"N");
 			}
 		};
 		thread.setDaemon(true);
@@ -174,10 +173,15 @@ public class SampleController extends BaseAuctionController implements Initializ
 		/**
 		 * 네티 접속 상태 출품 데이터 전송 전 상태
 		 */
-		if (AuctionDelegate.getInstance().isActive()
-				&& mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+		if (AuctionDelegate.getInstance().isActive()) {
 
+			//버튼 상태
 			if (btnSendEntryInfo.isDisable()) {
+				return;
+			}
+
+			//entry list 체크
+			if(!CommonUtils.getInstance().isListEmpty(mEntryRepository)) {
 				return;
 			}
 
@@ -192,8 +196,7 @@ public class SampleController extends BaseAuctionController implements Initializ
 					mEntryRepository.addAll(TestUtil.getInstance().loadEntryData());
 
 					for (int i = 0; i < mEntryRepository.size(); i++) {
-						addLogItem(mResMsg.getString("msg.auction.send.entry.data")
-								+ AuctionDelegate.getInstance().onSendEntryData(mEntryRepository.get(i)));
+						addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(mEntryRepository.get(i)));
 						recordCount++;
 					}
 
@@ -341,7 +344,7 @@ public class SampleController extends BaseAuctionController implements Initializ
 	@Override
 	public void onAuctionStatus(AuctionStatus auctionStatus) {
 		super.onAuctionStatus(auctionStatus);
-		initAuctionVariable(auctionStatus.getState());
+		setAuctionVariableState(auctionStatus.getState());
 	}
 
 	@Override
@@ -352,6 +355,8 @@ public class SampleController extends BaseAuctionController implements Initializ
 				mRemainingTimeCount--;
 				cntList.get(mRemainingTimeCount).setDisable(true);
 			}
+			
+			btnPass.setDisable(true);
 		}
 	}
 
@@ -392,14 +397,13 @@ public class SampleController extends BaseAuctionController implements Initializ
 
 			btnConnection.setVisible(true);
 			btnDisConnect.setVisible(false);
-			
 		}
 	}
 
 	/**
 	 * 경매 준비 뷰 초기화
 	 */
-	private void initAuctionVariable(String code) {
+	private void setAuctionVariableState(String code) {
 
 		switch (code) {
 
@@ -416,7 +420,7 @@ public class SampleController extends BaseAuctionController implements Initializ
 			btnStart.setDisable(false);
 			btnStop.setDisable(true);
 			btnPass.setDisable(true);
-			btnSendEntryInfo.setDisable(false);
+			btnSendEntryInfo.setDisable(true);
 
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_START:

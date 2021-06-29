@@ -59,7 +59,7 @@ public class AuctionDelegate {
 				GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER, GlobalDefineCode.USE_CHANNEL_MANAGE, mWatchMode);
 
 		return sendMessage(nettySendable);
-		
+
 	}
 	
 	/**
