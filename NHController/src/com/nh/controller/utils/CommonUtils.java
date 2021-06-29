@@ -649,7 +649,7 @@ public class CommonUtils {
 			}
 		};
 
-		dialogPane.getStylesheets().add(getClass().getResource("/com/glovis/share/css/share.css").toExternalForm());
+		dialogPane.getStylesheets().add(getClass().getResource("/com/nh/controller/css/utils.css").toExternalForm());
 		dialog.initOwner(stage);
 		dialog.initModality(Modality.WINDOW_MODAL);
 		dialog.initStyle(StageStyle.UNDECORATED);

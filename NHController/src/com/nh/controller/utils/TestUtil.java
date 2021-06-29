@@ -35,8 +35,7 @@ public class TestUtil {
 
 		try {
 
-			tmpBuffer = new BufferedReader(
-					new InputStreamReader(this.getClass().getResourceAsStream("testData.txt"), "UTF-8"));
+			tmpBuffer = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("testData.txt"), "UTF-8"));
 
 			String next = tmpBuffer.readLine();
 			String line = next;

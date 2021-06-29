@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -41,6 +42,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -55,9 +57,9 @@ public class BaseAuctionController implements NettyControllable {
 	protected ResourceBundle mResMsg = null; // 메세지 처리
 
 	protected Stage mStage = null; // 현재 Stage
-	
+
 	protected LinkedHashMap<String, EntryInfo> mEntryRepositoryMap = null; // 출품 리스트
-	
+
 	protected CurrentEntryInfo mCurrentEntryInfo = null; // 현재 진행 출품
 
 	protected AuctionStatus mAuctionStatus = null; // 경매 상태
@@ -100,21 +102,22 @@ public class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onActiveChannel(Channel channel) {
 		mLogger.debug("onActiveChannel");
-		addLogItem(mResMsg.getString("msg.auction.send.connection.info")+ AuctionDelegate.getInstance().onSendConnectionInfo());
-		
-	      Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
+		addLogItem(mResMsg.getString("msg.auction.send.connection.info")
+				+ AuctionDelegate.getInstance().onSendConnectionInfo());
 
-                  if (channel != null) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
 
-                      InetSocketAddress remoteAddr = (InetSocketAddress) channel.remoteAddress();
-                      InetSocketAddress loacalAddr = (InetSocketAddress) channel.localAddress();
-                      addLogItem("remoteAddr  :  " + remoteAddr  + " / " + "loacalAddr  :  " + loacalAddr );
-                  }
-              }
-          });
-      
+				if (channel != null) {
+
+					InetSocketAddress remoteAddr = (InetSocketAddress) channel.remoteAddress();
+					InetSocketAddress loacalAddr = (InetSocketAddress) channel.localAddress();
+					addLogItem("remoteAddr  :  " + remoteAddr + " / " + "loacalAddr  :  " + loacalAddr);
+				}
+			}
+		});
+
 	}
 
 	@Override
@@ -230,9 +233,9 @@ public class BaseAuctionController implements NettyControllable {
 
 	@Override
 	public void onCancelBidding(CancelBidding cancelBidding) {
-		
+
 		addLogItem(mResMsg.getString("msg.auction.get.bidding.cancel") + cancelBidding.getEncodedMessage());
-		
+
 		if (mCurrentBidderMap.containsKey(cancelBidding.getUserNo())) {
 			Bidding currentBidder = mCurrentBidderMap.get(cancelBidding.getUserNo());
 			currentBidder.setCancelBidding(true);
@@ -244,13 +247,13 @@ public class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onRequestAuctionResult(RequestAuctionResult requestAuctionResult) {
 
-		if(mEntryRepositoryMap != null && mEntryRepositoryMap.size() > 0) {
+		if (mEntryRepositoryMap != null && mEntryRepositoryMap.size() > 0) {
 
-			if(mEntryRepositoryMap.containsKey(requestAuctionResult.getEntryNum())) {
-				
+			if (mEntryRepositoryMap.containsKey(requestAuctionResult.getEntryNum())) {
+
 				EntryInfo entryInfo = mEntryRepositoryMap.get(requestAuctionResult.getEntryNum());
-				
-				if(entryInfo != null) {
+
+				if (entryInfo != null) {
 					// 낙유찰 결과 전송
 					switch (mAuctionStatus.getState()) {
 					case GlobalDefineCode.AUCTION_STATUS_PASS:
@@ -390,7 +393,8 @@ public class BaseAuctionController implements NettyControllable {
 		}
 
 		// 낙유찰 결과 전송
-		addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+		addLogItem(mResMsg.getString("msg.auction.send.result")
+				+ AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
 
 	}
 
@@ -550,18 +554,21 @@ public class BaseAuctionController implements NettyControllable {
 				for (Bidding disBidding : distintListData) {
 
 					logContent.append(ENTER_LINE);
-					logContent.append(String.format(mResMsg.getString("log.auction.result.before.bidder"),disBidding.getUserNo()));
+					logContent.append(String.format(mResMsg.getString("log.auction.result.before.bidder"),
+							disBidding.getUserNo()));
 					logContent.append(ENTER_LINE);
 
 					for (Bidding beforBidding : mBeForeBidderDataList) {
 
 						if (disBidding.getUserNo().equals(beforBidding.getUserNo())) {
-							logContent.append(String.format(mResMsg.getString("log.auction.result.price"),beforBidding.getPriceInt()));
+							logContent.append(String.format(mResMsg.getString("log.auction.result.price"),
+									beforBidding.getPriceInt()));
 							logContent.append(EMPTY_SPACE);
 							logContent.append(EMPTY_SPACE);
-							logContent.append(CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(beforBidding.getBiddingTime()));
+							logContent.append(CommonUtils.getInstance()
+									.getCurrentTime_yyyyMMddHHmmssSSS(beforBidding.getBiddingTime()));
 
-							if(beforBidding.isCancelBidding()) {
+							if (beforBidding.isCancelBidding()) {
 								logContent.append(EMPTY_SPACE);
 								logContent.append(EMPTY_SPACE);
 								logContent.append(mResMsg.getString("log.auction.result.cancel.bidding"));
@@ -616,6 +623,10 @@ public class BaseAuctionController implements NettyControllable {
 				addLogItem(mResMsg.getString("log.auction"));
 			}
 		}
+	}
+
+	protected Optional<ButtonType> showAlertPopupOneButton(String message) {
+		return CommonUtils.getInstance().showAlertPopupOneButton(mStage, message,mResMsg.getString("popup.btn.close"));
 	}
 
 }

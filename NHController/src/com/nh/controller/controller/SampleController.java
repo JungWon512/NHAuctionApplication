@@ -104,7 +104,7 @@ public class SampleController extends BaseAuctionController implements Initializ
 
 		addLogItem(mResMsg.getString("log.auction"));
 		addLogItem(mResMsg.getString("msg.connection.check"));
-
+		
 	}
 
 	/**
@@ -273,7 +273,7 @@ public class SampleController extends BaseAuctionController implements Initializ
 
 			@Override
 			public void callBack(String str) {
-				AuctionDelegate.getInstance().onToastMessageRequest(str);
+				addLogItem(String.format(mResMsg.getString("msg.auction.send.message"), str));
 				showToastMessage(String.format(mResMsg.getString("msg.auction.send.message"), str));
 			}
 		});
@@ -368,6 +368,7 @@ public class SampleController extends BaseAuctionController implements Initializ
 	 * @param isConnection
 	 */
 	private void setButtonState(boolean isConnection) {
+		
 		if (isConnection) {
 			tfIp.setDisable(true);				// 아이피 필드
 			tfPort.setDisable(true);			// 포트 필드
@@ -428,6 +429,13 @@ public class SampleController extends BaseAuctionController implements Initializ
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_FINISH:
+			showToastMessage(mResMsg.getString("msg.auction.finis"));
+
+			btnSendEntryInfo.setDisable(true);
+			btnStart.setDisable(true);
+			btnStop.setDisable(true);
+			btnPass.setDisable(true);
+
 			break;
 		}
 	}

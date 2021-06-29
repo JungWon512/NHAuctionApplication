@@ -6,6 +6,7 @@
 .dialog-pane .content{
 	-fx-font-size: 15px;
 	-fx-background-color: #404142;
+	-fx-padding: 20 0 20 0;
 }
 
 .dialog-pane .label{
