@@ -5,8 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.InetSocketAddress;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -57,9 +55,9 @@ public class BaseAuctionController implements NettyControllable {
 	protected ResourceBundle mResMsg = null; // 메세지 처리
 
 	protected Stage mStage = null; // 현재 Stage
-
-	protected List<EntryInfo> mEntryRepository = null; // 출품 리스트
-
+	
+	protected LinkedHashMap<String, EntryInfo> mEntryRepositoryMap = null; // 출품 리스트
+	
 	protected CurrentEntryInfo mCurrentEntryInfo = null; // 현재 진행 출품
 
 	protected AuctionStatus mAuctionStatus = null; // 경매 상태
@@ -77,9 +75,9 @@ public class BaseAuctionController implements NettyControllable {
 	 */
 	protected void init() {
 		mAuctionStatus = new AuctionStatus();
-		mEntryRepository = new ArrayList<EntryInfo>();
 		mBeForeBidderDataList = new ArrayList<Bidding>();
 		mCurrentBidderMap = new LinkedHashMap<String, Bidding>();
+		mEntryRepositoryMap = new LinkedHashMap<String, EntryInfo>();
 		AuctionDelegate.getInstance().setClearVariable();
 	}
 
@@ -232,9 +230,12 @@ public class BaseAuctionController implements NettyControllable {
 
 	@Override
 	public void onCancelBidding(CancelBidding cancelBidding) {
+		
 		addLogItem(mResMsg.getString("msg.auction.get.bidding.cancel") + cancelBidding.getEncodedMessage());
+		
 		if (mCurrentBidderMap.containsKey(cancelBidding.getUserNo())) {
 			Bidding currentBidder = mCurrentBidderMap.get(cancelBidding.getUserNo());
+			currentBidder.setCancelBidding(true);
 			mBeForeBidderDataList.add(currentBidder);
 			mCurrentBidderMap.remove(cancelBidding.getUserNo());
 		}
@@ -243,32 +244,25 @@ public class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onRequestAuctionResult(RequestAuctionResult requestAuctionResult) {
 
-		if(!CommonUtils.getInstance().isListEmpty(mEntryRepository)) {
+		if(mEntryRepositoryMap != null && mEntryRepositoryMap.size() > 0) {
 
-			EntryInfo entryInfo = null; 
-
-			for(int i = 0; mEntryRepository.size() > i ; i++) {
-				if(mEntryRepository.get(i).equals(requestAuctionResult.getEntryNum())) {
-					entryInfo = mEntryRepository.get(i);
-					break;
+			if(mEntryRepositoryMap.containsKey(requestAuctionResult.getEntryNum())) {
+				
+				EntryInfo entryInfo = mEntryRepositoryMap.get(requestAuctionResult.getEntryNum());
+				
+				if(entryInfo != null) {
+					// 낙유찰 결과 전송
+					switch (mAuctionStatus.getState()) {
+					case GlobalDefineCode.AUCTION_STATUS_PASS:
+						calculationRankingAndLog(entryInfo, true);
+						break;
+					case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
+						calculationRankingAndLog(entryInfo, false);
+						break;
+					}
 				}
 			}
-			
-			if(entryInfo != null) {
-				// 낙유찰 결과 전송
-				switch (mAuctionStatus.getState()) {
-				case GlobalDefineCode.AUCTION_STATUS_PASS:
-					calculationRankingAndLog(entryInfo, true);
-					break;
-				case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
-					calculationRankingAndLog(entryInfo, false);
-					break;
-
-				}
-			}
-		
 		}
-	
 	}
 
 	@Override
@@ -556,19 +550,23 @@ public class BaseAuctionController implements NettyControllable {
 				for (Bidding disBidding : distintListData) {
 
 					logContent.append(ENTER_LINE);
-					logContent.append(String.format(mResMsg.getString("log.auction.result.before.bidder"),
-							disBidding.getUserNo()));
+					logContent.append(String.format(mResMsg.getString("log.auction.result.before.bidder"),disBidding.getUserNo()));
 					logContent.append(ENTER_LINE);
 
 					for (Bidding beforBidding : mBeForeBidderDataList) {
 
 						if (disBidding.getUserNo().equals(beforBidding.getUserNo())) {
-							logContent.append(String.format(mResMsg.getString("log.auction.result.price"),
-									beforBidding.getPriceInt()));
+							logContent.append(String.format(mResMsg.getString("log.auction.result.price"),beforBidding.getPriceInt()));
 							logContent.append(EMPTY_SPACE);
 							logContent.append(EMPTY_SPACE);
-							logContent.append(CommonUtils.getInstance()
-									.getCurrentTime_yyyyMMddHHmmssSSS(beforBidding.getBiddingTime()));
+							logContent.append(CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(beforBidding.getBiddingTime()));
+
+							if(beforBidding.isCancelBidding()) {
+								logContent.append(EMPTY_SPACE);
+								logContent.append(EMPTY_SPACE);
+								logContent.append(mResMsg.getString("log.auction.result.cancel.bidding"));
+							}
+
 							logContent.append(ENTER_LINE);
 						}
 					}

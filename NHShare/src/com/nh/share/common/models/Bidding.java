@@ -26,6 +26,7 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 	private String mIsNewBid;
 
 	private int mPriceInt;
+	private boolean isCancelBidding = false;
 
 	public Bidding(String auctionHouseCode, String channel, String userNo, String entryNum, String price,
 			String isNewBid, String biddingTime) {
@@ -94,6 +95,15 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 
 	public void setBiddingTime(String biddingTime) {
 		this.mBiddingTime = biddingTime;
+	}
+	
+
+	public boolean isCancelBidding() {
+		return isCancelBidding;
+	}
+
+	public void setCancelBidding(boolean isCancelBidding) {
+		this.isCancelBidding = isCancelBidding;
 	}
 
 	public String getBiddingInfoForLog() {

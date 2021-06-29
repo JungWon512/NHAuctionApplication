@@ -1,9 +1,9 @@
 package com.nh.controller.controller;
 
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 import com.nh.common.interfaces.NettyClientShutDownListener;
@@ -17,6 +17,7 @@ import com.nh.controller.utils.TestUtil;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.server.models.AuctionCountDown;
 
 import javafx.application.Platform;
@@ -179,7 +180,7 @@ public class SampleController extends BaseAuctionController implements Initializ
 			}
 
 			//entry list 체크
-			if(!CommonUtils.getInstance().isListEmpty(mEntryRepository)) {
+			if(mEntryRepositoryMap != null && mEntryRepositoryMap.size() > 0) {
 				return;
 			}
 
@@ -188,17 +189,14 @@ public class SampleController extends BaseAuctionController implements Initializ
 			Thread thread = new Thread("ss") {
 				@Override
 				public void run() {
+					mEntryRepositoryMap.clear();
+					mEntryRepositoryMap.putAll(TestUtil.getInstance().loadEntryDataMap());
 
-					int recordCount = 0;
-
-					mEntryRepository.addAll(TestUtil.getInstance().loadEntryData());
-
-					for (int i = 0; i < mEntryRepository.size(); i++) {
-						addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(mEntryRepository.get(i)));
-						recordCount++;
+					for(Entry<String,EntryInfo> entryInfo : mEntryRepositoryMap.entrySet()) {
+						addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(entryInfo.getValue()));
 					}
-
-					addLogItem(String.format(mResMsg.getString("msg.send.entry.data.result"), recordCount));
+					
+					addLogItem(String.format(mResMsg.getString("msg.send.entry.data.result"), mEntryRepositoryMap.size()));
 
 					btnSendEntryInfo.setDisable(true);
 
