@@ -155,8 +155,6 @@ public class SampleController extends BaseAuctionController implements Initializ
 					setButtonState(AuctionDelegate.getInstance().isActive());
 					// hide dialog
 					CommonUtils.getInstance().dismissLoadingDialog();
-					// log
-					addLogItem(mResMsg.getString("msg.disconnection"));
 				});
 			}
 		});
