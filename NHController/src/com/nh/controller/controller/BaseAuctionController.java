@@ -102,21 +102,20 @@ public class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onActiveChannel(Channel channel) {
 		mLogger.debug("onActiveChannel");
-		addLogItem(mResMsg.getString("msg.auction.send.connection.info")
-				+ AuctionDelegate.getInstance().onSendConnectionInfo());
+		addLogItem(mResMsg.getString("msg.auction.send.connection.info") + AuctionDelegate.getInstance().onSendConnectionInfo());
 
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-
-				if (channel != null) {
-
-					InetSocketAddress remoteAddr = (InetSocketAddress) channel.remoteAddress();
-					InetSocketAddress loacalAddr = (InetSocketAddress) channel.localAddress();
-					addLogItem("remoteAddr  :  " + remoteAddr + " / " + "loacalAddr  :  " + loacalAddr);
-				}
-			}
-		});
+//		Platform.runLater(new Runnable() {
+//			@Override
+//			public void run() {
+//
+//				if (channel != null) {
+//
+//					InetSocketAddress remoteAddr = (InetSocketAddress) channel.remoteAddress();
+//					InetSocketAddress loacalAddr = (InetSocketAddress) channel.localAddress();
+//					addLogItem("remoteAddr  :  " + remoteAddr + " / " + "loacalAddr  :  " + loacalAddr);
+//				}
+//			}
+//		});
 
 	}
 
