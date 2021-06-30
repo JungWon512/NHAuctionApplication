@@ -115,9 +115,9 @@ public class SampleController extends BaseAuctionController implements Initializ
 	public void onConnectServer(MouseEvent event) {
 
 		// test set
-		tfIp.setText(AUCTION_INFO.AUCTION_HOST);
-		tfPort.setText(Integer.toString(AUCTION_INFO.AUCTION_PORT));
-		tfId.setText(AUCTION_INFO.AUCTION_MEMBER);
+//		tfIp.setText(AUCTION_INFO.AUCTION_HOST);
+//		tfPort.setText(Integer.toString(AUCTION_INFO.AUCTION_PORT));
+//		tfId.setText(AUCTION_INFO.AUCTION_MEMBER);
 
 		// log
 		addLogItem(tfIp.getText().trim() + " / " + tfPort.getText().trim() + " " + mResMsg.getString("msg.connection"));
