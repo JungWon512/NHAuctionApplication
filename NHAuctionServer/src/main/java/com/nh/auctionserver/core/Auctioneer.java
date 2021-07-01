@@ -34,7 +34,6 @@ import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
-import com.sun.swing.internal.plaf.synth.resources.synth;
 
 import io.netty.channel.ChannelId;
 
@@ -54,7 +53,7 @@ public class Auctioneer {
 	private static AuctionConfig mAuctionConfig = new AuctionConfig(); // 경매 생성시 설정 정보
 	private static Map<String, AuctionState> mAuctionStateMap = null; // 경매 진행 상태, 현재 경매 상황 등 계속 변화하는 정보
 	// 출품 목록
-	private static AuctionEntryRepository mAuctionEntryRepository = new AuctionEntryRepository();
+	private static Map<String, AuctionEntryRepository> mAuctionEntryRepositoryMap = new HashMap<String, AuctionEntryRepository>();
 
 	private Map<String, ScheduledExecutorService> mStartCountDownServiceMap = new HashMap<String, ScheduledExecutorService>();
 	private Map<String, ScheduledExecutorService> mNextEntryIntervalServiceMap = new HashMap<String, ScheduledExecutorService>();
@@ -178,11 +177,10 @@ public class Auctioneer {
 
 			if (mAuctionServer != null) {
 				mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
-				
+
 				// 낙유찰 정보 전송 요청
 				mAuctionServer.itemAdded(new RequestAuctionResult(auctionHouseCode,
-						mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEntryNum())
-								.getEncodedMessage());
+						mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEntryNum()).getEncodedMessage());
 			}
 		}
 	}
@@ -239,26 +237,40 @@ public class Auctioneer {
 		// 경매 응찰 정보 Reset
 		resetAuctionData(auctionHouseCode);
 
-		EntryInfo entryInfo = mAuctionEntryRepository.popEntry(auctionHouseCode, entryNum);
+		EntryInfo entryInfo = mAuctionEntryRepositoryMap.get(auctionHouseCode).popEntry(entryNum);
 
-		if (mAuctionEntryRepository.getTotalCount(auctionHouseCode) >= 1) {
-			mAuctionStateMap.get(auctionHouseCode).setCurrentEntryInfo(entryInfo);
+		if(entryInfo != null) {
+			mLogger.debug("readyEntryInfo : " + entryInfo.getEncodedMessage());
 		} else {
-			// 마지막 차량 일 경우 수행 처리 로직 개발 필요
+			mLogger.debug("readyEntryInfo is null");
 		}
 
-		mAuctionStateMap.get(auctionHouseCode)
-				.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.get(auctionHouseCode).size()));
+		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
+				&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
+			mAuctionStateMap.get(auctionHouseCode).setCurrentEntryInfo(entryInfo);
 
-		mLogger.debug(entryInfo.getEntryNum() + "번 출품 상품이 경매 준비되었습니다.");
-		mAuctionStateMap.get(auctionHouseCode).onReady();
+			mAuctionStateMap.get(auctionHouseCode)
+					.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.get(auctionHouseCode).size()));
 
-		// 출품 정보 및 경매 상태 전송
-		if (mAuctionServer != null) {
-			mAuctionServer.itemAdded(new CurrentEntryInfo(mAuctionStateMap.get(auctionHouseCode).getCurrentEntryInfo())
-					.getEncodedMessage());
+			mLogger.debug(entryInfo.getEntryNum() + "번 출품 상품이 경매 준비되었습니다.");
+			mAuctionStateMap.get(auctionHouseCode).onReady();
 
-			mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+			// 출품 정보 및 경매 상태 전송
+			if (mAuctionServer != null) {
+				mAuctionServer
+						.itemAdded(new CurrentEntryInfo(mAuctionStateMap.get(auctionHouseCode).getCurrentEntryInfo())
+								.getEncodedMessage());
+
+				mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+			}
+		} else {
+			mLogger.debug("모든 출품 상품이 경매 완료되었습니다.");
+			mAuctionStateMap.get(auctionHouseCode).onFinish();
+
+			// 출품 정보 및 경매 상태 전송
+			if (mAuctionServer != null) {
+				mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+			}
 		}
 	}
 
@@ -272,26 +284,40 @@ public class Auctioneer {
 		// 경매 응찰 정보 Reset
 		resetAuctionData(auctionHouseCode);
 
-		EntryInfo entryInfo = mAuctionEntryRepository.popEntry(auctionHouseCode);
+		EntryInfo entryInfo = mAuctionEntryRepositoryMap.get(auctionHouseCode).popEntry();
 
-		if (mAuctionEntryRepository.getTotalCount(auctionHouseCode) >= 1) {
-			mAuctionStateMap.get(auctionHouseCode).setCurrentEntryInfo(entryInfo);
+		if(entryInfo != null) {
+			mLogger.debug("readyEntryInfo : " + entryInfo.getEncodedMessage());
 		} else {
-			// 마지막 차량 일 경우 수행 처리 로직 개발 필요
+			mLogger.debug("readyEntryInfo is null");
 		}
 
-		mAuctionStateMap.get(auctionHouseCode)
-				.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.get(auctionHouseCode).size()));
+		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
+				&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
+			mAuctionStateMap.get(auctionHouseCode).setCurrentEntryInfo(entryInfo);
 
-		mLogger.debug(entryInfo.getEntryNum() + "번 출품 상품이 경매 준비되었습니다.");
-		mAuctionStateMap.get(auctionHouseCode).onReady();
+			mAuctionStateMap.get(auctionHouseCode)
+					.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.get(auctionHouseCode).size()));
 
-		// 출품 정보 및 경매 상태 전송
-		if (mAuctionServer != null) {
-			mAuctionServer.itemAdded(new CurrentEntryInfo(mAuctionStateMap.get(auctionHouseCode).getCurrentEntryInfo())
-					.getEncodedMessage());
+			mLogger.debug(entryInfo.getEntryNum() + "번 출품 상품이 경매 준비되었습니다.");
+			mAuctionStateMap.get(auctionHouseCode).onReady();
 
-			mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+			// 출품 정보 및 경매 상태 전송
+			if (mAuctionServer != null) {
+				mAuctionServer
+						.itemAdded(new CurrentEntryInfo(mAuctionStateMap.get(auctionHouseCode).getCurrentEntryInfo())
+								.getEncodedMessage());
+
+				mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+			}
+		} else {
+			mLogger.debug("모든 출품 상품이 경매 완료되었습니다.");
+			mAuctionStateMap.get(auctionHouseCode).onFinish();
+
+			// 출품 정보 및 경매 상태 전송
+			if (mAuctionServer != null) {
+				mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+			}
 		}
 	}
 
@@ -304,7 +330,12 @@ public class Auctioneer {
 	 * @return
 	 */
 	public void addEntryInfo(String auctionHouseCode, EntryInfo entryInfo) {
-		mAuctionEntryRepository.pushEntry(auctionHouseCode, entryInfo);
+		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)) {
+			mAuctionEntryRepositoryMap.get(auctionHouseCode).pushEntry(entryInfo);
+		} else {
+			mAuctionEntryRepositoryMap.put(auctionHouseCode, new AuctionEntryRepository());
+			mAuctionEntryRepositoryMap.get(auctionHouseCode).pushEntry(entryInfo);
+		}
 
 		if (entryInfo.getIsLastEntry().equals("Y")) {
 			readyEntryInfo(auctionHouseCode);
@@ -320,9 +351,11 @@ public class Auctioneer {
 	 * @return
 	 */
 	public EntryInfo getEntryInfo(String auctionHouseCode, String entryNum) {
-		EntryInfo entryInfo;
+		EntryInfo entryInfo = null;
 
-		entryInfo = mAuctionEntryRepository.getEntryInfo(auctionHouseCode, entryNum);
+		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)) {
+			entryInfo = mAuctionEntryRepositoryMap.get(auctionHouseCode).getEntryInfo(entryNum);
+		}
 
 		return entryInfo;
 	}

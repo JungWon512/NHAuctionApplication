@@ -484,6 +484,8 @@ public class AuctionState {
 	public void setCurrentEntryInfo(EntryInfo entryInfo) {
 		this.mCurrentEntryInfo = entryInfo;
 
+		mLogger.debug("setCurrentEntryInfo : " + mCurrentEntryInfo.getEncodedMessage());
+		
 		this.mEntryNum = mCurrentEntryInfo.getEntryNum();
 		this.mStartPrice = mCurrentEntryInfo.getStartPrice();
 		this.mFinishEntryCount = String.valueOf(AuctionServerSetting.AUCTION_ENTRY_FINISH_COUNT + 1);

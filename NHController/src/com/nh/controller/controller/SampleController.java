@@ -237,7 +237,7 @@ public class SampleController extends BaseAuctionController implements Initializ
 		String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), mCurrentEntryInfo.getEntryNum());
 
 		// 준비
-		addLogItem(msgReady + AuctionDelegate.getInstance().onNextEntryReady(mCurrentEntryInfo.getEntryNum()));
+		//addLogItem(msgReady + AuctionDelegate.getInstance().onNextEntryReady(mCurrentEntryInfo.getEntryNum()));
 		// 시작
 		addLogItem(msgStart + AuctionDelegate.getInstance().onStartAuction(mCurrentEntryInfo.getEntryNum()));
 	}
