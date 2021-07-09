@@ -27,6 +27,11 @@ public class ControllerApplication extends Application {
 		launch(args);
 	}
 
+	/**
+	 * 종료시 실행
+	 * @author jhlee
+	 *
+	 */
 	private class ShutdownHookThread extends Thread {
 
 		ControllerApplication parent;
