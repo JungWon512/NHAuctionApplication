@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/NHCommon"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/NHShare"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
