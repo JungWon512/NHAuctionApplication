@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.nh.controller.model.SpEntryInfo;
 import com.nh.share.controller.models.EntryInfo;
 
 public class TestUtil {
@@ -28,10 +27,10 @@ public class TestUtil {
 	/**
 	 * @return test Map
 	 */
-	public List<EntryInfo> loadEntryDataList() {
-		
-		List<EntryInfo> dataList = new ArrayList<EntryInfo>();
-		
+	public LinkedHashMap<String, EntryInfo> loadEntryDataMap() {
+
+		LinkedHashMap<String, EntryInfo> entryRepository = new LinkedHashMap<String, EntryInfo>();
+
 		BufferedReader tmpBuffer = null;
 
 		try {
@@ -58,61 +57,13 @@ public class TestUtil {
 				EntryInfo entryInfo = new EntryInfo(array[1], array[2], array[3], array[4], array[5], array[6], array[7],
 						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], yn);
 				
-				dataList.add(entryInfo);
-			}
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (tmpBuffer != null) {
-					tmpBuffer.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return dataList;
-	}
-	/**
-	 * @return test Map
-	 */
-	public LinkedHashMap<String, SpEntryInfo> loadEntryDataMap() {
-
-		LinkedHashMap<String, SpEntryInfo> entryRepository = new LinkedHashMap<String, SpEntryInfo>();
-
-		BufferedReader tmpBuffer = null;
-
-		try {
-
-			tmpBuffer = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("testData.txt"), "UTF-8"));
-
-			String next = tmpBuffer.readLine();
-			String line = next;
-
-			for (boolean first = true, last = (line == null); !last; first = false, line = next) {
-
-				last = ((next = tmpBuffer.readLine()) == null);
-
-				String array[] = line.split(",");
-				
-				String yn = "";
-
-				if (!last) {
-					yn = "N";
-				} else {
-					yn = "Y";
-				}
-				
-				SpEntryInfo entryInfo = new SpEntryInfo(array[1], array[2], array[3], array[4], array[5], array[6], array[7],
-						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], yn);
-				
-				entryRepository.put(entryInfo.getEntryNum().getValue(), entryInfo);
+				entryRepository.put(entryInfo.getEntryNum(), entryInfo);
 
 			}
+//			log
+//			for(Entry<String,EntryInfo> entryInfo : entryRepository.entrySet()) {
+//				System.out.println("mEntryRepository Size : " + entryInfo.getValue().getEntryNum() + " / " +  entryInfo.getValue().getIsLastEntry());
+//			}
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

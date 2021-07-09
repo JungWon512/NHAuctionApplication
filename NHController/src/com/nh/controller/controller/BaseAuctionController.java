@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,8 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.common.interfaces.NettyControllable;
-import com.nh.controller.model.SpBidding;
-import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
@@ -29,6 +28,7 @@ import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
@@ -41,10 +41,7 @@ import com.nh.share.server.models.ToastMessage;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
@@ -59,22 +56,17 @@ public class BaseAuctionController implements NettyControllable {
 
 	protected ResourceBundle mResMsg = null; // 메세지 처리
 
-	protected FXMLLoader mFxmlLoader = null;
-
 	protected Stage mStage = null; // 현재 Stage
 
-	protected LinkedHashMap<String, SpEntryInfo> mEntryRepositoryMap = null; // 출품 리스트
+	protected LinkedHashMap<String, EntryInfo> mEntryRepositoryMap = null; // 출품 리스트
 
-	protected SpEntryInfo mCurrentSpEntryInfo = null; // 현재 진행 출품
+	protected CurrentEntryInfo mCurrentEntryInfo = null; // 현재 진행 출품
 
 	protected AuctionStatus mAuctionStatus = null; // 경매 상태
 
-	protected LinkedHashMap<String, SpBidding> mCurrentBidderMap = null; // 응찰자 정보 수집 Map
+	protected LinkedHashMap<String, Bidding> mCurrentBidderMap = null; // 응찰자 정보 수집 Map
 
-	protected List<SpBidding> mBeForeBidderDataList = null; // 이전 응찰한 응찰자 정보 수집 List
-
-	protected boolean mIsPass = false;
-
+	protected List<Bidding> mBeForeBidderDataList = null; // 이전 응찰한 응찰자 정보 수집 List
 
 	public BaseAuctionController() {
 		init();
@@ -85,9 +77,9 @@ public class BaseAuctionController implements NettyControllable {
 	 */
 	protected void init() {
 		mAuctionStatus = new AuctionStatus();
-		mBeForeBidderDataList = new ArrayList<SpBidding>();
-		mCurrentBidderMap = new LinkedHashMap<String, SpBidding>();
-		mEntryRepositoryMap = new LinkedHashMap<String, SpEntryInfo>();
+		mBeForeBidderDataList = new ArrayList<Bidding>();
+		mCurrentBidderMap = new LinkedHashMap<String, Bidding>();
+		mEntryRepositoryMap = new LinkedHashMap<String, EntryInfo>();
 		AuctionDelegate.getInstance().setClearVariable();
 	}
 
@@ -111,6 +103,20 @@ public class BaseAuctionController implements NettyControllable {
 	public void onActiveChannel(Channel channel) {
 		mLogger.debug("onActiveChannel");
 		addLogItem(mResMsg.getString("msg.auction.send.connection.info") + AuctionDelegate.getInstance().onSendConnectionInfo());
+
+//		Platform.runLater(new Runnable() {
+//			@Override
+//			public void run() {
+//
+//				if (channel != null) {
+//
+//					InetSocketAddress remoteAddr = (InetSocketAddress) channel.remoteAddress();
+//					InetSocketAddress loacalAddr = (InetSocketAddress) channel.localAddress();
+//					addLogItem("remoteAddr  :  " + remoteAddr + " / " + "loacalAddr  :  " + loacalAddr);
+//				}
+//			}
+//		});
+
 	}
 
 	@Override
@@ -159,6 +165,8 @@ public class BaseAuctionController implements NettyControllable {
 
 	@Override
 	public void onCurrentEntryInfo(CurrentEntryInfo currentEntryInfo) {
+
+		mCurrentEntryInfo = currentEntryInfo;
 		addLogItem(mResMsg.getString("msg.auction.get.current.entry.data") + currentEntryInfo.getEncodedMessage());
 	}
 
@@ -167,7 +175,8 @@ public class BaseAuctionController implements NettyControllable {
 		mLogger.debug("onAuctionCountDown : " + auctionCountDown.getEncodedMessage());
 
 		if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN)) {
-			String msg = String.format(mResMsg.getString("msg.auction.get.count.down"), mCurrentSpEntryInfo.getEntryNum().getValue(), auctionCountDown.getCountDownTime());
+			String msg = String.format(mResMsg.getString("msg.auction.get.count.down"), mCurrentEntryInfo.getEntryNum(),
+					auctionCountDown.getCountDownTime());
 			addLogItem(msg + auctionCountDown.getEncodedMessage());
 		}
 
@@ -176,8 +185,7 @@ public class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onBidding(Bidding bidding) {
 		addLogItem(mResMsg.getString("msg.auction.get.bidding") + bidding.getEncodedMessage());
-		setBidding(bidding);
-		calculationRanking();
+		setAllBidding(bidding);
 	}
 
 	@Override
@@ -228,13 +236,11 @@ public class BaseAuctionController implements NettyControllable {
 		addLogItem(mResMsg.getString("msg.auction.get.bidding.cancel") + cancelBidding.getEncodedMessage());
 
 		if (mCurrentBidderMap.containsKey(cancelBidding.getUserNo())) {
-			SpBidding currentBidder = mCurrentBidderMap.get(cancelBidding.getUserNo());
-			currentBidder.setIsCancelBidding(new SimpleBooleanProperty(true));
+			Bidding currentBidder = mCurrentBidderMap.get(cancelBidding.getUserNo());
+			currentBidder.setCancelBidding(true);
 			mBeForeBidderDataList.add(currentBidder);
 			mCurrentBidderMap.remove(cancelBidding.getUserNo());
 		}
-		
-		calculationRanking();
 	}
 
 	@Override
@@ -244,30 +250,22 @@ public class BaseAuctionController implements NettyControllable {
 
 			if (mEntryRepositoryMap.containsKey(requestAuctionResult.getEntryNum())) {
 
-				SpEntryInfo entryInfo = mEntryRepositoryMap.get(requestAuctionResult.getEntryNum());
+				EntryInfo entryInfo = mEntryRepositoryMap.get(requestAuctionResult.getEntryNum());
 
 				if (entryInfo != null) {
-					
-					if(mIsPass) {
-						mCurrentSpEntryInfo.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.fail")));
+					// 낙유찰 결과 전송
+					switch (mAuctionStatus.getState()) {
+					case GlobalDefineCode.AUCTION_STATUS_PASS:
 						calculationRankingAndLog(entryInfo, true);
-					}else {
-						// 낙유찰 결과 전송
-						switch (mAuctionStatus.getState()) {
-						case GlobalDefineCode.AUCTION_STATUS_PASS:
-							calculationRankingAndLog(entryInfo, true);
-							break;
-						case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
-							calculationRankingAndLog(entryInfo, false);
-							break;
-						}
+						break;
+					case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
+						calculationRankingAndLog(entryInfo, false);
+						break;
 					}
-				
 				}
 			}
 		}
 	}
-
 
 	@Override
 	public void onCheckSession(ChannelHandlerContext ctx, AuctionCheckSession auctionCheckSession) {
@@ -284,7 +282,6 @@ public class BaseAuctionController implements NettyControllable {
 		Platform.runLater(() -> {
 			addLogItem(mResMsg.getString("msg.connection.fail"));
 			CommonUtils.getInstance().dismissLoadingDialog();
-			showAlertPopupOneButton(mResMsg.getString("msg.connection.fail"));
 		});
 	}
 
@@ -305,73 +302,51 @@ public class BaseAuctionController implements NettyControllable {
 	 * 
 	 * @param bidding
 	 */
-	public synchronized void setBidding(Bidding bidding) {
+	public synchronized void setAllBidding(Bidding bidding) {
 
-		SpBidding spBidding = new SpBidding(bidding);
+		if (mCurrentBidderMap.containsKey(bidding.getUserNo())) {
 
-		if (mCurrentBidderMap.containsKey(spBidding.getUserNo().getValue())) {
+			Bidding beforeBidder = mCurrentBidderMap.get(bidding.getUserNo());
 
-			SpBidding beforeBidder = mCurrentBidderMap.get(spBidding.getUserNo().getValue());
-
-			// 이전 응찰 내역에 저장
 			mBeForeBidderDataList.add(beforeBidder);
-			// 현재 응찰에 저장
-			mCurrentBidderMap.put(spBidding.getUserNo().getValue(), spBidding);
+
+			mCurrentBidderMap.put(bidding.getUserNo(), bidding);
+
 		} else {
-			mCurrentBidderMap.put(spBidding.getUserNo().getValue(), spBidding);
+			mCurrentBidderMap.put(bidding.getUserNo(), bidding);
 		}
 
 	}
 
 	/**
-	 * 랭킹 계산
+	 * 랭킹 , 로그파일
 	 */
-	protected void calculationRanking() {
-
-		if (mCurrentBidderMap != null && mCurrentBidderMap.values().size() > 0) {
-			// 순위 정렬
-			List<SpBidding> list = new ArrayList<SpBidding>();
-
-			list.addAll(mCurrentBidderMap.values());
-
-			List<SpBidding> rankBiddingDataList = getCurrentRank(list);
-			
-			updateBidderList(rankBiddingDataList);
-		}else {
-			updateBidderList(null);
-		}
-
-	}
-
-	/**
-	 * 랭킹 계산 + 로그파일 생성
-	 */
-	protected void calculationRankingAndLog(SpEntryInfo entryInfo, boolean isPass) {
+	protected void calculationRankingAndLog(EntryInfo entryInfo, boolean isPass) {
 
 		// 순위 정렬
-		List<SpBidding> list = new ArrayList<SpBidding>();
+		List<Bidding> list = new ArrayList<Bidding>();
 
 		list.addAll(mCurrentBidderMap.values());
 
-		List<SpBidding> rankBiddingDataList = getCurrentRank(list);
+		List<Bidding> rankBiddingDataList = getCurrentRank(list);
 
 		boolean isSuccess = false; // 낙찰 :true , 유찰 : false
 
 		if (!isPass && !CommonUtils.getInstance().isListEmpty(rankBiddingDataList)) {
 
 			// 1순위 데이터
-			SpBidding biddingUser = rankBiddingDataList.get(0);
+			Bidding biddingUser = rankBiddingDataList.get(0);
 
 			// 현재 차량 시작가
-			int startPrice = Integer.parseInt(entryInfo.getStartPrice().getValue());
+			int startPrice = Integer.parseInt(entryInfo.getStartPrice());
 
 			// 경매 결과 Obj
 			SendAuctionResult auctionResult = new SendAuctionResult();
-			auctionResult.setAuctionHouseCode(entryInfo.getAuctionHouseCode().getValue());
-			auctionResult.setEntryNum(entryInfo.getEntryNum().getValue());
+			auctionResult.setAuctionHouseCode(entryInfo.getAuctionHouseCode());
+			auctionResult.setEntryNum(entryInfo.getEntryNum());
 
 			// 응찰 금액이 시작가와 같거나 큰 경우 낙찰
-			if (Integer.parseInt(biddingUser.getPrice().getValue()) >= startPrice) {
+			if (biddingUser.getPriceInt() >= startPrice) {
 				isSuccess = true;
 				sendAuctionResult(true, entryInfo, biddingUser);
 			} else {
@@ -381,7 +356,7 @@ public class BaseAuctionController implements NettyControllable {
 			}
 
 			// Create LogFile
-			runWriteLogFile(rankBiddingDataList, mAuctionStatus, isSuccess, biddingUser.getUserNo().getValue());
+			runWriteLogFile(rankBiddingDataList, mAuctionStatus, isSuccess, biddingUser.getUserNo());
 
 		} else {
 			// 유찰
@@ -398,17 +373,17 @@ public class BaseAuctionController implements NettyControllable {
 	 * @param currentEntryInfo
 	 * @param bidder
 	 */
-	private void sendAuctionResult(boolean isSuccess, SpEntryInfo entryInfo, SpBidding bidder) {
+	private void sendAuctionResult(boolean isSuccess, EntryInfo entryInfo, Bidding bidder) {
 
 		SendAuctionResult auctionResult = new SendAuctionResult();
-		auctionResult.setAuctionHouseCode(entryInfo.getAuctionHouseCode().getValue());
-		auctionResult.setEntryNum(entryInfo.getEntryNum().getValue());
+		auctionResult.setAuctionHouseCode(entryInfo.getAuctionHouseCode());
+		auctionResult.setEntryNum(entryInfo.getEntryNum());
 
 		if (isSuccess) {
 			// 낙찰
 			auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS);
-			auctionResult.setSuccessBidder(bidder.getUserNo().getValue());
-			auctionResult.setSuccessBidPrice(bidder.getPrice().getValue());
+			auctionResult.setSuccessBidder(bidder.getUserNo());
+			auctionResult.setSuccessBidPrice(bidder.getPrice());
 		} else {
 			// 유찰
 			auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL);
@@ -416,10 +391,9 @@ public class BaseAuctionController implements NettyControllable {
 			auctionResult.setSuccessBidPrice(null);
 		}
 
-		updateAuctionStateInfo(mAuctionStatus.getState(), isSuccess, bidder);
-
 		// 낙유찰 결과 전송
-		addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+		addLogItem(mResMsg.getString("msg.auction.send.result")
+				+ AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
 
 	}
 
@@ -431,7 +405,8 @@ public class BaseAuctionController implements NettyControllable {
 	 * @param isSuccess
 	 * @param userNo
 	 */
-	protected void runWriteLogFile(final List<SpBidding> dataList, final AuctionStatus auctionStatus, final boolean isSuccess, final String userNo) {
+	protected void runWriteLogFile(final List<Bidding> dataList, final AuctionStatus auctionStatus,
+			final boolean isSuccess, final String userNo) {
 
 		// Create LogFile
 		Thread thread = new Thread("logFile") {
@@ -452,26 +427,26 @@ public class BaseAuctionController implements NettyControllable {
 	 *
 	 */
 	@SuppressWarnings("unlikely-arg-type")
-	protected List<SpBidding> getCurrentRank(List<SpBidding> list) {
+	protected List<Bidding> getCurrentRank(List<Bidding> list) {
 
 		mLogger.debug("응찰 가격 우선순위 확인");
 
-		Collections.sort(list, new Comparator<SpBidding>() {
+		Collections.sort(list, new Comparator<Bidding>() {
 
-			public int compare(SpBidding o1, SpBidding o2) {
+			public int compare(Bidding o1, Bidding o2) {
 				int result = 0;
 
-				if (Long.parseLong(o1.getPrice().getValue()) == Long.parseLong(o2.getPrice().getValue())) {
-					if (Long.parseLong(o1.getBiddingTime().getValue()) == Long.parseLong(o2.getBiddingTime().getValue())) {
+				if (Long.parseLong(o1.getPrice()) == Long.parseLong(o2.getPrice())) {
+					if (Long.parseLong(o1.getBiddingTime()) == Long.parseLong(o2.getBiddingTime())) {
 						result = 0;
-					} else if (Long.parseLong(o1.getBiddingTime().getValue()) < Long.parseLong(o2.getBiddingTime().getValue())) {
+					} else if (Long.parseLong(o1.getBiddingTime()) < Long.parseLong(o2.getBiddingTime())) {
 						result = -1;
-					} else if (Long.parseLong(o1.getBiddingTime().getValue()) > Long.parseLong(o2.getBiddingTime().getValue())) {
+					} else if (Long.parseLong(o1.getBiddingTime()) > Long.parseLong(o2.getBiddingTime())) {
 						result = 1;
 					}
-				} else if (Long.parseLong(o1.getPrice().getValue()) > Long.parseLong(o2.getPrice().getValue())) {
+				} else if (Long.parseLong(o1.getPrice()) > Long.parseLong(o2.getPrice())) {
 					result = -1;
-				} else if (Long.parseLong(o1.getPrice().getValue()) < Long.parseLong(o2.getPrice().getValue())) {
+				} else if (Long.parseLong(o1.getPrice()) < Long.parseLong(o2.getPrice())) {
 					result = 1;
 				}
 
@@ -489,11 +464,13 @@ public class BaseAuctionController implements NettyControllable {
 	 * @param auctionStatus
 	 * @param isAuctionPass
 	 */
-	protected synchronized void writeLogFile(List<SpBidding> biddingList, AuctionStatus auctionStatus, boolean isSuccess, String userNo) {
+	protected synchronized void writeLogFile(List<Bidding> biddingList, AuctionStatus auctionStatus, boolean isSuccess,
+			String userNo) {
 
 		String currentTime = CommonUtils.getInstance().getCurrentTime("yyyyMMdd");
 
-		String LOG_DIRECTORY = FILE_INFO.AUCTION_LOG_FILE_PATH + currentTime + "_" + auctionStatus.getAuctionHouseCode().toUpperCase();
+		String LOG_DIRECTORY = FILE_INFO.AUCTION_LOG_FILE_PATH + currentTime + "_"
+				+ auctionStatus.getAuctionHouseCode().toUpperCase();
 
 		String LOG_FILE_NAME = currentTime + "-" + auctionStatus.getEntryNum() + FILE_INFO.AUCTION_LOG_FILE_EXTENSION;
 
@@ -524,7 +501,8 @@ public class BaseAuctionController implements NettyControllable {
 
 			String entryNum = auctionStatus.getEntryNum();
 
-			String startPrice = String.format(mResMsg.getString("log.auction.result.start.price"), Integer.parseInt(auctionStatus.getStartPrice()));
+			String startPrice = String.format(mResMsg.getString("log.auction.result.start.price"),
+					Integer.parseInt(auctionStatus.getStartPrice()));
 
 			String auctionResult = null;
 
@@ -538,7 +516,8 @@ public class BaseAuctionController implements NettyControllable {
 
 			logContent.append(MAIN_LINE + ENTER_LINE);
 
-			logContent.append(String.format(mResMsg.getString("log.auction.result.entry.info"), logCurrentTime, entryNum, startPrice, auctionResult, userNo));
+			logContent.append(String.format(mResMsg.getString("log.auction.result.entry.info"), logCurrentTime,
+					entryNum, startPrice, auctionResult, userNo));
 
 			logContent.append(SUB_LINE);
 
@@ -546,8 +525,12 @@ public class BaseAuctionController implements NettyControllable {
 
 				for (int i = 0; i < biddingList.size(); i++) {
 					logContent.append(ENTER_LINE);
-					String rankUser = String.format(mResMsg.getString("log.auction.result.rank"), Integer.toString((i + 1)), biddingList.get(i).getUserNo().getValue());
-					String price = String.format(mResMsg.getString("log.auction.result.price"), biddingList.get(i).getPriceInt()) + EMPTY_SPACE + CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(biddingList.get(i).getBiddingTime().getValue());
+					String rankUser = String.format(mResMsg.getString("log.auction.result.rank"),
+							Integer.toString((i + 1)), biddingList.get(i).getUserNo());
+					String price = String.format(mResMsg.getString("log.auction.result.price"),
+							Integer.parseInt(biddingList.get(i).getPrice())) + EMPTY_SPACE
+							+ CommonUtils.getInstance()
+									.getCurrentTime_yyyyMMddHHmmssSSS(biddingList.get(i).getBiddingTime());
 					logContent.append(rankUser + EMPTY_SPACE + price);
 
 				}
@@ -562,25 +545,29 @@ public class BaseAuctionController implements NettyControllable {
 
 				// ㄱㄴㄷ sort
 				Collections.sort(mBeForeBidderDataList);
+
 				// 중복제거
-				Set<SpBidding> linkedSet = new LinkedHashSet<>(mBeForeBidderDataList);
-				List<SpBidding> distintListData = new ArrayList<SpBidding>(linkedSet);
+				Set<Bidding> linkedSet = new LinkedHashSet<>(mBeForeBidderDataList);
+				List<Bidding> distintListData = new ArrayList<Bidding>(linkedSet);
 
-				for (SpBidding disBidding : distintListData) {
+				for (Bidding disBidding : distintListData) {
 
 					logContent.append(ENTER_LINE);
-					logContent.append(String.format(mResMsg.getString("log.auction.result.before.bidder"), disBidding.getUserNo().getValue()));
+					logContent.append(String.format(mResMsg.getString("log.auction.result.before.bidder"),
+							disBidding.getUserNo()));
 					logContent.append(ENTER_LINE);
 
-					for (SpBidding beforBidding : mBeForeBidderDataList) {
+					for (Bidding beforBidding : mBeForeBidderDataList) {
 
-						if (disBidding.getUserNo().getValue().equals(beforBidding.getUserNo().getValue())) {
-							logContent.append(String.format(mResMsg.getString("log.auction.result.price"), beforBidding.getPriceInt()));
+						if (disBidding.getUserNo().equals(beforBidding.getUserNo())) {
+							logContent.append(String.format(mResMsg.getString("log.auction.result.price"),
+									beforBidding.getPriceInt()));
 							logContent.append(EMPTY_SPACE);
 							logContent.append(EMPTY_SPACE);
-							logContent.append(CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(beforBidding.getBiddingTime().getValue()));
+							logContent.append(CommonUtils.getInstance()
+									.getCurrentTime_yyyyMMddHHmmssSSS(beforBidding.getBiddingTime()));
 
-							if (beforBidding.getIsCancelBidding().getValue()) {
+							if (beforBidding.isCancelBidding()) {
 								logContent.append(EMPTY_SPACE);
 								logContent.append(EMPTY_SPACE);
 								logContent.append(mResMsg.getString("log.auction.result.cancel.bidding"));
@@ -608,22 +595,6 @@ public class BaseAuctionController implements NettyControllable {
 			}
 		}
 	}
-	
-
-	/**
-	 * 경매정보 - 경매 상태 표시
-	 * 
-	 * @param code      현재 경매 상태
-	 * @param isSuccess true : 낙찰 , false : 유찰
-	 */
-	protected void updateAuctionStateInfo(String code, boolean isSuccess, SpBidding bidder) {}
-	
-
-	/**
-	 * 응찰자 현황 표시
-	 *  @param spBiddingDataList 랭킹 산정된 응찰자 리스트
-	 */
-	protected void updateBidderList(List<SpBidding> spBiddingDataList) {}
 
 	/**
 	 * ADD 로그
@@ -632,7 +603,7 @@ public class BaseAuctionController implements NettyControllable {
 	 */
 	protected void addLogItem(String str) {
 		Platform.runLater(() -> {
-			if (!str.isEmpty() && logListView != null) {
+			if (!str.isEmpty()) {
 				logListView.getItems().add(str);
 				logListView.scrollTo(logListView.getItems().size() - 1);
 			}
@@ -653,14 +624,8 @@ public class BaseAuctionController implements NettyControllable {
 		}
 	}
 
-	/**
-	 * 원버튼 팝업
-	 * 
-	 * @param message
-	 * @return
-	 */
 	protected Optional<ButtonType> showAlertPopupOneButton(String message) {
-		return CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, mResMsg.getString("popup.btn.close"));
+		return CommonUtils.getInstance().showAlertPopupOneButton(mStage, message,mResMsg.getString("popup.btn.close"));
 	}
 
 }

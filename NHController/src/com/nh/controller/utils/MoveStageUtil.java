@@ -4,9 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.nh.controller.ControllerApplication;
-import com.nh.controller.controller.AuctionController;
 import com.nh.controller.controller.AuctionMessageController;
-import com.nh.controller.controller.LoginController;
+import com.nh.controller.controller.SampleController;
 import com.nh.controller.interfaces.StringListener;
 
 import javafx.collections.ObservableList;
@@ -37,73 +36,18 @@ public class MoveStageUtil {
 		return instance;
 	}
 
-	/**
-	 * 로그인 
-	 * 
-	 * @param stage
-	 */
-	public synchronized void moveLoginStage(Stage stage) {
+	public synchronized void moveSampleStage(Stage stage) {
 
 		try {
-
-			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("LoginView.fxml"), getResourceBundle());
+			
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("Sample.fxml"),getResourceBundle());
 			Parent parent = fxmlLoader.load();
-			LoginController controller = fxmlLoader.getController();
+			SampleController controller = fxmlLoader.getController();
 			controller.setStage(stage);
-			setRemoveTitlebar(stage);
 			Scene scene = new Scene(parent);
 			stage.setScene(scene);
 			stage.show();
-			// show 후에 ..
-			controller.initConfiguration();
-			
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 로그인 -> 경매 서버 접속 -> 경매 화면 이동
-	 * 
-	 * @param stage
-	 */
-	public synchronized void onConnectServer(Stage loginStage,String ip, int port , String id) {
-
-		try {
-
-			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("AuctionControllerView.fxml"), getResourceBundle());
-			fxmlLoader.load();
-			AuctionController controller = fxmlLoader.getController();
-			controller.onConnectServer(loginStage, fxmlLoader,ip,port,id);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * 경매 서버 접속 성공 -> 로그인 화면 닫음 -> 경매 제어 메인 show
-	 * 
-	 * @param stage
-	 */
-	public synchronized void moveAuctionStage(Stage loginStage, FXMLLoader fxmlLoader) {
-		
-		try {
-
-			loginStage.close();
-
-			AuctionController controller = fxmlLoader.getController();
-			Stage stage = new Stage();
-			controller.setStage(stage);
-//			setRemoveTitlebar(stage);
-			Scene scene = new Scene(fxmlLoader.getRoot());
-			stage.setScene(scene);
-			stage.show();
-			// show 후에 ..
-			controller.initConfiguration();
-			setScreenMinSize(stage);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -121,7 +65,7 @@ public class MoveStageUtil {
 
 		try {
 
-			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("AuctionMessageView.fxml"), getResourceBundle());
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("AuctionMessageView.fxml"),getResourceBundle());
 			Parent parent = fxmlLoader.load();
 			AuctionMessageController controller = fxmlLoader.getController();
 			controller.setCallBackListener(listener);
@@ -129,7 +73,7 @@ public class MoveStageUtil {
 			Stage stage = new Stage();
 			stage.setScene(scene);
 			stage.showAndWait();
-
+	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -231,10 +175,9 @@ public class MoveStageUtil {
 		stage.setX(centerXPosition - stage.getWidth() / 2d);
 		stage.setY(centerYPosition - stage.getHeight() / 2d);
 	}
-
+	
 	/**
-	 * 리소스 파일
-	 * 
+	 * 리소스 파일 
 	 * @return
 	 */
 	public ResourceBundle getResourceBundle() {

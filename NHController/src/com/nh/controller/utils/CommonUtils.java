@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Base64.Encoder;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -41,8 +40,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -89,10 +86,6 @@ public class CommonUtils {
 	// 팝업창 타입 [START]
 	public String ALERTPOPUP_ONE_BUTTON = "ONE_BUTTON";
 	public String ALERTPOPUP_TWO_BUTTON = "TWO_BUTTON";
-
-	public double offSetX = 0;
-	public double offSetY = 0;
-
 	// 팝업창 타입 [END]
 
 	/**
@@ -114,6 +107,41 @@ public class CommonUtils {
 
 	/**
 	 * 
+	 * @MethodName getCurrentTime_yyyyMMdd
+	 * @Description 시간을 반환 처리(yyyyMMdd)
+	 *
+	 * @param format yyyyMM
+	 * @return String
+	 */
+	public synchronized String getCurrentTime_yyyyMMdd(Date date) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+		String result = simpleDateFormat.format(date);
+		return result;
+	}
+
+	/**
+	 * 
+	 * @MethodName getCurrentTime_yyyyMMdd
+	 * @Description 시간을 반환 처리(yyyyMMdd)
+	 *
+	 * @param format yyyyMM
+	 * @return String
+	 */
+	public synchronized String getCurrentTime_yyyyMMdd(String curDate) {
+
+		String result = "";
+		try {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+			Date date = simpleDateFormat.parse(curDate);
+			result = simpleDateFormat.format(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * 
 	 * @MethodName getCurrentTime
 	 * @Description 현재 시간을 반환 처리(yyyyMMddHHmmssSSS)
 	 *
@@ -125,7 +153,7 @@ public class CommonUtils {
 
 		return result;
 	}
-
+	
 	/**
 	 * @MethodName getCurrentTime_yyyyMMdd
 	 * @Description
@@ -219,7 +247,7 @@ public class CommonUtils {
 		String result = sFormat.format(date);
 		return result;
 	}
-
+	
 	/**
 	 * 
 	 * @MethodName getCurrentTime
@@ -242,6 +270,8 @@ public class CommonUtils {
 		String result = sFormat.format(date);
 		return result;
 	}
+	
+	
 
 	/**
 	 * 
@@ -251,13 +281,14 @@ public class CommonUtils {
 	 * @param format yyyyMMdd
 	 * @return String
 	 */
-	public synchronized String getCurrentTime_yyyyMMdd(String time) {
+	public synchronized String getCurrentTime_yyyyMMdd_dot(String time) {
 		String dateTimeString = time;
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
 		Date date = null;
 		try {
 			date = simpleDateFormat.parse(dateTimeString);
 		} catch (ParseException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		SimpleDateFormat sFormat = new SimpleDateFormat("yyyy.MM.dd");
@@ -276,47 +307,48 @@ public class CommonUtils {
 		if (mLoadingDialog != null) {
 			dismissLoadingDialog();
 		}
-
+	
 		mLoadingDialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane();
 		dialogPane.getStylesheets().add(getClass().getResource("/com/nh/controller/css/utils.css").toExternalForm());
 		mLoadingDialog.initModality(Modality.NONE);
 		mLoadingDialog.initStyle(StageStyle.UNDECORATED);
 		mLoadingDialog.setDialogPane(dialogPane);
-
+		
 		dialogPane.setPrefWidth(340);
-
+		
 		VBox vbox = new VBox();
-		vbox.setSpacing(15);
+		vbox.setSpacing(6);
 		vbox.setAlignment(Pos.CENTER);
 		// alert popup message label
 		Label contentText = new Label();
-
-		if (message != null && !message.isEmpty()) {
+		
+		if(message != null && !message.isEmpty()) {
 			contentText.setText(message);
-		} else {
+		}else {
 			contentText.setText("Loading...");
 		}
-
+	
 		contentText.setTextAlignment(TextAlignment.CENTER);
 		contentText.setAlignment(Pos.CENTER);
 
 		ImageView imageView = new ImageView();
 		imageView.preserveRatioProperty().set(true);
 		imageView.setPickOnBounds(true);
-		imageView.setFitWidth(80);
-		imageView.setFitHeight(80);
-		Image image = new Image("/com/nh/controller/resource/images/ic_logo.png");
+		imageView.setFitWidth(60);
+		imageView.setFitHeight(60);
+		Image image = new Image("/com/nh/controller/resource/ic_cow.png");
 		imageView.setImage(image);
 
 		ImageView progressImageView = new ImageView();
 		progressImageView.preserveRatioProperty().set(true);
 		progressImageView.setPickOnBounds(true);
-		progressImageView.setFitWidth(40);
-		progressImageView.setFitHeight(40);
-		Image progressImage = new Image("/com/nh/controller/resource/images/ic_loading.gif");
+		progressImageView.setFitWidth(60);
+		progressImageView.setFitHeight(60);
+		Image progressImage = new Image("/com/nh/controller/resource/ic_loading.gif");
 		progressImageView.setImage(progressImage);
-
+		
+		
 		HBox.setHgrow(imageView, Priority.ALWAYS);
 		HBox.setHgrow(contentText, Priority.ALWAYS);
 		HBox.setHgrow(progressImageView, Priority.ALWAYS);
@@ -339,6 +371,7 @@ public class CommonUtils {
 		}
 
 		mLoadingDialog.show();
+		
 
 	}
 
@@ -403,7 +436,8 @@ public class CommonUtils {
 				double x = (boundsInScreen.getMaxX() - boundsInScreen.getMinX()) / 2;
 				double messageCenter = (int) (tooltip.getWidth() / 2);
 				double tooltipHeight = (int) tooltip.getHeight();
-				tooltip.show(node, (boundsInScreen.getMinX() + x) - messageCenter, boundsInScreen.getMinY() - (tooltipHeight + 5));
+				tooltip.show(node, (boundsInScreen.getMinX() + x) - messageCenter,
+						boundsInScreen.getMinY() - (tooltipHeight + 5));
 			} else if (TOOLTIP_POSITION_TOP.equals(position)) {
 				double tooltipHeight = (int) tooltip.getHeight();
 				tooltip.show(node, boundsInScreen.getMinX(), boundsInScreen.getMinY() - (tooltipHeight + 5));
@@ -495,7 +529,8 @@ public class CommonUtils {
 	 * @param textField
 	 */
 	public synchronized void setTextStyle_Eng_Number(TextField textField) {
-		textField.setTextFormatter(new TextFormatter<>(change -> (change.getControlNewText().matches("^[a-zA-Z0-9]*$")) ? change : null));
+		textField.setTextFormatter(
+				new TextFormatter<>(change -> (change.getControlNewText().matches("^[a-zA-Z0-9]*$")) ? change : null));
 	}
 
 	/**
@@ -505,7 +540,8 @@ public class CommonUtils {
 	 * @param textField
 	 */
 	public synchronized void setTextStyleOnly_Eng(TextField textField) {
-		textField.setTextFormatter(new TextFormatter<>(change -> (change.getControlNewText().matches("^[a-zA-Z]*$")) ? change : null));
+		textField.setTextFormatter(
+				new TextFormatter<>(change -> (change.getControlNewText().matches("^[a-zA-Z]*$")) ? change : null));
 	}
 
 	/**
@@ -515,7 +551,8 @@ public class CommonUtils {
 	 * @param textField
 	 */
 	public synchronized void setTextStyleOnly_Number(TextField textField) {
-		textField.setTextFormatter(new TextFormatter<>(change -> (change.getControlNewText().matches("^[0-9]*$")) ? change : null));
+		textField.setTextFormatter(
+				new TextFormatter<>(change -> (change.getControlNewText().matches("^[0-9]*$")) ? change : null));
 	}
 
 	/**
@@ -525,7 +562,8 @@ public class CommonUtils {
 	 * @param textField
 	 */
 	public synchronized void setTextStyleOnly_Kr(TextField textField) {
-		textField.setTextFormatter(new TextFormatter<>(change -> (change.getControlNewText().matches("^[가-힣]*$")) ? change : null));
+		textField.setTextFormatter(
+				new TextFormatter<>(change -> (change.getControlNewText().matches("^[가-힣]*$")) ? change : null));
 	}
 
 	/**
@@ -535,7 +573,8 @@ public class CommonUtils {
 	 * @param textField
 	 */
 	public synchronized void setTextStyle_Eng_Number_SpecialChar(TextField textField) {
-		textField.setTextFormatter(new TextFormatter<>(change -> (change.getControlNewText().matches("^[a-zA-Z0-9\"'\\{\\}\\[\\]/?.,;:|\\)\\(*~`!^\\-_+&<>@#$%^\\\\=]*$")) ? change : null));
+		textField.setTextFormatter(new TextFormatter<>(change -> (change.getControlNewText()
+				.matches("^[a-zA-Z0-9\"'\\{\\}\\[\\]/?.,;:|\\)\\(*~`!^\\-_+&<>@#$%^\\\\=]*$")) ? change : null));
 	}
 
 	/**
@@ -579,8 +618,10 @@ public class CommonUtils {
 	 * @return Optional<ButtonType>
 	 * 
 	 */
-	public Optional<ButtonType> showAlertPopupTwoButton(Stage stage, String message, String leftButtonTitle, String rightButtonTitle) {
-		Dialog<ButtonType> dialog = setAlertPopupStyle(stage, ALERTPOPUP_TWO_BUTTON, message, leftButtonTitle, rightButtonTitle);
+	public Optional<ButtonType> showAlertPopupTwoButton(Stage stage, String message, String leftButtonTitle,
+			String rightButtonTitle) {
+		Dialog<ButtonType> dialog = setAlertPopupStyle(stage, ALERTPOPUP_TWO_BUTTON, message, leftButtonTitle,
+				rightButtonTitle);
 		Optional<ButtonType> result = dialog.showAndWait();
 		return result;
 	}
@@ -596,7 +637,8 @@ public class CommonUtils {
 	 * @param rightButtonTitle
 	 * @return
 	 */
-	public Dialog<ButtonType> setAlertPopupStyle(Stage stage, String alertPopupType, String message, String leftButtonTitle, String rightButtonTitle) {
+	public Dialog<ButtonType> setAlertPopupStyle(Stage stage, String alertPopupType, String message,
+			String leftButtonTitle, String rightButtonTitle) {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane() {
 			@Override
@@ -613,7 +655,7 @@ public class CommonUtils {
 		dialog.initStyle(StageStyle.UNDECORATED);
 		dialog.setDialogPane(dialogPane);
 		dialogPane.setPadding(new Insets(10));
-		dialogPane.setMinHeight(200);
+		dialogPane.setMinHeight(100);
 		dialogPane.setMinWidth(350);
 
 		// one button alert popup
@@ -647,11 +689,12 @@ public class CommonUtils {
 		hbox.getChildren().add(spacer);
 
 		// center alert stage to parent stage
-
-		double centerXPosition = stage.getX() + stage.getWidth() / 2d;
-		double centerYPosition = stage.getY() + stage.getHeight() / 2d;
-		dialog.setX(centerXPosition - dialogPane.getWidth() / 2d);
-		dialog.setY(centerYPosition - dialogPane.getHeight() / 2d);
+		/*
+		 * double centerXPosition = stage.getX() + stage.getWidth() / 2d; double
+		 * centerYPosition = stage.getY() + stage.getHeight() / 2d;
+		 * dialog.setX(centerXPosition - dialogPane.getWidth() / 2d);
+		 * dialog.setY(centerYPosition - dialogPane.getHeight() / 2d);
+		 */
 
 		// 팝업창 뒷 배경 블러처리 Add
 		stage.getScene().getRoot().setEffect(getDialogBlurEffect());
@@ -769,8 +812,9 @@ public class CommonUtils {
 		return stage;
 	}
 
-	public void showToastMessage(Node node, BooleanListener listener) {
 
+	public void showToastMessage(Node node,BooleanListener listener) {
+		
 		FadeTransition mAnimationFadeIn = new FadeTransition(Duration.millis(500));
 		mAnimationFadeIn.setNode(node);
 		mAnimationFadeIn.setFromValue(0.0);
@@ -784,7 +828,7 @@ public class CommonUtils {
 		mAnimationFadeOut.setToValue(0.0);
 		mAnimationFadeOut.setCycleCount(1);
 		mAnimationFadeOut.setAutoReverse(false);
-
+		
 		mAnimationFadeIn.setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
@@ -808,137 +852,8 @@ public class CommonUtils {
 				}
 			}
 		});
-
+		
 		node.setVisible(true);
 		mAnimationFadeIn.playFromStart();
-	}
-
-	/**
-	 * 마우스 드래그 이동
-	 * 
-	 * @param stage
-	 * @param node
-	 */
-	public void canMoveStage(Stage stage, Node node) {
-
-		Platform.runLater(() -> {
-
-			if (node == null) {
-				
-				stage.getScene().setOnMousePressed((event) -> {
-
-					if (stage.getScene().getRoot().isDisable()) {
-						return;
-					}
-
-					offSetX = event.getSceneX();
-					offSetY = event.getSceneY();
-				});
-
-				stage.getScene().setOnMouseDragged((event) -> {
-
-					if (stage.getScene().getRoot().isDisable()) {
-						return;
-					}
-
-					stage.setX(event.getScreenX() - offSetX);
-					stage.setY(event.getScreenY() - offSetY);
-				});
-			} else {
-
-				if (node.isDisable()) {
-					return;
-				}
-
-				node.setOnMousePressed((event) -> {
-					offSetX = event.getSceneX();
-					offSetY = event.getSceneY();
-				});
-
-				node.setOnMouseDragged((event) -> {
-					stage.setX(event.getScreenX() - offSetX);
-					stage.setY(event.getScreenY() - offSetY);
-				});
-			}
-
-		});
-	}
-
-	/**
-	 * 더블클릭 풀스크린 모드
-	 * 
-	 * @param stage
-	 * @param node
-	 */
-	public void onDoubleClickfullScreenMode(Stage stage, Node node, String message) {
-
-		Platform.runLater(() -> {
-
-			if (node != null) {
-				node.setOnMouseClicked(new EventHandler<MouseEvent>() {
-					@Override
-					public void handle(MouseEvent mouseEvent) {
-						if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-							if (mouseEvent.getClickCount() == 2) {
-								if (!stage.isFullScreen()) {
-
-									if (message != null && !message.isEmpty()) {
-										stage.setFullScreenExitHint(message);
-									} else {
-//										stage.setFullScreenExitHint("");
-									}
-
-									stage.setFullScreen(true);
-								} else {
-									stage.setFullScreen(false);
-								}
-							}
-						}
-					}
-				});
-			} else {
-				stage.getScene().setOnMouseClicked(new EventHandler<MouseEvent>() {
-					@Override
-					public void handle(MouseEvent mouseEvent) {
-						if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-							if (mouseEvent.getClickCount() == 2) {
-								if (!stage.isFullScreen()) {
-
-									if (message != null && !message.isEmpty()) {
-										stage.setFullScreenExitHint(message);
-									} else {
-//										stage.setFullScreenExitHint("");
-									}
-
-									stage.setFullScreen(true);
-								} else {
-									stage.setFullScreen(false);
-								}
-							}
-						}
-					}
-				});
-			}
-		});
-	}
-
-	/**
-	 * css 추가
-	 * 
-	 * @param node
-	 * @param name
-	 */
-	public void addStyleClass(Node node, String name) {
-		node.getStyleClass().add(name);
-	}
-
-	/**
-	 * css 삭제
-	 * 
-	 * @param node
-	 * @param name
-	 */
-	public void removeStyleClass(Node node, String name) {
-		node.getStyleClass().removeAll(Collections.singleton(name));
 	}
 }

@@ -42,6 +42,10 @@ public class GlobalDefineCode {
 	// 경매 접속자 모니터링 채널
 	public static final String CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR = "6005";
 
+	public static final String NAMESPACE_WATCH = "/" + CONNECT_CHANNEL_WATCHER;
+	public static final String NAMESPACE_AUCTION_RESULT = "/" + CONNECT_CHANNEL_AUCTION_RESULT_MONITOR;
+	public static final String NAMESPACE_CONNECTOR = "/" + CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR;
+	
 	// 안드로이드 채널
 	public static final String USE_CHANNEL_ANDROID = "ANDROID";
 	// iOS 채널
@@ -69,7 +73,7 @@ public class GlobalDefineCode {
 	public static final String CONNECT_SUCCESS = "2000"; // 서버 접속 성공
 	public static final String CONNECT_FAIL = "2001"; // 서버 접속 실패
 	public static final String CONNECT_DUPLICATE = "2002"; // 서버 중복 접속
-	public static final String CONNECT_DUPLICATE_FAIL = "2003"; // 서버 중복 접속 불가
+	public static final String CONNECT_ETC_ERROR = "2003"; // 기타 장애
 	public static final String CONNECT_RUN_FAIL = "2004"; // 프로그램 실행 불가
 	public static final String CONNECT_EXPIRE_WATCHER = "2005"; // 관전자 접속 만료
 

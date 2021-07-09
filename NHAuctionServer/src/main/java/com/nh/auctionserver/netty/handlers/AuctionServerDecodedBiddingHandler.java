@@ -10,6 +10,7 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.ResponseCode;
 
 import io.netty.channel.ChannelHandler.Sharable;
@@ -64,7 +65,13 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 					ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
 							GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage() + "\r\n");
 					
+					// 응찰 정보 수집
 					mAuctionServer.itemAdded(bidding.getEncodedMessage());
+					
+					// 응찰 정보 모니터 채널 전송
+					mAuctionServer.itemAdded(new BidderConnectInfo(bidding.getAuctionHouseCode(),
+							bidding.getUserNo(), GlobalDefineCode.CONNECT_CHANNEL_BIDDER,
+							bidding.getChannel(), "B", bidding.getPrice()).getEncodedMessage());
 				} else {
 					mLogger.debug("=============================================");
 					mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());

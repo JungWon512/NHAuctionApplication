@@ -3,7 +3,6 @@ package com.nh.controller.netty;
 import com.nh.common.AuctionShareNettyClient;
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
-import com.nh.controller.model.SpEntryInfo;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionReponseSession;
 import com.nh.share.common.models.AuctionResult;
@@ -82,7 +81,7 @@ public class AuctionDelegate {
 	 * @param entryData
 	 * @return
 	 */
-	public String onSendEntryData(SpEntryInfo entryData) {
+	public String onSendEntryData(EntryInfo entryData) {
 		return sendMessage(entryData);
 	}
 	
@@ -178,10 +177,6 @@ public class AuctionDelegate {
 		return false;
 	}
 
-	/**
-	 * 네티 체크
-	 * @return
-	 */
 	private boolean isEmptyClient() {
 		if (mClient != null) {
 			return false;
