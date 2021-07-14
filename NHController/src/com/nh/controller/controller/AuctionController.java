@@ -43,15 +43,15 @@ import javafx.stage.Stage;
 
 public class AuctionController extends BaseAuctionController implements Initializable {
 
-	private ObservableList<SpEntryInfo> mFinishedEntryInfoDataList = FXCollections.observableArrayList();
-	private ObservableList<SpEntryInfo> mWaitEntryInfoDataList = FXCollections.observableArrayList();
-	private ObservableList<SpBidding> mBiddingUserInfoDataList = FXCollections.observableArrayList();
-	private ObservableList<SpEntryInfo> mConnectionUserDataList = FXCollections.observableArrayList();
+	private ObservableList<SpEntryInfo> mFinishedEntryInfoDataList = FXCollections.observableArrayList();	//끝난 출품
+	private ObservableList<SpEntryInfo> mWaitEntryInfoDataList = FXCollections.observableArrayList();		//대기중 출품
+	private ObservableList<SpBidding> mBiddingUserInfoDataList = FXCollections.observableArrayList();		//응찰 현황
+	private ObservableList<SpEntryInfo> mConnectionUserDataList = FXCollections.observableArrayList();		//접속자 현황
 
-	@FXML
+	@FXML //root pane
 	public BorderPane mRootPane;
 	
-	@FXML
+	@FXML //경매 날짜 라벨
 	public Label mHeaderAucInfoLabel;
 
 	@FXML // 완료,대기,응찰현황,접속현황 테이블
@@ -85,10 +85,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@FXML // 경매 정보 - 상태
 	private Label mAuctionStateReadyLabel, mAuctionStateProgressLabel, mAuctionStateSuccessLabel, mAuctionStateFailLabel, mAuctionStateLabel;
 
-	@FXML
-	private Label cnt_5, cnt_4, cnt_3, cnt_2, cnt_1; // 남은 시간 Bar
+	@FXML // 남은 시간 Bar
+	private Label cnt_5, cnt_4, cnt_3, cnt_2, cnt_1; 
 
-	@FXML
+	@FXML// 메세지 보내기 버튼
 	private ImageView mImgMessage;
 
 	private List<Label> cntList = new ArrayList<Label>(); // 남은 시간 Bar list
