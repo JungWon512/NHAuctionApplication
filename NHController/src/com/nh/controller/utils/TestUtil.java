@@ -29,14 +29,15 @@ public class TestUtil {
 	 * @return test Map
 	 */
 	public List<EntryInfo> loadEntryDataList() {
-		
+
 		List<EntryInfo> dataList = new ArrayList<EntryInfo>();
-		
+
 		BufferedReader tmpBuffer = null;
 
 		try {
 
-			tmpBuffer = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("testData.txt"), "UTF-8"));
+			tmpBuffer = new BufferedReader(
+					new InputStreamReader(this.getClass().getResourceAsStream("testData.txt"), "UTF-8"));
 
 			String next = tmpBuffer.readLine();
 			String line = next;
@@ -46,7 +47,7 @@ public class TestUtil {
 				last = ((next = tmpBuffer.readLine()) == null);
 
 				String array[] = line.split(",");
-				
+
 				String yn = "";
 
 				if (!last) {
@@ -54,10 +55,12 @@ public class TestUtil {
 				} else {
 					yn = "Y";
 				}
-				
-				EntryInfo entryInfo = new EntryInfo(array[1], array[2], array[3], array[4], array[5], array[6], array[7],
-						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], yn);
-				
+
+				EntryInfo entryInfo = new EntryInfo(array[1], array[2], array[3], array[4], array[5], array[6],
+						array[7], array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15],
+						array[16], array[17], array[18], array[19], array[20], array[21], array[22], array[23],
+						array[24], yn);
+
 				dataList.add(entryInfo);
 			}
 
@@ -77,6 +80,7 @@ public class TestUtil {
 
 		return dataList;
 	}
+
 	/**
 	 * @return test Map
 	 */
@@ -88,7 +92,8 @@ public class TestUtil {
 
 		try {
 
-			tmpBuffer = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("testData.txt"), "UTF-8"));
+			tmpBuffer = new BufferedReader(
+					new InputStreamReader(this.getClass().getResourceAsStream("testData.txt"), "UTF-8"));
 
 			String next = tmpBuffer.readLine();
 			String line = next;
@@ -98,7 +103,7 @@ public class TestUtil {
 				last = ((next = tmpBuffer.readLine()) == null);
 
 				String array[] = line.split(",");
-				
+
 				String yn = "";
 
 				if (!last) {
@@ -106,10 +111,11 @@ public class TestUtil {
 				} else {
 					yn = "Y";
 				}
-				
-				SpEntryInfo entryInfo = new SpEntryInfo(array[1], array[2], array[3], array[4], array[5], array[6], array[7],
-						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], yn);
-				
+
+				SpEntryInfo entryInfo = new SpEntryInfo(array[1], array[2], array[3], array[4], array[5], array[6],
+						array[7], array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15],
+						yn);
+
 				entryRepository.put(entryInfo.getEntryNum().getValue(), entryInfo);
 
 			}
@@ -151,7 +157,8 @@ public class TestUtil {
 				String array[] = line.split(",");
 
 				entryRepository.add(new EntryInfo(array[1], array[2], array[3], array[4], array[5], array[6], array[7],
-						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], "N"));
+						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], array[16],
+						array[17], array[18], array[19], array[20], array[21], array[22], array[23], array[24], "N"));
 			}
 
 			System.out.println("mEntryRepository Size : " + entryRepository.size());
@@ -159,7 +166,7 @@ public class TestUtil {
 			entryRepository.get(entryRepository.size() - 1).setIsLastEntry("Y");
 
 			for (int i = 0; i < entryRepository.size(); i++) {
-				System.out.println((i + 1) + "번 개체번호 : " + entryRepository.get(i).getIndNum() + " / 마지막자료 여부 : "
+				System.out.println((i + 1) + "踰� 媛쒖껜踰덊샇 : " + entryRepository.get(i).getIndNum() + " / 留덉�留됱옄猷� �뿬遺� : "
 						+ entryRepository.get(i).getIsLastEntry());
 			}
 
