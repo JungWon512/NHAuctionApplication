@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버/제어프로그램 -> 공통
  * 
- * AS | 경매거점코드 | 출품번호 | 시작가 | 현재응찰자수 | 경매상태(NONE / READY / START / PROGRESS /
+ * AS | 조합구분코드 | 출품번호 | 시작가 | 현재응찰자수 | 경매상태(NONE / READY / START / PROGRESS /
  * COMPETITIVE / SUCCESS / FAIL / STOP / COMPLETED / FINISH) | 1순위회원번호 | 2순위회원번호
  * | 3순위회원번호 | 경매진행완료출품수 | 경매잔여출품수
  *

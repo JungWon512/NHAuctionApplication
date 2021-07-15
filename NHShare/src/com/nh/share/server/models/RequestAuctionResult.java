@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 제어프로그램
  * 
- * SR | 경매거점코드 | 출품번호
+ * SR | 조합구분코드 | 출품번호
  *
  */
 public class RequestAuctionResult implements FromAuctionServer {

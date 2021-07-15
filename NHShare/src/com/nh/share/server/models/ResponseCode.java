@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 공통
  * 
- * SE | 경매거점코드 | 응답 코드
+ * SE | 조합구분코드 | 응답 코드
  *
  */
 public class ResponseCode implements FromAuctionServer {

@@ -10,22 +10,24 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 공통 -> 경매서버
  * 
- * AI | 경매거점코드 | 회원번호 | 접속요청채널(6001/6002/6003/6004) | 사용채널(ANDROID/IOS/WEB) |
+ * AI | 조합구분코드 | 회원번호 | 인증토큰 | 접속요청채널(6001/6002/6003/6004) | 사용채널(ANDROID/IOS/WEB) |
  * 관전자여부(Y/N)
  *
  */
 public class ConnectionInfo implements FromAuctionCommon, Serializable {
 	private static final long serialVersionUID = 4703227204913480236L;
 	public static final char TYPE = 'I';
-	private String mAuctionHouseCode; // 거점코드
+	private String mAuctionHouseCode; // 조합구분코드
 	private String mUserNo; // 회원번호
+	private String mAuthToken; // 인증토큰
 	private String mChannel; // 접속 요청 채널
 	private String mOS; // 사용 채널
 	private String mWatcher; // 관전자여부
 
-	public ConnectionInfo(String auctionHouseCode, String userNo, String channel, String os, String watcher) {
+	public ConnectionInfo(String auctionHouseCode, String userNo, String authToken, String channel, String os, String watcher) {
 		mAuctionHouseCode = auctionHouseCode;
 		mUserNo = userNo;
+		mAuthToken = authToken;
 		mChannel = channel;
 		mOS = os;
 		mWatcher = watcher;
@@ -45,6 +47,14 @@ public class ConnectionInfo implements FromAuctionCommon, Serializable {
 
 	public void setUserNo(String userNo) {
 		this.mUserNo = userNo;
+	}
+
+	public String getAuthToken() {
+		return mAuthToken;
+	}
+
+	public void setAuthToken(String authToken) {
+		this.mAuthToken = authToken;
 	}
 
 	public String getChannel() {

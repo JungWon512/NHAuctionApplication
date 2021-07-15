@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 제어프로그램 -> 경매서버
  * 
- * CP | 경매거점코드 | 출품번호
+ * CP | 조합구분코드 | 출품번호
  *
  */
 public class PassAuction implements FromAuctionController {

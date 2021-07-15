@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 공통
  * 
- * SF | 경매거점코드 | 출품번호 | 관심 출품 상품 여부(Y/N)
+ * SF | 조합구분코드 | 출품번호 | 관심 출품 상품 여부(Y/N)
  *
  */
 public class FavoriteEntryInfo implements FromAuctionServer {

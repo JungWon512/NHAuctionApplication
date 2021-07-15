@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 공통
  * 
- * ST | 경매거점코드 | 메시지 내용
+ * ST | 조합구분코드 | 메시지 내용
  *
  */
 public class ToastMessage implements FromAuctionServer {

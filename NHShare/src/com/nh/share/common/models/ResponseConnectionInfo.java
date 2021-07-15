@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버/제어프로그램 -> 공통
  * 
- * AR | 경매거점코드 | 접속결과
+ * AR | 조합구분코드 | 접속결과
  *
  */
 public class ResponseConnectionInfo implements FromAuctionCommon {

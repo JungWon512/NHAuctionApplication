@@ -9,7 +9,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 제어프로그램 -> 경매서버 접속채널 ( 6001 : 응찰 프로그램 6002 : 제어 프로그램 6003 : 관전 프로그램 6004 :
  * 낙/유찰 결과 모니터링 프로그램 6005 : 접속자 모니터링 프로그램)
  * 
- * CL | 경매거점코드 | 회원번호 | 접속채널
+ * CL | 조합구분코드 | 회원번호 | 접속채널
  *
  */
 public class RequestLogout implements FromAuctionController {

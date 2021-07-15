@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 제어프로그램 -> 경매서버
  * 
- * CR | 경매거점코드 | 출품번호
+ * CR | 조합구분코드 | 출품번호
  *
  */
 public class ReadyEntryInfo implements FromAuctionController {

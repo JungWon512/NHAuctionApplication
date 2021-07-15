@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 공통
  * 
- * SI | 경매거점코드 | 회원번호 | 접속요청채널(6001/6002/6003/6004) | 사용채널(ANDROID/IOS/WEB) |
+ * SI | 조합구분코드 | 회원번호 | 접속요청채널(6001/6002/6003/6004) | 사용채널(ANDROID/IOS/WEB) |
  * 상태(N : 미응찰 / B : 응찰 / C : 응찰취소 / 접속해제 : L) | 응찰가격
  *
  */
