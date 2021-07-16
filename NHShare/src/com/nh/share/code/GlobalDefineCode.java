@@ -10,23 +10,21 @@ package com.nh.share.code;
 public class GlobalDefineCode {
 	// 경매장 거점 코드
 	public enum AUCTION_HOUSE {
-		AUCTION_HOUSE_HWADONG("1100"),
-		AUCTION_HOUSE_HWASUN("2100"),
-		AUCTION_HOUSE_JANGSU("3100");
-	    
-	    private final String value;
-	    
-		AUCTION_HOUSE(String value){
-	        this.value = value;
-	            
-	    }
-	    
-	    public String getValue(){
-	        return value;
-	    }
-	 
+		AUCTION_HOUSE_HWADONG("1100"), AUCTION_HOUSE_HWASUN("2100"), AUCTION_HOUSE_JANGSU("3100");
+
+		private final String value;
+
+		AUCTION_HOUSE(String value) {
+			this.value = value;
+
+		}
+
+		public String getValue() {
+			return value;
+		}
+
 	}
-	
+
 	public static final String AUCTION_HOUSE_HWADONG = "1100";
 	public static final String AUCTION_HOUSE_HWASUN = "2100";
 	public static final String AUCTION_HOUSE_JANGSU = "3100";
@@ -45,7 +43,7 @@ public class GlobalDefineCode {
 	public static final String NAMESPACE_WATCH = "/" + CONNECT_CHANNEL_WATCHER;
 	public static final String NAMESPACE_AUCTION_RESULT = "/" + CONNECT_CHANNEL_AUCTION_RESULT_MONITOR;
 	public static final String NAMESPACE_CONNECTOR = "/" + CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR;
-	
+
 	// 안드로이드 채널
 	public static final String USE_CHANNEL_ANDROID = "ANDROID";
 	// iOS 채널
@@ -77,10 +75,10 @@ public class GlobalDefineCode {
 	public static final String CONNECT_RUN_FAIL = "2004"; // 프로그램 실행 불가
 	public static final String CONNECT_EXPIRE_WATCHER = "2005"; // 관전자 접속 만료
 
-	//경매 결과 코드
-	public static final String AUCTION_RESULT_CODE_SUCCESS = "01";		//낙찰
-	public static final String AUCTION_RESULT_CODE_FAIL = "02";			//유찰
-	
+	// 경매 결과 코드
+	public static final String AUCTION_RESULT_CODE_SUCCESS = "01"; // 낙찰
+	public static final String AUCTION_RESULT_CODE_FAIL = "02"; // 유찰
+
 	// 요청 결과 미존재
 	public static final String RESPONSE_REQUEST_NOT_RESULT = "4001";
 	// 요청 실패
@@ -93,7 +91,7 @@ public class GlobalDefineCode {
 	public static final String RESPONSE_DENIED_CANCEL_BIDDING = "4005";
 	// 정상 응찰 응답
 	public static final String RESPONSE_SUCCESS_BIDDING = "4006";
-	// 정상 응찰 취소 응답 
+	// 정상 응찰 취소 응답
 	public static final String RESPONSE_SUCCESS_CANCEL_BIDDING = "4007";
 
 	// 프로그램 사용자 로그인 요청 타입
