@@ -12,6 +12,7 @@ import com.nh.controller.utils.MoveStageUtil;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+
 public class ControllerApplication extends Application {
 
 	private Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

@@ -364,7 +364,7 @@ public class BaseAuctionController implements NettyControllable {
 			SpBidding biddingUser = rankBiddingDataList.get(0);
 
 			// 현재 차량 시작가
-			int startPrice = Integer.parseInt(entryInfo.getStartPrice().getValue());
+			int startPrice = Integer.parseInt(entryInfo.getLowPrice().getValue());
 
 			// 경매 결과 Obj
 			SendAuctionResult auctionResult = new SendAuctionResult();

@@ -54,12 +54,12 @@ public final class AuctionServerDecodedEntryInfoHandler extends SimpleChannelInb
 				mLogger.info(entryInfo.getEntryNum() + "번 출품 자료 수신");
 				mAuctionServer.itemAdded(entryInfo.getEncodedMessage());
 			} else {
-				mLogger.info("111비정상 채널에서 출품 자료 전송을 하였으나, 해당 요청이 거부되었습니다.");
+				mLogger.info("비정상 채널에서 출품 자료 전송을 하였으나, 해당 요청이 거부되었습니다.");
 				ctx.channel().writeAndFlush(new ResponseCode(entryInfo.getAuctionHouseCode(),
 						GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage() + "\r\n");
 			}
 		} else {
-			mLogger.info("222비정상 채널에서 출품 자료 전송을 하였으나, 해당 요청이 거부되었습니다.");
+			mLogger.info("비정상 채널에서 출품 자료 전송을 하였으나, 해당 요청이 거부되었습니다.");
 			ctx.channel().writeAndFlush(
 					new ResponseCode(entryInfo.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_REQUEST_FAIL)
 							.getEncodedMessage() + "\r\n");

@@ -500,7 +500,7 @@ public class Auctioneer {
 						String auctionRank3BidPrice = "-";
 
 						if (Integer.valueOf(auctionState.getRank1BidPrice()) >= Integer
-								.valueOf(auctionState.getCurrentEntryInfo().getStartPrice()) && !isAuctionPass) {
+								.valueOf(auctionState.getCurrentEntryInfo().getLowPrice()) && !isAuctionPass) {
 							auctionResult = "낙찰";
 
 							if (auctionState.getRank1MemberNum() != null) {
@@ -544,7 +544,7 @@ public class Auctioneer {
 						}
 
 						logContent = MAIN_LINE + logCurrentTime + EMPTY_SPACE + "출품번호 : " + auctionState.getEntryNum()
-								+ EMPTY_SPACE + "시작가 : " + auctionState.getCurrentEntryInfo().getStartPrice()
+								+ EMPTY_SPACE + "시작가 : " + auctionState.getCurrentEntryInfo().getLowPrice()
 								+ EMPTY_SPACE + "낙/유찰 결과 : " + auctionResult + EMPTY_SPACE + "낙찰회원 : "
 								+ auctionRank1Bidder + EMPTY_SPACE + "최종가 : " + auctionRank1BidPrice + MAIN_LINE
 								+ "[순위 정보] \r\n" + "1순위 회원번호 : " + auctionRank1Bidder + EMPTY_SPACE + "접속채널 : "

@@ -442,7 +442,7 @@ public class SocketIOHandler {
 
 			switch (messages[0].charAt(1)) {
 			case ConnectionInfo.TYPE:
-				parseObject = new ConnectionInfo(messages[1], messages[2], messages[3], messages[4], messages[5]);
+				parseObject = new ConnectionInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6]);
 				break;
 			default:
 				parseObject = null;

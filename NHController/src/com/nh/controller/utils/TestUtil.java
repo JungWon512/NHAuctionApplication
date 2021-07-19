@@ -112,8 +112,9 @@ public class TestUtil {
 					yn = "Y";
 				}
 
-				SpEntryInfo entryInfo = new SpEntryInfo(array[1], array[2], array[3], array[4], array[5], array[6],
-						array[7], array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15],
+				SpEntryInfo entryInfo = new SpEntryInfo(array[1], array[2], array[3], array[4], array[5], array[6], array[7],
+						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], array[16],
+						array[17], array[18], array[19], array[20], array[21], array[22], array[23], array[24],
 						yn);
 
 				entryRepository.put(entryInfo.getEntryNum().getValue(), entryInfo);
@@ -164,12 +165,6 @@ public class TestUtil {
 			System.out.println("mEntryRepository Size : " + entryRepository.size());
 
 			entryRepository.get(entryRepository.size() - 1).setIsLastEntry("Y");
-
-			for (int i = 0; i < entryRepository.size(); i++) {
-				System.out.println((i + 1) + "踰� 媛쒖껜踰덊샇 : " + entryRepository.get(i).getIndNum() + " / 留덉�留됱옄猷� �뿬遺� : "
-						+ entryRepository.get(i).getIsLastEntry());
-			}
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
