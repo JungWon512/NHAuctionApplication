@@ -15,6 +15,7 @@ import com.nh.share.setting.AuctionShareSetting;
  */
 public class EntryInfo implements FromAuctionController {
 	public static final char TYPE = 'I';
+
 	private String mAuctionHouseCode; // 조합구분코드
 	private String mEntryNum; // 출품 번호
 	private String mEntryType; // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
@@ -323,15 +324,4 @@ public class EntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mIsLastEntry);
 	}
 
-	@Override
-	public String toString() {
-		return "EntryInfo [mAuctionHouseCode=" + mAuctionHouseCode + ", mEntryNum=" + mEntryNum + ", mEntryType="
-				+ mEntryType + ", mIndNum=" + mIndNum + ", mIndMngCd=" + mIndMngCd + ", mFhsNum=" + mFhsNum
-				+ ", mFarmMngNum=" + mFarmMngNum + ", mExhibitor=" + mExhibitor + ", mBrandName=" + mBrandName
-				+ ", mBirthday=" + mBirthday + ", mKpn=" + mKpn + ", mGender=" + mGender + ", mMotherTypeCode="
-				+ mMotherTypeCode + ", mMotherObjNum=" + mMotherObjNum + ", mCavingNum=" + mCavingNum + ", mPasgQcn="
-				+ mPasgQcn + ", mObjIdNum=" + mObjIdNum + ", mObjRegNum=" + mObjRegNum + ", mObjRegTypeNum="
-				+ mObjRegTypeNum + ", mIsNew=" + mIsNew + ", mWeight=" + mWeight + ", mInitPrice=" + mInitPrice
-				+ ", mLowPrice=" + mLowPrice + ", mNote=" + mNote + ", mIsLastEntry=" + mIsLastEntry + "]";
-	}
 }

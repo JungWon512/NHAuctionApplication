@@ -29,7 +29,7 @@
 
 	<resultMap type="EntryInfo" id="entryInfoMap">
 		<result property="mAuctionHouseCode" column="NA_BZPLC" /> 
-		<result property="mEntryNum" column="INDV_ID_NO" />
+		<result property="mEntryNum" column="AUC_PRG_SQ" />
 		<result property="mEntryType" column="AUC_OBJ_DSC" />
 		<result property="mIndNum" column="SRA_INDV_AMNNO" />
 		<result property="mIndMngCd" column="SRA_SRS_DSC" /> 
@@ -95,6 +95,7 @@
 	<!-- 출품 데이터 추출 -->
 	<select id="selectAllEntry" resultMap="entryInfoMap" resultType="linkedHashMap" >
 	SELECT
+		B.AUC_PRG_SQ,
 		A.NA_BZPLC,
 		A.SRA_INDV_AMNNO,
 		A.SRA_SRS_DSC,
@@ -135,6 +136,6 @@
 		B.NA_BZPLC='8808990656656'AND
 		B.AUC_OBJ_DSC='3'
 		ORDER BY
-		B.OSLP_NO ASC
+		B.AUC_PRG_SQ ASC
 	</select>
 </mapper>

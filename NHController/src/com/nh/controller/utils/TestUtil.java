@@ -56,9 +56,10 @@ public class TestUtil {
 					yn = "Y";
 				}
 
-				EntryInfo entryInfo = new EntryInfo(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7],
-						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], array[16],
-						array[17], array[18], array[19], array[20], array[21], array[22], array[23], yn);
+				EntryInfo entryInfo = new EntryInfo(array[0], array[1], array[2], array[3], array[4], array[5],
+						array[6], array[7], array[8], array[9], array[10], array[11], array[12], array[13], array[14],
+						array[15], array[16], array[17], array[18], array[19], array[20], array[21], array[22],
+						array[23], yn);
 
 				dataList.add(entryInfo);
 			}
@@ -111,10 +112,10 @@ public class TestUtil {
 					yn = "Y";
 				}
 
-				SpEntryInfo entryInfo = new SpEntryInfo(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7],
-						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], array[16],
-						array[17], array[18], array[19], array[20], array[21], array[22], array[23],
-						yn);
+				SpEntryInfo entryInfo = new SpEntryInfo(array[0], array[1], array[2], array[3], array[4], array[5],
+						array[6], array[7], array[8], array[9], array[10], array[11], array[12], array[13], array[14],
+						array[15], array[16], array[17], array[18], array[19], array[20], array[21], array[22],
+						array[23], yn);
 
 				entryRepository.put(entryInfo.getEntryNum().getValue(), entryInfo);
 
@@ -156,9 +157,9 @@ public class TestUtil {
 			while ((line = tmpBuffer.readLine()) != null) {
 				String array[] = line.split(",");
 
-				entryRepository.add(new EntryInfo(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7],
-						array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15], array[16],
-						array[17], array[18], array[19], array[20], array[21], array[22], array[23], "N"));
+				entryRepository.add(new EntryInfo(array[0], array[1], array[2], array[3], array[4], array[5], array[6],
+						array[7], array[8], array[9], array[10], array[11], array[12], array[13], array[14], array[15],
+						array[16], array[17], array[18], array[19], array[20], array[21], array[22], array[23], "N"));
 			}
 
 			System.out.println("mEntryRepository Size : " + entryRepository.size());

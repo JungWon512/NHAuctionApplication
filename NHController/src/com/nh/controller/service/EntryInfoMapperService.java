@@ -1,6 +1,6 @@
 package com.nh.controller.service;
 
-import java.util.Map;
+import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 
@@ -17,14 +17,14 @@ public class EntryInfoMapperService implements EntryInfoMapper {
 	}
 
 	@Override
-	public Map<String, EntryInfo> getAllEntryData() {
+	public List<EntryInfo> getAllEntryData() {
 		SqlSession session = DBSeesionFactory.getSession();
-		Map<String, EntryInfo> map = null;
+		List<EntryInfo> list = null;
 		try {
-			map =  dao.selectAllEntryInfo(session);
+			list = dao.selectAllEntryInfo(session);
 		} finally {
 			session.close();
 		}
-		return map;
+		return list;
 	}
 }

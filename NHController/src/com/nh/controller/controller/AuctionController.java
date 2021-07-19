@@ -2,11 +2,14 @@ package com.nh.controller.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AuctionRound;
@@ -27,6 +30,7 @@ import com.nh.share.server.models.CurrentEntryInfo;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -111,7 +115,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	private int qcn; // 회차정보 (test)
 
-	private Map<String, EntryInfo> entryInfoTest; // 출품 정보
+	private List<EntryInfo> entryInfoDataList; // 출품 정보 DB 데이터
 
 	/**
 	 * setStage
@@ -272,7 +276,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 
 	 * @param dataMap
 	 */
-	private void initWaitEntryDataList(LinkedHashMap<String, SpEntryInfo> dataMap) {
+	private void initWaitEntryDataList(Map<String, SpEntryInfo> dataMap) {
 
 		if (dataMap.size() > 0) {
 
@@ -280,6 +284,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			for (Entry<String, SpEntryInfo> spEntryInfo : dataMap.entrySet()) {
 				mWaitEntryInfoDataList.add(spEntryInfo.getValue());
+				System.out.println(spEntryInfo.getValue().getEncodedMessage());
 			}
 
 			mWaitTableView.setItems(mWaitEntryInfoDataList);
@@ -338,12 +343,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				@Override
 				public void run() {
 
-//					for (Entry<String, SpEntryInfo> entryInfo : mEntryRepositoryMap.entrySet()) {
-//						addLogItem(mResMsg.getString("msg.auction.send.entry.data")
-//								+ AuctionDelegate.getInstance().onSendEntryData(entryInfo.getValue()));
-//					}
-
-					for (Entry<String, EntryInfo> entryInfo : entryInfoTest.entrySet()) {
+					for (Entry<String, SpEntryInfo> entryInfo : mEntryRepositoryMap.entrySet()) {
 						addLogItem(mResMsg.getString("msg.auction.send.entry.data")
 								+ AuctionDelegate.getInstance().onSendEntryData(entryInfo.getValue()));
 					}
@@ -495,19 +495,43 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		AuctionRoundMapperService service = new AuctionRoundMapperService();
 		List<AuctionRound> list = service.getAllAuctionRoundData();
 		for (AuctionRound t : list) {
-//			System.out.println(t);
 			qcn = t.getQcn();
 		}
-		// TEST!! 경매 데이터 불러오기
+
+		// 경매 데이터 불러오기
 		EntryInfoMapperService entryService = new EntryInfoMapperService();
-		entryInfoTest = entryService.getAllEntryData();
-		for (Entry<String, EntryInfo> info : entryInfoTest.entrySet()) {
-			System.out.println(info.getValue().getEntryNum());
+		entryInfoDataList = entryService.getAllEntryData();
+
+		// DB EntryInfo -> Sp EntryInfo
+		mEntryRepositoryMap.clear();
+
+//		Map<String, SpEntryInfo> resultMap = entryInfoDataList.stream()
+//				.map(data -> new SpEntryInfo(data.getAuctionHouseCode(), data.getEntryNum(), data.getEntryType(),
+//						data.getIndNum(), data.getIndMngCd(), data.getFhsNum(), data.getFarmMngNum(),
+//						data.getExhibitor(), data.getBrandName(), data.getBirthday(), data.getKpn(), data.getGender(),
+//						data.getMotherTypeCode(), data.getMotherObjNum(), data.getCavingNum(), data.getPasgQcn(),
+//						data.getObjIdNum(), data.getObjRegNum(), data.getObjRegTypeNum(), data.getIsNew(),
+//						data.getWeight(), data.getInitPrice(), data.getLowPrice(), data.getNote(),
+//						data.getIsLastEntry()))
+//				.sorted(Comparator.comparing(SpEntryInfo::getEntryNumInt))
+//				.collect(Collectors.toMap(SpEntryInfo::getEntryNumString, Function.identity()));
+
+		for (EntryInfo data : entryInfoDataList) {
+			SpEntryInfo entryInfo = new SpEntryInfo(data.getAuctionHouseCode(), data.getEntryNum(), data.getEntryType(),
+					data.getIndNum(), data.getIndMngCd(), data.getFhsNum(), data.getFarmMngNum(), data.getExhibitor(),
+					data.getBrandName(), data.getBirthday(), data.getKpn(), data.getGender(), data.getMotherTypeCode(),
+					data.getMotherObjNum(), data.getCavingNum(), data.getPasgQcn(), data.getObjIdNum(),
+					data.getObjRegNum(), data.getObjRegTypeNum(), data.getIsNew(), data.getWeight(),
+					data.getInitPrice(), data.getLowPrice(), data.getNote(), data.getIsLastEntry());
+
+			mEntryRepositoryMap.put(entryInfo.getEntryNum().getValue(), entryInfo);
 		}
 
-		mEntryRepositoryMap.clear();
-//		mEntryRepositoryMap.putAll(TestUtil.getInstance().loadEntryDataMap());
-//		initWaitEntryDataList(mEntryRepositoryMap);
+		for (Entry<String, SpEntryInfo> spEntryInfo : mEntryRepositoryMap.entrySet()) {
+			System.out.println(spEntryInfo.getKey());
+		}
+
+		initWaitEntryDataList(mEntryRepositoryMap);
 	}
 
 	// 2000 : 인증 성공
