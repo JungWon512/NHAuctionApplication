@@ -93,11 +93,9 @@
 	마지막 출품 여부 -->
 	
 	<!-- 출품 데이터 추출 -->
-	<select id="selectAllEntry" resultType="HashMap" >
+	<select id="selectAllEntry" resultMap="entryInfoMap" resultType="linkedHashMap" >
 	SELECT
-	B.OSLP_NO,
-	A.INDV_ID_NO
-	<!-- 	A.NA_BZPLC,
+		A.NA_BZPLC,
 		A.SRA_INDV_AMNNO,
 		A.SRA_SRS_DSC,
 		A.FHS_ID_NO,
@@ -119,7 +117,7 @@
 		B.LOWS_SBID_LMT_AM,
 		B.RMK_CNTN,
 		B.BRANDNM,
-		C.FTSNM -->
+		C.FTSNM
 		FROM
 		tb_la_is_mm_indv as A
 		JOIN

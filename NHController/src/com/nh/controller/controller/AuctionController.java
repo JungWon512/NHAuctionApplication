@@ -506,8 +506,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 		mEntryRepositoryMap.clear();
-		mEntryRepositoryMap.putAll(TestUtil.getInstance().loadEntryDataMap());
-		initWaitEntryDataList(mEntryRepositoryMap);
+//		mEntryRepositoryMap.putAll(TestUtil.getInstance().loadEntryDataMap());
+//		initWaitEntryDataList(mEntryRepositoryMap);
 	}
 
 	// 2000 : 인증 성공
