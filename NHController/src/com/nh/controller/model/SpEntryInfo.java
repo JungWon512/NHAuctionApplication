@@ -81,9 +81,9 @@ public class SpEntryInfo implements FromAuctionController {
 		this.mObjRegNum = new SimpleStringProperty(objRegNum);
 		this.mObjRegTypeNum = new SimpleStringProperty(objRegTypeNum);
 		this.mIsNew = new SimpleStringProperty(isNew);
-		this.mWeight = new SimpleStringProperty(weight);
-		this.mInitPrice = new SimpleStringProperty(initPrice);
-		this.mLowPrice = new SimpleStringProperty(lowPrice);
+		this.mWeight = new SimpleStringProperty(Integer.toString((int)Double.parseDouble(weight)));
+		this.mInitPrice = new SimpleStringProperty(Integer.toString((int)Double.parseDouble(initPrice)));
+		this.mLowPrice = new SimpleStringProperty(Integer.toString((int)Double.parseDouble(lowPrice)));
 		this.mNote = new SimpleStringProperty(note);
 		this.mIsLastEntry = new SimpleStringProperty(isLastEntry);
 	}
