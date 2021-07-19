@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 public class LoginController implements Initializable {
 
 	private Stage mStage;
+	
 	private ResourceBundle mResMsg;
 
 	@FXML
