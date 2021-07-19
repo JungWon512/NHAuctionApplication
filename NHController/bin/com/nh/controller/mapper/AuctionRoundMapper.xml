@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nh.controller.mapper.AuctionRoundMapper">
+
+	<!-- 경매 회차 정보 조회 -->
+	<select id="selectAllAuctionRound" resultType="AuctionRound">
+		SELECT * FROM
+		tb_la_is_mh_auc_qcn as A WHERE A.AUC_DT='20210702'AND
+		A.DDL_YN='1';
+	</select>
+
+</mapper>
