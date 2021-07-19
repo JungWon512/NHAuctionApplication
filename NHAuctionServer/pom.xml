@@ -33,7 +33,7 @@
 			<groupId>com.nh.share</groupId>
 			<artifactId>NHShare</artifactId>
 			<version>1.0.0</version>
-<!--  			<scope>system</scope>
+<!--   			<scope>system</scope>
 			<systemPath>${basedir}/libs/NHShare-1.0.0.jar</systemPath> -->
 		</dependency>
 

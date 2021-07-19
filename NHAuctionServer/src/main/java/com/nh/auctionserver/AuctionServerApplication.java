@@ -65,7 +65,7 @@ public class AuctionServerApplication implements CommandLineRunner, ApplicationL
 
 	@Override
 	public void onApplicationEvent(ApplicationStartedEvent event) {
-		runServer(new String[] { "start", "4001" });
+		runServer(new String[] { "start", "5001" });
 		mSocketIOServer.start();
 		
 		mServer.setSocketIOHandler(mSocketIOServer.getSocketIOHandler());
