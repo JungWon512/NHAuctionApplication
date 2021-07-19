@@ -41,6 +41,9 @@ public class EntryInfo implements FromAuctionController {
 	private String mNote; // 비고내용
 	private String mIsLastEntry; // 마지막 출품 여부
 
+	public EntryInfo() {
+	}
+
 	public EntryInfo(String auctionHouseCode, String entryNum, String entryType, String indNum, String indMngCd,
 			String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday, String kpn,
 			String gender, String motherTypeCode, String motherObjNum, String cavingNum, String pasgQcn,
@@ -320,4 +323,15 @@ public class EntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mIsLastEntry);
 	}
 
+	@Override
+	public String toString() {
+		return "EntryInfo [mAuctionHouseCode=" + mAuctionHouseCode + ", mEntryNum=" + mEntryNum + ", mEntryType="
+				+ mEntryType + ", mIndNum=" + mIndNum + ", mIndMngCd=" + mIndMngCd + ", mFhsNum=" + mFhsNum
+				+ ", mFarmMngNum=" + mFarmMngNum + ", mExhibitor=" + mExhibitor + ", mBrandName=" + mBrandName
+				+ ", mBirthday=" + mBirthday + ", mKpn=" + mKpn + ", mGender=" + mGender + ", mMotherTypeCode="
+				+ mMotherTypeCode + ", mMotherObjNum=" + mMotherObjNum + ", mCavingNum=" + mCavingNum + ", mPasgQcn="
+				+ mPasgQcn + ", mObjIdNum=" + mObjIdNum + ", mObjRegNum=" + mObjRegNum + ", mObjRegTypeNum="
+				+ mObjRegTypeNum + ", mIsNew=" + mIsNew + ", mWeight=" + mWeight + ", mInitPrice=" + mInitPrice
+				+ ", mLowPrice=" + mLowPrice + ", mNote=" + mNote + ", mIsLastEntry=" + mIsLastEntry + "]";
+	}
 }

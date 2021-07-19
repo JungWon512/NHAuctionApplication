@@ -4,20 +4,24 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 import com.nh.controller.interfaces.StringListener;
+import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.netty.AuctionDelegate;
+import com.nh.controller.service.AuctionRoundMapperService;
+import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.utils.CommonUtils;
-import com.nh.controller.utils.GlobalDefine.AUCTION_INFO;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.TestUtil;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
 
@@ -43,15 +47,15 @@ import javafx.stage.Stage;
 
 public class AuctionController extends BaseAuctionController implements Initializable {
 
-	private ObservableList<SpEntryInfo> mFinishedEntryInfoDataList = FXCollections.observableArrayList();	//끝난 출품
-	private ObservableList<SpEntryInfo> mWaitEntryInfoDataList = FXCollections.observableArrayList();		//대기중 출품
-	private ObservableList<SpBidding> mBiddingUserInfoDataList = FXCollections.observableArrayList();		//응찰 현황
-	private ObservableList<SpEntryInfo> mConnectionUserDataList = FXCollections.observableArrayList();		//접속자 현황
+	private ObservableList<SpEntryInfo> mFinishedEntryInfoDataList = FXCollections.observableArrayList(); // 끝난 출품
+	private ObservableList<SpEntryInfo> mWaitEntryInfoDataList = FXCollections.observableArrayList(); // 대기중 출품
+	private ObservableList<SpBidding> mBiddingUserInfoDataList = FXCollections.observableArrayList(); // 응찰 현황
+	private ObservableList<SpEntryInfo> mConnectionUserDataList = FXCollections.observableArrayList(); // 접속자 현황
 
-	@FXML //root pane
+	@FXML // root pane
 	public BorderPane mRootPane;
-	
-	@FXML //경매 날짜 라벨
+
+	@FXML // 경매 날짜 라벨
 	public Label mHeaderAucInfoLabel;
 
 	@FXML // 완료,대기,응찰현황,접속현황 테이블
@@ -61,17 +65,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private TableView<SpBidding> mBiddingInfoTableView;
 
 	@FXML // 완료된 출품
-	private TableColumn<SpEntryInfo, String> mFinishedEntryNumColumn, mFinishedExhibitorColumn, mFinishedGenderColumn, mFinishedMotherColumn, mFinishedCavingNumColumn, mFinishedIndNumColumn, mFinishedWeightColumn, mFinishedLowPriceColumn, mFinishedStartPriceColumn, mFinishedSuccessColumn,
-			mFinishedResultColumn, mFinishedNoteColumn;
+	private TableColumn<SpEntryInfo, String> mFinishedEntryNumColumn, mFinishedExhibitorColumn, mFinishedGenderColumn,
+			mFinishedMotherColumn, mFinishedCavingNumColumn, mFinishedIndNumColumn, mFinishedWeightColumn,
+			mFinishedLowPriceColumn, mFinishedStartPriceColumn, mFinishedSuccessColumn, mFinishedResultColumn,
+			mFinishedNoteColumn;
 
 	@FXML // 대기중인 출품
-	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn, mWaitMotherColumn, mWaitCavingNumColumn, mWaitIndNumColumn, mWaitWeightColumn, mWaitLowPriceColumn, mWaitStartPriceColumn, mWaitSuccessColumn, mWaitResultColumn, mWaitNoteColumn;
+	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn,
+			mWaitMotherColumn, mWaitCavingNumColumn, mWaitIndNumColumn, mWaitWeightColumn, mWaitLowPriceColumn,
+			mWaitStartPriceColumn, mWaitSuccessColumn, mWaitResultColumn, mWaitNoteColumn;
 
 	@FXML // 현재 경매
-	private Label mCurEntryNumLabel, mCurExhibitorLabel, mCurGenterLabel, mCurMotherLabel, mCurCavingNumLabel, mCurIndNumLabel, mCurWeightLabel, mCurLowPriceLabel, mCurStartPriceLabel, mCurSuccessPriceLabel, mCurResultLabel, mCurNoteLabel;
+	private Label mCurEntryNumLabel, mCurExhibitorLabel, mCurGenterLabel, mCurMotherLabel, mCurCavingNumLabel,
+			mCurIndNumLabel, mCurWeightLabel, mCurLowPriceLabel, mCurStartPriceLabel, mCurSuccessPriceLabel,
+			mCurResultLabel, mCurNoteLabel;
 
 	@FXML // 사용자 접속 현황
-	private TableColumn<SpEntryInfo, String> mConnectionUserColumn_1, mConnectionUserColumn_2, mConnectionUserColumn_3, mConnectionUserColumn_4, mConnectionUserColumn_5;
+	private TableColumn<SpEntryInfo, String> mConnectionUserColumn_1, mConnectionUserColumn_2, mConnectionUserColumn_3,
+			mConnectionUserColumn_4, mConnectionUserColumn_5;
 
 	@FXML // 응찰자 정보
 	private TableColumn<SpBidding, String> mBiddingPriceColumn, mBiddingUserColumn;
@@ -83,19 +94,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private Label mAuctionInfoDateLabel, mAuctionInfoRoundLabel, mAuctionInfoGubunLabel, mAuctionInfoNameLabel;
 
 	@FXML // 경매 정보 - 상태
-	private Label mAuctionStateReadyLabel, mAuctionStateProgressLabel, mAuctionStateSuccessLabel, mAuctionStateFailLabel, mAuctionStateLabel;
+	private Label mAuctionStateReadyLabel, mAuctionStateProgressLabel, mAuctionStateSuccessLabel,
+			mAuctionStateFailLabel, mAuctionStateLabel;
 
 	@FXML // 남은 시간 Bar
-	private Label cnt_5, cnt_4, cnt_3, cnt_2, cnt_1; 
+	private Label cnt_5, cnt_4, cnt_3, cnt_2, cnt_1;
 
-	@FXML// 메세지 보내기 버튼
+	@FXML // 메세지 보내기 버튼
 	private ImageView mImgMessage;
 
 	private List<Label> cntList = new ArrayList<Label>(); // 남은 시간 Bar list
 
 	public final int REMAINING_TIME_COUNT = 5; // 카운트다운 기준 시간
 
-	private int mRemainingTimeCount = REMAINING_TIME_COUNT; // 카운트다
+	private int mRemainingTimeCount = REMAINING_TIME_COUNT; // 카운트다운
+
+	private int qcn; // 회차정보 (test)
+
+	private Map<String, EntryInfo> entryInfoTest; // 출품 정보
 
 	/**
 	 * setStage
@@ -133,7 +149,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		requestEntryData();
 		// 경매 정보
 		setAuctionInfo();
-//		
+
 //		initFinishedEntryDataList();
 //		initWaitEntryDataList();
 //		initBiddingInfoDataList();
@@ -169,12 +185,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mFinishedEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
 		mFinishedExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
 		mFinishedGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGender());
-		mFinishedMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherObjNum());
+		mFinishedMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMother());
 		mFinishedCavingNumColumn.setCellValueFactory(cellData -> cellData.getValue().getCavingNum());
 		mFinishedIndNumColumn.setCellValueFactory(cellData -> cellData.getValue().getIndNum());
 		mFinishedWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
-		mFinishedLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getInitPrice());
-		mFinishedStartPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
+		mFinishedLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getStartPrice());
+		mFinishedStartPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getStartPrice());
 		mFinishedSuccessColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessfulBidder());
 		mFinishedResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mFinishedNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
@@ -183,12 +199,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mWaitEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
 		mWaitExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
 		mWaitGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGender());
-		mWaitMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherObjNum());
+		mWaitMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMother());
 		mWaitCavingNumColumn.setCellValueFactory(cellData -> cellData.getValue().getCavingNum());
 		mWaitIndNumColumn.setCellValueFactory(cellData -> cellData.getValue().getIndNum());
 		mWaitWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
-		mWaitLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getInitPrice());
-		mWaitStartPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
+		mWaitLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getStartPrice());
+		mWaitStartPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getStartPrice());
 		mWaitSuccessColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
 		mWaitResultColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
 		mWaitNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
@@ -219,14 +235,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 경매 정보
 	 */
 	private void setAuctionInfo() {
-		
+
 		String auctionDate = CommonUtils.getInstance().getCurrentTime("yyyy-MM-dd");
-		
+
 		mAuctionInfoDateLabel.setText(auctionDate);
 		mAuctionInfoRoundLabel.setText("25");
 		mAuctionInfoGubunLabel.setText("큰소경매");
 		mAuctionInfoNameLabel.setText("89두");
-		mHeaderAucInfoLabel.setText(auctionDate + "- 1회차");
+		mHeaderAucInfoLabel.setText(auctionDate + "- " + String.valueOf(qcn) + "회차");
 	}
 
 	/**
@@ -235,7 +251,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param loginStage
 	 * @param fxmlLoader
 	 */
-	public void onConnectServer(Stage loginStage, FXMLLoader fxmlLoader,String ip, int port , String id) {
+	public void onConnectServer(Stage loginStage, FXMLLoader fxmlLoader, String ip, int port, String id) {
 
 		mStage = loginStage;
 		mFxmlLoader = fxmlLoader;
@@ -322,11 +338,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				@Override
 				public void run() {
 
-					for (Entry<String, SpEntryInfo> entryInfo : mEntryRepositoryMap.entrySet()) {
-						addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(entryInfo.getValue()));
+//					for (Entry<String, SpEntryInfo> entryInfo : mEntryRepositoryMap.entrySet()) {
+//						addLogItem(mResMsg.getString("msg.auction.send.entry.data")
+//								+ AuctionDelegate.getInstance().onSendEntryData(entryInfo.getValue()));
+//					}
+
+					for (Entry<String, EntryInfo> entryInfo : entryInfoTest.entrySet()) {
+						addLogItem(mResMsg.getString("msg.auction.send.entry.data")
+								+ AuctionDelegate.getInstance().onSendEntryData(entryInfo.getValue()));
 					}
 
-					addLogItem(String.format(mResMsg.getString("msg.send.entry.data.result"), mEntryRepositoryMap.size()));
+					addLogItem(
+							String.format(mResMsg.getString("msg.send.entry.data.result"), mEntryRepositoryMap.size()));
 
 					mBtnF1.setDisable(true);
 
@@ -346,9 +369,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			CommonUtils.getInstance().dismissLoadingDialog();
 		}
 	}
-	
+
 	public void onStartAuction(MouseEvent event) {
-		
+
 		if (mBtnEnter.isDisable()) {
 			return;
 		}
@@ -381,14 +404,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		String msgReady = String.format(mResMsg.getString("msg.auction.send.ready"), mCurrentSpEntryInfo.getEntryNum().getValue());
-		String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), mCurrentSpEntryInfo.getEntryNum().getValue());
+		String msgReady = String.format(mResMsg.getString("msg.auction.send.ready"),
+				mCurrentSpEntryInfo.getEntryNum().getValue());
+		String msgStart = String.format(mResMsg.getString("msg.auction.send.start"),
+				mCurrentSpEntryInfo.getEntryNum().getValue());
 
 		// 준비
 		// addLogItem(msgReady +
 		// AuctionDelegate.getInstance().onNextEntryReady(mCurrentEntryInfo.getEntryNum()));
 		// 시작
-		addLogItem(msgStart + AuctionDelegate.getInstance().onStartAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
+		addLogItem(
+				msgStart + AuctionDelegate.getInstance().onStartAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
 	}
 
 	/**
@@ -397,23 +423,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param event
 	 */
 	public void onStopAuction() {
-		
+
 		if (mCurrentSpEntryInfo == null) {
 			return;
 		}
-		
+
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 			mBtnEsc.setDisable(true);
-			addLogItem(mResMsg.getString("msg.auction.send.complete") + AuctionDelegate.getInstance().onPauseAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
+			addLogItem(mResMsg.getString("msg.auction.send.complete")
+					+ AuctionDelegate.getInstance().onPauseAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
 			break;
 		}
-	
+
 	}
 
 	/**
-	 * 출품 데이터 전송
+	 * 강제유찰
 	 * 
 	 * @param event
 	 */
@@ -427,14 +454,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param event
 	 */
 	public void onPassAuction() {
-		
+
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 			mIsPass = true;
 			mBtnEsc.setDisable(true);
 			mBtnEnter.setDisable(true);
-			addLogItem(mResMsg.getString("msg.auction.send.pass") + AuctionDelegate.getInstance().onPassAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
+			addLogItem(mResMsg.getString("msg.auction.send.pass")
+					+ AuctionDelegate.getInstance().onPassAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
 			break;
 		}
 	}
@@ -463,6 +491,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 경매 출품 데이터
 	 */
 	private void requestEntryData() {
+		// TEST!! 일단 경매정보 하나만 가져옴!!
+		AuctionRoundMapperService service = new AuctionRoundMapperService();
+		List<AuctionRound> list = service.getAllAuctionRoundData();
+		for (AuctionRound t : list) {
+//			System.out.println(t);
+			qcn = t.getQcn();
+		}
+		// TEST!! 경매 데이터 불러오기
+		EntryInfoMapperService entryService = new EntryInfoMapperService();
+		entryInfoTest = entryService.getAllEntryData();
+		for (Entry<String, EntryInfo> info : entryInfoTest.entrySet()) {
+			System.out.println(info.getValue().getEntryNum());
+		}
+
 		mEntryRepositoryMap.clear();
 		mEntryRepositoryMap.putAll(TestUtil.getInstance().loadEntryDataMap());
 		initWaitEntryDataList(mEntryRepositoryMap);
@@ -556,9 +598,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnF1.setDisable(true);
 				mBtnEnter.setDisable(false);
 				mBtnEsc.setDisable(true);
-				
+
 				initBiddingInfoDataList();
-				
+
 				mIsPass = false;
 				// 경매 상태
 				updateAuctionStateInfo(code, false, null);
@@ -593,7 +635,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mCurNoteLabel.setText("");
 
 				initBiddingInfoDataList();
-				
+
 				showAlertPopupOneButton(mResMsg.getString("msg.auction.finish"));
 
 				break;
@@ -639,11 +681,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					mAuctionStateSuccessLabel.setDisable(false);
 					mAuctionStateFailLabel.setDisable(true);
 					mCurrentSpEntryInfo.setSuccessfulBidder(new SimpleStringProperty(bidder.getUserNo().getValue()));
-					mCurrentSpEntryInfo.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.success")));
+					mCurrentSpEntryInfo
+							.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.success")));
 				} else {
 					mAuctionStateSuccessLabel.setDisable(true);
 					mAuctionStateFailLabel.setDisable(false);
-					mCurrentSpEntryInfo.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.fail")));
+					mCurrentSpEntryInfo
+							.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.fail")));
 				}
 
 				break;
@@ -660,22 +704,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		List<SpBidding> bidderDataList = null;
 
-		if(spBiddingDataList != null) {
+		if (spBiddingDataList != null) {
 			if (spBiddingDataList.size() > 11) {
 				bidderDataList = new ArrayList<SpBidding>(spBiddingDataList.subList(0, 12));
 			} else {
 				bidderDataList = new ArrayList<SpBidding>(spBiddingDataList);
 			}
-			
+
 			mBiddingUserInfoDataList.clear();
 			mBiddingUserInfoDataList.addAll(bidderDataList);
 			mBiddingInfoTableView.getSelectionModel().select(0);
 			mBiddingInfoTableView.refresh();
-			
-		}else {
+
+		} else {
 			initBiddingInfoDataList();
 		}
-	
+
 	}
 
 	/**
@@ -698,12 +742,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mCurEntryNumLabel.setText(mCurrentSpEntryInfo.getEntryNum().getValue());
 			mCurExhibitorLabel.setText(mCurrentSpEntryInfo.getExhibitor().getValue());
 			mCurGenterLabel.setText(mCurrentSpEntryInfo.getGender().getValue());
-			mCurMotherLabel.setText(mCurrentSpEntryInfo.getMotherObjNum().getValue());
+			mCurMotherLabel.setText(mCurrentSpEntryInfo.getMother().getValue());
 			mCurCavingNumLabel.setText(mCurrentSpEntryInfo.getCavingNum().getValue());
 			mCurIndNumLabel.setText(mCurrentSpEntryInfo.getIndNum().getValue());
 			mCurWeightLabel.setText(mCurrentSpEntryInfo.getWeight().getValue());
 			mCurLowPriceLabel.setText("-");
-			mCurStartPriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getLowPrice().getValue())));
+			mCurStartPriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getStartPrice().getValue())));
 			mCurSuccessPriceLabel.setText("");
 			mCurResultLabel.setText("");
 			mCurNoteLabel.setText(mCurrentSpEntryInfo.getNote().getValue());

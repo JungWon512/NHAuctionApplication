@@ -7,6 +7,7 @@ import com.nh.controller.model.SpEntryInfo;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionReponseSession;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.PassAuction;
 import com.nh.share.controller.models.ReadyEntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
@@ -80,6 +81,15 @@ public class AuctionDelegate {
 	 * @return
 	 */
 	public String onSendEntryData(SpEntryInfo entryData) {
+		return sendMessage(entryData);
+	}
+
+	/**
+	 * @Description 출품 데이터 전송 TEST
+	 * @param entryData
+	 * @return
+	 */
+	public String onSendEntryData(EntryInfo entryData) {
 		return sendMessage(entryData);
 	}
 
