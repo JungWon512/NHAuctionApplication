@@ -6,6 +6,12 @@ import org.apache.ibatis.session.SqlSession;
 
 import com.nh.share.controller.models.EntryInfo;
 
+/**
+ * 출품 데이터 Dao
+ * 
+ * @author dhKim
+ *
+ */
 public class EntryInfoDao {
 
 	public List<EntryInfo> selectAllEntryInfo(SqlSession session) {

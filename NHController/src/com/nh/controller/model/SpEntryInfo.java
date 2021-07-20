@@ -1,7 +1,5 @@
 package com.nh.controller.model;
 
-import java.io.Serializable;
-
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.setting.AuctionShareSetting;
 

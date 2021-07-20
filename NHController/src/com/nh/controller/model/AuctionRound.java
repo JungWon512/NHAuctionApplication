@@ -1,7 +1,12 @@
 package com.nh.controller.model;
 
 import java.time.LocalDateTime;
-
+/**
+ * 경매 회차정보 DTO
+ * 
+ * @author dhKim
+ *
+ */
 public class AuctionRound {
 
 	private String naBzplc; // 경제통합사업장코드

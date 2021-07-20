@@ -9,6 +9,12 @@ import com.nh.controller.database.DBSeesionFactory;
 import com.nh.controller.mapper.AuctionRoundMapper;
 import com.nh.controller.model.AuctionRound;
 
+/**
+ * 경매 회차 정보 MapperService
+ * 
+ * @author dhKim
+ *
+ */
 public class AuctionRoundMapperService implements AuctionRoundMapper {
 
 	private AuctionRoundDao dao;
