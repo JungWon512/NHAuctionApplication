@@ -22,6 +22,14 @@ public class EntryInfoMapperService implements EntryInfoMapper {
 		List<EntryInfo> list = null;
 		try {
 			list = dao.selectAllEntryInfo(session);
+
+			for (int i = 0; i < list.size(); i++) {
+				if (i == list.size() - 1) {
+					list.get(i).setIsLastEntry("Y");
+				} else {
+					list.get(i).setIsLastEntry("N");
+				}
+			}
 		} finally {
 			session.close();
 		}

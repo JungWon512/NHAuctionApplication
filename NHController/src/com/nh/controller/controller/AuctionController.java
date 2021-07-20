@@ -276,7 +276,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 
 	 * @param dataMap
 	 */
-	private void initWaitEntryDataList(Map<String, SpEntryInfo> dataMap) {
+	private void initWaitEntryDataList(LinkedHashMap<String, SpEntryInfo> dataMap) {
 
 		if (dataMap.size() > 0) {
 
@@ -505,27 +505,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// DB EntryInfo -> Sp EntryInfo
 		mEntryRepositoryMap.clear();
 
-//		Map<String, SpEntryInfo> resultMap = entryInfoDataList.stream()
-//				.map(data -> new SpEntryInfo(data.getAuctionHouseCode(), data.getEntryNum(), data.getEntryType(),
-//						data.getIndNum(), data.getIndMngCd(), data.getFhsNum(), data.getFarmMngNum(),
-//						data.getExhibitor(), data.getBrandName(), data.getBirthday(), data.getKpn(), data.getGender(),
-//						data.getMotherTypeCode(), data.getMotherObjNum(), data.getCavingNum(), data.getPasgQcn(),
-//						data.getObjIdNum(), data.getObjRegNum(), data.getObjRegTypeNum(), data.getIsNew(),
-//						data.getWeight(), data.getInitPrice(), data.getLowPrice(), data.getNote(),
-//						data.getIsLastEntry()))
-//				.sorted(Comparator.comparing(SpEntryInfo::getEntryNumInt))
-//				.collect(Collectors.toMap(SpEntryInfo::getEntryNumString, Function.identity()));
-
-		for (EntryInfo data : entryInfoDataList) {
-			SpEntryInfo entryInfo = new SpEntryInfo(data.getAuctionHouseCode(), data.getEntryNum(), data.getEntryType(),
-					data.getIndNum(), data.getIndMngCd(), data.getFhsNum(), data.getFarmMngNum(), data.getExhibitor(),
-					data.getBrandName(), data.getBirthday(), data.getKpn(), data.getGender(), data.getMotherTypeCode(),
-					data.getMotherObjNum(), data.getCavingNum(), data.getPasgQcn(), data.getObjIdNum(),
-					data.getObjRegNum(), data.getObjRegTypeNum(), data.getIsNew(), data.getWeight(),
-					data.getInitPrice(), data.getLowPrice(), data.getNote(), data.getIsLastEntry());
-
-			mEntryRepositoryMap.put(entryInfo.getEntryNum().getValue(), entryInfo);
-		}
+		mEntryRepositoryMap = entryInfoDataList.stream().collect(LinkedHashMap::new,
+				(map, item) -> map.put(item.getEntryNum(),
+						new SpEntryInfo(item.getAuctionHouseCode(), item.getEntryNum(), item.getEntryType(),
+								item.getIndNum(), item.getIndMngCd(), item.getFhsNum(), item.getFarmMngNum(),
+								item.getExhibitor(), item.getBrandName(), item.getBirthday(), item.getKpn(),
+								item.getGender(), item.getMotherTypeCode(), item.getMotherObjNum(), item.getCavingNum(),
+								item.getPasgQcn(), item.getObjIdNum(), item.getObjRegNum(), item.getObjRegTypeNum(),
+								item.getIsNew(), item.getWeight(), item.getInitPrice(), item.getLowPrice(),
+								item.getNote(), item.getIsLastEntry())),
+				Map::putAll);
 
 		for (Entry<String, SpEntryInfo> spEntryInfo : mEntryRepositoryMap.entrySet()) {
 			System.out.println(spEntryInfo.getKey());
@@ -873,7 +862,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						ke.consume(); // <-- stops passing the event to next node
 					}
 					if (ke.getCode() == KeyCode.ENTER) {
-						System.out.println("눌림 KeyCode.Enter");
+						System.out.println("눌림 KeyCode.Enter\t" + mAuctionStatus.getState());
 
 						if (mBtnEnter.isDisable()) {
 							return;

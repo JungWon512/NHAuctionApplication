@@ -29,7 +29,7 @@ public class DBSeesionFactory {
 	}
 
 	public static SqlSession getSession() {
-		SqlSession session = sqlSessionFactory.openSession();
+		SqlSession session = sqlSessionFactory.openSession(false); // AutoCommit false
 		return session;
 	}
 
