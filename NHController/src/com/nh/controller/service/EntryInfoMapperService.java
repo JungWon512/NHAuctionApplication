@@ -1,5 +1,6 @@
 package com.nh.controller.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -15,28 +16,30 @@ import com.nh.share.controller.models.EntryInfo;
  * @author dhKim
  *
  */
-public class EntryInfoMapperService implements EntryInfoMapper {
-	private EntryInfoDao dao;
+public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> implements EntryInfoMapper {
 
 	public EntryInfoMapperService() {
-		dao = new EntryInfoDao();
+		this.setDao(new EntryInfoDao());
 	}
 
 	@Override
 	public List<EntryInfo> getAllEntryData() {
 		SqlSession session = DBSeesionFactory.getSession();
-		List<EntryInfo> list = null;
+		List<EntryInfo> list = new ArrayList<>();
 		try {
 			list = dao.selectAllEntryInfo(session);
+		} finally {
+			session.close();
+		}
 
+		if (!list.isEmpty()) {
 			// 마지막 출품정보 표기 (Y/N)
 			for (int i = 0; i < list.size(); i++) {
 				String flag = (i == list.size() - 1) ? "Y" : "N";
 				list.get(i).setIsLastEntry(flag);
 			}
-		} finally {
-			session.close();
 		}
+
 		return list;
 	}
 }

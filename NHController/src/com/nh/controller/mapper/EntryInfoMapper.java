@@ -13,5 +13,4 @@ import com.nh.share.controller.models.EntryInfo;
 public interface EntryInfoMapper {
 
 	public List<EntryInfo> getAllEntryData(); // TODO: 쿼리 및 param 수정
-
 }

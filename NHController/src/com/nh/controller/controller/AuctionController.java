@@ -141,7 +141,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		if (resources != null) {
 			mResMsg = resources;
 		}
-
 		// Views
 		initViewConfiguration();
 		// MakeData

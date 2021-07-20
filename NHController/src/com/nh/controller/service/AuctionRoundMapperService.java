@@ -1,5 +1,6 @@
 package com.nh.controller.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -15,18 +16,16 @@ import com.nh.controller.model.AuctionRound;
  * @author dhKim
  *
  */
-public class AuctionRoundMapperService implements AuctionRoundMapper {
-
-	private AuctionRoundDao dao;
+public class AuctionRoundMapperService extends BaseMapperService<AuctionRoundDao> implements AuctionRoundMapper {
 
 	public AuctionRoundMapperService() {
-		dao = new AuctionRoundDao();
+		this.setDao(new AuctionRoundDao());
 	}
 
 	@Override
 	public List<AuctionRound> getAllAuctionRoundData() {
 		SqlSession session = DBSeesionFactory.getSession();
-		List<AuctionRound> list = null;
+		List<AuctionRound> list = new ArrayList<>();
 		try {
 			list = dao.selectAllAuctionRound(session);
 		} finally {
