@@ -42,7 +42,7 @@
 		<result property="mGender" column="INDV_SEX_C" />
 		<result property="mMotherTypeCode" column="MCOW_DSC" />
 		<result property="mMotherObjNum" column="MCOW_SRA_INDV_AMNNO" /> 
-		<result property="mCavingNum" column="MATIME" />
+		<result property="mMatime" column="MATIME" />
 		<result property="mPasgQcn" column="SRA_INDV_PASG_QCN" />
 		<result property="mObjIdNum" column="INDV_ID_NO" />
 		<result property="mObjRegNum" column="SRA_INDV_BRDSRA_RG_NO" />

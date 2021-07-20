@@ -35,7 +35,7 @@ public class SpEntryInfo implements FromAuctionController {
 	private StringProperty mGender; // 개체성별코드
 	private StringProperty mMotherTypeCode; // 어미구분코드
 	private StringProperty mMotherObjNum; // 어미축산개체관리번호
-	private StringProperty mCavingNum; // 산차
+	private StringProperty mMatime ; // 산차
 	private StringProperty mPasgQcn; // 계대
 	private StringProperty mObjIdNum; // 개체식별번호
 	private StringProperty mObjRegNum; // 축산개체종축등록번호
@@ -47,6 +47,7 @@ public class SpEntryInfo implements FromAuctionController {
 	private StringProperty mNote; // 비고내용
 	private StringProperty mIsLastEntry; // 마지막 출품 여부
 
+	private StringProperty successPrice; // 낙찰금액
 	private StringProperty successfulBidder; // 낙찰자
 	private StringProperty BiddingResult; // 낙찰결과
 	private BooleanProperty isPending; // 보류
@@ -56,7 +57,7 @@ public class SpEntryInfo implements FromAuctionController {
 
 	public SpEntryInfo(String auctionHouseCode, String entryNum, String entryType, String indNum, String indMngCd,
 			String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday, String kpn,
-			String gender, String motherTypeCode, String motherObjNum, String cavingNum, String pasgQcn,
+			String gender, String motherTypeCode, String motherObjNum, String matime, String pasgQcn,
 			String objIdNum, String objRegNum, String objRegTypeNum, String isNew, String weight, String initPrice,
 			String lowPrice, String note, String isLastEntry) {
 		this.mAuctionHouseCode = new SimpleStringProperty(auctionHouseCode);
@@ -73,7 +74,7 @@ public class SpEntryInfo implements FromAuctionController {
 		this.mGender = new SimpleStringProperty(gender);
 		this.mMotherTypeCode = new SimpleStringProperty(motherTypeCode);
 		this.mMotherObjNum = new SimpleStringProperty(motherObjNum);
-		this.mCavingNum = new SimpleStringProperty(cavingNum);
+		this.mMatime = new SimpleStringProperty(matime);
 		this.mPasgQcn = new SimpleStringProperty(pasgQcn);
 		this.mObjIdNum = new SimpleStringProperty(objIdNum);
 		this.mObjRegNum = new SimpleStringProperty(objRegNum);
@@ -198,12 +199,12 @@ public class SpEntryInfo implements FromAuctionController {
 		this.mMotherObjNum = mMotherObjNum;
 	}
 
-	public StringProperty getCavingNum() {
-		return mCavingNum;
+	public StringProperty getMatime() {
+		return mMatime;
 	}
 
-	public void setCavingNum(StringProperty mCavingNum) {
-		this.mCavingNum = mCavingNum;
+	public void setMatime(StringProperty mMatime) {
+		this.mMatime = mMatime;
 	}
 
 	public StringProperty getPasgQcn() {
@@ -310,6 +311,14 @@ public class SpEntryInfo implements FromAuctionController {
 		this.isPending = isPending;
 	}
 
+	public StringProperty getSuccessPrice() {
+		return successPrice;
+	}
+
+	public void setSuccessPrice(StringProperty successPrice) {
+		this.successPrice = successPrice;
+	}
+
 	@Override
 	public String getEncodedMessage() {
 		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
@@ -321,7 +330,7 @@ public class SpEntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mBirthday.getValue(), AuctionShareSetting.DELIMITER, mKpn.getValue(),
 				AuctionShareSetting.DELIMITER, mGender.getValue(), AuctionShareSetting.DELIMITER,
 				mMotherTypeCode.getValue(), AuctionShareSetting.DELIMITER, mMotherObjNum.getValue(),
-				AuctionShareSetting.DELIMITER, mCavingNum.getValue(), AuctionShareSetting.DELIMITER,
+				AuctionShareSetting.DELIMITER, mMatime.getValue(), AuctionShareSetting.DELIMITER,
 				mPasgQcn.getValue(), AuctionShareSetting.DELIMITER, mObjIdNum.getValue(), AuctionShareSetting.DELIMITER,
 				mObjRegNum.getValue(), AuctionShareSetting.DELIMITER, mObjRegTypeNum.getValue(),
 				AuctionShareSetting.DELIMITER, mIsNew.getValue(), AuctionShareSetting.DELIMITER, mWeight.getValue(),

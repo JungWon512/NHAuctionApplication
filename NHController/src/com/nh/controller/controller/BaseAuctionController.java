@@ -363,7 +363,7 @@ public class BaseAuctionController implements NettyControllable {
 			// 1순위 데이터
 			SpBidding biddingUser = rankBiddingDataList.get(0);
 
-			// 현재 차량 시작가
+			// 최저가
 			int startPrice = Integer.parseInt(entryInfo.getLowPrice().getValue());
 
 			// 경매 결과 Obj
@@ -371,7 +371,7 @@ public class BaseAuctionController implements NettyControllable {
 			auctionResult.setAuctionHouseCode(entryInfo.getAuctionHouseCode().getValue());
 			auctionResult.setEntryNum(entryInfo.getEntryNum().getValue());
 
-			// 응찰 금액이 시작가와 같거나 큰 경우 낙찰
+			// 응찰 금액이 최저가와 같거나 큰 경우 낙찰
 			if (Integer.parseInt(biddingUser.getPrice().getValue()) >= startPrice) {
 				isSuccess = true;
 				sendAuctionResult(true, entryInfo, biddingUser);

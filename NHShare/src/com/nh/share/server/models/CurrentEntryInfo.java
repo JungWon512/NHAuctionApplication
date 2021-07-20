@@ -30,7 +30,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	private String mGender; // 개체성별코드
 	private String mMotherTypeCode; // 어미구분코드
 	private String mMotherObjNum; // 어미축산개체관리번호
-	private String mCavingNum; // 산차
+	private String mMatime; // 산차
 	private String mPasgQcn; // 계대
 	private String mObjIdNum; // 개체식별번호
 	private String mObjRegNum; // 축산개체종축등록번호
@@ -44,7 +44,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 
 	public CurrentEntryInfo(String auctionHouseCode, String entryNum, String entryType, String indNum, String indMngCd,
 			String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday, String kpn,
-			String gender, String motherTypeCode, String motherObjNum, String cavingNum, String pasgQcn,
+			String gender, String motherTypeCode, String motherObjNum, String matime, String pasgQcn,
 			String objIdNum, String objRegNum, String objRegTypeNum, String isNew, String weight, String initPrice,
 			String lowPrice, String note, String isLastEntry) {
 		mAuctionHouseCode = auctionHouseCode;
@@ -61,7 +61,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mGender = gender;
 		mMotherTypeCode = motherTypeCode;
 		mMotherObjNum = motherObjNum;
-		mCavingNum = cavingNum;
+		mMatime = matime;
 		mPasgQcn = pasgQcn;
 		mObjIdNum = objIdNum;
 		mObjRegNum = objRegNum;
@@ -89,7 +89,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mGender = messages[12];
 		mMotherTypeCode = messages[13];
 		mMotherObjNum = messages[14];
-		mCavingNum = messages[15];
+		mMatime = messages[15];
 		mPasgQcn = messages[16];
 		mObjIdNum = messages[17];
 		mObjRegNum = messages[18];
@@ -117,7 +117,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mGender = entryInfo.getGender();
 		mMotherTypeCode = entryInfo.getMotherTypeCode();
 		mMotherObjNum = entryInfo.getMotherObjNum();
-		mCavingNum = entryInfo.getCavingNum();
+		mMatime = entryInfo.getMatime();
 		mPasgQcn = entryInfo.getPasgQcn();
 		mObjIdNum = entryInfo.getObjIdNum();
 		mObjRegNum = entryInfo.getObjRegNum();
@@ -242,12 +242,12 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		this.mMotherObjNum = mMotherObjNum;
 	}
 
-	public String getCavingNum() {
-		return mCavingNum;
+	public String getMatime() {
+		return mMatime;
 	}
 
-	public void setCavingNum(String mCavingNum) {
-		this.mCavingNum = mCavingNum;
+	public void setMatime(String mMatime) {
+		this.mMatime = mMatime;
 	}
 
 	public String getPasgQcn() {
@@ -341,7 +341,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 				AuctionShareSetting.DELIMITER, mBrandName, AuctionShareSetting.DELIMITER, mBirthday,
 				AuctionShareSetting.DELIMITER, mKpn, AuctionShareSetting.DELIMITER, mGender,
 				AuctionShareSetting.DELIMITER, mMotherTypeCode, AuctionShareSetting.DELIMITER, mMotherObjNum,
-				AuctionShareSetting.DELIMITER, mCavingNum, AuctionShareSetting.DELIMITER, mPasgQcn,
+				AuctionShareSetting.DELIMITER, mMatime, AuctionShareSetting.DELIMITER, mPasgQcn,
 				AuctionShareSetting.DELIMITER, mObjIdNum, AuctionShareSetting.DELIMITER, mObjRegNum,
 				AuctionShareSetting.DELIMITER, mObjRegTypeNum, AuctionShareSetting.DELIMITER, mIsNew,
 				AuctionShareSetting.DELIMITER, mWeight, AuctionShareSetting.DELIMITER, mInitPrice,

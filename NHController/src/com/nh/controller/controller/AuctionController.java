@@ -2,14 +2,11 @@ package com.nh.controller.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AuctionRound;
@@ -20,7 +17,6 @@ import com.nh.controller.service.AuctionRoundMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.MoveStageUtil;
-import com.nh.controller.utils.TestUtil;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.ResponseConnectionInfo;
@@ -30,7 +26,6 @@ import com.nh.share.server.models.CurrentEntryInfo;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -70,18 +65,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	@FXML // 완료된 출품
 	private TableColumn<SpEntryInfo, String> mFinishedEntryNumColumn, mFinishedExhibitorColumn, mFinishedGenderColumn,
-			mFinishedMotherColumn, mFinishedCavingNumColumn, mFinishedIndNumColumn, mFinishedWeightColumn,
-			mFinishedLowPriceColumn, mFinishedStartPriceColumn, mFinishedSuccessColumn, mFinishedResultColumn,
+			mFinishedMotherColumn, mFinishedMatimeColumn, mFinishedPasgQcnColumn, mFinishedWeightColumn,
+			mFinishedLowPriceColumn, mFinishedSuccessPriceColumn, mFinishedSuccessfulBidderColumn, mFinishedResultColumn,
 			mFinishedNoteColumn;
 
 	@FXML // 대기중인 출품
 	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn,
-			mWaitMotherColumn, mWaitCavingNumColumn, mWaitIndNumColumn, mWaitWeightColumn, mWaitLowPriceColumn,
-			mWaitStartPriceColumn, mWaitSuccessColumn, mWaitResultColumn, mWaitNoteColumn;
+			mWaitMotherColumn, mWaitMatimeColumn, mWaitPasgQcnColumn, mWaitWeightColumn, mWaitLowPriceColumn,
+			mWaitSuccessPriceColumn, mWaitSuccessfulBidderColumn, mWaitResultColumn, mWaitNoteColumn;
 
 	@FXML // 현재 경매
-	private Label mCurEntryNumLabel, mCurExhibitorLabel, mCurGenterLabel, mCurMotherLabel, mCurCavingNumLabel,
-			mCurIndNumLabel, mCurWeightLabel, mCurLowPriceLabel, mCurStartPriceLabel, mCurSuccessPriceLabel,
+	private Label mCurEntryNumLabel, mCurExhibitorLabel, mCurGenterLabel, mCurMotherLabel, mCurMatimeLabel,
+			mCurPasgQcnLabel, mCurWeightLabel, mCurLowPriceLabel, mCurSuccessPriceLabel, mCurSuccessfulBidderLabel,
 			mCurResultLabel, mCurNoteLabel;
 
 	@FXML // 사용자 접속 현황
@@ -190,12 +185,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mFinishedExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
 		mFinishedGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGender());
 		mFinishedMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherObjNum());
-		mFinishedCavingNumColumn.setCellValueFactory(cellData -> cellData.getValue().getCavingNum());
-		mFinishedIndNumColumn.setCellValueFactory(cellData -> cellData.getValue().getIndNum());
+		mFinishedMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
+		mFinishedPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
 		mFinishedWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
-		mFinishedLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getInitPrice());
-		mFinishedStartPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
-		mFinishedSuccessColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessfulBidder());
+		mFinishedLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
+		mFinishedSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessPrice());
+		mFinishedSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessfulBidder());
 		mFinishedResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mFinishedNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
 
@@ -204,13 +199,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mWaitExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
 		mWaitGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGender());
 		mWaitMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherObjNum());
-		mWaitCavingNumColumn.setCellValueFactory(cellData -> cellData.getValue().getCavingNum());
-		mWaitIndNumColumn.setCellValueFactory(cellData -> cellData.getValue().getIndNum());
+		mWaitMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
+		mWaitPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
 		mWaitWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
-		mWaitLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getInitPrice());
-		mWaitStartPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
-		mWaitSuccessColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
-		mWaitResultColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
+		mWaitLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
+		mWaitSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessPrice());
+		mWaitSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessfulBidder());
+		mWaitResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mWaitNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
 
 		// 테이블 컬럼 - 접속자
@@ -510,7 +505,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						new SpEntryInfo(item.getAuctionHouseCode(), item.getEntryNum(), item.getEntryType(),
 								item.getIndNum(), item.getIndMngCd(), item.getFhsNum(), item.getFarmMngNum(),
 								item.getExhibitor(), item.getBrandName(), item.getBirthday(), item.getKpn(),
-								item.getGender(), item.getMotherTypeCode(), item.getMotherObjNum(), item.getCavingNum(),
+								item.getGender(), item.getMotherTypeCode(), item.getMotherObjNum(), item.getMatime(),
 								item.getPasgQcn(), item.getObjIdNum(), item.getObjRegNum(), item.getObjRegTypeNum(),
 								item.getIsNew(), item.getWeight(), item.getInitPrice(), item.getLowPrice(),
 								item.getNote(), item.getIsLastEntry())),
@@ -638,12 +633,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mCurExhibitorLabel.setText("");
 				mCurGenterLabel.setText("");
 				mCurMotherLabel.setText("");
-				mCurCavingNumLabel.setText("");
-				mCurIndNumLabel.setText("");
+				mCurMatimeLabel.setText("");
+				mCurPasgQcnLabel.setText("");
 				mCurWeightLabel.setText("");
 				mCurLowPriceLabel.setText("");
-				mCurStartPriceLabel.setText("");
 				mCurSuccessPriceLabel.setText("");
+				mCurSuccessfulBidderLabel.setText("");
 				mCurResultLabel.setText("");
 				mCurNoteLabel.setText("");
 
@@ -694,13 +689,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					mAuctionStateSuccessLabel.setDisable(false);
 					mAuctionStateFailLabel.setDisable(true);
 					mCurrentSpEntryInfo.setSuccessfulBidder(new SimpleStringProperty(bidder.getUserNo().getValue()));
-					mCurrentSpEntryInfo
-							.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.success")));
+					mCurrentSpEntryInfo.setSuccessPrice(new SimpleStringProperty(bidder.getPrice().getValue()));
+					mCurrentSpEntryInfo.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.success")));
 				} else {
 					mAuctionStateSuccessLabel.setDisable(true);
 					mAuctionStateFailLabel.setDisable(false);
-					mCurrentSpEntryInfo
-							.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.fail")));
+					mCurrentSpEntryInfo.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.fail")));
 				}
 
 				break;
@@ -756,13 +750,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mCurExhibitorLabel.setText(mCurrentSpEntryInfo.getExhibitor().getValue());
 			mCurGenterLabel.setText(mCurrentSpEntryInfo.getGender().getValue());
 			mCurMotherLabel.setText(mCurrentSpEntryInfo.getMotherObjNum().getValue());
-			mCurCavingNumLabel.setText(mCurrentSpEntryInfo.getCavingNum().getValue());
-			mCurIndNumLabel.setText(mCurrentSpEntryInfo.getIndNum().getValue());
+			mCurMatimeLabel.setText(mCurrentSpEntryInfo.getMatime().getValue());
+			mCurPasgQcnLabel.setText(mCurrentSpEntryInfo.getPasgQcn().getValue());
 			mCurWeightLabel.setText(mCurrentSpEntryInfo.getWeight().getValue());
-			mCurLowPriceLabel.setText("-");
-			mCurStartPriceLabel.setText(String.format(mResMsg.getString("str.price"),
-					Integer.parseInt(mCurrentSpEntryInfo.getLowPrice().getValue())));
+			mCurLowPriceLabel.setText(String.format(mResMsg.getString("str.price"),Integer.parseInt(mCurrentSpEntryInfo.getLowPrice().getValue())));
 			mCurSuccessPriceLabel.setText("");
+			mCurSuccessfulBidderLabel.setText("");
 			mCurResultLabel.setText("");
 			mCurNoteLabel.setText(mCurrentSpEntryInfo.getNote().getValue());
 
