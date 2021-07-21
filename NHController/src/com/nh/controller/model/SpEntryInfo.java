@@ -2,7 +2,6 @@ package com.nh.controller.model;
 
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.setting.AuctionShareSetting;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

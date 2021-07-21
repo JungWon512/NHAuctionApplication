@@ -6,7 +6,7 @@ package com.nh.controller.service;
  * @author dhKim
  *
  */
-public abstract class BaseMapperService<T extends Object> {
+public abstract class BaseMapperService<T> {
 	protected T dao;
 
 	public void setDao(T obj) {

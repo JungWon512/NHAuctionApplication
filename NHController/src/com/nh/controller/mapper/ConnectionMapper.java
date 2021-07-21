@@ -11,9 +11,9 @@ import com.nh.controller.model.User;
 public interface ConnectionMapper {
 	
 	// select 
-	public User selectUserInfo();
+	User selectUserInfo();
 	
 	// insert
-	public void insertUserInfo();
+	void insertUserInfo();
 
 }

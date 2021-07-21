@@ -1,14 +1,12 @@
 package com.nh.controller.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.ibatis.session.SqlSession;
-
 import com.nh.controller.dao.AuctionRoundDao;
-import com.nh.controller.database.DBSeesionFactory;
+import com.nh.controller.database.DBSessionFactory;
 import com.nh.controller.mapper.AuctionRoundMapper;
 import com.nh.controller.model.AuctionRound;
+import org.apache.ibatis.session.SqlSession;
+
+import java.util.List;
 
 /**
  * 경매 회차 정보 MapperService
@@ -24,8 +22,8 @@ public class AuctionRoundMapperService extends BaseMapperService<AuctionRoundDao
 
 	@Override
 	public List<AuctionRound> getAllAuctionRoundData() {
-		SqlSession session = DBSeesionFactory.getSession();
-		List<AuctionRound> list = new ArrayList<>();
+		SqlSession session = DBSessionFactory.getSession();
+		List<AuctionRound> list;
 		try {
 			list = dao.selectAllAuctionRound(session);
 		} finally {

@@ -1,8 +1,7 @@
 package com.nh.controller.dao;
 
-import org.apache.ibatis.session.SqlSession;
-
 import com.nh.controller.model.User;
+import org.apache.ibatis.session.SqlSession;
 
 /**
  * 회원 인증 Dao

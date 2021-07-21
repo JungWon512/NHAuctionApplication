@@ -1,21 +1,18 @@
 package com.nh.controller.dao;
 
-import java.util.List;
-
+import com.nh.controller.model.AuctionRound;
 import org.apache.ibatis.session.SqlSession;
 
-import com.nh.controller.model.AuctionRound;
+import java.util.List;
 
 /**
  * 경매 회차 정보 Dao
- * 
- * @author dhKim
  *
+ * @author dhKim
  */
 public class AuctionRoundDao {
 
-	public List<AuctionRound> selectAllAuctionRound(SqlSession session) {
-		List<AuctionRound> list = session.selectList("selectAllAuctionRound");
-		return list;
-	}
+    public List<AuctionRound> selectAllAuctionRound(SqlSession session) {
+        return session.selectList("selectAllAuctionRound");
+    }
 }

@@ -136,6 +136,6 @@
 		B.NA_BZPLC='8808990656656'AND
 		B.AUC_OBJ_DSC='3'
 		ORDER BY
-		B.AUC_PRG_SQ ASC
+		B.AUC_PRG_SQ ASC;
 	</select>
 </mapper>

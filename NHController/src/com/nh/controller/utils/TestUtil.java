@@ -1,5 +1,8 @@
 package com.nh.controller.utils;
 
+import com.nh.controller.model.SpEntryInfo;
+import com.nh.share.controller.models.EntryInfo;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,9 +10,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import com.nh.controller.model.SpEntryInfo;
-import com.nh.share.controller.models.EntryInfo;
 
 public class TestUtil {
 

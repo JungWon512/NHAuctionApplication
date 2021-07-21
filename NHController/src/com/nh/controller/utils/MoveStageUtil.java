@@ -1,14 +1,10 @@
 package com.nh.controller.utils;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import com.nh.controller.ControllerApplication;
 import com.nh.controller.controller.AuctionController;
 import com.nh.controller.controller.AuctionMessageController;
 import com.nh.controller.controller.LoginController;
 import com.nh.controller.interfaces.StringListener;
-
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -17,6 +13,9 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * Stage 이동 처리 Class

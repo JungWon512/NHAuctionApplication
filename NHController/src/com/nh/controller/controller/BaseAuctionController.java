@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import com.nh.share.common.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,12 +25,6 @@ import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
 import com.nh.share.code.GlobalDefineCode;
-import com.nh.share.common.models.AuctionResult;
-import com.nh.share.common.models.AuctionStatus;
-import com.nh.share.common.models.Bidding;
-import com.nh.share.common.models.CancelBidding;
-import com.nh.share.common.models.ConnectionInfo;
-import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;

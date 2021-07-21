@@ -1,16 +1,14 @@
 package com.nh.controller;
 
-import java.lang.invoke.MethodHandles;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.utils.MoveStageUtil;
-
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
 
 
 public class ControllerApplication extends Application {

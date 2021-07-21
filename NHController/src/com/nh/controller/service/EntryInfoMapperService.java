@@ -1,14 +1,13 @@
 package com.nh.controller.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.ibatis.session.SqlSession;
-
 import com.nh.controller.dao.EntryInfoDao;
-import com.nh.controller.database.DBSeesionFactory;
+import com.nh.controller.database.DBSessionFactory;
 import com.nh.controller.mapper.EntryInfoMapper;
 import com.nh.share.controller.models.EntryInfo;
+import org.apache.ibatis.session.SqlSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 출품 데이터 MapperService
@@ -24,7 +23,7 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 	@Override
 	public List<EntryInfo> getAllEntryData() {
-		SqlSession session = DBSeesionFactory.getSession();
+		SqlSession session = DBSessionFactory.getSession();
 		List<EntryInfo> list = new ArrayList<>();
 		try {
 			list = dao.selectAllEntryInfo(session);
