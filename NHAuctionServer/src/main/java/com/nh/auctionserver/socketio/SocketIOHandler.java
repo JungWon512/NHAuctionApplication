@@ -1,11 +1,11 @@
 package com.nh.auctionserver.socketio;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,12 +32,14 @@ import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
+import com.nh.share.utils.JwtCertTokenUtils;
 
 import io.netty.channel.ChannelId;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
+@Slf4j
 public class SocketIOHandler {
-	private final Logger mLogger = LoggerFactory.getLogger(SocketIOHandler.class);
 
 	@Value("${socketio.host}")
 	private String host;
@@ -78,6 +80,13 @@ public class SocketIOHandler {
 
 	@Bean
 	public SocketIOServer socketIOServer() {
+		try {
+			host = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		SocketConfig socketConfig = new SocketConfig();
 		socketConfig.setTcpNoDelay(true);
 		socketConfig.setSoLinger(0);
@@ -114,6 +123,11 @@ public class SocketIOHandler {
 		mSocketIOServer.getNamespace(GlobalDefineCode.NAMESPACE_CONNECTOR).addEventListener("packetData", Object.class,
 				mDataListener);
 
+		log.info("======= Auctoin Web Socket Server Informations[Start] =======");
+		log.info("Web Socket Server Host : " + host);
+		log.info("Web Socket Server Port : " + port);
+		log.info("======= Auctoin Web Socket Server Informations[End] =======");
+
 		return mSocketIOServer;
 	}
 
@@ -143,8 +157,8 @@ public class SocketIOHandler {
 						mWatchChannelClientMap.get(connectionInfo.getAuctionHouseCode()).put(client.getSessionId(),
 								client);
 
-						mLogger.debug("Request Connect client namespace : " + client.getNamespace().getName());
-						mLogger.debug("Request Connect client room : "
+						log.info("Request Connect client namespace : " + client.getNamespace().getName());
+						log.info("Request Connect client room : "
 								+ client.getHandshakeData().getSingleUrlParam("auctionHouseCode"));
 
 						String auctionHouseCode = client.getHandshakeData().getSingleUrlParam("auctionHouseCode");
@@ -152,12 +166,12 @@ public class SocketIOHandler {
 						if (auctionHouseCode != null && !auctionHouseCode.isEmpty()) {
 							client.joinRoom(auctionHouseCode);
 
-							mLogger.debug("Client Join Room Completed : " + auctionHouseCode + " / "
+							log.info("Client Join Room Completed : " + auctionHouseCode + " / "
 									+ mSocketIOServer.getRoomOperations(auctionHouseCode).getClients().size());
 
 							client.sendEvent("ResponseConnectionInfo",
 									new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-											GlobalDefineCode.CONNECT_SUCCESS).getEncodedMessage());
+											GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
 
 							// 현재 출품 정보 전송
 							if (mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
@@ -180,15 +194,14 @@ public class SocketIOHandler {
 								}
 							}
 						} else {
-							client.sendEvent("ResponseConnectionInfo",
-									new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR)
-											.getEncodedMessage());
+							client.sendEvent("ResponseConnectionInfo", new ResponseConnectionInfo(auctionHouseCode,
+									GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage());
 							client.disconnect();
 						}
 					} else {
 						client.sendEvent("ResponseConnectionInfo",
 								new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-										GlobalDefineCode.CONNECT_DUPLICATE).getEncodedMessage());
+										GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage());
 						client.disconnect();
 					}
 				} else {
@@ -197,20 +210,20 @@ public class SocketIOHandler {
 
 					mWatchChannelClientMap.put(connectionInfo.getAuctionHouseCode(), clientMap);
 
-					mLogger.debug("Request Connect client namespace : " + client.getNamespace().getName());
-					mLogger.debug("Request Connect client room : "
+					log.info("Request Connect client namespace : " + client.getNamespace().getName());
+					log.info("Request Connect client room : "
 							+ client.getHandshakeData().getSingleUrlParam("auctionHouseCode"));
 					String auctionHouseCode = client.getHandshakeData().getSingleUrlParam("auctionHouseCode");
 
 					if (auctionHouseCode != null && !auctionHouseCode.isEmpty()) {
 						client.joinRoom(auctionHouseCode);
 
-						mLogger.debug("Client Join Room Completed : " + auctionHouseCode + " / "
+						log.info("Client Join Room Completed : " + auctionHouseCode + " / "
 								+ mSocketIOServer.getRoomOperations(auctionHouseCode).getClients().size());
 
 						client.sendEvent("ResponseConnectionInfo",
 								new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-										GlobalDefineCode.CONNECT_SUCCESS).getEncodedMessage());
+										GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
 
 						// 현재 출품 정보 전송
 						if (mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
@@ -231,9 +244,8 @@ public class SocketIOHandler {
 							}
 						}
 					} else {
-						client.sendEvent("ResponseConnectionInfo",
-								new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR)
-										.getEncodedMessage());
+						client.sendEvent("ResponseConnectionInfo", new ResponseConnectionInfo(auctionHouseCode,
+								GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage());
 						client.disconnect();
 					}
 				}
@@ -249,24 +261,24 @@ public class SocketIOHandler {
 					mAuctionResultChannelClientMap.put(connectionInfo.getAuctionHouseCode(), clientMap);
 				}
 
-				mLogger.debug("Request Connect client namespace : " + client.getNamespace().getName());
-				mLogger.debug("Request Connect client room : "
+				log.info("Request Connect client namespace : " + client.getNamespace().getName());
+				log.info("Request Connect client room : "
 						+ client.getHandshakeData().getSingleUrlParam("auctionHouseCode"));
 				String auctionHouseCode = client.getHandshakeData().getSingleUrlParam("auctionHouseCode");
 
 				if (auctionHouseCode != null && !auctionHouseCode.isEmpty()) {
 					client.joinRoom(auctionHouseCode);
 
-					mLogger.debug("Client Join Room Completed : " + auctionHouseCode + " / "
+					log.info("Client Join Room Completed : " + auctionHouseCode + " / "
 							+ mSocketIOServer.getRoomOperations(auctionHouseCode).getClients().size());
 
 					client.sendEvent("ResponseConnectionInfo",
 							new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-									GlobalDefineCode.CONNECT_SUCCESS).getEncodedMessage());
+									GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
 
 				} else {
 					client.sendEvent("ResponseConnectionInfo",
-							new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR)
+							new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR, null, null)
 									.getEncodedMessage());
 					client.disconnect();
 				}
@@ -282,20 +294,20 @@ public class SocketIOHandler {
 					mConnectorChannelClientMap.put(connectionInfo.getAuctionHouseCode(), clientMap);
 				}
 
-				mLogger.debug("Request Connect client namespace : " + client.getNamespace().getName());
-				mLogger.debug("Request Connect client room : "
+				log.info("Request Connect client namespace : " + client.getNamespace().getName());
+				log.info("Request Connect client room : "
 						+ client.getHandshakeData().getSingleUrlParam("auctionHouseCode"));
 				String auctionHouseCode = client.getHandshakeData().getSingleUrlParam("auctionHouseCode");
 
 				if (auctionHouseCode != null && !auctionHouseCode.isEmpty()) {
 					client.joinRoom(auctionHouseCode);
 
-					mLogger.debug("Client Join Room Completed : " + auctionHouseCode + " / "
+					log.info("Client Join Room Completed : " + auctionHouseCode + " / "
 							+ mSocketIOServer.getRoomOperations(auctionHouseCode).getClients().size());
 
 					client.sendEvent("ResponseConnectionInfo",
 							new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-									GlobalDefineCode.CONNECT_SUCCESS).getEncodedMessage());
+									GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
 
 					// 현재 출품 정보 전송
 					if (mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
@@ -314,24 +326,31 @@ public class SocketIOHandler {
 					// 접속자 정보 최초 전송
 					for (ChannelId key : mConnectorInfoMap.keySet()) {
 						if (mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
-							client.sendEvent("BidderConnectInfo",
-									new BidderConnectInfo(mConnectorInfoMap.get(key).getAuctionHouseCode(),
-											mConnectorInfoMap.get(key).getUserNo(),
-											mConnectorInfoMap.get(key).getChannel(), mConnectorInfoMap.get(key).getOS(),
-											"N", "0").getEncodedMessage() + "\r\n");
+							try {
+								client.sendEvent("BidderConnectInfo",
+										new BidderConnectInfo(mConnectorInfoMap.get(key).getAuctionHouseCode(),
+												JwtCertTokenUtils.getInstance()
+														.getUserMemNum(mConnectorInfoMap.get(key).getAuthToken()),
+												mConnectorInfoMap.get(key).getChannel(),
+												mConnectorInfoMap.get(key).getOS(), "N", "0").getEncodedMessage()
+												+ "\r\n");
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 
 				} else {
 					client.sendEvent("ResponseConnectionInfo",
-							new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR)
+							new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR, null, null)
 									.getEncodedMessage());
 					client.disconnect();
 				}
 			} else {
 				client.sendEvent("ResponseConnectionInfo",
 						new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-								GlobalDefineCode.CONNECT_ETC_ERROR).getEncodedMessage());
+								GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage());
 				client.disconnect();
 			}
 		}
@@ -377,8 +396,8 @@ public class SocketIOHandler {
 	}
 
 	public void sendPacketData(String targetNamespace, String message) {
-		mLogger.debug("sendPacketData targetNamespace : " + targetNamespace);
-		mLogger.debug("sendPacketData message : " + message);
+		log.info("sendPacketData targetNamespace : " + targetNamespace);
+		log.info("sendPacketData message : " + message);
 
 		Object parseObject = messageParse(message);
 
@@ -429,7 +448,7 @@ public class SocketIOHandler {
 
 		@Override
 		public void onDisconnect(SocketIOClient client) {
-			mLogger.debug("DisconnectListener client : " + client.getSessionId());
+			log.info("DisconnectListener client : " + client.getSessionId());
 		}
 	};
 
@@ -442,7 +461,7 @@ public class SocketIOHandler {
 
 			switch (messages[0].charAt(1)) {
 			case ConnectionInfo.TYPE:
-				parseObject = new ConnectionInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6]);
+				parseObject = new ConnectionInfo(messages[1], messages[2], messages[3], messages[4], messages[5]);
 				break;
 			default:
 				parseObject = null;

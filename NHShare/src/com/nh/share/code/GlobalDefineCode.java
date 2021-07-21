@@ -73,9 +73,10 @@ public class GlobalDefineCode {
 	public static final String CONNECT_SUCCESS = "2000"; // 서버 접속 성공
 	public static final String CONNECT_FAIL = "2001"; // 서버 접속 실패
 	public static final String CONNECT_DUPLICATE = "2002"; // 서버 중복 접속
-	public static final String CONNECT_ETC_ERROR = "2003"; // 기타 장애
-	public static final String CONNECT_RUN_FAIL = "2004"; // 프로그램 실행 불가
-	public static final String CONNECT_EXPIRE_WATCHER = "2005"; // 관전자 접속 만료
+	public static final String CONNECT_CONTROLLER_ERROR = "2003"; // 제어프로그램 준비 안된 상태
+	public static final String CONNECT_ETC_ERROR = "2004"; // 기타 장애
+	public static final String CONNECT_RUN_FAIL = "2005"; // 프로그램 실행 불가
+	public static final String CONNECT_EXPIRE_WATCHER = "2006"; // 관전자 접속 만료
 
 	//경매 결과 코드
 	public static final String AUCTION_RESULT_CODE_SUCCESS = "01";		//낙찰

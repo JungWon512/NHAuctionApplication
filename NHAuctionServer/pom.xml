@@ -33,7 +33,7 @@
 			<groupId>com.nh.share</groupId>
 			<artifactId>NHShare</artifactId>
 			<version>1.0.0</version>
-<!--   			<scope>system</scope>
+			<!-- <scope>system</scope>
 			<systemPath>${basedir}/libs/NHShare-1.0.0.jar</systemPath> -->
 		</dependency>
 
@@ -81,6 +81,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.21</version>
 		</dependency>
 	</dependencies>
 

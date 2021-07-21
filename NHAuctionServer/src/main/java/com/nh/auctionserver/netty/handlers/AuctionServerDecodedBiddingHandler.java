@@ -13,6 +13,7 @@ import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.ResponseCode;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
@@ -32,14 +33,16 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
 	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
+	private Map<String, ChannelHandlerContext> mConnectionChannelInfoMap;
 
 	public AuctionServerDecodedBiddingHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
+			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelHandlerContext> connectionChannelInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
 			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
 			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
 		mAuctionServer = auctionServer;
 		mConnectionInfoMap = connectionInfoMap;
+		mConnectionChannelInfoMap = connectionChannelInfoMap;
 		mAuctionScheduler = auctionSchedule;
 		mControllerChannelsMap = controllerChannelsMap;
 		mBidderChannelsMap = bidderChannelsMap;

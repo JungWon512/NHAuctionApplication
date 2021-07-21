@@ -10,6 +10,7 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.controller.models.RequestLogout;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
@@ -29,14 +30,16 @@ public final class AuctionServerDecodedRequestLogoutHandler extends SimpleChanne
 	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
 	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
+	private Map<String, ChannelHandlerContext> mConnectionChannelInfoMap;
 
 	public AuctionServerDecodedRequestLogoutHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
+			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelHandlerContext> connectionChannelInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
 			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
 			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
 		mAuctionServer = auctionServer;
 		mConnectionInfoMap = connectionInfoMap;
+		mConnectionChannelInfoMap = connectionChannelInfoMap;
 		mAuctionScheduler = auctionSchedule;
 		mControllerChannelsMap = controllerChannelsMap;
 		mBidderChannelsMap = bidderChannelsMap;

@@ -15,7 +15,9 @@ import com.corundumstudio.socketio.listener.MultiTypeEventListener;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.util.concurrent.Future;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SocketIOServer extends com.corundumstudio.socketio.SocketIOServer {
 	private SocketIOHandler mSocketIOHandler;
 

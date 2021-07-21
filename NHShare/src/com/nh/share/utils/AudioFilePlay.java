@@ -1,6 +1,5 @@
 package com.nh.share.utils;
 
-import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -13,7 +12,6 @@ import com.nh.share.utils.interfaces.AudioPlayListener;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 
 public class AudioFilePlay {
     private static final Logger mLogger = LoggerFactory.getLogger(AudioFilePlay.class);

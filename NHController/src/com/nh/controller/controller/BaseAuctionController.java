@@ -28,6 +28,7 @@ import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
+import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.server.models.AuctionCheckSession;
@@ -190,6 +191,13 @@ public class BaseAuctionController implements NettyControllable {
 	public void onFavoriteEntryInfo(FavoriteEntryInfo favoriteEntryInfo) {
 		mLogger.debug("onFavoriteEntryInfo : " + favoriteEntryInfo.getEncodedMessage());
 		addLogItem(favoriteEntryInfo.getEncodedMessage());
+	}
+
+	
+	@Override
+	public void onConnectionInfo(ConnectionInfo connectionInfo) {
+		mLogger.debug("onConnectionInfo : " + connectionInfo.getEncodedMessage());
+		
 	}
 
 	@Override

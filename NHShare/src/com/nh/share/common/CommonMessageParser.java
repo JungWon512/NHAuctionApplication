@@ -27,9 +27,9 @@ public class CommonMessageParser {
 		case AuctionReponseSession.TYPE: // 접속 응답 처리
 			return new AuctionReponseSession(messages[1], messages[2], messages[3]);
 		case ConnectionInfo.TYPE: // 접속 정보 응답 처리
-			return new ConnectionInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6]);
+			return new ConnectionInfo(messages[1], messages[2], messages[3], messages[4], messages[5]);
 		case ResponseConnectionInfo.TYPE: // 접속 정보 응답 처리
-			return new ResponseConnectionInfo(messages[1], messages[2]);
+			return new ResponseConnectionInfo(messages[1], messages[2], messages[3], messages[4]);
 		case AuctionResult.TYPE: // 낙유찰 결과 전송
 			return new AuctionResult(messages);
 		case CancelBidding.TYPE: // 낙유찰 결과 전송

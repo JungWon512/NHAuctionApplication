@@ -5,6 +5,7 @@ import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
+import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
@@ -58,6 +59,8 @@ public interface NettyControllable {
 
 	public void onAuctionResult(AuctionResult auctionResult); // 경매 낙유찰 결과 전송
 
+	public void onConnectionInfo(ConnectionInfo connectionInfo); // 경매 응찰자 접속 요청 정보
+	
 	public void onResponseConnectionInfo(ResponseConnectionInfo responseConnectionInfo); // 접속 정보 인증 응답
 
 	public void onResponseCode(ResponseCode responseCode); // 응답 코드 전송

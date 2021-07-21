@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.server.models.AuctionCheckSession;
+import com.nh.share.utils.JwtCertTokenUtils;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -46,8 +47,8 @@ public final class AuctionUserDuplexHandler extends ChannelDuplexHandler {
 			// 10초(모든 접속자에 한해서 Read Time 적용)
 			if (e.state() == IdleState.READER_IDLE) {
 				if (mConnectorInfoMap.containsKey(ctx.channel().id())) {
-					mLogger.debug("Expire watch time." + "Exprie User Number : "
-							+ mConnectorInfoMap.get(ctx.channel().id()).getUserNo());
+					mLogger.debug("Expire watch time." + "Exprie User Number : " + JwtCertTokenUtils.getInstance()
+							.getUserMemNum(mConnectorInfoMap.get(ctx.channel().id()).getAuthToken()));
 				}
 				ctx.channel().close();
 			}
