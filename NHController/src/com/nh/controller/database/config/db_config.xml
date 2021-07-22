@@ -19,8 +19,8 @@
 			type="com.nh.controller.model.AuctionRound" />
 		<typeAlias alias="EntryInfo"
 			type="com.nh.share.controller.models.EntryInfo" />
-		<typeAlias alias="User"
-			type="com.nh.controller.model.User" />
+		<typeAlias alias="ConnectionInfo"
+			type="com.nh.share.common.models.ConnectionInfo" />
 	</typeAliases>
 
 	<environments default="development">
@@ -40,7 +40,7 @@
 			resource="com/nh/controller/mapper/AuctionRoundMapper.xml" />
 		<mapper resource="com/nh/controller/mapper/EntryInfoMapper.xml" />
 		<mapper
-			resource="com/nh/controller/mapper/ConnectionMapper.xml" />
+			resource="com/nh/controller/mapper/ConnectionInfoMapper.xml" />
 	</mappers>
 
 </configuration>
