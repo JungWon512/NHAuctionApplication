@@ -297,7 +297,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <TableView fx:id="mWaitTableView" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                              <TableView fx:id="mWaitTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                  </columnResizePolicy>
@@ -387,7 +387,7 @@
                   <Button fx:id="mBtnF5" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F5]보류보기" />
                   <Button fx:id="mBtnF8" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F8]환경설정" />
                   <Button fx:id="mBtnSpace" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[SPACE]-" />
-                  <ListView fx:id="logListView" HBox.hgrow="ALWAYS" />
+                  <ListView fx:id="logListView" visible="false" HBox.hgrow="ALWAYS" />
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -110,6 +110,7 @@
 	-fx-border-color: #cccccc;
 	-fx-font-size: 14px;
 	-fx-alignment: baseline-center;
+	-fx-text-fill: #111111;
 }
 
 /*세로 스크롤 - 공통
@@ -143,16 +144,15 @@
 
 /*테이블 row 선택 */
 .base-contents .table-view .table-row-cell:selected {
-	-fx-background-color: #0082e5;
+	-fx-background-color: #EFEFEF;
 	-fx-background-insets: 0;
 	-fx-background-radius: 1;
 }
 
-
-/*테이블 row 선택 텍스트 흰색 */
-.table-view .table-row-cell:selected .text {
-	-fx-text-fill: #ffffff;
-}
+/*테이블 row 선택 텍스트 흰색
+.table-row-cell:selected .text {
+	-fx-text-fill: #111111;
+}*/
 
 /* 현재 경매 진행중인 row */
 .base-contents .current-auction-row{
