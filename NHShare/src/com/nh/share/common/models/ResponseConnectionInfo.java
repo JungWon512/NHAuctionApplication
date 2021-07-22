@@ -63,4 +63,14 @@ public class ResponseConnectionInfo implements FromAuctionCommon {
 				AuctionShareSetting.DELIMITER, mResult, AuctionShareSetting.DELIMITER, mUserMemNum,
 				AuctionShareSetting.DELIMITER, mAuctionJoinNum);
 	}
+
+	@Override
+	public String toString() {
+		return "ResponseConnectionInfo{" +
+				"mAuctionHouseCode='" + mAuctionHouseCode + '\'' +
+				", mUserMemNum='" + mUserMemNum + '\'' +
+				", mResult='" + mResult + '\'' +
+				", mAuctionJoinNum='" + mAuctionJoinNum + '\'' +
+				'}';
+	}
 }

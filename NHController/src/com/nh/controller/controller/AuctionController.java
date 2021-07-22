@@ -478,7 +478,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 강제유찰
 	 * 
-	 * @param event
 	 */
 	public void onPassAuction() {
 

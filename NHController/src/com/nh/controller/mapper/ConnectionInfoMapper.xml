@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--        private String mAuctionHouseCode; // 조합구분코드-->
+<!--        private String mUserMemNum; // 거래인관리번호-->
+<!--        private String mAuthToken; // 인증토큰-->
+<!--        private String mChannel; // 접속 요청 채널-->
+<!--        private String mOS; // 사용 채널-->
+<mapper namespace="com.nh.controller.mapper.ConnectionInfoMapper">
+
+    <!--    <resultMap id="connectionInfoMap" type="Connection">-->
+    <!--        <result property="mAuctionHouseCode" column="NA_BZPLC"/>-->
+    <!--        <result property="mUserMemNum" column="TRMN_AMNNO"/>-->
+    <!--        <result property="mUserMemNum" column="AUC_OBJ_DSC"/>-->
+    <!--    </resultMap>-->
+
+    <!--  유저 유무 체크  -->
+    <select id="selectConnectionInfo" parameterType="String"
+            resultType="String">
+        SELECT A.lvst_auc_ptc_mn_no
+        FROM auction.tb_la_is_mh_auc_entr as A
+        WHERE A.na_bzplc = #{auctionHouseCode}
+          AND A.auc_dt = #{auctionDate}
+          AND A.auc_obj_dsc = #{entryType}
+          And A.lvst_auc_ptc_mn_no = #{userMemNum};
+    </select>
+
+    <insert id="insertConnectionInfo" parameterType="ConnectionInfo" useGeneratedKeys="true" keyColumn="LVST_AUC_PTC_MN_NO"
+            keyProperty="var">
+    </insert>
+
+</mapper>
