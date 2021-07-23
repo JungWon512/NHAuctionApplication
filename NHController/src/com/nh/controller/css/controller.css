@@ -10,6 +10,7 @@
 	-fx-background-color : #0a1931;
 }
 
+
 .base-contents{
 	-fx-background-color : #ffffff;
 	-fx-background-radius: 5;
@@ -157,8 +158,8 @@
 /* 현재 경매 진행중인 row */
 .base-contents .current-auction-row{
 	-fx-border-width: 4px 0px 4px 0px;
-	-fx-background-color: #ffe135;
 	-fx-border-color: #27293d;
+	-fx-background-color: #ffe135;
 	-fx-font-size: 14px;
 	-fx-font-weight: bold;
 }
@@ -184,13 +185,6 @@
 	-fx-pref-height: 0;
 	-fx-min-height: 0;
 }
-/* 현재 경매 대기중인 테이블 뷰 헤더 */
-.base-contents .to-stand-by .table-view .column-header-background {
-	-fx-max-height: 0;
-	-fx-pref-height: 0;
-	-fx-min-height: 0;
-}
-
 
 /*테이블 셀 크기 */
 .to-stand-by .table-view .table-row-cell{
@@ -230,7 +224,6 @@
 }
 
 
-
 /*테이블 응찰자 정보 */
 .base-contents .bidding-user-info{
 	-fx-background-color: transparent;
@@ -267,7 +260,7 @@
 .btn-bottom{
 	-fx-background-color: #27293d;
 	-fx-text-fill: #ffffff;
-	-fx-padding: 0px 20px 0px 20px;
+	-fx-padding: 0px 12px 0px 12px;
 }
 
 .button:pressed {

@@ -42,7 +42,7 @@ public class GlobalDefine {
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
 //		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민
 
-		public static final int AUCTION_PORT = 4001; // Server Port
+		public static final int AUCTION_PORT = 5001; // Server Port
 		
 		public static final String AUCTION_MEMBER = "C000011005"; // 테스트 회원 번호
 		

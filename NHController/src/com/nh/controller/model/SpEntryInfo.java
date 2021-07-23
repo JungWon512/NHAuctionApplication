@@ -1,5 +1,6 @@
 package com.nh.controller.model;
 
+import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.setting.AuctionShareSetting;
 import javafx.beans.property.BooleanProperty;
@@ -48,7 +49,7 @@ public class SpEntryInfo implements FromAuctionController {
 
 	private StringProperty successPrice; // 낙찰금액
 	private StringProperty successfulBidder; // 낙찰자
-	private StringProperty BiddingResult; // 낙찰결과
+	private StringProperty biddingResultCode; // 낙찰결과 코드
 	private BooleanProperty isPending; // 보류
 
 	public SpEntryInfo() {
@@ -58,7 +59,7 @@ public class SpEntryInfo implements FromAuctionController {
 			String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday, String kpn,
 			String gender, String motherTypeCode, String motherObjNum, String matime, String pasgQcn,
 			String objIdNum, String objRegNum, String objRegTypeNum, String isNew, String weight, String initPrice,
-			String lowPrice, String note, String isLastEntry) {
+			String lowPrice, String note, String isLastEntry,String biddingResultCode) {
 		this.mAuctionHouseCode = new SimpleStringProperty(auctionHouseCode);
 		this.mEntryNum = new SimpleStringProperty(entryNum);
 		this.mEntryType = new SimpleStringProperty(entryType);
@@ -84,6 +85,7 @@ public class SpEntryInfo implements FromAuctionController {
 		this.mLowPrice = new SimpleStringProperty(Integer.toString((int)Double.parseDouble(lowPrice)));
 		this.mNote = new SimpleStringProperty(note);
 		this.mIsLastEntry = new SimpleStringProperty(isLastEntry);
+		this.biddingResultCode = new SimpleStringProperty(biddingResultCode);
 	}
 
 	public StringProperty getAuctionHouseCode() {
@@ -265,6 +267,17 @@ public class SpEntryInfo implements FromAuctionController {
 	public StringProperty getLowPrice() {
 		return mLowPrice;
 	}
+	
+	public int getLowPriceInt() {
+		
+		int lowPrice = 0;
+		
+		if(getLowPrice() != null) {
+			lowPrice =  Integer.parseInt(getLowPrice().getValue());
+		}
+		
+		return lowPrice;
+	}
 
 	public void setLowPrice(StringProperty mLowPrice) {
 		this.mLowPrice = mLowPrice;
@@ -295,11 +308,33 @@ public class SpEntryInfo implements FromAuctionController {
 	}
 
 	public StringProperty getBiddingResult() {
-		return BiddingResult;
+	
+		SimpleStringProperty resultStr = new SimpleStringProperty();
+
+		if(biddingResultCode != null) {
+
+			String code = biddingResultCode.getValue();
+			
+			if(code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_READY)) {
+				resultStr.setValue("대기");
+			}else 	if(code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
+				resultStr.setValue("낙찰");
+			}else 	if(code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL)) {
+				resultStr.setValue("유찰");
+			}else 	if(code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+				resultStr.setValue("보류");
+			}
+		}
+
+		return resultStr;
+	}
+	
+	public StringProperty getBiddingResultCode() {
+		return biddingResultCode;
 	}
 
-	public void setBiddingResult(StringProperty biddingResult) {
-		BiddingResult = biddingResult;
+	public void setBiddingResultCode(StringProperty brc) {
+		biddingResultCode = brc;
 	}
 
 	public BooleanProperty getIsPending() {

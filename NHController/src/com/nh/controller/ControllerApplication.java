@@ -4,6 +4,7 @@ import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.utils.MoveStageUtil;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,13 +52,18 @@ public class ControllerApplication extends Application {
 		try {
 			// 네티 종료
 			if (AuctionDelegate.getInstance().isActive()) {
-
-				AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
-					@Override
-					public void onShutDown(int port) {
-						mLogger.debug("[ShutdownHookThread AuctionApplication]");
-					}
+				
+				Platform.runLater(() -> {
+					
+					AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+						@Override
+						public void onShutDown(int port) {
+							mLogger.debug("[ShutdownHookThread AuctionApplication]");
+						}
+					});
+					
 				});
+
 			}
 			
 		} catch (Exception e) {

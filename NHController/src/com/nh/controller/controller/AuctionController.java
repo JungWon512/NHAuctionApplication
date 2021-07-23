@@ -15,6 +15,7 @@ import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.service.AuctionRoundMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
+import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.share.code.GlobalDefineCode;
@@ -90,7 +91,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private TableColumn<SpBidding, String> mBiddingPriceColumn, mBiddingUserColumn;
 
 	@FXML // 하단 버튼
-	private Button mBtnF1, mBtnEsc, mBtnF3, mBtnF4, mBtnF5, mBtnF8, mBtnEnter, mBtnSpace, mBtnConnection;
+	private Button mBtnEsc, mBtnF1, mBtnF3, mBtnF4, mBtnF5, mBtnF6, mBtnF7, mBtnF8, mBtnEnter, mBtnUpPrice, mBtnDownPrice;
 
 	@FXML // 경매 정보
 	private Label mAuctionInfoDateLabel, mAuctionInfoRoundLabel, mAuctionInfoGubunLabel, mAuctionInfoNameLabel;
@@ -167,11 +168,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		cntList.add(cnt_4);
 		cntList.add(cnt_5);
 
+		mBtnEsc.setOnMouseClicked(event -> onCloseApplication());
+		mBtnF1.setOnMouseClicked(event -> onSendEntryData());
+		mBtnF3.setOnMouseClicked(event -> onPending());
+		mBtnF4.setOnMouseClicked(event -> openEntryListPopUp());
+		mBtnF5.setOnMouseClicked(event -> openEntryPendingListPopUp());
 		mBtnEnter.setOnMouseClicked(event -> onStartAuction(event));
-		mBtnEsc.setOnMouseClicked(event -> onPassAuction(event));
-		mBtnF1.setOnMouseClicked(event -> onSendEntryData(event));
+		mBtnF7.setOnMouseClicked(event -> onPassAuction(event));
+
 		mImgMessage.setOnMouseClicked(event -> openSendMessage(event));
 		mWaitTableView.setOnMouseClicked(event -> onClickWaitTableView(event));
+
+		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
+		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 
 	}
 
@@ -303,9 +312,25 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					public void handle(ActionEvent event) {
 
 						selecIndextWaitTable(0);
+						
 
-//						mWaitTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldItem, newItem) -> { 선택 콜백 리스너 필요시 주석 해제
-//						});
+						mWaitTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldItem, newItem) -> {
+
+							if (newItem != null) {
+
+								SpEntryInfo oldSpEntryInfo = oldItem;
+								SpEntryInfo newSpEntryInfo = newItem;
+
+								if (newSpEntryInfo.getEntryNum() == null) {
+									if (oldSpEntryInfo.getEntryNum() != null) {
+										mWaitTableView.getSelectionModel().clearSelection();
+										mWaitTableView.getSelectionModel().select(oldSpEntryInfo);
+									}
+								}
+
+							}
+
+						});
 //						mWaitTableView.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> { 선택 콜백 인덱스	 필요시 주석 해제
 //						});
 					}
@@ -313,6 +338,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				pauseTransition.play();
 			}
 		}
+
+	}
+
+	/**
+	 * 대기중인 출품 목록 갱신
+	 */
+	private void refreshWaitTableView() {
+		mWaitTableView.refresh();
 	}
 
 	/**
@@ -352,10 +385,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 *
 	 * @param event
 	 */
-	public void onSendEntryData(MouseEvent event) {
-		onSendEntryData();
-	}
-
 	public void onSendEntryData() {
 
 		/**
@@ -397,6 +426,49 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			addLogItem(mResMsg.getString("msg.need.connection"));
 			CommonUtils.getInstance().dismissLoadingDialog();
 		}
+	}
+
+	/**
+	 * 보류 처리
+	 */
+	public void onPending() {
+		Platform.runLater(() -> {
+			SpEntryInfo spEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
+
+			if (!spEntryInfo.getBiddingResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+				// 보류처리
+				spEntryInfo.setBiddingResultCode(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING));
+
+				setCurrentEntryInfo();
+				mWaitTableView.refresh();
+			}
+		});
+	}
+
+	/**
+	 * 전체 보기
+	 */
+	public void openEntryListPopUp() {
+
+		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoDataList();
+
+		MoveStageUtil.getInstance().openEntryListPopUp(mStage, dataList);
+	}
+
+	public void openEntryPendingListPopUp() {
+
+		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoPendingDataList();
+
+		MoveStageUtil.getInstance().openEntryPendingListPopUp(mStage, dataList);
+	}
+
+	/**
+	 * 프로그램 종료
+	 */
+	public void onCloseApplication() {
+		addLogItem("종료");
+		Platform.exit();
+		System.exit(0);
 	}
 
 	public void onStartAuction(MouseEvent event) {
@@ -457,7 +529,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
-			mBtnEsc.setDisable(true);
+			mBtnF7.setDisable(true);
 			addLogItem(mResMsg.getString("msg.auction.send.complete") + AuctionDelegate.getInstance().onPauseAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
 			break;
 		}
@@ -483,7 +555,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 			mIsPass = true;
-			mBtnEsc.setDisable(true);
+			mBtnF7.setDisable(true);
 			mBtnEnter.setDisable(true);
 			addLogItem(mResMsg.getString("msg.auction.send.pass") + AuctionDelegate.getInstance().onPassAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
 			break;
@@ -545,8 +617,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mEntryRepositoryMap = entryInfoDataList.stream().collect(LinkedHashMap::new,
 				(map, item) -> map.put(item.getEntryNum(),
 						new SpEntryInfo(item.getAuctionHouseCode(), item.getEntryNum(), item.getEntryType(), item.getIndNum(), item.getIndMngCd(), item.getFhsNum(), item.getFarmMngNum(), item.getExhibitor(), item.getBrandName(), item.getBirthday(), item.getKpn(), item.getGender(),
-								item.getMotherTypeCode(), item.getMotherObjNum(), item.getMatime(), item.getPasgQcn(), item.getObjIdNum(), item.getObjRegNum(), item.getObjRegTypeNum(), item.getIsNew(), item.getWeight(), item.getInitPrice(), item.getLowPrice(), item.getNote(),
-								item.getIsLastEntry())),
+								item.getMotherTypeCode(), item.getMotherObjNum(), item.getMatime(), item.getPasgQcn(), item.getObjIdNum(), item.getObjRegNum(), item.getObjRegTypeNum(), item.getIsNew(), item.getWeight(), item.getInitPrice(), item.getLowPrice(), item.getNote(), item.getIsLastEntry(),
+								GlobalDefineCode.AUCTION_RESULT_CODE_READY)),
 				Map::putAll);
 
 //		for (Entry<String, SpEntryInfo> spEntryInfo : mEntryRepositoryMap.entrySet()) {
@@ -554,6 +626,42 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //		}
 
 		initWaitEntryDataList(mEntryRepositoryMap);
+	}
+
+	/**
+	 * 예정가 높이기
+	 * 
+	 * @param event
+	 */
+	public void onUpPrice(MouseEvent event) {
+		System.out.println("예정가 높이기");
+		int upPrice = SettingApplication.getInstance().getInfo().getCowUpperLimitPrice();
+		setLowPrice(upPrice);
+	}
+
+	/**
+	 * 예정가 낮추기
+	 * 
+	 * @param event
+	 */
+	public void onDownPrice(MouseEvent event) {
+		System.out.println("예정가 낮추기");
+		int lowPrice = SettingApplication.getInstance().getInfo().getCowLowerLimitPrice() * -1;
+		setLowPrice(lowPrice);
+	}
+
+	/**
+	 * 예정가 Set
+	 * 
+	 * @param price
+	 */
+	private void setLowPrice(int price) {
+		Platform.runLater(() -> {
+			SpEntryInfo spEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
+			spEntryInfo.getLowPrice().setValue(Integer.toString(mCurrentSpEntryInfo.getLowPriceInt() + price));
+			setCurrentEntryInfo();
+//			mCurrentSpEntryInfo.getLowPrice().setValue(Integer.toString(mCurrentSpEntryInfo.getLowPriceInt() + price));
+		});
 	}
 
 	// 2000 : 인증 성공
@@ -645,7 +753,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// ready -> 출품 정보 보내기 버튼 비활성화
 				mBtnF1.setDisable(true);
 				mBtnEnter.setDisable(false);
-				mBtnEsc.setDisable(true);
+				mBtnF7.setDisable(true);
 
 				initBiddingInfoDataList();
 
@@ -659,7 +767,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnEnter.setText(mResMsg.getString("str.btn.stop"));
 				CommonUtils.getInstance().addStyleClass(mBtnEnter, "btn-auction-stop");
 				mBtnEnter.setDisable(false);
-				mBtnEsc.setDisable(false);
+				mBtnF7.setDisable(false);
 				// 경매 상태
 				updateAuctionStateInfo(code, false, null);
 				break;
@@ -730,11 +838,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					mAuctionStateFailLabel.setDisable(true);
 					mCurrentSpEntryInfo.setSuccessfulBidder(new SimpleStringProperty(bidder.getUserNo().getValue()));
 					mCurrentSpEntryInfo.setSuccessPrice(new SimpleStringProperty(bidder.getPrice().getValue()));
-					mCurrentSpEntryInfo.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.success")));
+					mCurrentSpEntryInfo.setBiddingResultCode(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS));
 				} else {
 					mAuctionStateSuccessLabel.setDisable(true);
 					mAuctionStateFailLabel.setDisable(false);
-					mCurrentSpEntryInfo.setBiddingResult(new SimpleStringProperty(mResMsg.getString("str.auction.state.fail")));
+					mCurrentSpEntryInfo.setBiddingResultCode(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL));
 				}
 
 				addFinishedTableViewItem(mCurrentSpEntryInfo);
@@ -784,9 +892,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(currentEntryInfo.getEntryNum().getValue())) {
-			return;
-		}
+//		if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(currentEntryInfo.getEntryNum().getValue())) {
+//			return;
+//		}
 
 		Platform.runLater(() -> {
 
@@ -802,11 +910,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mCurLowPriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getLowPrice().getValue())));
 			mCurSuccessPriceLabel.setText("");
 			mCurSuccessfulBidderLabel.setText("");
-			mCurResultLabel.setText("");
+			mCurResultLabel.setText(mCurrentSpEntryInfo.getBiddingResult().getValue());
 			mCurNoteLabel.setText(mCurrentSpEntryInfo.getNote().getValue());
 
 			System.out.println("현재 준비 소 : " + mCurrentSpEntryInfo.getEntryNum().getValue());
-
 		});
 	}
 
@@ -878,24 +985,50 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				public void handle(KeyEvent ke) {
 
-					if (ke.getCode() == KeyCode.F1) {
-						System.out.println("Key Pressed: " + ke.getCode());
-						onSendEntryData();
+					// 종료
+					if (ke.getCode() == KeyCode.ESCAPE) {
+						onCloseApplication();
 						ke.consume(); // 다음 노드로 이벤트를 전달하지 않는다.
 					}
 
-					if (ke.getCode() == KeyCode.ESCAPE) {
-						onPassAuction();
-						System.out.println("Key Pressed: " + ke.getCode());
+					// 출품정보 전송
+					if (ke.getCode() == KeyCode.F1) {
+						onSendEntryData();
 						ke.consume();
 					}
 
-					if (ke.getCode() == KeyCode.SPACE) {
-						System.out.println("눌림 KeyCode.SPACE");
+					// 보류
+					if (ke.getCode() == KeyCode.F3) {
+						onPending();
 						ke.consume();
 					}
+
+					// 전체보기
+					if (ke.getCode() == KeyCode.F4) {
+						openEntryListPopUp();
+						ke.consume();
+					}
+					// 보류보기
+					if (ke.getCode() == KeyCode.F5) {
+						openEntryPendingListPopUp();
+						ke.consume();
+					}
+					// 환경설정
+					if (ke.getCode() == KeyCode.F8) {
+						// 환경설정
+						MoveStageUtil.getInstance().openSettingDialog(mStage);
+						ke.consume();
+					}
+
+					// 강제유찰?
+					if (ke.getCode() == KeyCode.F7) {
+						onPassAuction();
+						ke.consume();
+					}
+
+					// 경매 시작
 					if (ke.getCode() == KeyCode.ENTER) {
-						System.out.println("눌림 KeyCode.Enter\t" + mAuctionStatus.getState());
+						System.out.println("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
 
 						if (mBtnEnter.isDisable()) {
 							return;
@@ -914,10 +1047,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						ke.consume();
 					}
 
+					// 대기중인 목록 위로 이동
 					if (ke.getCode() == KeyCode.UP) {
-						selecIndextWaitTable(-1);
+
+						if (mWaitTableView.getSelectionModel().getSelectedIndex() > mRecordCount) {
+							mWaitTableView.getSelectionModel().select(mRecordCount - 2);
+							mWaitTableView.scrollTo(mRecordCount - 1);
+							setCurrentEntryInfo();
+						} else {
+							selecIndextWaitTable(-1);
+						}
+
 						ke.consume();
 					}
+					// 대기중인 목록 아래로 이동
 					if (ke.getCode() == KeyCode.DOWN) {
 						selecIndextWaitTable(1);
 						ke.consume();
@@ -951,7 +1094,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					int selectIndex = currentSelectedIndex + index;
 
-					System.out.println("size : " + mWaitEntryInfoDataList.size() + " / selectIndex : " + selectIndex);
 					if (mRecordCount > selectIndex) {
 						mWaitTableView.getSelectionModel().select(selectIndex);
 						mWaitTableView.scrollTo(mWaitTableView.getSelectionModel().getSelectedIndex() + 1);
@@ -964,17 +1106,44 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		});
 	}
 
-	public ScrollBar getVerticalScrollbar(TableView<?> table) {
-		ScrollBar result = null;
-		for (Node n : table.lookupAll(".scroll-bar")) {
-			if (n instanceof ScrollBar) {
-				ScrollBar bar = (ScrollBar) n;
-				if (bar.getOrientation().equals(Orientation.VERTICAL)) {
-					result = bar;
+	/**
+	 * 전체 출품 정보 조회 EntryNum 없는 dummy row 제외
+	 * 
+	 * @return
+	 */
+	public ObservableList<SpEntryInfo> getWaitEntryInfoDataList() {
+
+		ObservableList<SpEntryInfo> dataList = FXCollections.observableArrayList();
+
+		for (SpEntryInfo spEntryInfo : mWaitEntryInfoDataList) {
+			if (spEntryInfo.getEntryNum() != null) {
+				dataList.add(spEntryInfo);
+			}
+		}
+
+		return dataList;
+	}
+
+	/**
+	 * 전체 출품 정보 조회 EntryNum 없는 dummy row 제외
+	 * 
+	 * @return
+	 */
+	public ObservableList<SpEntryInfo> getWaitEntryInfoPendingDataList() {
+
+		ObservableList<SpEntryInfo> dataList = FXCollections.observableArrayList();
+
+		for (SpEntryInfo spEntryInfo : mWaitEntryInfoDataList) {
+
+			if (spEntryInfo.getEntryNum() != null && spEntryInfo.getBiddingResultCode() != null) {
+
+				if (spEntryInfo.getBiddingResultCode().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+					dataList.add(spEntryInfo);
 				}
 			}
 		}
-		return result;
+
+		return dataList;
 	}
 
 }

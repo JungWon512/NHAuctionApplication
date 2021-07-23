@@ -1,21 +1,30 @@
 package com.nh.controller.utils;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import com.nh.controller.ControllerApplication;
 import com.nh.controller.controller.AuctionController;
 import com.nh.controller.controller.AuctionMessageController;
+import com.nh.controller.controller.EntryListController;
+import com.nh.controller.controller.EntryPendingListController;
 import com.nh.controller.controller.LoginController;
+import com.nh.controller.controller.SettingController;
 import com.nh.controller.interfaces.StringListener;
+import com.nh.controller.model.SpEntryInfo;
+
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-import java.net.URL;
-import java.util.ResourceBundle;
+import javafx.stage.Window;
 
 /**
  * Stage 이동 처리 Class
@@ -37,7 +46,7 @@ public class MoveStageUtil {
 	}
 
 	/**
-	 * 로그인 
+	 * 로그인
 	 * 
 	 * @param stage
 	 */
@@ -55,7 +64,6 @@ public class MoveStageUtil {
 			stage.show();
 			// show 후에 ..
 			controller.initConfiguration();
-			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,14 +75,14 @@ public class MoveStageUtil {
 	 * 
 	 * @param stage
 	 */
-	public synchronized void onConnectServer(Stage loginStage,String ip, int port , String id) {
+	public synchronized void onConnectServer(Stage loginStage, String ip, int port, String id) {
 
 		try {
 
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("AuctionControllerView.fxml"), getResourceBundle());
 			fxmlLoader.load();
 			AuctionController controller = fxmlLoader.getController();
-			controller.onConnectServer(loginStage, fxmlLoader,ip,port,id);
+			controller.onConnectServer(loginStage, fxmlLoader, ip, port, id);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,7 +96,7 @@ public class MoveStageUtil {
 	 * @param stage
 	 */
 	public synchronized void moveAuctionStage(Stage loginStage, FXMLLoader fxmlLoader) {
-		
+
 		try {
 
 			loginStage.close();
@@ -106,6 +114,165 @@ public class MoveStageUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	/**
+	 * @Description 환경설정 Dialog
+	 */
+	public void openSettingDialog(Stage stage) {
+
+		try {
+
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("SettingView.fxml"), getResourceBundle());
+
+			Parent parent = fxmlLoader.load();
+
+			SettingController controller = fxmlLoader.getController();
+
+			controller.setStage(stage);
+
+			openDialog(stage, parent);
+
+			controller.initConfiguration();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @Description 전체보기 Dialog
+	 */
+	public void openEntryListDialog(Stage stage) {
+
+		try {
+
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
+
+			Parent parent = fxmlLoader.load();
+
+			EntryListController controller = fxmlLoader.getController();
+
+			controller.setStage(stage);
+
+			openDialog(stage, parent);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 출품 리스트
+	 * 
+	 * @param stage
+	 */
+	public synchronized void openEntryListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList) {
+
+		try {
+
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
+
+			Parent parent = fxmlLoader.load();
+
+			Stage newStage = new Stage();
+
+			EntryListController controller = fxmlLoader.getController();
+			controller.setEntryDataList(dataList);
+			controller.setStage(newStage);
+
+			Scene scene = new Scene(parent);
+			newStage.setScene(scene);
+			newStage.show();
+
+			// show 후에 ..
+			controller.initConfiguration();
+			// disable and dim
+			setStageDisable(stage, newStage);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 보류 리스트
+	 * 
+	 * @param stage
+	 */
+	public synchronized void openEntryPendingListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList) {
+
+		try {
+
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryPendingListView.fxml"), getResourceBundle());
+
+			Parent parent = fxmlLoader.load();
+
+			Stage newStage = new Stage();
+
+			EntryPendingListController controller = fxmlLoader.getController();
+			controller.setEntryDataList(dataList);
+			controller.setStage(newStage);
+
+			Scene scene = new Scene(parent);
+			newStage.setScene(scene);
+			newStage.show();
+
+			// show 후에 ..
+			controller.initConfiguration();
+			// disable and dim
+			setStageDisable(stage, newStage);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Open Dialog 전체보기,보류보기,환경설정
+	 * 
+	 * @param stage
+	 */
+	public void openDialog(Stage stage, Parent parent) {
+
+		Dialog<Void> dialog = new Dialog<>();
+		DialogPane dialogPane = new DialogPane();
+		dialogPane.getStylesheets().add(getApplicationClass().getResource("css/application.css").toExternalForm());
+//		dialog.initStyle(StageStyle.UNDECORATED);
+		dialog.setDialogPane(dialogPane);
+
+		dialogPane.setContent(parent);
+		dialog.initOwner(stage);
+
+		stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
+
+		Window window = dialog.getDialogPane().getScene().getWindow();
+		window.setOnCloseRequest(e -> {
+			dialog.close();
+			stage.getScene().getRoot().setEffect(null); // 뒷 배경 블러처리 remove
+		});
+
+		dialog.show();
+
+	}
+
+	/**
+	 * 이전 Stage Disable, Blower 처리 신규 Stage 닫기 처리
+	 * 
+	 * @param backStage
+	 * @param newStage
+	 */
+	private void setStageDisable(Stage backStage, Stage newStage) {
+
+		backStage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
+		backStage.getScene().getRoot().setDisable(true);
+
+		Window window = newStage.getScene().getWindow();
+		window.setOnCloseRequest(e -> {
+			backStage.getScene().getRoot().setEffect(null); // 뒷 배경 블러처리 remove
+			backStage.getScene().getRoot().setDisable(false);
+		});
 
 	}
 
