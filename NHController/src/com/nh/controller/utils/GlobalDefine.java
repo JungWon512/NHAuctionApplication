@@ -2,42 +2,41 @@ package com.nh.controller.utils;
 
 /**
  * 공통 Define
- * 
- * @author jhlee
  *
+ * @author jhlee
  */
 public class GlobalDefine {
 
-	/**
-	 * 어플리케이션 정보
-	 */
-	public static final class APPLICATION_INFO {
+    /**
+     * 어플리케이션 정보
+     */
+    public static final class APPLICATION_INFO {
 
-		public static final String RELEASE_VERION = "V1.0.7"; // application 버전
+        public static final String RELEASE_VERION = "V1.0.7"; // application 버전
 
-		public static final String RELEASE_DATE = "20201129"; // 업데이트 날짜
+        public static final String RELEASE_DATE = "20201129"; // 업데이트 날짜
 
-	}
+    }
 
-	/**
-	 * 네티 정보
-	 */
-	public static final class NETTY_INFO {
+    /**
+     * 네티 정보
+     */
+    public static final class NETTY_INFO {
 
-		public static final char DELIMITER = '|'; // 소켓 통신 메시지 구분자
+        public static final char DELIMITER = '|'; // 소켓 통신 메시지 구분자
 
-		public static final String DELIMITER_REGEX = "\\|"; // 소켓 통신 메시지를 split할 때 사용할 구분자의 정규표현식
+        public static final String DELIMITER_REGEX = "\\|"; // 소켓 통신 메시지를 split할 때 사용할 구분자의 정규표현식
 
-		public static final int NETTY_MAX_FRAME_LENGTH = 1024; // 네티 패킷 사이즈
+        public static final int NETTY_MAX_FRAME_LENGTH = 1024; // 네티 패킷 사이즈
 
-	}
+    }
 
-	/**
-	 * 경매 관련 정보
-	 */
-	public static final class AUCTION_INFO {
+    /**
+     * 경매 관련 정보
+     */
+    public static final class AUCTION_INFO {
 
-		public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
+        public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
 //		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민

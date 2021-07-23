@@ -20,8 +20,38 @@
           And A.trmn_amnno = #{userMemNum};
     </select>
 
-    <insert id="insertConnectionInfo" parameterType="linkedHashMap" useGeneratedKeys="true" keyColumn="LVST_AUC_PTC_MN_NO"
-            keyProperty="var">
-    </insert>
+    <!--   시퀀스 아이디 생성  -->
+    <select id="selectSequenceId" resultType="int">
+        select max(cast(lvst_auc_ptc_mn_no as unsigned))
+        from auction.tb_la_is_mh_auc_entr;
+    </select>
 
+    <!--    유저 정보 insert -->
+    <insert id="insertConnectionInfo" parameterType="list">
+        INSERT INTO auction.tb_la_is_mh_auc_entr(
+        NA_BZPLC,
+        AUC_DT,
+        AUC_OBJ_DSC,
+        LVST_AUC_PTC_MN_NO,
+        TRMN_AMNNO,
+        TR_DFN_YN,
+        AUC_ENTR_GRN_AM,
+        RTRN_YN,
+        TMS_YN,
+        DEL_YN,
+        FSRG_DTM,
+        FSRGMN_ENO
+        )
+        VALUES
+        <foreach collection="list" item="UserInfo" separator=",">
+            (#{UserInfo.naBzplc},
+            #{UserInfo.aucDt},
+            #{UserInfo.aucObjDsc},
+            #{UserInfo.lvstAucPtcMnNo},
+            #{UserInfo.trmnAmnno},
+            0, 0, 0, 1, 0,
+            #{UserInfo.fsrgDtm},
+            #{UserInfo.fsrgmnEno})
+        </foreach>
+    </insert>
 </mapper>

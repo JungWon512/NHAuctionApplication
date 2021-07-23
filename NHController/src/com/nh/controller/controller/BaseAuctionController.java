@@ -4,13 +4,14 @@ import com.nh.common.interfaces.NettyControllable;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
+import com.nh.controller.model.UserInfo;
 import com.nh.controller.netty.AuctionDelegate;
-import com.nh.controller.service.ConnectionInfoInfoMapperService;
+import com.nh.controller.service.ConnectionInfoMapperService;
 import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.*;
-import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.server.models.*;
 import io.netty.channel.Channel;
@@ -31,6 +32,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class BaseAuctionController implements NettyControllable {
@@ -59,7 +62,6 @@ public class BaseAuctionController implements NettyControllable {
     protected List<SpBidding> mBeForeBidderDataList = null; // 이전 응찰한 응찰자 정보 수집 List
 
     protected boolean mIsPass = false;
-
 
     public BaseAuctionController() {
         init();
@@ -180,20 +182,35 @@ public class BaseAuctionController implements NettyControllable {
     @Override
     public void onConnectionInfo(ConnectionInfo connectionInfo) {
         mLogger.debug("onConnectionInfo : " + connectionInfo.getEncodedMessage());
-
-        ConnectionInfoInfoMapperService service = new ConnectionInfoInfoMapperService();
-        String userNum = service.selectUserInfo(connectionInfo.getAuctionHouseCode(), "20210702", "3", connectionInfo.getUserMemNum());
+        String auctionHouseCode = connectionInfo.getAuctionHouseCode();
+        String userMemNum = connectionInfo.getUserMemNum();
+        String userNum;
+        // 접속자 정보
+        ConnectionInfoMapperService service = new ConnectionInfoMapperService();
+//          userNum = service.selectConnectionInfo(
+//                auctionHouseCode,
+//                CommonUtils.getInstance().getCurrentTime("yyyyMMdd"),
+//                String.valueOf(auctionRound.getAucObjDsc()),
+//                userMemNum
+//        ); // 실세사용
+        userNum = service.selectConnectionInfo(auctionHouseCode, "20210702", "3", userMemNum); // 테스트
         mLogger.debug("onConnectionInfo - userNum :\t" + userNum);
 
-        if (userNum != null && !userNum.isEmpty()) {
-//            connect success
-            mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(
-                    new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(), "2000", connectionInfo.getUserMemNum(), userNum))); // TEST
-        } else {
-//            no user selected
-//            insert DB
-            mLogger.debug("userNum 없음!");
+        if (userNum == null || userNum.isEmpty()) {
+//          no user selected => insert DB
+            mLogger.debug("no user selected.");
+
+            List<UserInfo> userInfo = service.convertConnectionInfo(connectionInfo);
+            service.insertConnectionInfo(userInfo);
+            userNum = service.getUserNum();
         }
+
+        // 서버 전송
+        mLogger.debug(AuctionDelegate.getInstance()
+                .onSendConnectionInfo(
+                        new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_SUCCESS, userMemNum, userNum)
+                )
+        );
     }
 
     @Override

@@ -47,9 +47,12 @@ public class AuctionDelegate {
      */
     public String onSendConnectionInfo() {
 
-        NettySendable nettySendable = new ConnectionInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, "admin", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWN0aW9uSG91c2VDb2RlIjoiODgwODk5MDY1NjY1NiIsInVzZXJSb2xlIjoiQURNSU4iLCJ1c2VyTWVtTnVtIjoiYWRtaW4iLCJleHAiOjE2MjY5NjU5OTl9.r8nvpk98OfPiAKN4tFfmzYSouYGntwkSbkwJg8JT0qXRrP6mGi88cac3oAyvVK5nJVeVSFBgrXUx5PnIFygiwg",
-                GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER, GlobalDefineCode.USE_CHANNEL_MANAGE);
-
+        NettySendable nettySendable = new ConnectionInfo(
+                GlobalDefineCode.AUCTION_HOUSE_HWADONG,
+                "admin",
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWN0aW9uSG91c2VDb2RlIjoiODgwODk5MDY1NjY1NiIsInVzZXJSb2xlIjoiQURNSU4iLCJ1c2VyTWVtTnVtIjoiYWRtaW4iLCJleHAiOjE2MjY5NjU5OTl9.r8nvpk98OfPiAKN4tFfmzYSouYGntwkSbkwJg8JT0qXRrP6mGi88cac3oAyvVK5nJVeVSFBgrXUx5PnIFygiwg",
+                GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER,
+                GlobalDefineCode.USE_CHANNEL_MANAGE);
         return sendMessage(nettySendable);
     }
 
@@ -60,7 +63,6 @@ public class AuctionDelegate {
     public String onSendConnectionInfo(NettySendable nettySendable) {
         return sendMessage(nettySendable);
     }
-
 
     /**
      * @return

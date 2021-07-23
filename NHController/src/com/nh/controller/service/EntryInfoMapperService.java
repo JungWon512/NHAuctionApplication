@@ -6,7 +6,6 @@ import com.nh.controller.mapper.EntryInfoMapper;
 import com.nh.share.controller.models.EntryInfo;
 import org.apache.ibatis.session.SqlSession;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,18 +25,15 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
     public List<EntryInfo> getAllEntryData(String date,
                                            String auctionHouseCode,
                                            String entryType) {
-        SqlSession session = DBSessionFactory.getSession();
 
         Map<String, String> map = new LinkedHashMap<>();
         map.put("auctionDate", date);
         map.put("auctionHouseCode", auctionHouseCode);
         map.put("entryType", entryType);
 
-        List<EntryInfo> list = new ArrayList<>();
-        try {
+        List<EntryInfo> list;
+        try (SqlSession session = DBSessionFactory.getSession()) {
             list = dao.selectAllEntryInfo(map, session);
-        } finally {
-            session.close();
         }
 
         if (!list.isEmpty()) {
@@ -47,7 +43,6 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
                 list.get(i).setIsLastEntry(flag);
             }
         }
-
         return list;
     }
 }
