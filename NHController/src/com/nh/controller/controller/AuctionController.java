@@ -175,6 +175,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnF5.setOnMouseClicked(event -> openEntryPendingListPopUp());
 		mBtnEnter.setOnMouseClicked(event -> onStartAuction(event));
 		mBtnF7.setOnMouseClicked(event -> onPassAuction(event));
+		mBtnF8.setOnMouseClicked(event -> openSettingDialog());
 
 		mImgMessage.setOnMouseClicked(event -> openSendMessage(event));
 		mWaitTableView.setOnMouseClicked(event -> onClickWaitTableView(event));
@@ -455,11 +456,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		MoveStageUtil.getInstance().openEntryListPopUp(mStage, dataList);
 	}
 
+	/**
+	 * 보류 목록 보기
+	 */
 	public void openEntryPendingListPopUp() {
 
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoPendingDataList();
 
 		MoveStageUtil.getInstance().openEntryPendingListPopUp(mStage, dataList);
+	}
+	
+	
+	/**
+	 * 환경 설정
+	 */
+	public void openSettingDialog() {
+
+		MoveStageUtil.getInstance().openSettingDialog(mStage);
 	}
 
 	/**
@@ -1013,16 +1026,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						openEntryPendingListPopUp();
 						ke.consume();
 					}
-					// 환경설정
-					if (ke.getCode() == KeyCode.F8) {
-						// 환경설정
-						MoveStageUtil.getInstance().openSettingDialog(mStage);
-						ke.consume();
-					}
+					
 
 					// 강제유찰?
 					if (ke.getCode() == KeyCode.F7) {
 						onPassAuction();
+						ke.consume();
+					}
+					
+					// 환경설정
+					if (ke.getCode() == KeyCode.F8) {
+						// 환경설정
+						openSettingDialog();
 						ke.consume();
 					}
 
