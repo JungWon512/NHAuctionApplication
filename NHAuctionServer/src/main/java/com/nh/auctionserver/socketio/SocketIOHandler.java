@@ -151,63 +151,101 @@ public class SocketIOHandler {
 		if (connectionInfo != null) {
 			if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
 				if (mWatchChannelClientMap.containsKey(connectionInfo.getAuctionHouseCode())) {
-					// 중복 접속 불가
-					if (!mWatchChannelClientMap.get(connectionInfo.getAuctionHouseCode())
-							.containsKey(client.getSessionId())) {
-						mWatchChannelClientMap.get(connectionInfo.getAuctionHouseCode()).put(client.getSessionId(),
-								client);
+					log.info("Web socket session ID : " + client.getSessionId());
+					mWatchChannelClientMap.get(connectionInfo.getAuctionHouseCode()).put(client.getSessionId(), client);
 
-						log.info("Request Connect client namespace : " + client.getNamespace().getName());
-						log.info("Request Connect client room : "
-								+ client.getHandshakeData().getSingleUrlParam("auctionHouseCode"));
+					log.info("Request Connect client namespace : " + client.getNamespace().getName());
+					log.info("Request Connect client room : "
+							+ client.getHandshakeData().getSingleUrlParam("auctionHouseCode"));
 
-						String auctionHouseCode = client.getHandshakeData().getSingleUrlParam("auctionHouseCode");
+					String auctionHouseCode = client.getHandshakeData().getSingleUrlParam("auctionHouseCode");
 
-						if (auctionHouseCode != null && !auctionHouseCode.isEmpty()) {
-							client.joinRoom(auctionHouseCode);
+					if (auctionHouseCode != null && !auctionHouseCode.isEmpty()) {
+						client.joinRoom(auctionHouseCode);
 
-							log.info("Client Join Room Completed : " + auctionHouseCode + " / "
-									+ mSocketIOServer.getRoomOperations(auctionHouseCode).getClients().size());
+						log.info("Client Join Room Completed : " + auctionHouseCode + " / "
+								+ mSocketIOServer.getRoomOperations(auctionHouseCode).getClients().size());
 
-							client.sendEvent("ResponseConnectionInfo",
-									new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-											GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
-
-							// 현재 출품 정보 전송
-							if (mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
-									.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
-								client.sendEvent("ResponseCode",
-										new ResponseCode(connectionInfo.getAuctionHouseCode(),
-												GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO)
-														.getEncodedMessage());
-							} else {
-								if (mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
-									client.sendEvent("CurrentEntryInfo",
-											new CurrentEntryInfo(
-													mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
-															.getCurrentEntryInfo()).getEncodedMessage());
-
-									// 정상 접속자 초기 경매 상태 정보 전달 처리
-									client.sendEvent("AuctionStatus",
-											mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
-													.getAuctionStatus().getEncodedMessage());
-								}
-							}
-						} else {
-							client.sendEvent("ResponseConnectionInfo", new ResponseConnectionInfo(auctionHouseCode,
-									GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage());
-							client.disconnect();
-						}
-					} else {
 						client.sendEvent("ResponseConnectionInfo",
 								new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-										GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage());
+										GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
+
+						// 현재 출품 정보 전송
+						if (mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+								.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+							client.sendEvent("ResponseCode", new ResponseCode(connectionInfo.getAuctionHouseCode(),
+									GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage());
+						} else {
+							if (mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
+								client.sendEvent("CurrentEntryInfo",
+										new CurrentEntryInfo(
+												mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
+														.getCurrentEntryInfo()).getEncodedMessage());
+
+								// 정상 접속자 초기 경매 상태 정보 전달 처리
+								client.sendEvent("AuctionStatus",
+										mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
+												.getAuctionStatus().getEncodedMessage());
+							}
+						}
+					} else {
+						client.sendEvent("ResponseConnectionInfo", new ResponseConnectionInfo(auctionHouseCode,
+								GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage());
 						client.disconnect();
 					}
+
+					// 중복 접속 불가
+					/*
+					 * if (!mWatchChannelClientMap.get(connectionInfo.getAuctionHouseCode())
+					 * .containsKey(client.getSessionId())) {
+					 * mWatchChannelClientMap.get(connectionInfo.getAuctionHouseCode()).put(client.
+					 * getSessionId(), client);
+					 * 
+					 * log.info("Request Connect client namespace : " +
+					 * client.getNamespace().getName()); log.info("Request Connect client room : " +
+					 * client.getHandshakeData().getSingleUrlParam("auctionHouseCode"));
+					 * 
+					 * String auctionHouseCode =
+					 * client.getHandshakeData().getSingleUrlParam("auctionHouseCode");
+					 * 
+					 * if (auctionHouseCode != null && !auctionHouseCode.isEmpty()) {
+					 * client.joinRoom(auctionHouseCode);
+					 * 
+					 * log.info("Client Join Room Completed : " + auctionHouseCode + " / " +
+					 * mSocketIOServer.getRoomOperations(auctionHouseCode).getClients().size());
+					 * 
+					 * client.sendEvent("ResponseConnectionInfo", new
+					 * ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+					 * GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
+					 * 
+					 * // 현재 출품 정보 전송 if
+					 * (mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+					 * .equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+					 * client.sendEvent("ResponseCode", new
+					 * ResponseCode(connectionInfo.getAuctionHouseCode(),
+					 * GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO) .getEncodedMessage());
+					 * } else { if
+					 * (mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
+					 * client.sendEvent("CurrentEntryInfo", new CurrentEntryInfo(
+					 * mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
+					 * .getCurrentEntryInfo()).getEncodedMessage());
+					 * 
+					 * // 정상 접속자 초기 경매 상태 정보 전달 처리 client.sendEvent("AuctionStatus",
+					 * mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
+					 * .getAuctionStatus().getEncodedMessage()); } } } else {
+					 * client.sendEvent("ResponseConnectionInfo", new
+					 * ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR,
+					 * null, null).getEncodedMessage()); client.disconnect(); } } else {
+					 * client.sendEvent("ResponseConnectionInfo", new
+					 * ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+					 * GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage());
+					 * client.disconnect(); }
+					 */
 				} else {
 					Map<UUID, SocketIOClient> clientMap = new ConcurrentHashMap<>();
 					clientMap.put(client.getSessionId(), client);
 
+					log.info("Web socket session ID : " + client.getSessionId());
 					mWatchChannelClientMap.put(connectionInfo.getAuctionHouseCode(), clientMap);
 
 					log.info("Request Connect client namespace : " + client.getNamespace().getName());
@@ -249,6 +287,12 @@ public class SocketIOHandler {
 						client.disconnect();
 					}
 				}
+				
+				if (mWatchChannelClientMap.containsKey(connectionInfo.getAuctionHouseCode())) {
+					log.info("mWatchChannelClientMap Current Size : "
+							+ mWatchChannelClientMap.get(connectionInfo.getAuctionHouseCode()).size());
+				}
+
 			} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_RESULT_MONITOR)) {
 				// 중복 접속 가능
 				if (mAuctionResultChannelClientMap.containsKey(connectionInfo.getAuctionHouseCode())) {
@@ -282,7 +326,14 @@ public class SocketIOHandler {
 									.getEncodedMessage());
 					client.disconnect();
 				}
+				
+				if (mAuctionResultChannelClientMap.containsKey(connectionInfo.getAuctionHouseCode())) {
+					log.info("mAuctionResultChannelClientMap Current Size : "
+							+ mAuctionResultChannelClientMap.get(connectionInfo.getAuctionHouseCode()).size());
+				}
+
 			} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR)) {
+				log.info("Web socket session ID : " + client.getSessionId());
 				// 중복 접속 가능
 				if (mConnectorChannelClientMap.containsKey(connectionInfo.getAuctionHouseCode())) {
 					mConnectorChannelClientMap.get(connectionInfo.getAuctionHouseCode()).put(client.getSessionId(),
@@ -347,6 +398,12 @@ public class SocketIOHandler {
 									.getEncodedMessage());
 					client.disconnect();
 				}
+				
+				if (mConnectorChannelClientMap.containsKey(connectionInfo.getAuctionHouseCode())) {
+					log.info("mConnectorChannelClientMap Current Size : "
+							+ mConnectorChannelClientMap.get(connectionInfo.getAuctionHouseCode()).size());
+				}
+				
 			} else {
 				client.sendEvent("ResponseConnectionInfo",
 						new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
@@ -357,6 +414,71 @@ public class SocketIOHandler {
 	}
 
 	private void unRegisterConnectChannelGroup(SocketIOClient client) {
+		boolean isFindClient = false;
+
+		log.info("DisconnectListener client : " + client.getSessionId());
+
+		for (String key : mConnectorChannelClientMap.keySet()) {
+			if (mConnectorChannelClientMap.get(key).size() > 0) {
+				for (UUID uuid : mConnectorChannelClientMap.get(key).keySet()) {
+					if (uuid.equals(client.getSessionId())) {
+						mConnectorChannelClientMap.get(key).remove(uuid);
+						isFindClient = true;
+						
+						log.info("mConnectorChannelClientMap remove SessionID : " + uuid);
+						log.info("mConnectorChannelClientMap Current Size : "
+								+ mConnectorChannelClientMap.get(key).size());
+						
+						break;
+					}
+				}
+
+				if (isFindClient) {
+					break;
+				}
+			}
+		}
+
+		for (String key : mAuctionResultChannelClientMap.keySet()) {
+			if (mAuctionResultChannelClientMap.get(key).size() > 0) {
+				for (UUID uuid : mAuctionResultChannelClientMap.get(key).keySet()) {
+					if (uuid.equals(client.getSessionId())) {
+						mAuctionResultChannelClientMap.get(key).remove(uuid);
+						isFindClient = true;
+						
+						log.info("mAuctionResultChannelClientMap remove SessionID : " + uuid);
+						log.info("mAuctionResultChannelClientMap Current Size : "
+								+ mAuctionResultChannelClientMap.get(key).size());
+
+						break;
+					}
+				}
+
+				if (isFindClient) {
+					break;
+				}
+			}
+		}
+
+		for (String key : mWatchChannelClientMap.keySet()) {
+			if (mWatchChannelClientMap.get(key).size() > 0) {
+				for (UUID uuid : mWatchChannelClientMap.get(key).keySet()) {
+					if (uuid.equals(client.getSessionId())) {
+						mWatchChannelClientMap.get(key).remove(uuid);
+						isFindClient = true;
+						
+						log.info("mWatchChannelClientMap remove SessionID : " + uuid);
+						log.info("mWatchChannelClientMap Current Size : " + mWatchChannelClientMap.get(key).size());
+						
+						break;
+					}
+				}
+
+				if (isFindClient) {
+					break;
+				}
+			}
+		}
 	}
 
 	public String replaceEventPrefix(String eventMessage) {
@@ -448,7 +570,7 @@ public class SocketIOHandler {
 
 		@Override
 		public void onDisconnect(SocketIOClient client) {
-			log.info("DisconnectListener client : " + client.getSessionId());
+			unRegisterConnectChannelGroup(client);
 		}
 	};
 

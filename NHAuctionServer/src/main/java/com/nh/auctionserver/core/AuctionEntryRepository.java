@@ -65,7 +65,7 @@ public class AuctionEntryRepository {
 
 		if (mEntryList != null && mEntryList.size() > 0) {
 			entryInfo = mEntryList.get(0);
-			mEntryList.remove(0);
+			//mEntryList.remove(0);
 			mTotalCount--;
 		}
 
