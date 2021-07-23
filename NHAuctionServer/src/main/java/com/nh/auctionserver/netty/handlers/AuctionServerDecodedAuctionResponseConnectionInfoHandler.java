@@ -61,7 +61,7 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 			ChannelHandlerContext clientChannelContext = mConnectionChannelInfoMap
 					.get(responseConnectionInfo.getUserMemNum());
 
-			if (responseConnectionInfo.getResult() == GlobalDefineCode.CONNECT_SUCCESS) {
+			if (responseConnectionInfo.getResult().equals(GlobalDefineCode.CONNECT_SUCCESS)) {
 				// 접속 처리 결과 응답 처리
 				clientChannelContext.channel()
 						.writeAndFlush(new ResponseConnectionInfo(responseConnectionInfo.getAuctionHouseCode(),
@@ -69,15 +69,15 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 								responseConnectionInfo.getAuctionJoinNum()).getEncodedMessage() + "\r\n");
 
 				// 접속자 정보 전송
-				mAuctionServer.itemAdded(new BidderConnectInfo(
-						mConnectionInfoMap.get(mConnectionChannelInfoMap.get(responseConnectionInfo.getUserMemNum()))
-								.getAuctionHouseCode(),
-						responseConnectionInfo.getUserMemNum(),
-						mConnectionInfoMap.get(mConnectionChannelInfoMap.get(responseConnectionInfo.getUserMemNum()))
-								.getChannel(),
-						mConnectionInfoMap.get(mConnectionChannelInfoMap.get(responseConnectionInfo.getUserMemNum()))
-								.getOS(),
-						"N", "0").getEncodedMessage());
+				mAuctionServer
+						.itemAdded(
+								new BidderConnectInfo(
+										mConnectionInfoMap.get(clientChannelContext.channel().id())
+												.getAuctionHouseCode(),
+										responseConnectionInfo.getUserMemNum(),
+										mConnectionInfoMap.get(clientChannelContext.channel().id()).getChannel(),
+										mConnectionInfoMap.get(clientChannelContext.channel().id()).getOS(), "N", "0")
+												.getEncodedMessage());
 
 				// 응찰 채널 등록 처리
 				if (!mBidderChannelsMap.containsKey(responseConnectionInfo.getAuctionHouseCode())) {

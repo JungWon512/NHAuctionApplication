@@ -10,7 +10,6 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.controller.models.EditSetting;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
@@ -33,9 +32,10 @@ public final class AuctionServerDecodedEditSettingHandler extends SimpleChannelI
 	private Map<String, ChannelHandlerContext> mConnectionChannelInfoMap;
 
 	public AuctionServerDecodedEditSettingHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelHandlerContext> connectionChannelInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
-			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
-			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
+			Map<ChannelId, ConnectionInfo> connectionInfoMap,
+			Map<String, ChannelHandlerContext> connectionChannelInfoMap,
+			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
+			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
 		mAuctionServer = auctionServer;
 		mConnectionInfoMap = connectionInfoMap;
@@ -52,7 +52,7 @@ public final class AuctionServerDecodedEditSettingHandler extends SimpleChannelI
 	protected void channelRead0(ChannelHandlerContext ctx, EditSetting editSetting) throws Exception {
 		if (mControllerChannelsMap.get(editSetting.getAuctionHouseCode()).contains(ctx.channel()) == true) {
 			mLogger.info("정상 채널에서 경매 설정 변경을 요청하였습니다.");
-			mAuctionServer.itemAdded(editSetting.getEncodedMessage());
+			mAuctionScheduler.setAuctionEditSetting(editSetting);
 		} else {
 			mLogger.info("비정상 채널에서 경매 설정 변경을 요청하였으나, 요청이 거부되었습니다.");
 		}

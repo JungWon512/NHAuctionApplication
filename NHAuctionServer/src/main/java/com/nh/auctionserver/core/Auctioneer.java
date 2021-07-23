@@ -26,6 +26,7 @@ import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.ToastMessageRequest;
 import com.nh.share.server.models.AuctionCheckSession;
@@ -54,6 +55,9 @@ public class Auctioneer {
 	private static Map<String, AuctionState> mAuctionStateMap = null; // 경매 진행 상태, 현재 경매 상황 등 계속 변화하는 정보
 	// 출품 목록
 	private static Map<String, AuctionEntryRepository> mAuctionEntryRepositoryMap = new HashMap<String, AuctionEntryRepository>();
+
+	// 경매 설정
+	private static Map<String, EditSetting> mAuctionEditSettingMap = new HashMap<String, EditSetting>();
 
 	private Map<String, ScheduledExecutorService> mStartCountDownServiceMap = new HashMap<String, ScheduledExecutorService>();
 	private Map<String, ScheduledExecutorService> mNextEntryIntervalServiceMap = new HashMap<String, ScheduledExecutorService>();
@@ -239,7 +243,7 @@ public class Auctioneer {
 
 		EntryInfo entryInfo = mAuctionEntryRepositoryMap.get(auctionHouseCode).popEntry(entryNum);
 
-		if(entryInfo != null) {
+		if (entryInfo != null) {
 			mLogger.debug("readyEntryInfo : " + entryInfo.getEncodedMessage());
 		} else {
 			mLogger.debug("readyEntryInfo is null");
@@ -286,7 +290,7 @@ public class Auctioneer {
 
 		EntryInfo entryInfo = mAuctionEntryRepositoryMap.get(auctionHouseCode).popEntry();
 
-		if(entryInfo != null) {
+		if (entryInfo != null) {
 			mLogger.debug("readyEntryInfo : " + entryInfo.getEncodedMessage());
 		} else {
 			mLogger.debug("readyEntryInfo is null");
@@ -729,7 +733,12 @@ public class Auctioneer {
 
 		// mAuctionState 초기화 처리
 		if (mAuctionStateMap.containsKey(auctionHouseCode) && mAuctionStateMap.get(auctionHouseCode) != null) {
-			mAuctionStateMap.get(auctionHouseCode).onAuctionCountDownReady();
+			if (mAuctionEditSettingMap != null && mAuctionEditSettingMap.containsKey(auctionHouseCode)) {
+				mAuctionStateMap.get(auctionHouseCode).onAuctionCountDownReady(
+						Integer.valueOf(mAuctionEditSettingMap.get(auctionHouseCode).getCountDown()));
+			} else {
+				mAuctionStateMap.get(auctionHouseCode).onAuctionCountDownReady(AuctionServerSetting.COUNT_DOWN_TIME);
+			}
 
 			mAuctionStateMap.get(auctionHouseCode).setRank1MemberNum("");
 			mAuctionStateMap.get(auctionHouseCode).setRank1BidPrice("");
@@ -849,5 +858,9 @@ public class Auctioneer {
 				mAuctionServer.itemAdded(new AuctionCheckSession().getEncodedMessage());
 			}
 		}
+	}
+
+	public synchronized void setAuctionEditSetting(EditSetting editSetting) {
+		mAuctionEditSettingMap.put(editSetting.getAuctionHouseCode(), editSetting);
 	}
 }

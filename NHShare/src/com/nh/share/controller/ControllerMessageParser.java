@@ -26,11 +26,7 @@ public class ControllerMessageParser {
 		String[] messages = message.split(AuctionShareSetting.DELIMITER_REGEX);
 		switch (messages[0].charAt(1)) {
 		case EditSetting.TYPE: // 경매 설정 변경 처리
-			Map<String, String> settings = new HashMap<>();
-			for (int i = 2; i < messages.length; i = i + 2) {
-				settings.put(messages[i], messages[i + 1]);
-			}
-			return new EditSetting(messages[1], settings);
+			return new EditSetting(messages);
 		case PassAuction.TYPE: // 강제 유찰 처리
 			return new PassAuction(messages[1], messages[2]);
 		case StopAuction.TYPE: // 경매 정치 기능

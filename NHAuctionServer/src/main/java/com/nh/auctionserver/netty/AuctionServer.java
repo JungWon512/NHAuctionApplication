@@ -78,9 +78,6 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.SelfSignedCertificate;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 
@@ -117,14 +114,6 @@ public class AuctionServer {
 			mLogger.info("Server Host : " + InetAddress.getLocalHost());
 			mLogger.info("Server Port : " + port);
 			mLogger.info("======= Auctoin Server Informations[End] =======");
-
-			String token = JwtCertTokenUtils.getInstance().createCertToken("00000000-54b3-e7c7-0000-000046bffd97",
-					"1100", "MEM234567", "2021-08-09 00:00:00");
-			mLogger.info("Create Cert Token : " + token);
-			mLogger.info("Validation Token Result : "
-					+ JwtCertTokenUtils.getInstance().validateCertToken("00000000-54b3-e7c7-0000-000046bffd97", token));
-			mLogger.info("Device UUID : " + JwtCertTokenUtils.getInstance().getDeviceUUID(token));
-			mLogger.info("Device UUID : " + JwtCertTokenUtils.getInstance().getUserMemNum(token));
 
 			createAuctioneer(this);
 			createNettyServer(port);
@@ -163,8 +152,8 @@ public class AuctionServer {
 		 * SelfSignedCertificate(); SslContext sslContext =
 		 * SslContextBuilder.forServer(ssc.certificate(),ssc.privateKey()).build();
 		 */
-		//SelfSignedCertificate ssc = new SelfSignedCertificate();
-		//SslContext sslContext = SslContextBuilder.forServer(ssc.certificate(),ssc.privateKey()).build();
+//		SelfSignedCertificate ssc = new SelfSignedCertificate();
+//		SslContext sslContext = SslContextBuilder.forServer(ssc.certificate(),ssc.privateKey()).build();
 		/*
 		 * bossGroup 클라이언트의 연결을 수락하는 부모 스레드 그룹 NioEventLoopGroup(인수) 스레드 그룹 내에서 생성할 최대
 		 * 스레드 수 1이므로 단일 스레드
@@ -187,7 +176,7 @@ public class AuctionServer {
 					protected void initChannel(SocketChannel ch) throws Exception {
 						ChannelPipeline pipeline = ch.pipeline();
 						pipeline.addLast(new LoggingHandler(LogLevel.INFO));
-						//pipeline.addLast(sslContext.newHandler(ch.alloc(), AuctionShareSetting.SERVER_HOST, AuctionShareSetting.SERVER_PORT));
+//						pipeline.addLast(sslContext.newHandler(ch.alloc(), AuctionShareSetting.SERVER_HOST, AuctionShareSetting.SERVER_PORT));
 
 						pipeline.addLast("idleStateHandler",
 								new IdleStateHandler(AuctionServerSetting.AUCTION_SERVER_READ_CHECK_SESSION_TIME,
@@ -434,6 +423,9 @@ public class AuctionServer {
 				mLogger.info("경매 진행 시작 요청 거점코드 : " + ((StartAuction) controllerParsedMessage).getAuctionHouseCode());
 				mLogger.info("경매 진행 시작 요청 : " + ((StartAuction) controllerParsedMessage).getEntryNum());
 
+				// 경매 준비 상태 설정
+				mAuctioneer.readyEntryInfo(((StartAuction) controllerParsedMessage).getAuctionHouseCode(), ((StartAuction) controllerParsedMessage).getEntryNum());
+				
 				if (mAuctioneer.getCurrentAuctionStatus(((StartAuction) controllerParsedMessage).getAuctionHouseCode())
 						.equals(GlobalDefineCode.AUCTION_STATUS_READY)) {
 					mAuctioneer.startAuction(((StartAuction) controllerParsedMessage).getAuctionHouseCode());
@@ -462,9 +454,9 @@ public class AuctionServer {
 			if (controllerParsedMessage instanceof SendAuctionResult) {
 				// 결과 Broadcast
 				channelItemWriteAndFlush(((SendAuctionResult) controllerParsedMessage).getConvertAuctionResult());
-
+				
 				// 다음 출품 건 준비
-				mAuctioneer.runNextEntryInterval(((SendAuctionResult) controllerParsedMessage).getAuctionHouseCode());
+				//mAuctioneer.runNextEntryInterval(((SendAuctionResult) controllerParsedMessage).getAuctionHouseCode());
 			}
 			break;
 		case FromAuctionCommon.ORIGIN:

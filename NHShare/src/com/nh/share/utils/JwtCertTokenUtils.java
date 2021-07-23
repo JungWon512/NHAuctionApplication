@@ -18,7 +18,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtCertTokenUtils {
 	private static JwtCertTokenUtils instance;
-	final private String NH_AUCTION_CERT_CREATE_KEY = "JwtCreateKeyNHAuction";
+	final private String NH_AUCTION_CERT_CREATE_KEY = "NHAUCTIONishiftNHAUCTIONishiftNHAUCTIONishiftNHAUCTIONishiftNHAUCTIONishiftNHAUCTIONishiftNHAUCTIONishiftNHAUCTIONishiftNHAUCTIONishiftNHAUCTIONishift";
 	final private String JWT_HEADER_TYPE = "typ";
 	final private String JWT_HEADER_ALGORITHM = "alg";
 	final private String JWT_CLAIM_USER_MEM_NUM = "userMemNum";

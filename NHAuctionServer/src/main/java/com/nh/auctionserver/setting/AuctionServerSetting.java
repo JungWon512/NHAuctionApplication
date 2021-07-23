@@ -17,7 +17,7 @@ public class AuctionServerSetting {
     public static final int AUCTION_SERVER_WRITE_CHECK_SESSION_TIME = 30; // 30초
 
     public static long COUNT_DOWN_DELAY_TIME = 1000; // 경매 카운트 다운 간격 시간(ms)
-    public static int COUNT_DOWN_TIME = 10; // 경매 카운트 다운 시간(second)
+    public static int COUNT_DOWN_TIME = 3; // 경매 카운트 다운 시간(second)
     
     public static long AUCTION_NEXT_ENTRY_DELAY_TIME = 3000; // 다음 출품 준비 딜레이 시간(ms)
     

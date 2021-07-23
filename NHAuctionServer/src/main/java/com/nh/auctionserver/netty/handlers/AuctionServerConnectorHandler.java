@@ -73,17 +73,24 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				mLogger.debug("CONNECT_CHANNEL_BIDDER SIZE : " + mBidderChannelsMap.size());
 
 				if(mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {
-					mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).writeAndFlush(connectionInfo.getEncodedMessage() + "\r\n");
 					
-					// Connector에 채널 아이디 등록 처리
-					if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
-						mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
+					// 동일 사용자 접속 여부 확인
+					if (!mConnectionInfoMap.get(connectionInfo.getAuctionHouseCode()).getAuthToken().equals(connectionInfo.getAuthToken())) {
+						mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).writeAndFlush(connectionInfo.getEncodedMessage() + "\r\n");
+						
+						// Connector에 채널 아이디 등록 처리
+						if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
+							mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
 
-						// Connector Channel Map 등록
-						mConnectionChannelInfoMap
-								.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+							// Connector Channel Map 등록
+							mConnectionChannelInfoMap
+									.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+						}
+					} else {
+						ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+								GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage() + "\r\n");
+						ctx.channel().close();
 					}
-
 				} else {
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 							GlobalDefineCode.CONNECT_CONTROLLER_ERROR, null, null).getEncodedMessage() + "\r\n");

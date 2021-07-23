@@ -9,9 +9,10 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 공통
  * 
- * SC| 조합구분코드 | 출품번호 | 경매대상구분코드 | 축산개체관리번호 | 축산축종구분코드 | 농가식별번호 | 농장관리번호 | 농가명 |
+ * SC | 조합구분코드 | 출품번호 | 경매대상구분코드 | 축산개체관리번호 | 축산축종구분코드 | 농가식별번호 | 농장관리번호 | 농가명 |
  * 브랜드명 | 생년월일 | KPN번호 | 개체성별코드 | 어미소구분코드 | 어미소축산개체관리번호 | 산차 | 계대 | 계체식별번호 |
- * 축산개체종축등록번호 | 등록구분번호 | 신규여부 | 우출하중량 | 최초최저낙찰한도금액 | 최저낙찰한도금액 | 비고내용 | 마지막출품여부
+ * 축산개체종축등록번호 | 등록구분번호 | 출하생산지역 | 친자검사결과여부 | 신규여부 | 우출하중량 | 최초최저낙찰한도금액 |
+ * 최저낙찰한도금액 | 비고내용 | 낙유찰결과 | 낙찰자 | 낙찰금액 | 응찰일시 | 마지막출품여부
  *
  */
 public class CurrentEntryInfo implements FromAuctionServer {
@@ -35,18 +36,25 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	private String mObjIdNum; // 개체식별번호
 	private String mObjRegNum; // 축산개체종축등록번호
 	private String mObjRegTypeNum; // 등록구분번호
+	private String mRgnName; // 출하생산지역
+	private String mDnaYn; // 친자검사결과여부
 	private String mIsNew; // 신규여부
 	private String mWeight; // 우출하중량
 	private String mInitPrice; // 최초최저낙찰한도금액
 	private String mLowPrice; // 최저낙찰한도금액
 	private String mNote; // 비고내용
+	private String mAuctionResult; // 낙유찰결과(01:낙찰/02:유찰)
+	private String mAuctionSucBidder; // 낙찰자
+	private String mAuctionBidPrice; // 응찰금액
+	private String mAuctionBidDateTime; // 응찰일시
 	private String mIsLastEntry; // 마지막 출품 여부
 
 	public CurrentEntryInfo(String auctionHouseCode, String entryNum, String entryType, String indNum, String indMngCd,
 			String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday, String kpn,
-			String gender, String motherTypeCode, String motherObjNum, String matime, String pasgQcn,
-			String objIdNum, String objRegNum, String objRegTypeNum, String isNew, String weight, String initPrice,
-			String lowPrice, String note, String isLastEntry) {
+			String gender, String motherTypeCode, String motherObjNum, String matime, String pasgQcn, String objIdNum,
+			String objRegNum, String objRegTypeNum, String rgnName, String dnaYn, String isNew, String weight,
+			String initPrice, String lowPrice, String note, String auctionResult, String auctionSucBidder,
+			String auctionBidPrice, String auctionBidDateTime, String isLastEntry) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 		mEntryType = entryType;
@@ -66,11 +74,17 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mObjIdNum = objIdNum;
 		mObjRegNum = objRegNum;
 		mObjRegTypeNum = objRegTypeNum;
+		mRgnName = rgnName;
+		mDnaYn = dnaYn;
 		mIsNew = isNew;
 		mWeight = weight;
 		mInitPrice = initPrice;
 		mLowPrice = lowPrice;
 		mNote = note;
+		mAuctionResult = auctionResult;
+		mAuctionSucBidder = auctionSucBidder;
+		mAuctionBidPrice = auctionBidPrice;
+		mAuctionBidDateTime = auctionBidDateTime;
 		mIsLastEntry = isLastEntry;
 	}
 
@@ -94,12 +108,18 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mObjIdNum = messages[17];
 		mObjRegNum = messages[18];
 		mObjRegTypeNum = messages[19];
-		mIsNew = messages[20];
-		mWeight = messages[21];
-		mInitPrice = messages[22];
-		mLowPrice = messages[23];
-		mNote = messages[24];
-		mIsLastEntry = messages[25];
+		mRgnName = messages[20];
+		mDnaYn = messages[21];
+		mIsNew = messages[22];
+		mWeight = messages[23];
+		mInitPrice = messages[24];
+		mLowPrice = messages[25];
+		mNote = messages[26];
+		mAuctionResult = messages[27];
+		mAuctionSucBidder = messages[28];
+		mAuctionBidPrice = messages[29];
+		mAuctionBidDateTime = messages[30];
+		mIsLastEntry = messages[31];
 	}
 
 	public CurrentEntryInfo(EntryInfo entryInfo) {
@@ -122,11 +142,17 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mObjIdNum = entryInfo.getObjIdNum();
 		mObjRegNum = entryInfo.getObjRegNum();
 		mObjRegTypeNum = entryInfo.getObjRegTypeNum();
+		mRgnName = entryInfo.getRgnName();
+		mDnaYn = entryInfo.getDnaYn();
 		mIsNew = entryInfo.getIsNew();
 		mWeight = entryInfo.getWeight();
 		mInitPrice = entryInfo.getInitPrice();
 		mLowPrice = entryInfo.getLowPrice();
 		mNote = entryInfo.getNote();
+		mAuctionResult = entryInfo.getAuctionResult();
+		mAuctionSucBidder = entryInfo.getAuctionSucBidder();
+		mAuctionBidPrice = entryInfo.getAuctionBidPrice();
+		mAuctionBidDateTime = entryInfo.getAuctionBidDateTime();
 		mIsLastEntry = entryInfo.getIsLastEntry();
 	}
 
@@ -282,6 +308,22 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		this.mObjRegTypeNum = mObjRegTypeNum;
 	}
 
+	public String getRgnName() {
+		return mRgnName;
+	}
+
+	public void setRgnName(String rgnName) {
+		this.mRgnName = rgnName;
+	}
+
+	public String getDnaYn() {
+		return mDnaYn;
+	}
+
+	public void setDnaYn(String dnaYn) {
+		this.mDnaYn = dnaYn;
+	}
+
 	public String getIsNew() {
 		return mIsNew;
 	}
@@ -322,6 +364,38 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		this.mNote = mNote;
 	}
 
+	public String getAuctionResult() {
+		return mAuctionResult;
+	}
+
+	public void setAuctionResult(String auctionResult) {
+		this.mAuctionResult = auctionResult;
+	}
+
+	public String getAuctionSucBidder() {
+		return mAuctionSucBidder;
+	}
+
+	public void setAuctionSucBidder(String auctionSucBidder) {
+		this.mAuctionSucBidder = auctionSucBidder;
+	}
+
+	public String getAuctionBidPrice() {
+		return mAuctionBidPrice;
+	}
+
+	public void setAuctionBidPrice(String auctionBidPrice) {
+		this.mAuctionBidPrice = auctionBidPrice;
+	}
+
+	public String getAuctionBidDateTime() {
+		return mAuctionBidDateTime;
+	}
+
+	public void setAuctionBidDateTime(String auctionBidDateTime) {
+		this.mAuctionBidDateTime = auctionBidDateTime;
+	}
+
 	public String getIsLastEntry() {
 		return mIsLastEntry;
 	}
@@ -333,7 +407,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
-				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
 				mEntryNum, AuctionShareSetting.DELIMITER, mEntryType, AuctionShareSetting.DELIMITER, mIndNum,
 				AuctionShareSetting.DELIMITER, mIndMngCd, AuctionShareSetting.DELIMITER, mFhsNum,
@@ -343,9 +417,12 @@ public class CurrentEntryInfo implements FromAuctionServer {
 				AuctionShareSetting.DELIMITER, mMotherTypeCode, AuctionShareSetting.DELIMITER, mMotherObjNum,
 				AuctionShareSetting.DELIMITER, mMatime, AuctionShareSetting.DELIMITER, mPasgQcn,
 				AuctionShareSetting.DELIMITER, mObjIdNum, AuctionShareSetting.DELIMITER, mObjRegNum,
-				AuctionShareSetting.DELIMITER, mObjRegTypeNum, AuctionShareSetting.DELIMITER, mIsNew,
+				AuctionShareSetting.DELIMITER, mObjRegTypeNum, AuctionShareSetting.DELIMITER, mRgnName,
+				AuctionShareSetting.DELIMITER, mDnaYn, AuctionShareSetting.DELIMITER, mIsNew,
 				AuctionShareSetting.DELIMITER, mWeight, AuctionShareSetting.DELIMITER, mInitPrice,
 				AuctionShareSetting.DELIMITER, mLowPrice, AuctionShareSetting.DELIMITER, mNote,
+				AuctionShareSetting.DELIMITER, mAuctionResult, AuctionShareSetting.DELIMITER, mAuctionSucBidder,
+				AuctionShareSetting.DELIMITER, mAuctionBidPrice, AuctionShareSetting.DELIMITER, mAuctionBidDateTime,
 				AuctionShareSetting.DELIMITER, mIsLastEntry);
 	}
 

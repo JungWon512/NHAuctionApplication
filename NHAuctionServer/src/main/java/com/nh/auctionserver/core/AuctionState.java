@@ -21,7 +21,7 @@ public class AuctionState {
 	private boolean mCheckEntryFavoriteCarInfo = false;
 
 	// 경매 시작 카운트 다운 시간
-	private int mAuctionCountDownTime = AuctionServerSetting.COUNT_DOWN_TIME;
+	private int mAuctionCountDownTime = 0;
 
 	private String mEntryNum; // 현재 진행 중인 출품번호
 	private String mStartPrice; // 현재 응찰 가격
@@ -404,8 +404,8 @@ public class AuctionState {
 	 * @Description 경매 시작 카운트 다운 준비 상태
 	 *
 	 */
-	public void onAuctionCountDownReady() {
-		this.mAuctionCountDownTime = AuctionServerSetting.COUNT_DOWN_TIME;
+	public void onAuctionCountDownReady(int countDown) {
+		this.mAuctionCountDownTime = countDown;
 		this.mAuctionCountDownStatus = GlobalDefineCode.AUCTION_COUNT_DOWN_READY;
 	}
 
