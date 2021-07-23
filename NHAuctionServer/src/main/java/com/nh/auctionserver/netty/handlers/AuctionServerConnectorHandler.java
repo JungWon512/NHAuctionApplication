@@ -61,39 +61,34 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 	protected void channelRead0(ChannelHandlerContext ctx, ConnectionInfo connectionInfo) throws Exception {
 		mLogger.debug("!mConnectorInfoMap.containsKey(ctx.channel().id()) : "
 				+ !mConnectionInfoMap.containsKey(ctx.channel().id()));
-		mLogger.debug("!mConnectorInfoMap.containsValue((connectorInfo) : "
-				+ !mConnectionInfoMap.containsValue(connectionInfo));
 
 		// 접속 정보 확인
 		// 채널 id가 동일할 경우 중복 접속으로 간주
 		// 같은 접속채널로 동일 접속 정보 전달 시 중복 접속으로 간주
 		// 같은 회원번호로 접속 시도 시 중복 접속으로 간주
-		if (!mConnectionInfoMap.containsKey(ctx.channel().id()) && !mConnectionInfoMap.containsValue(connectionInfo)) {
+		if (!mConnectionInfoMap.containsKey(ctx.channel().id()) && !mConnectionInfoMap.containsValue(connectionInfo)
+				&& !mConnectionChannelInfoMap
+						.containsKey(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()))) {
 			if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 				mLogger.debug("CONNECT_CHANNEL_BIDDER SIZE : " + mBidderChannelsMap.size());
 
-				if(mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {
-					
-					// 동일 사용자 접속 여부 확인
-					if (!mConnectionInfoMap.get(connectionInfo.getAuctionHouseCode()).getAuthToken().equals(connectionInfo.getAuthToken())) {
-						mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).writeAndFlush(connectionInfo.getEncodedMessage() + "\r\n");
-						
-						// Connector에 채널 아이디 등록 처리
-						if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
-							mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
+				if (mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {
+					mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode())
+							.writeAndFlush(connectionInfo.getEncodedMessage() + "\r\n");
 
-							// Connector Channel Map 등록
-							mConnectionChannelInfoMap
-									.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
-						}
-					} else {
-						ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-								GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage() + "\r\n");
-						ctx.channel().close();
+					// Connector에 채널 아이디 등록 처리
+					if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
+						mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
+
+						// Connector Channel Map 등록
+						mConnectionChannelInfoMap
+								.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
 					}
 				} else {
-					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-							GlobalDefineCode.CONNECT_CONTROLLER_ERROR, null, null).getEncodedMessage() + "\r\n");
+					ctx.channel()
+							.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+									GlobalDefineCode.CONNECT_CONTROLLER_ERROR, null, null).getEncodedMessage()
+									+ "\r\n");
 					ctx.channel().close();
 				}
 			} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
@@ -327,7 +322,8 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					if (mConnectionInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 						ctx.channel()
 								.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(key).getAuctionHouseCode(),
-										JwtCertTokenUtils.getInstance().getUserMemNum(mConnectionInfoMap.get(key).getAuthToken()),
+										JwtCertTokenUtils.getInstance()
+												.getUserMemNum(mConnectionInfoMap.get(key).getAuthToken()),
 										mConnectionInfoMap.get(key).getChannel(), mConnectionInfoMap.get(key).getOS(),
 										"N", "0").getEncodedMessage() + "\r\n");
 					}
@@ -337,14 +333,14 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 			if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 				// 중복 접속 불가 처리
 				ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-						GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage() + "\r\n");
+						GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage() + "\r\n");
 				ctx.channel().close();
 
 				return;
 			} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
 				// 중복 접속 불가 처리
 				ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-						GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage() + "\r\n");
+						GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage() + "\r\n");
 				ctx.channel().close();
 
 				return;
@@ -434,7 +430,8 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					if (mConnectionInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 						ctx.channel()
 								.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(key).getAuctionHouseCode(),
-										JwtCertTokenUtils.getInstance().getUserMemNum(mConnectionInfoMap.get(key).getAuthToken()),
+										JwtCertTokenUtils.getInstance()
+												.getUserMemNum(mConnectionInfoMap.get(key).getAuthToken()),
 										mConnectionInfoMap.get(key).getChannel(), mConnectionInfoMap.get(key).getOS(),
 										"N", "0").getEncodedMessage() + "\r\n");
 					}

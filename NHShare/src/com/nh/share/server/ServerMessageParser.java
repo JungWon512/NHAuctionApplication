@@ -8,6 +8,7 @@ import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
+import com.nh.share.server.models.ShowEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 
@@ -31,6 +32,8 @@ public class ServerMessageParser {
 			return new CurrentEntryInfo(messages);
 		case RequestAuctionResult.TYPE: // 낙유찰 결과 전송 요청
 			return new RequestAuctionResult(messages[1], messages[2]);
+		case ShowEntryInfo.TYPE: // 출품 정보 노출 설정 요청
+			return new ShowEntryInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6], messages[7], messages[8], messages[9]);
 		default:
 			return null;
 		}

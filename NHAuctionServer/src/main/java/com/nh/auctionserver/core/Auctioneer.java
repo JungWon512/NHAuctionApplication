@@ -33,10 +33,13 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
+import com.nh.share.server.models.ShowEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 
 import io.netty.channel.ChannelId;
+import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.util.concurrent.DefaultEventExecutor;
 
 public class Auctioneer {
 	private final Logger mLogger = LoggerFactory.getLogger(Auctioneer.class);
@@ -862,5 +865,18 @@ public class Auctioneer {
 
 	public synchronized void setAuctionEditSetting(EditSetting editSetting) {
 		mAuctionEditSettingMap.put(editSetting.getAuctionHouseCode(), editSetting);
+		
+		// 응찰 채널 등록 처리
+		if (mAuctionServer != null) {
+			mAuctionServer.itemAdded(new ShowEntryInfo(getAuctionEditSetting(editSetting.getAuctionHouseCode())).getEncodedMessage());
+		}
+	}
+
+	public synchronized EditSetting getAuctionEditSetting(String auctionHouseCode) {
+		if (mAuctionEditSettingMap.containsKey(auctionHouseCode)) {
+			return mAuctionEditSettingMap.get(auctionHouseCode);
+		} else {
+			return null;
+		}
 	}
 }

@@ -57,6 +57,7 @@ import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
+import com.nh.share.server.models.ShowEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 import com.nh.share.utils.JwtCertTokenUtils;
@@ -370,6 +371,10 @@ public class AuctionServer {
 
 			if (serverParsedMessage instanceof RequestAuctionResult) {
 				channelItemWriteAndFlush(((RequestAuctionResult) serverParsedMessage));
+			}
+			
+			if(serverParsedMessage instanceof ShowEntryInfo) {
+				channelItemWriteAndFlush(((ShowEntryInfo) serverParsedMessage));
 			}
 			break;
 
@@ -751,6 +756,17 @@ public class AuctionServer {
 					for (String key : mConnectionMonitorChannelsMap.keySet()) {
 						if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
 							mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+				break;
+				
+			case ShowEntryInfo.TYPE: // 출품 정보 노출 설정 정보 전송
+				// Netty Broadcast
+				if (mBidderChannelsMap != null) {
+					for (String key : mBidderChannelsMap.keySet()) {
+						if (mBidderChannelsMap.get(key).size() > 0) {
+							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
