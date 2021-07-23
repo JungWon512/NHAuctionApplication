@@ -21,6 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -238,8 +239,10 @@ public class MoveStageUtil {
 
 		Dialog<Void> dialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane();
-		dialogPane.getStylesheets().add(getApplicationClass().getResource("css/application.css").toExternalForm());
+//		dialogPane.getStylesheets().add(getApplicationClass().getResource("css/application.css").toExternalForm());
 //		dialog.initStyle(StageStyle.UNDECORATED);
+		
+		dialog.initModality(Modality.NONE);
 		dialog.setDialogPane(dialogPane);
 
 		dialogPane.setContent(parent);

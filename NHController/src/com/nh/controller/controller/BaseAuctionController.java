@@ -254,7 +254,7 @@ public class BaseAuctionController implements NettyControllable {
                 if (entryInfo != null) {
 
                     if (mIsPass) {
-                    	mCurrentSpEntryInfo.getBiddingResultCode().setValue(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL);
+                    	mCurrentSpEntryInfo.getAuctionResult().setValue(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL);
                         calculationRankingAndLog(entryInfo, true);
                     } else {
                         // 낙유찰 결과 전송

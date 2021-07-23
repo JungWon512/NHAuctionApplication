@@ -64,8 +64,8 @@ public class EntryListController extends CommonController implements Initializab
 		mPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
 		mWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
 		mLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
-		mSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessPrice());
-		mSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessfulBidder());
+		mSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionBidPrice());
+		mSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder());
 		mResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
 		

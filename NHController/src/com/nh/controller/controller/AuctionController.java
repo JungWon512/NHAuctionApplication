@@ -199,8 +199,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mFinishedPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
 		mFinishedWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
 		mFinishedLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
-		mFinishedSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessPrice());
-		mFinishedSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessfulBidder());
+		mFinishedSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionBidPrice());
+		mFinishedSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder());
 		mFinishedResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mFinishedNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
 
@@ -213,8 +213,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mWaitPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
 		mWaitWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
 		mWaitLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
-		mWaitSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessPrice());
-		mWaitSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getSuccessfulBidder());
+		mWaitSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionBidPrice());
+		mWaitSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder());
 		mWaitResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mWaitNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
 
@@ -436,9 +436,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		Platform.runLater(() -> {
 			SpEntryInfo spEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
 
-			if (!spEntryInfo.getBiddingResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+			if (!spEntryInfo.getAuctionResult().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
 				// 보류처리
-				spEntryInfo.setBiddingResultCode(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING));
+				spEntryInfo.setAuctionResult(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING));
 
 				setCurrentEntryInfo();
 				mWaitTableView.refresh();
@@ -628,10 +628,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mEntryRepositoryMap.clear();
 
 		mEntryRepositoryMap = entryInfoDataList.stream().collect(LinkedHashMap::new,
-				(map, item) -> map.put(item.getEntryNum(),
-						new SpEntryInfo(item.getAuctionHouseCode(), item.getEntryNum(), item.getEntryType(), item.getIndNum(), item.getIndMngCd(), item.getFhsNum(), item.getFarmMngNum(), item.getExhibitor(), item.getBrandName(), item.getBirthday(), item.getKpn(), item.getGender(),
-								item.getMotherTypeCode(), item.getMotherObjNum(), item.getMatime(), item.getPasgQcn(), item.getObjIdNum(), item.getObjRegNum(), item.getObjRegTypeNum(), item.getIsNew(), item.getWeight(), item.getInitPrice(), item.getLowPrice(), item.getNote(), item.getIsLastEntry(),
-								GlobalDefineCode.AUCTION_RESULT_CODE_READY)),
+				(map, item) -> map.put(item.getEntryNum(),new SpEntryInfo(item)),
 				Map::putAll);
 
 //		for (Entry<String, SpEntryInfo> spEntryInfo : mEntryRepositoryMap.entrySet()) {
@@ -849,13 +846,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				if (isSuccess) {
 					mAuctionStateSuccessLabel.setDisable(false);
 					mAuctionStateFailLabel.setDisable(true);
-					mCurrentSpEntryInfo.setSuccessfulBidder(new SimpleStringProperty(bidder.getUserNo().getValue()));
-					mCurrentSpEntryInfo.setSuccessPrice(new SimpleStringProperty(bidder.getPrice().getValue()));
-					mCurrentSpEntryInfo.setBiddingResultCode(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS));
+					mCurrentSpEntryInfo.setAuctionSucBidder(new SimpleStringProperty(bidder.getUserNo().getValue()));
+					mCurrentSpEntryInfo.setAuctionBidPrice(new SimpleStringProperty(bidder.getPrice().getValue()));
+					mCurrentSpEntryInfo.setAuctionResult(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS));
+					mCurrentSpEntryInfo.setAuctionBidDateTime(new SimpleStringProperty(bidder.getBiddingTime().getValue()));
 				} else {
 					mAuctionStateSuccessLabel.setDisable(true);
 					mAuctionStateFailLabel.setDisable(false);
-					mCurrentSpEntryInfo.setBiddingResultCode(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL));
+					mCurrentSpEntryInfo.setAuctionResult(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL));
 				}
 
 				addFinishedTableViewItem(mCurrentSpEntryInfo);
@@ -1150,9 +1148,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		for (SpEntryInfo spEntryInfo : mWaitEntryInfoDataList) {
 
-			if (spEntryInfo.getEntryNum() != null && spEntryInfo.getBiddingResultCode() != null) {
+			if (spEntryInfo.getEntryNum() != null && spEntryInfo.getAuctionResult() != null) {
 
-				if (spEntryInfo.getBiddingResultCode().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+				if (spEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
 					dataList.add(spEntryInfo);
 				}
 			}

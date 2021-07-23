@@ -2,8 +2,9 @@ package com.nh.controller.model;
 
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.controller.interfaces.FromAuctionController;
+import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.setting.AuctionShareSetting;
-import javafx.beans.property.BooleanProperty;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -40,52 +41,56 @@ public class SpEntryInfo implements FromAuctionController {
 	private StringProperty mObjIdNum; // 개체식별번호
 	private StringProperty mObjRegNum; // 축산개체종축등록번호
 	private StringProperty mObjRegTypeNum; // 등록구분번호
+	private StringProperty mRgnName; // 출하생산지역
+	private StringProperty mDnaYn; // 친자검사결과여부
 	private StringProperty mIsNew; // 신규여부
 	private StringProperty mWeight; // 우출하중량
 	private StringProperty mInitPrice; // 최초최저낙찰한도금액
 	private StringProperty mLowPrice; // 최저낙찰한도금액
 	private StringProperty mNote; // 비고내용
 	private StringProperty mIsLastEntry; // 마지막 출품 여부
-
-	private StringProperty successPrice; // 낙찰금액
-	private StringProperty successfulBidder; // 낙찰자
-	private StringProperty biddingResultCode; // 낙찰결과 코드
-	private BooleanProperty isPending; // 보류
+	private StringProperty mAuctionResult; // 낙유찰결과(01:낙찰/02:유찰)
+	private StringProperty mAuctionSucBidder; // 낙찰자
+	private StringProperty mAuctionBidPrice; // 응찰금액
+	private StringProperty mAuctionBidDateTime; // 응찰일시
+	
 
 	public SpEntryInfo() {
 	}
 
-	public SpEntryInfo(String auctionHouseCode, String entryNum, String entryType, String indNum, String indMngCd,
-			String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday, String kpn,
-			String gender, String motherTypeCode, String motherObjNum, String matime, String pasgQcn,
-			String objIdNum, String objRegNum, String objRegTypeNum, String isNew, String weight, String initPrice,
-			String lowPrice, String note, String isLastEntry,String biddingResultCode) {
-		this.mAuctionHouseCode = new SimpleStringProperty(auctionHouseCode);
-		this.mEntryNum = new SimpleStringProperty(entryNum);
-		this.mEntryType = new SimpleStringProperty(entryType);
-		this.mIndNum = new SimpleStringProperty(indNum);
-		this.mIndMngCd = new SimpleStringProperty(indMngCd);
-		this.mFhsNum = new SimpleStringProperty(fhsNum);
-		this.mFarmMngNum = new SimpleStringProperty(farmMngNum);
-		this.mExhibitor = new SimpleStringProperty(exhibitor);
-		this.mBrandName = new SimpleStringProperty(brandName);
-		this.mBirthday = new SimpleStringProperty(birthday);
-		this.mKpn = new SimpleStringProperty(kpn);
-		this.mGender = new SimpleStringProperty(gender);
-		this.mMotherTypeCode = new SimpleStringProperty(motherTypeCode);
-		this.mMotherObjNum = new SimpleStringProperty(motherObjNum);
-		this.mMatime = new SimpleStringProperty(matime);
-		this.mPasgQcn = new SimpleStringProperty(pasgQcn);
-		this.mObjIdNum = new SimpleStringProperty(objIdNum);
-		this.mObjRegNum = new SimpleStringProperty(objRegNum);
-		this.mObjRegTypeNum = new SimpleStringProperty(objRegTypeNum);
-		this.mIsNew = new SimpleStringProperty(isNew);
-		this.mWeight = new SimpleStringProperty(Integer.toString((int)Double.parseDouble(weight)));
-		this.mInitPrice = new SimpleStringProperty(Integer.toString((int)Double.parseDouble(initPrice)));
-		this.mLowPrice = new SimpleStringProperty(Integer.toString((int)Double.parseDouble(lowPrice)));
-		this.mNote = new SimpleStringProperty(note);
-		this.mIsLastEntry = new SimpleStringProperty(isLastEntry);
-		this.biddingResultCode = new SimpleStringProperty(biddingResultCode);
+	public SpEntryInfo(EntryInfo entryInfo) {
+
+		this.mAuctionHouseCode = new SimpleStringProperty(entryInfo.getAuctionHouseCode());
+		this.mEntryNum = new SimpleStringProperty(entryInfo.getEntryNum());
+		this.mEntryType = new SimpleStringProperty(entryInfo.getEntryType());
+		this.mIndNum = new SimpleStringProperty(entryInfo.getIndNum());
+		this.mIndMngCd = new SimpleStringProperty(entryInfo.getIndMngCd());
+		this.mFhsNum = new SimpleStringProperty(entryInfo.getFhsNum());
+		this.mFarmMngNum = new SimpleStringProperty(entryInfo.getFarmMngNum());
+		this.mExhibitor = new SimpleStringProperty(entryInfo.getExhibitor());
+		this.mBrandName = new SimpleStringProperty(entryInfo.getBrandName());
+		this.mBirthday = new SimpleStringProperty(entryInfo.getBirthday());
+		this.mKpn = new SimpleStringProperty(entryInfo.getKpn());
+		this.mGender = new SimpleStringProperty(entryInfo.getGender());
+		this.mMotherTypeCode = new SimpleStringProperty(entryInfo.getMotherTypeCode());
+		this.mMotherObjNum = new SimpleStringProperty(entryInfo.getMotherObjNum());
+		this.mMatime = new SimpleStringProperty(entryInfo.getMatime());
+		this.mPasgQcn = new SimpleStringProperty(entryInfo.getPasgQcn());
+		this.mObjIdNum = new SimpleStringProperty(entryInfo.getObjIdNum());
+		this.mObjRegNum = new SimpleStringProperty(entryInfo.getObjRegNum());
+		this.mObjRegTypeNum = new SimpleStringProperty(entryInfo.getObjRegTypeNum());
+		this.mIsNew = new SimpleStringProperty(entryInfo.getIsNew());
+		this.mWeight = new SimpleStringProperty(Integer.toString((int)Double.parseDouble(entryInfo.getWeight())));
+		this.mInitPrice = new SimpleStringProperty(Integer.toString((int)Double.parseDouble(entryInfo.getInitPrice())));
+		this.mLowPrice = new SimpleStringProperty(Integer.toString((int)Double.parseDouble(entryInfo.getLowPrice())));
+		this.mNote = new SimpleStringProperty(entryInfo.getNote());
+		this.mRgnName = new SimpleStringProperty(entryInfo.getRgnName());
+		this.mDnaYn = new SimpleStringProperty(entryInfo.getDnaYn());
+		this.mAuctionSucBidder = new SimpleStringProperty(entryInfo.getAuctionSucBidder());
+		this.mAuctionBidPrice = new SimpleStringProperty(entryInfo.getAuctionBidPrice());
+		this.mAuctionBidDateTime = new SimpleStringProperty(entryInfo.getAuctionBidDateTime());
+		this.mAuctionResult = new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_READY);
+		this.mIsLastEntry = new SimpleStringProperty(entryInfo.getIsLastEntry());
 	}
 
 	public StringProperty getAuctionHouseCode() {
@@ -299,21 +304,61 @@ public class SpEntryInfo implements FromAuctionController {
 		this.mIsLastEntry = mIsLastEntry;
 	}
 
-	public StringProperty getSuccessfulBidder() {
-		return successfulBidder;
+	public StringProperty getRgnName() {
+		return mRgnName;
 	}
 
-	public void setSuccessfulBidder(StringProperty successfulBidder) {
-		this.successfulBidder = successfulBidder;
+	public void setRgnName(StringProperty mRgnName) {
+		this.mRgnName = mRgnName;
+	}
+
+	public StringProperty getDnaYn() {
+		return mDnaYn;
+	}
+
+	public void setDnaYn(StringProperty mDnaYn) {
+		this.mDnaYn = mDnaYn;
+	}
+
+	public StringProperty getAuctionResult() {
+		return mAuctionResult;
+	}
+
+	public void setAuctionResult(StringProperty mAuctionResult) {
+		this.mAuctionResult = mAuctionResult;
+	}
+
+	public StringProperty getAuctionSucBidder() {
+		return mAuctionSucBidder;
+	}
+
+	public void setAuctionSucBidder(StringProperty mAuctionSucBidder) {
+		this.mAuctionSucBidder = mAuctionSucBidder;
+	}
+
+	public StringProperty getAuctionBidPrice() {
+		return mAuctionBidPrice;
+	}
+
+	public void setAuctionBidPrice(StringProperty mAuctionBidPrice) {
+		this.mAuctionBidPrice = mAuctionBidPrice;
+	}
+
+	public StringProperty getAuctionBidDateTime() {
+		return mAuctionBidDateTime;
+	}
+
+	public void setAuctionBidDateTime(StringProperty mAuctionBidDateTime) {
+		this.mAuctionBidDateTime = mAuctionBidDateTime;
 	}
 
 	public StringProperty getBiddingResult() {
 	
 		SimpleStringProperty resultStr = new SimpleStringProperty();
 
-		if(biddingResultCode != null) {
+		if(mAuctionResult != null) {
 
-			String code = biddingResultCode.getValue();
+			String code = mAuctionResult.getValue();
 			
 			if(code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_READY)) {
 				resultStr.setValue("대기");
@@ -329,48 +374,72 @@ public class SpEntryInfo implements FromAuctionController {
 		return resultStr;
 	}
 	
-	public StringProperty getBiddingResultCode() {
-		return biddingResultCode;
-	}
-
-	public void setBiddingResultCode(StringProperty brc) {
-		biddingResultCode = brc;
-	}
-
-	public BooleanProperty getIsPending() {
-		return isPending;
-	}
-
-	public void setIsPending(BooleanProperty isPending) {
-		this.isPending = isPending;
-	}
-
-	public StringProperty getSuccessPrice() {
-		return successPrice;
-	}
-
-	public void setSuccessPrice(StringProperty successPrice) {
-		this.successPrice = successPrice;
-	}
-
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
-				AuctionShareSetting.DELIMITER, mAuctionHouseCode.getValue(), AuctionShareSetting.DELIMITER, mEntryNum.getValue(),
-				AuctionShareSetting.DELIMITER, mEntryType.getValue(), AuctionShareSetting.DELIMITER, mIndNum.getValue(),
-				AuctionShareSetting.DELIMITER, mIndMngCd.getValue(), AuctionShareSetting.DELIMITER, mFhsNum.getValue(),
-				AuctionShareSetting.DELIMITER, mFarmMngNum.getValue(), AuctionShareSetting.DELIMITER,
-				mExhibitor.getValue(), AuctionShareSetting.DELIMITER, mBrandName.getValue(),
-				AuctionShareSetting.DELIMITER, mBirthday.getValue(), AuctionShareSetting.DELIMITER, mKpn.getValue(),
-				AuctionShareSetting.DELIMITER, mGender.getValue(), AuctionShareSetting.DELIMITER,
-				mMotherTypeCode.getValue(), AuctionShareSetting.DELIMITER, mMotherObjNum.getValue(),
-				AuctionShareSetting.DELIMITER, mMatime.getValue(), AuctionShareSetting.DELIMITER,
-				mPasgQcn.getValue(), AuctionShareSetting.DELIMITER, mObjIdNum.getValue(), AuctionShareSetting.DELIMITER,
-				mObjRegNum.getValue(), AuctionShareSetting.DELIMITER, mObjRegTypeNum.getValue(),
-				AuctionShareSetting.DELIMITER, mIsNew.getValue(), AuctionShareSetting.DELIMITER, mWeight.getValue(),
-				AuctionShareSetting.DELIMITER, mInitPrice.getValue(), AuctionShareSetting.DELIMITER,
-				mLowPrice.getValue(), AuctionShareSetting.DELIMITER, mNote.getValue(), AuctionShareSetting.DELIMITER,
-				mIsLastEntry.getValue());
+		return String.format("%c%c%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s%c"
+				+ "%s", 
+				ORIGIN, TYPE,AuctionShareSetting.DELIMITER,
+				getAuctionHouseCode().getValue(), AuctionShareSetting.DELIMITER,
+				getEntryNum().getValue(),AuctionShareSetting.DELIMITER, 
+				getEntryType().getValue(), AuctionShareSetting.DELIMITER,
+				getIndNum().getValue(),AuctionShareSetting.DELIMITER,
+				getIndMngCd().getValue(), AuctionShareSetting.DELIMITER, 
+				getFhsNum().getValue(),AuctionShareSetting.DELIMITER,
+				getFarmMngNum().getValue(), AuctionShareSetting.DELIMITER,
+				getExhibitor().getValue(), AuctionShareSetting.DELIMITER,
+				getBrandName().getValue(),AuctionShareSetting.DELIMITER,
+				getBirthday().getValue(), AuctionShareSetting.DELIMITER, 
+				getKpn().getValue(),AuctionShareSetting.DELIMITER, 
+				getGender().getValue(), AuctionShareSetting.DELIMITER,
+				getMotherTypeCode().getValue(), AuctionShareSetting.DELIMITER,
+				getMotherObjNum().getValue(),AuctionShareSetting.DELIMITER,
+				getMatime().getValue(), AuctionShareSetting.DELIMITER,
+				getPasgQcn().getValue(), AuctionShareSetting.DELIMITER,
+				getObjIdNum().getValue(), AuctionShareSetting.DELIMITER,
+				getObjRegNum().getValue(), AuctionShareSetting.DELIMITER, 
+				getObjRegTypeNum().getValue(),AuctionShareSetting.DELIMITER,
+				getRgnName().getValue(),AuctionShareSetting.DELIMITER,
+				getDnaYn().getValue(),AuctionShareSetting.DELIMITER,
+				getIsNew().getValue(), AuctionShareSetting.DELIMITER,
+				getWeight().getValue(),AuctionShareSetting.DELIMITER, 
+				getInitPrice().getValue(), AuctionShareSetting.DELIMITER,
+				getLowPrice().getValue(), AuctionShareSetting.DELIMITER, 
+				getNote().getValue(), AuctionShareSetting.DELIMITER,
+				getAuctionResult().getValue(), AuctionShareSetting.DELIMITER,
+				getAuctionSucBidder().getValue(), AuctionShareSetting.DELIMITER,
+				getAuctionBidDateTime().getValue(), AuctionShareSetting.DELIMITER,
+				getNote().getValue(), AuctionShareSetting.DELIMITER,
+				getIsLastEntry().getValue());
 	}
 
 }

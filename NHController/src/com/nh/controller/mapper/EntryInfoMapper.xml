@@ -27,6 +27,7 @@
 	private BooleanProperty isPending; 			// 보류 -->
 	
 
+	<!--TODO 경매 결과 관련 추가 해야함 -->
 	<resultMap type="EntryInfo" id="entryInfoMap">
 		<result property="mAuctionHouseCode" column="NA_BZPLC" /> 
 		<result property="mEntryNum" column="AUC_PRG_SQ" />
@@ -47,12 +48,16 @@
 		<result property="mObjIdNum" column="INDV_ID_NO" />
 		<result property="mObjRegNum" column="SRA_INDV_BRDSRA_RG_NO" />
 		<result property="mObjRegTypeNum" column="RG_DSC" /> 
+		<result property="mRgnName" column="SRA_PD_RGNNM" /> 
+		<result property="mDnaYn" column="DNA_YN" /> 
 		<result property="mIsNew" column="ANW_YN" /> 
 		<result property="mWeight" column="COW_SOG_WT" />
 		<result property="mInitPrice" column="FIR_LOWS_SBID_LMT_AM" />
 		<result property="mLowPrice" column="LOWS_SBID_LMT_AM" />
 		<result property="mNote" column="RMK_CNTN" />
 	</resultMap>
+	
+	
 <!-- 	private String mAuctionHouseCode; // 조합구분코드
 	private String mEntryNum; //
 	출품 번호
