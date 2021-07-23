@@ -47,7 +47,7 @@ public class AuctionDelegate {
      */
     public String onSendConnectionInfo() {
 
-        NettySendable nettySendable = new ConnectionInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, "1238123", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWN0aW9uSG91c2VDb2RlIjoiMTEwMCIsImV4cCI6MTYyODQzNDgwMCwiZGV2aWNlVVVJRCI6IjAwMDAwMDAwLTU0YjMtZTdjNy0wMDAwLTAwMDA0NmJmZmQ5NyIsInVzZXJNZW1OdW0iOiJNRU0yMzQ1NjcifQ.LR5wDEURBxdOMdbcaha-_HNFFbPGbt4z5pIXFxpQ43dxeE4H-243hULSHs2tSIhyh4BvZzc8z_KlNmo5YEFZUA",
+        NettySendable nettySendable = new ConnectionInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, "admin", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWN0aW9uSG91c2VDb2RlIjoiODgwODk5MDY1NjY1NiIsInVzZXJSb2xlIjoiQURNSU4iLCJ1c2VyTWVtTnVtIjoiYWRtaW4iLCJleHAiOjE2MjY5NjU5OTl9.r8nvpk98OfPiAKN4tFfmzYSouYGntwkSbkwJg8JT0qXRrP6mGi88cac3oAyvVK5nJVeVSFBgrXUx5PnIFygiwg",
                 GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER, GlobalDefineCode.USE_CHANNEL_MANAGE);
 
         return sendMessage(nettySendable);

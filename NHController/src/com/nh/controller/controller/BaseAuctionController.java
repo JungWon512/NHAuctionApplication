@@ -1,6 +1,7 @@
 package com.nh.controller.controller;
 
 import com.nh.common.interfaces.NettyControllable;
+import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.netty.AuctionDelegate;
@@ -9,6 +10,7 @@ import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.*;
+import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.server.models.*;
 import io.netty.channel.Channel;
@@ -43,6 +45,8 @@ public class BaseAuctionController implements NettyControllable {
     protected FXMLLoader mFxmlLoader = null;
 
     protected Stage mStage = null; // 현재 Stage
+
+    protected AuctionRound auctionRound = null; // 경매 회차 정보
 
     protected LinkedHashMap<String, SpEntryInfo> mEntryRepositoryMap = null; // 출품 리스트
 
@@ -173,33 +177,28 @@ public class BaseAuctionController implements NettyControllable {
         addLogItem(favoriteEntryInfo.getEncodedMessage());
     }
 
-
     @Override
     public void onConnectionInfo(ConnectionInfo connectionInfo) {
         mLogger.debug("onConnectionInfo : " + connectionInfo.getEncodedMessage());
 
         ConnectionInfoInfoMapperService service = new ConnectionInfoInfoMapperService();
         String userNum = service.selectUserInfo(connectionInfo.getAuctionHouseCode(), "20210702", "3", connectionInfo.getUserMemNum());
-        mLogger.debug("userNum :\t" + userNum);
-        onResponseConnectionInfo(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(), "2000", connectionInfo.getUserMemNum(), "1"));
+        mLogger.debug("onConnectionInfo - userNum :\t" + userNum);
+
+        if (userNum != null && !userNum.isEmpty()) {
+//            connect success
+            mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(
+                    new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(), "2000", connectionInfo.getUserMemNum(), userNum))); // TEST
+        } else {
+//            no user selected
+//            insert DB
+            mLogger.debug("userNum 없음!");
+        }
     }
 
     @Override
     public void onResponseConnectionInfo(ResponseConnectionInfo responseConnectionInfo) {
-        mLogger.debug("onResponseConnectionInfo : " + responseConnectionInfo.toString());
-        if (responseConnectionInfo.getUserMemNum() == null) {
-            // insert db
-            mLogger.debug("no User");
-
-        } else {
-            mLogger.debug("User success");
-            // login success
-//            private String mAuctionHouseCode; // 거점코드
-//            private String mUserMemNum; // 거래인관리번호
-//            private String mResult; // 결과코드
-//            private String mAuctionJoinNum; // 경매참가번호
-            AuctionDelegate.getInstance().onSendConnectionInfo(responseConnectionInfo);
-        }
+        mLogger.debug("onResponseConnectionInfo : " + responseConnectionInfo.getEncodedMessage());
     }
 
     @Override

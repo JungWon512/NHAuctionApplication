@@ -132,9 +132,9 @@
 		B.FHS_ID_NO=C.FHS_ID_NO AND
 		B.FARM_AMNNO=C.FARM_AMNNO
 		WHERE
-		B.AUC_DT='20210702'AND
-		B.NA_BZPLC='8808990656656'AND
-		B.AUC_OBJ_DSC='3'
+		B.AUC_DT= #{auctionDate} AND
+		B.NA_BZPLC= #{auctionHouseCode} AND
+		B.AUC_OBJ_DSC= #{entryType}
 		ORDER BY
 		B.AUC_PRG_SQ ASC;
 	</select>

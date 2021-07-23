@@ -8,6 +8,11 @@ import org.apache.ibatis.session.SqlSession;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 가축경매 참여자 번호 MapperService
+ *
+ * @author dhKim
+ */
 public class ConnectionInfoInfoMapperService extends BaseMapperService<ConnectionInfoDao> implements ConnectionInfoMapper {
 
     public ConnectionInfoInfoMapperService() {
@@ -35,6 +40,8 @@ public class ConnectionInfoInfoMapperService extends BaseMapperService<Connectio
 
     @Override
     public void insertUserInfo() {
+
+
     }
 
 }

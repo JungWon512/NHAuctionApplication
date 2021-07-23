@@ -110,13 +110,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	private int mRemainingTimeCount = REMAINING_TIME_COUNT; // 카운트다운
 
-	private int qcn; // 회차정보 (test)
-
-	private List<EntryInfo> entryInfoDataList; // 출품 정보 DB 데이터
+    private List<EntryInfo> entryInfoDataList; // 출품 정보 DB 데이터
 
 	/**
 	 * setStage
-	 * 
+	 *
 	 * @param stage
 	 */
 	public void setStage(Stage stage) {
@@ -239,16 +237,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		String auctionDate = CommonUtils.getInstance().getCurrentTime("yyyy-MM-dd");
 
-		mAuctionInfoDateLabel.setText(auctionDate);
-		mAuctionInfoRoundLabel.setText("25");
-		mAuctionInfoGubunLabel.setText("큰소경매");
-		mAuctionInfoNameLabel.setText("89두");
-		mHeaderAucInfoLabel.setText(auctionDate + "- " + String.valueOf(qcn) + "회차");
-	}
+        mAuctionInfoDateLabel.setText(auctionDate);
+        mAuctionInfoRoundLabel.setText("25");
+        mAuctionInfoGubunLabel.setText("큰소경매");
+        mAuctionInfoNameLabel.setText("89두");
+        mHeaderAucInfoLabel.setText(auctionDate + "- " + this.auctionRound.getQcn() + "회차");
+    }
 
 	/**
 	 * 경매 서버 접속
-	 * 
+	 *
 	 * @param loginStage
 	 * @param fxmlLoader
 	 */
@@ -270,7 +268,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 경매 대기 초기값
-	 * 
+	 *
 	 * @param dataMap
 	 */
 	private void initWaitEntryDataList(LinkedHashMap<String, SpEntryInfo> dataMap) {
@@ -351,7 +349,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 출품 데이터 전송
-	 * 
+	 *
 	 * @param event
 	 */
 	public void onSendEntryData(MouseEvent event) {
@@ -420,7 +418,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 1.준비 2.시작
-	 * 
+	 *
 	 * @param event
 	 */
 	public void onStartAuction() {
@@ -447,7 +445,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 종료
-	 * 
+	 *
 	 * @param event
 	 */
 	public void onStopAuction() {
@@ -468,7 +466,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 강제유찰
-	 * 
+	 *
 	 * @param event
 	 */
 	public void onPassAuction(MouseEvent event) {
@@ -477,7 +475,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 강제유찰
-	 * 
+	 *
 	 */
 	public void onPassAuction() {
 
@@ -494,7 +492,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 메세지 전송
-	 * 
+	 *
 	 * @param event
 	 */
 	public void openSendMessage(MouseEvent event) {
@@ -514,27 +512,32 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 대기중인 테이블 뷰 클릭
-	 * 
+	 *
 	 * @param event
 	 */
 	public void onClickWaitTableView(MouseEvent event) {
 		setCurrentEntryInfo();
 	}
 
-	/**
-	 * 경매 출품 데이터
-	 */
-	private void requestEntryData() {
-		// TEST!! 일단 경매정보 하나만 가져옴!!
-		AuctionRoundMapperService service = new AuctionRoundMapperService();
-		List<AuctionRound> list = service.getAllAuctionRoundData();
-		for (AuctionRound t : list) {
-			qcn = t.getQcn();
-		}
+    /**
+     * 경매 출품 데이터
+     */
+    private void requestEntryData() {
+        // [경매회차조회] TEST!! 일단 경매정보 하나만 가져옴!!
+        AuctionRoundMapperService service = new AuctionRoundMapperService();
+//        List<AuctionRound> list = service.getAllAuctionRoundData(CommonUtils.getInstance().getCurrentTime("yyyyMMdd")); // 실제사용
+        List<AuctionRound> list = service.getAllAuctionRoundData("20210702"); // 테스트
+        this.auctionRound = list.get(0); // 테스트
+//        for (AuctionRound t : list) {
+//            qcn = t.getQcn();
+//        }
 
-		// 경매 데이터 불러오기
-		EntryInfoMapperService entryService = new EntryInfoMapperService();
-		entryInfoDataList = entryService.getAllEntryData();
+        // 경매 출품 데이터 가져오기
+        EntryInfoMapperService entryService = new EntryInfoMapperService();
+//        entryInfoDataList = entryService.getAllEntryData(CommonUtils.getInstance().getCurrentTime("yyyyMMdd"),
+//                this.auctionRound.getNaBzplc(),
+//                String.valueOf(this.auctionRound.getAucObjDsc())); // 실제사용
+        entryInfoDataList = entryService.getAllEntryData("20210702", "8808990656656", "3"); // 테스트
 
 		// DB EntryInfo -> Sp EntryInfo
 		mEntryRepositoryMap.clear();
@@ -546,9 +549,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 								item.getIsLastEntry())),
 				Map::putAll);
 
-		for (Entry<String, SpEntryInfo> spEntryInfo : mEntryRepositoryMap.entrySet()) {
-			System.out.println(spEntryInfo.getKey());
-		}
+//		for (Entry<String, SpEntryInfo> spEntryInfo : mEntryRepositoryMap.entrySet()) {
+//			System.out.println(spEntryInfo.getKey());
+//		}
 
 		initWaitEntryDataList(mEntryRepositoryMap);
 	}
@@ -561,9 +564,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	public void onResponseConnectionInfo(ResponseConnectionInfo responseConnectionInfo) {
 		super.onResponseConnectionInfo(responseConnectionInfo);
 
-		Platform.runLater(() -> {
+        mLogger.debug(responseConnectionInfo.getEncodedMessage());
 
-			CommonUtils.getInstance().dismissLoadingDialog();
+        Platform.runLater(() -> {
+
+            CommonUtils.getInstance().dismissLoadingDialog();
 
 			switch (responseConnectionInfo.getResult()) {
 			case GlobalDefineCode.CONNECT_SUCCESS:
@@ -689,7 +694,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 경매정보 - 경매 상태 표시
-	 * 
+	 *
 	 * @param code      현재 경매 상태
 	 * @param isSuccess true : 낙찰 , false : 유찰
 	 */
@@ -768,7 +773,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 현재 진행할 데이터 Set
-	 * 
+	 *
 	 * @param currentEntryInfo
 	 */
 	private void setCurrentEntryInfo() {
@@ -807,7 +812,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 대기중인 아이템 제거
-	 * 
+	 *
 	 * @param entryNum
 	 */
 	private SpEntryInfo getWaitTableViewItem(String entryNum) {
@@ -826,7 +831,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 경매 완료 row set
-	 * 
+	 *
 	 * @param spEntryInfo
 	 */
 	private void addFinishedTableViewItem(SpEntryInfo spEntryInfo) {
@@ -837,7 +842,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 대기중인 아이템 제거
-	 * 
+	 *
 	 * @param entryNum
 	 */
 	private void removeWaitTableViewItem(SpEntryInfo spEntryInfo) {
@@ -848,7 +853,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 대기중인 아이템 제거
-	 * 
+	 *
 	 * @param entryNum
 	 */
 	private void removeWaitTableViewItem(String entryNum) {
@@ -924,7 +929,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 대기중인 소 row 선택 ( KEY UP/DOWN )
-	 * 
+	 *
 	 * @param index
 	 */
 	private void selecIndextWaitTable(int index) {

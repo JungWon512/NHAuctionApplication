@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class AuctionRound {
 
 	private String naBzplc; // 경제통합사업장코드
-	private Boolean aucObjDsc; // 경매대상구분코드
+	private int aucObjDsc; // 경매대상구분코드
 	private String aucDt; // 경매일자
 	private int qcn; // 차수
 	private int baseLmtAm; // 기초한도금액
@@ -30,7 +30,7 @@ public class AuctionRound {
 	public AuctionRound() {
 	}
 
-	public AuctionRound(String naBzplc, Boolean aucObjDsc, String aucDt, int qcn, int baseLmtAm, int cutAm,
+	public AuctionRound(String naBzplc, int aucObjDsc, String aucDt, int qcn, int baseLmtAm, int cutAm,
 			Boolean sgnoPrcDsc, Boolean ddlYn, Boolean tmsYn, Boolean delYn, int maleKg, int femaleKg, float ttScr,
 			LocalDateTime fsrgDtm, String fsgmnEno, LocalDateTime lschgDtm, String lsCmeno) {
 		super();
@@ -61,11 +61,11 @@ public class AuctionRound {
 		this.naBzplc = naBzplc;
 	}
 
-	public Boolean getAucObjDsc() {
+	public int getAucObjDsc() {
 		return aucObjDsc;
 	}
 
-	public void setAucObjDsc(Boolean aucObjDsc) {
+	public void setAucObjDsc(int aucObjDsc) {
 		this.aucObjDsc = aucObjDsc;
 	}
 

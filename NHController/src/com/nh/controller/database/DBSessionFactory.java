@@ -13,7 +13,7 @@ public class DBSessionFactory {
     private static SqlSessionFactory sqlSessionFactory;
 
     static {
-        
+
         try {
             String resource = "com/nh/controller/database/config/db_config.xml";
             Reader reader = Resources.getResourceAsReader(resource);
