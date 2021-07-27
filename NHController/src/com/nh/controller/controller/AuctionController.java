@@ -21,6 +21,7 @@ import com.nh.controller.utils.MoveStageUtil;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
@@ -686,6 +687,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			switch (responseConnectionInfo.getResult()) {
 			case GlobalDefineCode.CONNECT_SUCCESS:
 				addLogItem(mResMsg.getString("msg.connection.success") + responseConnectionInfo.getEncodedMessage());
+				// Setting 정보 전송
+				// TEST
+//				EditSetting setting = new EditSetting(new String[]{this.auctionRound.getNaBzplc(), "Y", "Y", "Y", "Y", "N", "N", "Y", "Y", "N", "Y", "Y", "N", "N", "3"});
+//				addLogItem(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
 				MoveStageUtil.getInstance().moveAuctionStage(mStage, mFxmlLoader);
 				break;
 			case GlobalDefineCode.CONNECT_FAIL:

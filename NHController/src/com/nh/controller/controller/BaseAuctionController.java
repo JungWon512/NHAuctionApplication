@@ -90,10 +90,6 @@ public class BaseAuctionController implements NettyControllable {
         mLogger.debug("onActiveChannel");
         // 제어프로그램 접속
         addLogItem(mResMsg.getString("msg.auction.send.connection.info") + AuctionDelegate.getInstance().onSendConnectionInfo());
-        // Setting 정보 전송
-        // TEST
-        EditSetting setting = new EditSetting(new String[]{this.auctionRound.getNaBzplc(), "Y", "Y", "Y", "Y", "N", "N", "Y", "Y", "N", "Y", "Y", "N", "N", "3"});
-        addLogItem(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
     }
 
     @Override
