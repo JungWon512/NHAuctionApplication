@@ -61,7 +61,7 @@ public class GlobalDefineCode {
 	public static final String AUCTION_STATUS_START = "8003"; // 경매 시작 상태
 	public static final String AUCTION_STATUS_PROGRESS = "8004"; // 경매 진행 상태
 	public static final String AUCTION_STATUS_PASS = "8005"; // 경매 출품 건 강제 유찰
-	public static final String AUCTION_STATUS_COMPLETED = "8006"; // 경매 출품 건 완료 상태
+	public static final String AUCTION_STATUS_COMPLETED = "8006"; // 경매 완료 상태
 	public static final String AUCTION_STATUS_FINISH = "8007"; // 경매 종료 상태
 
 	// 경매 시작 카운트 다운 상태

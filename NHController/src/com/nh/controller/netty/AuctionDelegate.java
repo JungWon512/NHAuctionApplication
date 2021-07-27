@@ -64,6 +64,11 @@ public class AuctionDelegate {
         return sendMessage(nettySendable);
     }
 
+
+    public String onSendSettingInfo(NettySendable nettySendable) {
+        return sendMessage(nettySendable);
+    }
+
     /**
      * @return
      * @Description 세션 체크

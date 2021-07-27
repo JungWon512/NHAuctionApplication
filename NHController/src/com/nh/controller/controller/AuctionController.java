@@ -762,21 +762,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				initBiddingInfoDataList();
 
-				mIsPass = false;
-				// 경매 상태
-				updateAuctionStateInfo(code, false, null);
-				break;
-			case GlobalDefineCode.AUCTION_STATUS_START:
-			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
-				// ENTER 경매시작 -> 경매완료 변경
-				mBtnEnter.setText(mResMsg.getString("str.btn.stop"));
-				CommonUtils.getInstance().addStyleClass(mBtnEnter, "btn-auction-stop");
-				mBtnEnter.setDisable(false);
-				mBtnF7.setDisable(false);
-				// 경매 상태
-				updateAuctionStateInfo(code, false, null);
-				break;
-			case GlobalDefineCode.AUCTION_STATUS_FINISH:
+                    mIsPass = false;
+                    // 경매 상태
+                    updateAuctionStateInfo(code, false, null);
+                    break;
+                case GlobalDefineCode.AUCTION_STATUS_START:
+                    break;
+                case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+                    // ENTER 경매시작 -> 경매완료 변경
+                    mBtnEnter.setText(mResMsg.getString("str.btn.stop"));
+                    CommonUtils.getInstance().addStyleClass(mBtnEnter, "btn-auction-stop");
+                    mBtnEnter.setDisable(false);
+                    mBtnF7.setDisable(false);
+                    // 경매 상태
+                    updateAuctionStateInfo(code, false, null);
+                    break;
+                case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
+                    break;
+                case GlobalDefineCode.AUCTION_STATUS_FINISH:
 
 				if (mCurrentSpEntryInfo != null) {
 					addFinishedTableViewItem(mCurrentSpEntryInfo);
@@ -818,22 +821,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			switch (code) {
 
-			case GlobalDefineCode.AUCTION_STATUS_READY:
-				mAuctionStateReadyLabel.setDisable(false);
-				mAuctionStateProgressLabel.setDisable(true);
-				mAuctionStateSuccessLabel.setDisable(true);
-				mAuctionStateFailLabel.setDisable(true);
-				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.ready"));
-				break;
-			case GlobalDefineCode.AUCTION_STATUS_START:
-			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
-				mAuctionStateReadyLabel.setDisable(true);
-				mAuctionStateProgressLabel.setDisable(false);
-				mAuctionStateSuccessLabel.setDisable(true);
-				mAuctionStateFailLabel.setDisable(true);
-				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.progress"));
-				break;
-			case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
+                case GlobalDefineCode.AUCTION_STATUS_READY:
+                    mAuctionStateReadyLabel.setDisable(false);
+                    mAuctionStateProgressLabel.setDisable(true);
+                    mAuctionStateSuccessLabel.setDisable(true);
+                    mAuctionStateFailLabel.setDisable(true);
+                    mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.ready"));
+                    break;
+                case GlobalDefineCode.AUCTION_STATUS_START:
+                case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+                    mAuctionStateReadyLabel.setDisable(true);
+                    mAuctionStateProgressLabel.setDisable(false);
+                    mAuctionStateSuccessLabel.setDisable(true);
+                    mAuctionStateFailLabel.setDisable(true);
+                    mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.progress"));
+                    break;
+                case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
+                    // REFACTOR: 경매완료 후, 경매시작 - server가 아닌 controller에서 진행하도록 변경 됨. (21.07.27)
 
 				mAuctionStateReadyLabel.setDisable(true);
 				mAuctionStateProgressLabel.setDisable(true);
@@ -851,14 +855,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					mCurrentSpEntryInfo.setAuctionResult(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL));
 				}
 
-				addFinishedTableViewItem(mCurrentSpEntryInfo);
-				
-				selecIndextWaitTable(1);
-
-				break;
-			case GlobalDefineCode.AUCTION_STATUS_FINISH:
-				break;
-			}
+                    addFinishedTableViewItem(mCurrentSpEntryInfo);
+                    // 낙유찰 화면 딜레이 2초 후 경매 대기 전환
+                    PauseTransition pauseTransition = new PauseTransition(Duration.millis(2000));
+                    pauseTransition.setOnFinished(event -> {
+                        selecIndextWaitTable(1);
+                        // 경매 대기
+                        setAuctionStatus(GlobalDefineCode.AUCTION_STATUS_READY);
+                        setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+                    });
+                    pauseTransition.play();
+                    break;
+                case GlobalDefineCode.AUCTION_STATUS_FINISH:
+                    break;
+            }
 
 		});
 	}

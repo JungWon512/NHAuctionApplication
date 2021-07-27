@@ -92,7 +92,7 @@ public class ConnectionInfoMapperService extends BaseMapperService<ConnectionInf
                     userNum,
                     Integer.parseInt(info.getUserMemNum()),
                     timeStamp,
-                    "141507078"
+                    "141507078"  // TODO: 관리자번호 변경
             ));
         }
         return userList;
