@@ -2,10 +2,7 @@ package com.nh.controller.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 import com.nh.controller.interfaces.StringListener;
@@ -21,7 +18,6 @@ import com.nh.controller.utils.MoveStageUtil;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.ResponseConnectionInfo;
-import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
@@ -36,11 +32,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
@@ -52,16 +46,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class AuctionController extends BaseAuctionController implements Initializable {
-
-	private ObservableList<SpEntryInfo> mFinishedEntryInfoDataList = FXCollections.observableArrayList(); // 끝난 출품
-	private ObservableList<SpEntryInfo> mWaitEntryInfoDataList = FXCollections.observableArrayList(); // 대기중 출품
-	private ObservableList<SpBidding> mBiddingUserInfoDataList = FXCollections.observableArrayList(); // 응찰 현황
-	private ObservableList<SpEntryInfo> mConnectionUserDataList = FXCollections.observableArrayList(); // 접속자 현황
-	private ObservableList<SpEntryInfo> mDummyRow = FXCollections.observableArrayList(); // dummy row
-	private int DUMMY_ROW_WAIT = 8;
-	private int DUMMY_ROW_FINISHED = 4;
-
-	private int mRecordCount = 0; // cow total data count
 
 	@FXML // root pane
 	public BorderPane mRootPane;
@@ -283,19 +267,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 *
 	 * @param dataMap
 	 */
-	private void initWaitEntryDataList(LinkedHashMap<String, SpEntryInfo> dataMap) {
+	private void initWaitEntryDataList(ObservableList<SpEntryInfo> dataList) {
 
-		if (dataMap.size() > 0) {
 
-			mWaitEntryInfoDataList.clear();
-
-			for (Entry<String, SpEntryInfo> spEntryInfo : dataMap.entrySet()) {
-				mWaitEntryInfoDataList.add(spEntryInfo.getValue());
-				System.out.println(spEntryInfo.getValue().getEncodedMessage());
-			}
+		if (dataList.size() > 0) {
 
 			// 총 데이터 수 저장
-			mRecordCount = mWaitEntryInfoDataList.size();
+			mRecordCount = dataList.size();
 
 			// dummy row
 			mDummyRow.clear();
@@ -303,7 +281,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mDummyRow.add(new SpEntryInfo());
 			}
 
-			mWaitTableView.setItems(mWaitEntryInfoDataList);
+			mWaitTableView.setItems(dataList);
 			mWaitTableView.getItems().addAll(mDummyRow);
 
 			if (mWaitTableView.getItems().size() > 0) {
@@ -405,19 +383,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				@Override
 				public void run() {
 
-					for (Entry<String, SpEntryInfo> entryInfo : mEntryRepositoryMap.entrySet()) {
-						addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(entryInfo.getValue()));
+					for (SpEntryInfo entryInfo : mWaitEntryInfoDataList) {
+						addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(entryInfo));
 					}
 
-					addLogItem(String.format(mResMsg.getString("msg.send.entry.data.result"), mEntryRepositoryMap.size()));
+					addLogItem(String.format(mResMsg.getString("msg.send.entry.data.result"), mWaitEntryInfoDataList.size()));
 
 					mBtnF1.setDisable(true);
-
-					initWaitEntryDataList(mEntryRepositoryMap);
 
 					Platform.runLater(() -> {
 						CommonUtils.getInstance().dismissLoadingDialog();
 					});
+					
 				}
 			};
 
@@ -623,15 +600,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		entryInfoDataList = entryService.getAllEntryData("20210702", "8808990656656", "3"); // 테스트
 
 		// DB EntryInfo -> Sp EntryInfo
-		mEntryRepositoryMap.clear();
-
-		mEntryRepositoryMap = entryInfoDataList.stream().collect(LinkedHashMap::new, (map, item) -> map.put(item.getEntryNum(), new SpEntryInfo(item)), Map::putAll);
+		mWaitEntryInfoDataList.clear();
+		mWaitEntryInfoDataList = getParsingEntryDataList(entryInfoDataList);
 
 //		for (Entry<String, SpEntryInfo> spEntryInfo : mEntryRepositoryMap.entrySet()) {
 //			System.out.println(spEntryInfo.getKey());
 //		}
 
-		initWaitEntryDataList(mEntryRepositoryMap);
+		initWaitEntryDataList(mWaitEntryInfoDataList);
 	}
 
 	/**

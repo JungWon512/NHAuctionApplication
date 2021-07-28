@@ -1,5 +1,23 @@
 package com.nh.controller.controller;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nh.common.interfaces.NettyControllable;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpBidding;
@@ -10,30 +28,45 @@ import com.nh.controller.service.ConnectionInfoMapperService;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
 import com.nh.share.code.GlobalDefineCode;
-import com.nh.share.common.models.*;
-import com.nh.share.controller.models.EditSetting;
+import com.nh.share.common.models.AuctionResult;
+import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.common.models.Bidding;
+import com.nh.share.common.models.CancelBidding;
+import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
-import com.nh.share.server.models.*;
+import com.nh.share.server.models.AuctionCheckSession;
+import com.nh.share.server.models.AuctionCountDown;
+import com.nh.share.server.models.CurrentEntryInfo;
+import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.RequestAuctionResult;
+import com.nh.share.server.models.ResponseCode;
+import com.nh.share.server.models.ToastMessage;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.util.*;
 
 public class BaseAuctionController implements NettyControllable {
 
     protected Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+	protected ObservableList<SpEntryInfo> mWaitEntryInfoDataList = FXCollections.observableArrayList(); // 대기중 출품
+	protected ObservableList<SpEntryInfo> mFinishedEntryInfoDataList = FXCollections.observableArrayList(); // 끝난 출품
+	protected ObservableList<SpBidding> mBiddingUserInfoDataList = FXCollections.observableArrayList(); // 응찰 현황
+	protected ObservableList<SpEntryInfo> mConnectionUserDataList = FXCollections.observableArrayList(); // 접속자 현황
+	protected ObservableList<SpEntryInfo> mDummyRow = FXCollections.observableArrayList(); // dummy row
+	protected int DUMMY_ROW_WAIT = 8;
+	protected int DUMMY_ROW_FINISHED = 4;
+	protected int mRecordCount = 0; // cow total data count
+    
     protected ResourceBundle mResMsg = null; // 메세지 처리
 
     protected FXMLLoader mFxmlLoader = null;
@@ -41,8 +74,6 @@ public class BaseAuctionController implements NettyControllable {
     protected Stage mStage = null; // 현재 Stage
 
     protected AuctionRound auctionRound = null; // 경매 회차 정보
-
-    protected LinkedHashMap<String, SpEntryInfo> mEntryRepositoryMap = null; // 출품 리스트
 
     protected SpEntryInfo mCurrentSpEntryInfo = null; // 현재 진행 출품
 
@@ -65,7 +96,6 @@ public class BaseAuctionController implements NettyControllable {
         mAuctionStatus = new AuctionStatus();
         mBeForeBidderDataList = new ArrayList<SpBidding>();
         mCurrentBidderMap = new LinkedHashMap<String, SpBidding>();
-        mEntryRepositoryMap = new LinkedHashMap<String, SpEntryInfo>();
         AuctionDelegate.getInstance().setClearVariable();
     }
 
@@ -252,11 +282,11 @@ public class BaseAuctionController implements NettyControllable {
     @Override
     public void onRequestAuctionResult(RequestAuctionResult requestAuctionResult) {
 
-        if (mEntryRepositoryMap != null && mEntryRepositoryMap.size() > 0) {
+        if (mWaitEntryInfoDataList != null && mWaitEntryInfoDataList.size() > 0) {
 
-            if (mEntryRepositoryMap.containsKey(requestAuctionResult.getEntryNum())) {
+            if (mCurrentSpEntryInfo.getEntryNum().getValue().equals(requestAuctionResult.getEntryNum())) {
 
-                SpEntryInfo entryInfo = mEntryRepositoryMap.get(requestAuctionResult.getEntryNum());
+                SpEntryInfo entryInfo = mCurrentSpEntryInfo;
 
                 if (entryInfo != null) {
 
@@ -656,5 +686,20 @@ public class BaseAuctionController implements NettyControllable {
     protected Optional<ButtonType> showAlertPopupOneButton(String message) {
         return CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, mResMsg.getString("popup.btn.close"));
     }
+    
+    
+    /**
+	 * EntryInfo -> SpEntryInfo
+	 * @param dataList
+	 * @return
+	 */
+	protected ObservableList<SpEntryInfo> getParsingEntryDataList(List<EntryInfo> dataList) {
+		
+		ObservableList<SpEntryInfo> resultDataList  = dataList.stream()
+				.map(item -> new SpEntryInfo(item))
+				.collect(Collectors.toCollection(FXCollections::observableArrayList));
+		
+		return resultDataList;
+	}
 
 }
