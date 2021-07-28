@@ -35,6 +35,12 @@
                 <property name="url" value="${db.url}"/>
                 <property name="username" value="${db.username}"/>
                 <property name="password" value="${db.password}"/>
+                <property name="poolPingQuery" value="select 1"/> <!-- 핑 쿼리 -->
+                <property name="poolPingEnabled" value="true"/>  <!-- 핑 쿼리 -->
+                <property name="poolMaximumActiveConnections" value="100"/> <!-- 주어진 시간에 존재할수 있는 활성화된 커넥션 수 -->
+                <property name="poolMaximumIdleConnections" value="100"/>    <!-- 주어진 시간에 존재할 수 있는 유휴 커넥션의 수 -->
+                <property name="poolPingConnectionsNotUsedFor" value="7200000"/> <!--  유휴상태의 커넥션이 닫히는지 판단할 시간(ms): 2시간마다 -->
+                <property name="poolTimeToWait" value="20000"/> <!-- 사용된 커넥션을 기다리는 시간(ms): 20초(default) -->
             </dataSource>
         </environment>
     </environments>
