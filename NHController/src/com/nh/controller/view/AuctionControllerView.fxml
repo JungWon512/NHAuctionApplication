@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRootPane" maxHeight="1024.0" maxWidth="1280.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1024.0" prefWidth="1280.0" styleClass="base-root" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
+<BorderPane fx:id="mRootPane" maxHeight="1024.0" maxWidth="1280.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1024.0" prefWidth="1280.0" styleClass="base-pane" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
    <top>
       <GridPane BorderPane.alignment="CENTER">
         <columnConstraints>
