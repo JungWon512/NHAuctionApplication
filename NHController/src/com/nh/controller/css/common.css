@@ -1,0 +1,23 @@
+.text {
+    -fx-font-smoothing-type: gray;
+}
+
+.button {
+    -fx-font-smoothing-type: gray;
+}
+
+.label {
+    -fx-font-smoothing-type: gray;
+}
+
+.text-field {
+    -fx-font-smoothing-type: gray;
+}
+
+.text-area {
+    -fx-font-smoothing-type: gray;
+}
+
+.base-pane {
+    -fx-background-color: #0A1931;
+}

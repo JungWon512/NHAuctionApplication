@@ -1,16 +1,4 @@
-.text{
-	-fx-font-smoothing-type: gray;
-}
-
-.label{
-	-fx-font-smoothing-type: gray;
-}
-
-.base-root{
-	-fx-background-color : #0a1931;
-}
-
-
+@import "common.css";
 .base-contents{
 	-fx-background-color : #ffffff;
 	-fx-background-radius: 5;

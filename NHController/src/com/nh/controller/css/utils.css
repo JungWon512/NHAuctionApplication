@@ -1,3 +1,4 @@
+@import "common.css";
 .dialog-pane{
 	-fx-background-color: #0A1931;
 	-fx-border-width: 1.0px;

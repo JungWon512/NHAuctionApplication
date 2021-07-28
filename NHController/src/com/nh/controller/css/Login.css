@@ -1,15 +1,4 @@
-.text{
-	-fx-font-smoothing-type: gray;
-}
-
-.label{
-	-fx-font-smoothing-type: gray;
-}
-
-.base-pane{
-	-fx-background-color : #0A1931;
-}
-
+@import "common.css";
 .login-view .button{
 	-fx-border-width: 1.0;
 	-fx-border-color: #0082e5;
