@@ -93,7 +93,7 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 				}
 
 				// 현재 출품 정보 노출 설정 정보 전송
-				clientChannelContext.writeAndFlush(new ShowEntryInfo(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode())).getEncodedMessage());
+				//clientChannelContext.writeAndFlush(new ShowEntryInfo(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode())).getEncodedMessage());
 				
 				// 현재 출품 정보 전송
 				if (mAuctionScheduler.getCurrentAuctionStatus(responseConnectionInfo.getAuctionHouseCode())

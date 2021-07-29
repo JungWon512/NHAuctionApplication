@@ -252,6 +252,8 @@ public class Auctioneer {
 			mLogger.debug("readyEntryInfo is null");
 		}
 
+		mLogger.debug("mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() : " + mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount());
+		
 		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
 				&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
 			mAuctionStateMap.get(auctionHouseCode).setCurrentEntryInfo(entryInfo);

@@ -10,7 +10,7 @@ public class AuctionShareSetting {
 	public static final int NETTY_MAX_FRAME_LENGTH = 1024; // 소켓 통신 메시지 최대 길이
 
 	// Auction Server
-	public static final String SERVER_HOST = "https://localhost"; // 서버 호스트
+	public static final String SERVER_HOST = "115.41.222.25"; // 서버 호스트
 	public static final int SERVER_PORT = 5001; // 서버 포트 (가용포트 : 5001 ~ 5020)
 
 	public static final int AUCTION_SERVER_DESTROY_TIMER = (5000);

@@ -50,7 +50,7 @@ public final class AuctionServerDecodedEditSettingHandler extends SimpleChannelI
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, EditSetting editSetting) throws Exception {
-		if (mControllerChannelsMap.get(editSetting.getAuctionHouseCode()).contains(ctx.channel()) == true) {
+		if (mControllerChannelsMap.get(editSetting.getAuctionHouseCode()).contains(ctx.channel())) {
 			mLogger.info("정상 채널에서 경매 설정 변경을 요청하였습니다.");
 			mAuctionScheduler.setAuctionEditSetting(editSetting);
 		} else {

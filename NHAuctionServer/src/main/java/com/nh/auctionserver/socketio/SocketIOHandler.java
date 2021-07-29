@@ -1,5 +1,6 @@
 package com.nh.auctionserver.socketio;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketConfig;
@@ -35,6 +37,8 @@ import com.nh.share.setting.AuctionShareSetting;
 import com.nh.share.utils.JwtCertTokenUtils;
 
 import io.netty.channel.ChannelId;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
@@ -64,6 +68,11 @@ public class SocketIOHandler {
 
 	@Value("${socketio.pingInterval}")
 	private int pingInterval;
+	
+	@Value("${ssl.cert-name}")
+	private String mCertName;
+	@Value("${ssl.key-name}")
+	private String mKeyName;
 
 	private SocketIOServer mSocketIOServer;
 
@@ -78,6 +87,21 @@ public class SocketIOHandler {
 	// 접속 그룹 Map
 	private static Map<String, Map<UUID, SocketIOClient>> mAuctionResultChannelClientMap = new ConcurrentHashMap<>();
 
+	@Bean
+    public SslContext sslContext() {
+        ClassPathResource certPath = new ClassPathResource(mCertName);
+        ClassPathResource keyPath = new ClassPathResource(mKeyName);
+
+        SslContext sslContext = null;
+        try {
+            sslContext = SslContextBuilder.forServer(certPath.getInputStream(), keyPath.getInputStream()).build();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sslContext;
+    }
+	
 	@Bean
 	public SocketIOServer socketIOServer() {
 		try {

@@ -2,6 +2,8 @@ package com.nh.common;
 
 import java.lang.invoke.MethodHandles;
 
+import javax.net.ssl.SSLException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,9 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -61,6 +66,8 @@ public class AuctionShareNettyClient {
 	private int port; // 테스트를 위해 port 확인용 변수, 운영 환경에서는 이용하지 않는다.
 	private EventLoopGroup group;
 	private Channel channel;
+	
+	private SslContext mSSLContext;
 
 	private AuctionShareNettyClient(Builder builder) {
 		this.port = builder.port;
@@ -68,6 +75,13 @@ public class AuctionShareNettyClient {
 	}
 
 	private void createNettyClient(String host, int port, NettyControllable controller) {
+		try {
+			mSSLContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+		} catch (SSLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		group = new NioEventLoopGroup();
 		try {
 			Bootstrap b = new Bootstrap();
@@ -85,6 +99,8 @@ public class AuctionShareNettyClient {
 							 * engine.setEnabledProtocols(new String[] {"TLSv1.2"}); pipeline.addLast(new
 							 * SslHandler(engine));
 							 */
+							pipeline.addLast(mSSLContext.newHandler(ch.alloc(),	AuctionShareSetting.SERVER_HOST, AuctionShareSetting.SERVER_PORT));
+							
 							pipeline.addLast(new DelimiterBasedFrameDecoder(AuctionShareSetting.NETTY_MAX_FRAME_LENGTH,
 									Delimiters.lineDelimiter()));
 							// pipeline.addLast(new WriteTimeoutHandler(15));

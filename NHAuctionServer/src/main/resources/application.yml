@@ -1,4 +1,6 @@
 #logging 설정
+server:
+  port: 8089
 logging:
   level:
     org.springframework: INFO
@@ -6,7 +8,7 @@ logging:
 #socket.io 설정
 socketio:
   host: 192.168.0.23
-  port: 9090
+  port: 9001
   # Set the maximum length of processing data per frame to prevent others from using large data to attack the server
   maxFramePayloadLength: 1048576
   # Set maximum content length for http interaction
@@ -21,3 +23,7 @@ socketio:
   pingTimeout: 6000000
   # Ping message interval (milliseconds), default 25 seconds.Client sends a heartbeat message interval to server
   pingInterval: 25000
+
+ssl:
+  cert-name: File_www.xne20bw05b.kr_apache.crt
+  key-name: KeyFile_www.xne20bw05b.kr_apache.pem

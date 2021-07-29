@@ -15,6 +15,7 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.auctionserver.socketio.SocketIOServer;
 import com.nh.share.setting.AuctionShareSetting;
 
+import io.netty.handler.ssl.SslContext;
 import lombok.RequiredArgsConstructor;
 
 @SpringBootApplication
@@ -27,6 +28,7 @@ public class AuctionServerApplication implements CommandLineRunner, ApplicationL
 	private String[] args = null;
 
 	private final SocketIOServer mSocketIOServer;
+	private final SslContext mSSLContext;
 	
 	//private final SocketIOHandler mSocketIOHandler; 
 
@@ -68,7 +70,7 @@ public class AuctionServerApplication implements CommandLineRunner, ApplicationL
 		runServer(new String[] { "start", "5001" });
 		mSocketIOServer.start();
 		
-		mServer.setSocketIOHandler(mSocketIOServer.getSocketIOHandler());
+		mServer.setSocketIOHandler(mSocketIOServer.getSocketIOHandler(), mSSLContext);
 	}
 
 	@Override
