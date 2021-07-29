@@ -21,20 +21,24 @@ import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.share.code.GlobalDefineCode;
+import com.nh.share.common.models.AuctionReponseSession;
 import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.common.models.RefreshConnector;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
+import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
+import com.nh.share.server.models.ShowEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
-import com.nh.share.utils.JwtCertTokenUtils;
 
 import io.netty.channel.ChannelId;
 import io.netty.handler.ssl.SslContext;
@@ -68,7 +72,7 @@ public class SocketIOHandler {
 
 	@Value("${socketio.pingInterval}")
 	private int pingInterval;
-	
+
 	@Value("${ssl.cert-name}")
 	private String mCertName;
 	@Value("${ssl.key-name}")
@@ -88,20 +92,19 @@ public class SocketIOHandler {
 	private static Map<String, Map<UUID, SocketIOClient>> mAuctionResultChannelClientMap = new ConcurrentHashMap<>();
 
 	@Bean
-    public SslContext sslContext() {
-        ClassPathResource certPath = new ClassPathResource(mCertName);
-        ClassPathResource keyPath = new ClassPathResource(mKeyName);
+	public SslContext sslContext() {
+		ClassPathResource certPath = new ClassPathResource(mCertName);
+		ClassPathResource keyPath = new ClassPathResource(mKeyName);
 
-        SslContext sslContext = null;
-        try {
-            sslContext = SslContextBuilder.forServer(certPath.getInputStream(), keyPath.getInputStream()).build();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return sslContext;
-    }
-	
+		SslContext sslContext = null;
+		try {
+			sslContext = SslContextBuilder.forServer(certPath.getInputStream(), keyPath.getInputStream()).build();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return sslContext;
+	}
+
 	@Bean
 	public SocketIOServer socketIOServer() {
 		try {
@@ -311,7 +314,7 @@ public class SocketIOHandler {
 						client.disconnect();
 					}
 				}
-				
+
 				if (mWatchChannelClientMap.containsKey(connectionInfo.getAuctionHouseCode())) {
 					log.info("mWatchChannelClientMap Current Size : "
 							+ mWatchChannelClientMap.get(connectionInfo.getAuctionHouseCode()).size());
@@ -350,7 +353,7 @@ public class SocketIOHandler {
 									.getEncodedMessage());
 					client.disconnect();
 				}
-				
+
 				if (mAuctionResultChannelClientMap.containsKey(connectionInfo.getAuctionHouseCode())) {
 					log.info("mAuctionResultChannelClientMap Current Size : "
 							+ mAuctionResultChannelClientMap.get(connectionInfo.getAuctionHouseCode()).size());
@@ -400,7 +403,10 @@ public class SocketIOHandler {
 
 					// 접속자 정보 최초 전송
 					for (ChannelId key : mConnectorInfoMap.keySet()) {
-						if (mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+						if (mConnectorInfoMap.get(key).getAuctionHouseCode()
+								.equals(connectionInfo.getAuctionHouseCode())
+								&& mConnectorInfoMap.get(key).getChannel()
+										.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 							try {
 								client.sendEvent("BidderConnectInfo",
 										new BidderConnectInfo(mConnectorInfoMap.get(key).getAuctionHouseCode(),
@@ -421,12 +427,12 @@ public class SocketIOHandler {
 									.getEncodedMessage());
 					client.disconnect();
 				}
-				
+
 				if (mConnectorChannelClientMap.containsKey(connectionInfo.getAuctionHouseCode())) {
 					log.info("mConnectorChannelClientMap Current Size : "
 							+ mConnectorChannelClientMap.get(connectionInfo.getAuctionHouseCode()).size());
 				}
-				
+
 			} else {
 				client.sendEvent("ResponseConnectionInfo",
 						new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
@@ -447,11 +453,11 @@ public class SocketIOHandler {
 					if (uuid.equals(client.getSessionId())) {
 						mConnectorChannelClientMap.get(key).remove(uuid);
 						isFindClient = true;
-						
+
 						log.info("mConnectorChannelClientMap remove SessionID : " + uuid);
 						log.info("mConnectorChannelClientMap Current Size : "
 								+ mConnectorChannelClientMap.get(key).size());
-						
+
 						break;
 					}
 				}
@@ -468,7 +474,7 @@ public class SocketIOHandler {
 					if (uuid.equals(client.getSessionId())) {
 						mAuctionResultChannelClientMap.get(key).remove(uuid);
 						isFindClient = true;
-						
+
 						log.info("mAuctionResultChannelClientMap remove SessionID : " + uuid);
 						log.info("mAuctionResultChannelClientMap Current Size : "
 								+ mAuctionResultChannelClientMap.get(key).size());
@@ -489,10 +495,10 @@ public class SocketIOHandler {
 					if (uuid.equals(client.getSessionId())) {
 						mWatchChannelClientMap.get(key).remove(uuid);
 						isFindClient = true;
-						
+
 						log.info("mWatchChannelClientMap remove SessionID : " + uuid);
 						log.info("mWatchChannelClientMap Current Size : " + mWatchChannelClientMap.get(key).size());
-						
+
 						break;
 					}
 				}
@@ -519,65 +525,211 @@ public class SocketIOHandler {
 
 	public Object messageParse(String message) {
 		String[] messages = replaceEventPrefix(message).split(AuctionShareSetting.DELIMITER_REGEX);
-		switch (messages[0].charAt(1)) {
-		case AuctionCountDown.TYPE:
-			return new AuctionCountDown(messages[1], messages[2], messages[3]);
-		case ResponseCode.TYPE:
-			return new ResponseCode(messages[1], messages[2]);
-		case AuctionStatus.TYPE:
-			return new AuctionStatus(messages);
-		case Bidding.TYPE:
-			return new Bidding(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6],
-					messages[7], messages[8]);
-		case BidderConnectInfo.TYPE:
-			return new BidderConnectInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6]);
-		case AuctionResult.TYPE:
-			return new AuctionResult(messages);
-		case CancelBidding.TYPE:
-			return new CancelBidding(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6]);
-		default:
-			return null;
+		Object result = null;
+
+		if (messages[0].charAt(0) == 'S') {
+			switch (messages[0].charAt(1)) {
+			case AuctionCountDown.TYPE: // 경매 시작 카운트 다운 정보 전송
+				result = new AuctionCountDown(messages[1], messages[2], messages[3]);
+				break;
+			case ToastMessage.TYPE: // 메시지 전송 처리
+				result = new ToastMessage(messages[1], messages[2]);
+				break;
+			case FavoriteEntryInfo.TYPE: // 관심출품 여부 정보
+				result = new FavoriteEntryInfo(messages);
+				break;
+			case ResponseCode.TYPE: // 예외 상황 전송 처리
+				result = new ResponseCode(messages[1], messages[2]);
+				break;
+			case BidderConnectInfo.TYPE: // 접속자 정보 전송
+				result = new BidderConnectInfo(messages);
+				break;
+			case CurrentEntryInfo.TYPE: // 출품 정보 전송
+				result = new CurrentEntryInfo(messages);
+				break;
+			case ShowEntryInfo.TYPE: // 출품 정보 노출 설정 요청
+				result = new ShowEntryInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6],
+						messages[7], messages[8], messages[9]);
+				break;
+			default:
+				result = null;
+				break;
+			}
+		} else if (messages[0].charAt(0) == 'A') {
+			switch (messages[0].charAt(1)) {
+			case AuctionStatus.TYPE: // 경매 상태 정보 전송
+				result = new AuctionStatus(messages);
+				break;
+			case AuctionResult.TYPE: // 낙유찰 결과 전송
+				result = new AuctionResult(messages);
+				break;
+			default:
+				result = null;
+				break;
+			}
 		}
+
+		return result;
 	}
 
-	public void sendPacketData(String targetNamespace, String message) {
-		log.info("sendPacketData targetNamespace : " + targetNamespace);
+	public void sendPacketData(String message) {
 		log.info("sendPacketData message : " + message);
 
 		Object parseObject = messageParse(message);
 
 		if (parseObject instanceof AuctionCountDown) {
-			if (mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().getClients().size() > 0) {
-				mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().sendEvent("AuctionCountDown",
-						message);
+			if (mWatchChannelClientMap.containsKey(((AuctionCountDown) parseObject).getAuctionHouseCode())) {
+				if (mWatchChannelClientMap.get(((AuctionCountDown) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mWatchChannelClientMap.get(((AuctionCountDown) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mWatchChannelClientMap.get(((AuctionCountDown) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("AuctionCountDown", message);
+					}
+				}
 			}
 		} else if (parseObject instanceof ToastMessage) {
-			if (mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().getClients().size() > 0) {
-				mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().sendEvent("ToastMessage",
-						message);
+			if (mWatchChannelClientMap.containsKey(((ToastMessage) parseObject).getAuctionHouseCode())) {
+				if (mWatchChannelClientMap.get(((ToastMessage) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mWatchChannelClientMap.get(((ToastMessage) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mWatchChannelClientMap.get(((ToastMessage) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("ToastMessage", message);
+					}
+				}
 			}
 		} else if (parseObject instanceof FavoriteEntryInfo) {
-			if (mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().getClients().size() > 0) {
-				mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().sendEvent("FavoriteEntryInfo",
-						message);
+			if (mWatchChannelClientMap.containsKey(((FavoriteEntryInfo) parseObject).getAuctionHouseCode())) {
+				if (mWatchChannelClientMap.get(((FavoriteEntryInfo) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mWatchChannelClientMap.get(((FavoriteEntryInfo) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mWatchChannelClientMap.get(((FavoriteEntryInfo) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("FavoriteEntryInfo", message);
+					}
+				}
 			}
 		} else if (parseObject instanceof ResponseCode) {
-			if (mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().getClients().size() > 0) {
-				mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().sendEvent("ResponseCode",
-						message);
+			if (mWatchChannelClientMap.containsKey(((ResponseCode) parseObject).getAuctionHouseCode())) {
+				if (mWatchChannelClientMap.get(((ResponseCode) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mWatchChannelClientMap.get(((ResponseCode) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mWatchChannelClientMap.get(((ResponseCode) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("ResponseCode", message);
+					}
+				}
+			}
+
+			if (mAuctionResultChannelClientMap.containsKey(((ResponseCode) parseObject).getAuctionHouseCode())) {
+				if (mAuctionResultChannelClientMap.get(((ResponseCode) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mAuctionResultChannelClientMap
+							.get(((ResponseCode) parseObject).getAuctionHouseCode()).keySet()) {
+						mAuctionResultChannelClientMap.get(((ResponseCode) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("ResponseCode", message);
+					}
+				}
+			}
+
+			if (mConnectorChannelClientMap.containsKey(((ResponseCode) parseObject).getAuctionHouseCode())) {
+				if (mConnectorChannelClientMap.get(((ResponseCode) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mConnectorChannelClientMap.get(((ResponseCode) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mConnectorChannelClientMap.get(((ResponseCode) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("ResponseCode", message);
+					}
+				}
 			}
 		} else if (parseObject instanceof CurrentEntryInfo) {
-			mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().sendEvent("CurrentEntryInfo",
-					message);
+			if (mWatchChannelClientMap.containsKey(((CurrentEntryInfo) parseObject).getAuctionHouseCode())) {
+				if (mWatchChannelClientMap.get(((CurrentEntryInfo) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mWatchChannelClientMap.get(((CurrentEntryInfo) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mWatchChannelClientMap.get(((CurrentEntryInfo) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("CurrentEntryInfo", message);
+					}
+				}
+			}
 		} else if (parseObject instanceof BidderConnectInfo) {
-			mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().sendEvent("BidderConnectInfo",
-					message);
+			if (mConnectorChannelClientMap.containsKey(((BidderConnectInfo) parseObject).getAuctionHouseCode())) {
+				if (mConnectorChannelClientMap.get(((BidderConnectInfo) parseObject).getAuctionHouseCode())
+						.size() > 0) {
+					for (UUID uuid : mConnectorChannelClientMap
+							.get(((BidderConnectInfo) parseObject).getAuctionHouseCode()).keySet()) {
+						mConnectorChannelClientMap.get(((BidderConnectInfo) parseObject).getAuctionHouseCode())
+								.get(uuid).sendEvent("BidderConnectInfo", message);
+					}
+				}
+			}
 		} else if (parseObject instanceof AuctionStatus) {
-			mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().sendEvent("AuctionStatus", message);
+			if (mWatchChannelClientMap.containsKey(((AuctionStatus) parseObject).getAuctionHouseCode())) {
+				if (mWatchChannelClientMap.get(((AuctionStatus) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mWatchChannelClientMap.get(((AuctionStatus) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mWatchChannelClientMap.get(((AuctionStatus) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("AuctionStatus", message);
+					}
+				}
+			}
+
+			if (mAuctionResultChannelClientMap.containsKey(((AuctionStatus) parseObject).getAuctionHouseCode())) {
+				if (mAuctionResultChannelClientMap.get(((AuctionStatus) parseObject).getAuctionHouseCode())
+						.size() > 0) {
+					for (UUID uuid : mAuctionResultChannelClientMap
+							.get(((AuctionStatus) parseObject).getAuctionHouseCode()).keySet()) {
+						mAuctionResultChannelClientMap.get(((AuctionStatus) parseObject).getAuctionHouseCode())
+								.get(uuid).sendEvent("AuctionStatus", message);
+					}
+				}
+			}
+
+			if (mConnectorChannelClientMap.containsKey(((AuctionStatus) parseObject).getAuctionHouseCode())) {
+				if (mConnectorChannelClientMap.get(((AuctionStatus) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mConnectorChannelClientMap.get(((AuctionStatus) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mConnectorChannelClientMap.get(((AuctionStatus) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("AuctionStatus", message);
+					}
+				}
+			}
 		} else if (parseObject instanceof AuctionResult) {
-			mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().sendEvent("AuctionResult", message);
+			if (mWatchChannelClientMap.containsKey(((AuctionResult) parseObject).getAuctionHouseCode())) {
+				if (mWatchChannelClientMap.get(((AuctionResult) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mWatchChannelClientMap.get(((AuctionResult) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mWatchChannelClientMap.get(((AuctionResult) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("AuctionResult", message);
+					}
+				}
+			}
+
+			if (mAuctionResultChannelClientMap.containsKey(((AuctionResult) parseObject).getAuctionHouseCode())) {
+				if (mAuctionResultChannelClientMap.get(((AuctionResult) parseObject).getAuctionHouseCode())
+						.size() > 0) {
+					for (UUID uuid : mAuctionResultChannelClientMap
+							.get(((AuctionResult) parseObject).getAuctionHouseCode()).keySet()) {
+						mAuctionResultChannelClientMap.get(((AuctionResult) parseObject).getAuctionHouseCode())
+								.get(uuid).sendEvent("AuctionResult", message);
+					}
+				}
+			}
+
+			if (mConnectorChannelClientMap.containsKey(((AuctionResult) parseObject).getAuctionHouseCode())) {
+				if (mConnectorChannelClientMap.get(((AuctionResult) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mConnectorChannelClientMap.get(((AuctionResult) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mConnectorChannelClientMap.get(((AuctionResult) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("AuctionResult", message);
+					}
+				}
+			}
 		} else if (parseObject instanceof CancelBidding) {
-			mSocketIOServer.getNamespace(targetNamespace).getBroadcastOperations().sendEvent("CancelBidding", message);
+			if (mConnectorChannelClientMap.containsKey(((CancelBidding) parseObject).getAuctionHouseCode())) {
+				if (mConnectorChannelClientMap.get(((CancelBidding) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mConnectorChannelClientMap.get(((CancelBidding) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mConnectorChannelClientMap.get(((CancelBidding) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("CancelBidding", message);
+					}
+				}
+			}
 		}
 	}
 
@@ -608,6 +760,9 @@ public class SocketIOHandler {
 			case ConnectionInfo.TYPE:
 				parseObject = new ConnectionInfo(messages[1], messages[2], messages[3], messages[4], messages[5]);
 				break;
+			case RefreshConnector.TYPE:
+				parseObject = new RefreshConnector(messages[1]);
+				break;
 			default:
 				parseObject = null;
 				break;
@@ -615,6 +770,10 @@ public class SocketIOHandler {
 
 			if (parseObject instanceof ConnectionInfo) {
 				registerConnectChannelGroup(client, ((ConnectionInfo) parseObject));
+			} else if (parseObject instanceof RefreshConnector) {
+				if (mAuctioneer != null) {
+					mAuctioneer.getAuctionServer().itemAdded(((RefreshConnector) parseObject).getEncodedMessage());
+				}
 			}
 		}
 	};

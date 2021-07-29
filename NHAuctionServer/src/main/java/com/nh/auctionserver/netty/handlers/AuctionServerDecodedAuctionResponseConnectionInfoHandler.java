@@ -70,9 +70,7 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 
 				// 경매 참가 번호 설정
 				if (mConnectionInfoMap.containsKey(clientChannelContext.channel().id())) {
-					mConnectionInfoMap
-							.get(mConnectionInfoMap.get(clientChannelContext.channel().id()).getAuctionHouseCode())
-							.setAuctionJoinNum(responseConnectionInfo.getAuctionJoinNum());
+					mConnectionInfoMap.get(clientChannelContext.channel().id()).setAuctionJoinNum(responseConnectionInfo.getAuctionJoinNum());
 				}
 
 				// 접속자 정보 전송

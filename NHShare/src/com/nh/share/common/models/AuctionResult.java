@@ -38,7 +38,8 @@ public class AuctionResult implements FromAuctionCommon {
 		mEntryNum = messages[2];
 		mResultCode = messages[3];
 		mSuccessBidder = messages[4];
-		mSuccessBidPrice = messages[5];
+		mSuccessAuctionJoinNum = messages[5];
+		mSuccessBidPrice = messages[6];
 	}
 
 	public String getAuctionHouseCode() {

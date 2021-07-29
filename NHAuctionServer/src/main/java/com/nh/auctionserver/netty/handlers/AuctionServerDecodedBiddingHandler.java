@@ -70,11 +70,7 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 					
 					// 응찰 정보 수집
 					mAuctionServer.itemAdded(bidding.getEncodedMessage());
-					
-					// 응찰 정보 모니터 채널 전송
-					mAuctionServer.itemAdded(new BidderConnectInfo(bidding.getAuctionHouseCode(),
-							bidding.getUserNo(), GlobalDefineCode.CONNECT_CHANNEL_BIDDER,
-							bidding.getChannel(), "B", bidding.getPrice()).getEncodedMessage());
+				
 				} else {
 					mLogger.debug("=============================================");
 					mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());

@@ -72,7 +72,9 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 			if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 				mLogger.debug("CONNECT_CHANNEL_BIDDER SIZE : " + mBidderChannelsMap.size());
 
-				if (mControllerChannelsMap != null && mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {
+				if (mControllerChannelsMap != null
+						&& mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode())
+						&& mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {
 					mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode())
 							.writeAndFlush(connectionInfo.getEncodedMessage() + "\r\n");
 
@@ -319,7 +321,9 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 				// 접속자 정보 최초 전송
 				for (ChannelId key : mConnectionInfoMap.keySet()) {
-					if (mConnectionInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+					if (mConnectionInfoMap.get(key).getAuctionHouseCode().equals(connectionInfo.getAuctionHouseCode())
+							&& mConnectionInfoMap.get(key).getChannel()
+									.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 						ctx.channel()
 								.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(key).getAuctionHouseCode(),
 										mConnectionInfoMap.get(key).getAuctionJoinNum(),
@@ -426,7 +430,9 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 				// 접속자 정보 최초 전송
 				for (ChannelId key : mConnectionInfoMap.keySet()) {
-					if (mConnectionInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+					if (mConnectionInfoMap.get(key).getAuctionHouseCode().equals(connectionInfo.getAuctionHouseCode())
+							&& mConnectionInfoMap.get(key).getChannel()
+									.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 						ctx.channel()
 								.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(key).getAuctionHouseCode(),
 										mConnectionInfoMap.get(key).getAuctionJoinNum(),

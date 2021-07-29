@@ -38,8 +38,6 @@ import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 
 import io.netty.channel.ChannelId;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.concurrent.DefaultEventExecutor;
 
 public class Auctioneer {
 	private final Logger mLogger = LoggerFactory.getLogger(Auctioneer.class);
@@ -252,8 +250,9 @@ public class Auctioneer {
 			mLogger.debug("readyEntryInfo is null");
 		}
 
-		mLogger.debug("mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() : " + mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount());
-		
+		mLogger.debug("mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() : "
+				+ mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount());
+
 		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
 				&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
 			mAuctionStateMap.get(auctionHouseCode).setCurrentEntryInfo(entryInfo);
@@ -867,10 +866,11 @@ public class Auctioneer {
 
 	public synchronized void setAuctionEditSetting(EditSetting editSetting) {
 		mAuctionEditSettingMap.put(editSetting.getAuctionHouseCode(), editSetting);
-		
+
 		// 응찰 채널 등록 처리
 		if (mAuctionServer != null) {
-			mAuctionServer.itemAdded(new ShowEntryInfo(getAuctionEditSetting(editSetting.getAuctionHouseCode())).getEncodedMessage());
+			mAuctionServer.itemAdded(
+					new ShowEntryInfo(getAuctionEditSetting(editSetting.getAuctionHouseCode())).getEncodedMessage());
 		}
 	}
 
@@ -880,5 +880,9 @@ public class Auctioneer {
 		} else {
 			return null;
 		}
+	}
+
+	public synchronized AuctionServer getAuctionServer() {
+		return mAuctionServer;
 	}
 }
