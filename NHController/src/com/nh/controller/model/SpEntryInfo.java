@@ -74,7 +74,7 @@ public class SpEntryInfo implements FromAuctionController {
 		this.mGender = new SimpleStringProperty(entryInfo.getGender());
 		this.mMotherTypeCode = new SimpleStringProperty(entryInfo.getMotherTypeCode());
 		this.mMotherObjNum = new SimpleStringProperty(entryInfo.getMotherObjNum());
-		this.mMatime = new SimpleStringProperty(entryInfo.getMatime());
+		this.mMatime = new SimpleStringProperty(entryInfo.getMaTime());
 		this.mPasgQcn = new SimpleStringProperty(entryInfo.getPasgQcn());
 		this.mObjIdNum = new SimpleStringProperty(entryInfo.getObjIdNum());
 		this.mObjRegNum = new SimpleStringProperty(entryInfo.getObjRegNum());

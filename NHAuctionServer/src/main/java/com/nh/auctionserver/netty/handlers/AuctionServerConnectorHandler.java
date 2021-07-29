@@ -322,8 +322,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					if (mConnectionInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 						ctx.channel()
 								.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(key).getAuctionHouseCode(),
-										JwtCertTokenUtils.getInstance()
-												.getUserMemNum(mConnectionInfoMap.get(key).getAuthToken()),
+										mConnectionInfoMap.get(key).getAuctionJoinNum(),
 										mConnectionInfoMap.get(key).getChannel(), mConnectionInfoMap.get(key).getOS(),
 										"N", "0").getEncodedMessage() + "\r\n");
 					}
@@ -430,8 +429,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					if (mConnectionInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 						ctx.channel()
 								.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(key).getAuctionHouseCode(),
-										JwtCertTokenUtils.getInstance()
-												.getUserMemNum(mConnectionInfoMap.get(key).getAuthToken()),
+										mConnectionInfoMap.get(key).getAuctionJoinNum(),
 										mConnectionInfoMap.get(key).getChannel(), mConnectionInfoMap.get(key).getOS(),
 										"N", "0").getEncodedMessage() + "\r\n");
 					}

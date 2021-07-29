@@ -9,9 +9,9 @@ import com.nh.share.setting.AuctionShareSetting;
  * 제어프로그램 -> 경매서버
  * 
  * CI | 조합구분코드 | 출품번호 | 경매대상구분코드 | 축산개체관리번호 | 축산축종구분코드 | 농가식별번호 | 농장관리번호 | 농가명 |
- * 브랜드명 | 생년월일 | KPN번호 | 개체성별코드 | 어미소구분코드 | 어미소축산개체관리번호 | 산차 | 계대 | 계체식별번호 |
- * 축산개체종축등록번호 | 등록구분번호 | 출하생산지역 | 친자검사결과여부 | 신규여부 | 우출하중량 | 최초최저낙찰한도금액 |
- * 최저낙찰한도금액 | 비고내용 | 낙유찰결과 | 낙찰자 | 낙찰금액 | 응찰일시 | 마지막출품여부
+ * 브랜드명 | 생년월일 | KPN번호 | 개체성별코드 | 어미소구분코드 | 어미소축산개체관리번호 | 산차 | 임신개월수 | 계대 |
+ * 계체식별번호 | 축산개체종축등록번호 | 등록구분번호 | 출하생산지역 | 친자검사결과여부 | 신규여부 | 우출하중량 | 최초최저낙찰한도금액
+ * | 최저낙찰한도금액 | 비고내용 | 낙유찰결과 | 낙찰자 | 낙찰금액 | 응찰일시 | 마지막출품여부
  *
  */
 public class EntryInfo implements FromAuctionController {
@@ -31,7 +31,8 @@ public class EntryInfo implements FromAuctionController {
 	private String mGender; // 개체성별코드
 	private String mMotherTypeCode; // 어미구분코드
 	private String mMotherObjNum; // 어미축산개체관리번호
-	private String mMatime; // 산차
+	private String mMaTime; // 산차
+	private String mMaMonth; // 임신개월수
 	private String mPasgQcn; // 계대
 	private String mObjIdNum; // 개체식별번호
 	private String mObjRegNum; // 축산개체종축등록번호
@@ -54,10 +55,10 @@ public class EntryInfo implements FromAuctionController {
 
 	public EntryInfo(String auctionHouseCode, String entryNum, String entryType, String indNum, String indMngCd,
 			String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday, String kpn,
-			String gender, String motherTypeCode, String motherObjNum, String matime, String pasgQcn, String objIdNum,
-			String objRegNum, String objRegTypeNum, String rgnName, String dnaYn, String isNew, String weight,
-			String initPrice, String lowPrice, String note, String auctionResult, String auctionSucBidder,
-			String auctionBidPrice, String auctionBidDateTime, String isLastEntry) {
+			String gender, String motherTypeCode, String motherObjNum, String maTime, String maMonth, String pasgQcn,
+			String objIdNum, String objRegNum, String objRegTypeNum, String rgnName, String dnaYn, String isNew,
+			String weight, String initPrice, String lowPrice, String note, String auctionResult,
+			String auctionSucBidder, String auctionBidPrice, String auctionBidDateTime, String isLastEntry) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 		mEntryType = entryType;
@@ -72,7 +73,8 @@ public class EntryInfo implements FromAuctionController {
 		mGender = gender;
 		mMotherTypeCode = motherTypeCode;
 		mMotherObjNum = motherObjNum;
-		mMatime = matime;
+		mMaTime = maTime;
+		mMaMonth = maMonth;
 		mPasgQcn = pasgQcn;
 		mObjIdNum = objIdNum;
 		mObjRegNum = objRegNum;
@@ -106,23 +108,24 @@ public class EntryInfo implements FromAuctionController {
 		mGender = messages[12];
 		mMotherTypeCode = messages[13];
 		mMotherObjNum = messages[14];
-		mMatime = messages[15];
-		mPasgQcn = messages[16];
-		mObjIdNum = messages[17];
-		mObjRegNum = messages[18];
-		mObjRegTypeNum = messages[19];
-		mRgnName = messages[20];
-		mDnaYn = messages[21];
-		mIsNew = messages[22];
-		mWeight = messages[23];
-		mInitPrice = messages[24];
-		mLowPrice = messages[25];
-		mNote = messages[26];
-		mAuctionResult = messages[27];
-		mAuctionSucBidder = messages[28];
-		mAuctionBidPrice = messages[29];
-		mAuctionBidDateTime = messages[30];
-		mIsLastEntry = messages[31];
+		mMaTime = messages[15];
+		mMaMonth = messages[16];
+		mPasgQcn = messages[17];
+		mObjIdNum = messages[18];
+		mObjRegNum = messages[19];
+		mObjRegTypeNum = messages[20];
+		mRgnName = messages[21];
+		mDnaYn = messages[22];
+		mIsNew = messages[23];
+		mWeight = messages[24];
+		mInitPrice = messages[25];
+		mLowPrice = messages[26];
+		mNote = messages[27];
+		mAuctionResult = messages[28];
+		mAuctionSucBidder = messages[29];
+		mAuctionBidPrice = messages[30];
+		mAuctionBidDateTime = messages[31];
+		mIsLastEntry = messages[32];
 	}
 
 	public String getAuctionHouseCode() {
@@ -237,12 +240,20 @@ public class EntryInfo implements FromAuctionController {
 		this.mMotherObjNum = mMotherObjNum;
 	}
 
-	public String getMatime() {
-		return mMatime;
+	public String getMaTime() {
+		return mMaTime;
 	}
 
-	public void setMatime(String mMatime) {
-		this.mMatime = mMatime;
+	public void setMaTime(String maTime) {
+		this.mMaTime = maTime;
+	}
+
+	public String getMaMonth() {
+		return mMaMonth;
+	}
+
+	public void setMatime(String maMonth) {
+		this.mMaMonth = maMonth;
 	}
 
 	public String getPasgQcn() {
@@ -376,7 +387,7 @@ public class EntryInfo implements FromAuctionController {
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
-				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
 				mEntryNum, AuctionShareSetting.DELIMITER, mEntryType, AuctionShareSetting.DELIMITER, mIndNum,
 				AuctionShareSetting.DELIMITER, mIndMngCd, AuctionShareSetting.DELIMITER, mFhsNum,
@@ -384,15 +395,15 @@ public class EntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mBrandName, AuctionShareSetting.DELIMITER, mBirthday,
 				AuctionShareSetting.DELIMITER, mKpn, AuctionShareSetting.DELIMITER, mGender,
 				AuctionShareSetting.DELIMITER, mMotherTypeCode, AuctionShareSetting.DELIMITER, mMotherObjNum,
-				AuctionShareSetting.DELIMITER, mMatime, AuctionShareSetting.DELIMITER, mPasgQcn,
-				AuctionShareSetting.DELIMITER, mObjIdNum, AuctionShareSetting.DELIMITER, mObjRegNum,
-				AuctionShareSetting.DELIMITER, mObjRegTypeNum, AuctionShareSetting.DELIMITER, mRgnName,
-				AuctionShareSetting.DELIMITER, mDnaYn, AuctionShareSetting.DELIMITER, mIsNew,
-				AuctionShareSetting.DELIMITER, mWeight, AuctionShareSetting.DELIMITER, mInitPrice,
-				AuctionShareSetting.DELIMITER, mLowPrice, AuctionShareSetting.DELIMITER, mNote,
-				AuctionShareSetting.DELIMITER, mAuctionResult, AuctionShareSetting.DELIMITER, mAuctionSucBidder,
-				AuctionShareSetting.DELIMITER, mAuctionBidPrice, AuctionShareSetting.DELIMITER, mAuctionBidDateTime,
-				AuctionShareSetting.DELIMITER, mIsLastEntry);
+				AuctionShareSetting.DELIMITER, mMaTime, AuctionShareSetting.DELIMITER, mMaMonth,
+				AuctionShareSetting.DELIMITER, mPasgQcn, AuctionShareSetting.DELIMITER, mObjIdNum,
+				AuctionShareSetting.DELIMITER, mObjRegNum, AuctionShareSetting.DELIMITER, mObjRegTypeNum,
+				AuctionShareSetting.DELIMITER, mRgnName, AuctionShareSetting.DELIMITER, mDnaYn,
+				AuctionShareSetting.DELIMITER, mIsNew, AuctionShareSetting.DELIMITER, mWeight,
+				AuctionShareSetting.DELIMITER, mInitPrice, AuctionShareSetting.DELIMITER, mLowPrice,
+				AuctionShareSetting.DELIMITER, mNote, AuctionShareSetting.DELIMITER, mAuctionResult,
+				AuctionShareSetting.DELIMITER, mAuctionSucBidder, AuctionShareSetting.DELIMITER, mAuctionBidPrice,
+				AuctionShareSetting.DELIMITER, mAuctionBidDateTime, AuctionShareSetting.DELIMITER, mIsLastEntry);
 	}
 
 }

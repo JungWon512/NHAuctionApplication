@@ -9,7 +9,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 제어프로그램 -> 경매서버
  * 
- * CF | 조합구분코드 | 출품번호 | 낙/유찰결과코드(01/02) | 낙찰자회원번호 | 낙찰금액
+ * CF | 조합구분코드 | 출품번호 | 낙/유찰결과코드(01/02) | 낙찰자회원번호(거래인번호) | 낙찰자경매참가번호 | 낙찰금액
  *
  */
 public class SendAuctionResult implements FromAuctionController {
@@ -17,17 +17,20 @@ public class SendAuctionResult implements FromAuctionController {
 	private String mAuctionHouseCode; // 거점코드
 	private String mEntryNum; // 출품 번호
 	private String mResultCode; // 낙,유찰 결과 코드
-	private String mSuccessBidder; // 낙찰자 회원번호
-	private String mSuccessBidPrice; 
+	private String mSuccessBidder; // 낙찰자 회원번호(거래인번호)
+	private String mSuccessAuctionJoinNum; // 낙찰자 경매참가번호
+	private String mSuccessBidPrice;
 
-	public SendAuctionResult() {}
-	
+	public SendAuctionResult() {
+	}
+
 	public SendAuctionResult(String auctionHouseCode, String entryNum, String resultCode, String successBidder,
-			String successBidPrice) {
+			String successAuctionJoinNum, String successBidPrice) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 		mResultCode = resultCode;
 		mSuccessBidder = successBidder;
+		mSuccessAuctionJoinNum = successAuctionJoinNum;
 		mSuccessBidPrice = successBidPrice;
 	}
 
@@ -71,6 +74,14 @@ public class SendAuctionResult implements FromAuctionController {
 		this.mSuccessBidder = successBidder;
 	}
 
+	public String getSuccessAuctionJoinNum() {
+		return mSuccessAuctionJoinNum;
+	}
+
+	public void setSuccessAuctionJoinNum(String successAuctionJoinNum) {
+		this.mSuccessAuctionJoinNum = successAuctionJoinNum;
+	}
+
 	public String getSuccessBidPrice() {
 		return mSuccessBidPrice;
 	}
@@ -80,13 +91,15 @@ public class SendAuctionResult implements FromAuctionController {
 	}
 
 	public AuctionResult getConvertAuctionResult() {
-		return new AuctionResult(mAuctionHouseCode, mEntryNum, mResultCode, mSuccessBidder, mSuccessBidPrice);
+		return new AuctionResult(mAuctionHouseCode, mEntryNum, mResultCode, mSuccessBidder, mSuccessAuctionJoinNum,
+				mSuccessBidPrice);
 	}
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode,
-				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mResultCode,
-				AuctionShareSetting.DELIMITER, mSuccessBidder, AuctionShareSetting.DELIMITER, mSuccessBidPrice);
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
+				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mResultCode,
+				AuctionShareSetting.DELIMITER, mSuccessBidder, AuctionShareSetting.DELIMITER, mSuccessAuctionJoinNum,
+				AuctionShareSetting.DELIMITER, mSuccessBidPrice);
 	}
 }

@@ -11,7 +11,8 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 응찰기 -> 경매서버 -> 제어
  * 
- * AB | 경매거점코드 | 접속채널(ANDROID/IOS/WEB) | 경매회원번호 | 출품번호 | 응찰금액(만원) | 신규응찰여부(Y/N)
+ * AB | 조합구분코드 | 접속채널(ANDROID/IOS/WEB) | 경매회원번호(거래인번호) | 경매참가번호 | 출품번호 |
+ * 응찰금액(만원) | 신규응찰여부(Y/N) | 응찰시간(yyyyMMddhhmmssSSS)
  *
  */
 public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidding> {
@@ -20,6 +21,7 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 	private String mAuctionHouseCode;
 	private String mChannel;
 	private String mUserNo;
+	private String mAuctionJoinNum;
 	private String mPrice;
 	private String mBiddingTime;
 	private String mEntryNum;
@@ -28,11 +30,12 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 	private int mPriceInt;
 	private boolean isCancelBidding = false;
 
-	public Bidding(String auctionHouseCode, String channel, String userNo, String entryNum, String price,
-			String isNewBid, String biddingTime) {
+	public Bidding(String auctionHouseCode, String channel, String userNo, String auctionJoinNum, String entryNum,
+			String price, String isNewBid, String biddingTime) {
 		mAuctionHouseCode = auctionHouseCode;
 		mChannel = channel;
 		mUserNo = userNo;
+		mAuctionJoinNum = auctionJoinNum;
 		mPrice = price;
 		mEntryNum = entryNum;
 		mPriceInt = Integer.parseInt(mPrice);
@@ -62,6 +65,14 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 
 	public void setUserNo(String userNo) {
 		this.mUserNo = userNo;
+	}
+
+	public String getAuctionJoinNum() {
+		return mAuctionJoinNum;
+	}
+
+	public void setAuctionJoinNum(String auctionJoinNum) {
+		this.mAuctionJoinNum = auctionJoinNum;
 	}
 
 	public String getPrice() {
@@ -96,7 +107,6 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 	public void setBiddingTime(String biddingTime) {
 		this.mBiddingTime = biddingTime;
 	}
-	
 
 	public boolean isCancelBidding() {
 		return isCancelBidding;
@@ -107,10 +117,11 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 	}
 
 	public String getBiddingInfoForLog() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
 				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mChannel, AuctionShareSetting.DELIMITER, mUserNo,
-				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mPrice,
-				AuctionShareSetting.DELIMITER, mIsNewBid, AuctionShareSetting.DELIMITER, mBiddingTime);
+				AuctionShareSetting.DELIMITER, mAuctionJoinNum, AuctionShareSetting.DELIMITER, mEntryNum,
+				AuctionShareSetting.DELIMITER, mPrice, AuctionShareSetting.DELIMITER, mIsNewBid,
+				AuctionShareSetting.DELIMITER, mBiddingTime);
 	}
 
 	public String getEntryNum() {
@@ -123,10 +134,11 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
 				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mChannel, AuctionShareSetting.DELIMITER, mUserNo,
-				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mPrice,
-				AuctionShareSetting.DELIMITER, mIsNewBid, AuctionShareSetting.DELIMITER, mBiddingTime);
+				AuctionShareSetting.DELIMITER, mAuctionJoinNum, AuctionShareSetting.DELIMITER, mEntryNum,
+				AuctionShareSetting.DELIMITER, mPrice, AuctionShareSetting.DELIMITER, mIsNewBid,
+				AuctionShareSetting.DELIMITER, mBiddingTime);
 	}
 
 	@Override

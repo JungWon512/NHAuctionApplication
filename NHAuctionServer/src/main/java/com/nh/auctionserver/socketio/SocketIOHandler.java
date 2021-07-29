@@ -404,8 +404,7 @@ public class SocketIOHandler {
 							try {
 								client.sendEvent("BidderConnectInfo",
 										new BidderConnectInfo(mConnectorInfoMap.get(key).getAuctionHouseCode(),
-												JwtCertTokenUtils.getInstance()
-														.getUserMemNum(mConnectorInfoMap.get(key).getAuthToken()),
+												mConnectorInfoMap.get(key).getAuctionJoinNum(),
 												mConnectorInfoMap.get(key).getChannel(),
 												mConnectorInfoMap.get(key).getOS(), "N", "0").getEncodedMessage()
 												+ "\r\n");
@@ -529,13 +528,13 @@ public class SocketIOHandler {
 			return new AuctionStatus(messages);
 		case Bidding.TYPE:
 			return new Bidding(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6],
-					messages[7]);
+					messages[7], messages[8]);
 		case BidderConnectInfo.TYPE:
 			return new BidderConnectInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6]);
 		case AuctionResult.TYPE:
 			return new AuctionResult(messages);
 		case CancelBidding.TYPE:
-			return new CancelBidding(messages[1], messages[2], messages[3], messages[4], messages[5]);
+			return new CancelBidding(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6]);
 		default:
 			return null;
 		}

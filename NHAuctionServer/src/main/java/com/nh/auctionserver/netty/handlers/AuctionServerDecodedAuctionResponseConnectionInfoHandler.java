@@ -13,7 +13,6 @@ import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ResponseCode;
-import com.nh.share.server.models.ShowEntryInfo;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
@@ -69,13 +68,20 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 								GlobalDefineCode.CONNECT_SUCCESS, responseConnectionInfo.getUserMemNum(),
 								responseConnectionInfo.getAuctionJoinNum()).getEncodedMessage() + "\r\n");
 
+				// 경매 참가 번호 설정
+				if (mConnectionInfoMap.containsKey(clientChannelContext.channel().id())) {
+					mConnectionInfoMap
+							.get(mConnectionInfoMap.get(clientChannelContext.channel().id()).getAuctionHouseCode())
+							.setAuctionJoinNum(responseConnectionInfo.getAuctionJoinNum());
+				}
+
 				// 접속자 정보 전송
 				mAuctionServer
 						.itemAdded(
 								new BidderConnectInfo(
 										mConnectionInfoMap.get(clientChannelContext.channel().id())
 												.getAuctionHouseCode(),
-										responseConnectionInfo.getUserMemNum(),
+												mConnectionInfoMap.get(clientChannelContext.channel().id()).getAuctionJoinNum(),
 										mConnectionInfoMap.get(clientChannelContext.channel().id()).getChannel(),
 										mConnectionInfoMap.get(clientChannelContext.channel().id()).getOS(), "N", "0")
 												.getEncodedMessage());
@@ -93,8 +99,9 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 				}
 
 				// 현재 출품 정보 노출 설정 정보 전송
-				//clientChannelContext.writeAndFlush(new ShowEntryInfo(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode())).getEncodedMessage());
-				
+				// clientChannelContext.writeAndFlush(new
+				// ShowEntryInfo(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode())).getEncodedMessage());
+
 				// 현재 출품 정보 전송
 				if (mAuctionScheduler.getCurrentAuctionStatus(responseConnectionInfo.getAuctionHouseCode())
 						.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {

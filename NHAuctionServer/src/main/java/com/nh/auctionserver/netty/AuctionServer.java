@@ -927,6 +927,7 @@ public class AuctionServer {
 				if (mSocketIOHandler != null) {
 					mSocketIOHandler.sendPacketData(GlobalDefineCode.NAMESPACE_WATCH, message);
 					mSocketIOHandler.sendPacketData(GlobalDefineCode.NAMESPACE_AUCTION_RESULT, message);
+					mSocketIOHandler.sendPacketData(GlobalDefineCode.NAMESPACE_CONNECTOR, message);
 				}
 
 				// Netty Broadcast
@@ -1004,7 +1005,7 @@ public class AuctionServer {
 
 		if (mConnectorInfoMap.containsKey(channelId)) {
 			// 사용자 접속 해제 상테 전송
-			itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), closeMember,
+			itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), mConnectorInfoMap.get(channelId).getAuctionJoinNum(),
 					mConnectorInfoMap.get(channelId).getChannel(), mConnectorInfoMap.get(channelId).getOS(), "L", "0")
 							.getEncodedMessage());
 
