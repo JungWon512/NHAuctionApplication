@@ -7,6 +7,7 @@ import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.common.models.RefreshConnector;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.setting.AuctionShareSetting;
 
@@ -35,6 +36,8 @@ public class CommonMessageParser {
 			return new AuctionResult(messages);
 		case CancelBidding.TYPE: // 낙유찰 결과 전송
 			return new CancelBidding(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6]);
+		case RefreshConnector.TYPE:
+			return new RefreshConnector(messages[1]);
 		default:
 			return null;
 		}
