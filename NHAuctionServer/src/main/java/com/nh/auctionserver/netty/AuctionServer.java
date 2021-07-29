@@ -181,7 +181,7 @@ public class AuctionServer {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
 						ChannelPipeline pipeline = ch.pipeline();
-						//pipeline.addLast(mSSLContext.newHandler(ch.alloc(),	AuctionShareSetting.SERVER_HOST, AuctionShareSetting.SERVER_PORT));
+						pipeline.addLast(mSSLContext.newHandler(ch.alloc(),	AuctionShareSetting.SERVER_HOST, AuctionShareSetting.SERVER_PORT));
 						pipeline.addLast(new LoggingHandler(LogLevel.INFO));
 
 						pipeline.addLast("idleStateHandler",
