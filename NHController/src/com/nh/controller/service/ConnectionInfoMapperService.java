@@ -41,7 +41,7 @@ public class ConnectionInfoMapperService extends BaseMapperService<ConnectionInf
         map.put("userMemNum", userMemNum);
 
         try (SqlSession session = DBSessionFactory.getSession()) {
-            userNum = dao.selectUserInfo(map, session);
+            userNum = getDao().selectUserInfo(map, session);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -51,7 +51,7 @@ public class ConnectionInfoMapperService extends BaseMapperService<ConnectionInf
     @Override
     public int selectSequenceId() {
         try (SqlSession session = DBSessionFactory.getSession()) {
-            return dao.selectIdSequence(session);
+            return getDao().selectIdSequence(session);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,7 +62,7 @@ public class ConnectionInfoMapperService extends BaseMapperService<ConnectionInf
     public void insertConnectionInfo(List<UserInfo> infoList) {
         SqlSession session = DBSessionFactory.getSession();
         try {
-            dao.insertUserInfo(infoList, session);
+            getDao().insertUserInfo(infoList, session);
             session.commit();
         } catch (Exception e) {
             session.rollback();

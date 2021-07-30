@@ -58,15 +58,15 @@ public class BaseAuctionController implements NettyControllable {
 
     protected Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected ObservableList<SpEntryInfo> mWaitEntryInfoDataList = FXCollections.observableArrayList(); // 대기중 출품
-	protected ObservableList<SpEntryInfo> mFinishedEntryInfoDataList = FXCollections.observableArrayList(); // 끝난 출품
-	protected ObservableList<SpBidding> mBiddingUserInfoDataList = FXCollections.observableArrayList(); // 응찰 현황
-	protected ObservableList<SpEntryInfo> mConnectionUserDataList = FXCollections.observableArrayList(); // 접속자 현황
-	protected ObservableList<SpEntryInfo> mDummyRow = FXCollections.observableArrayList(); // dummy row
-	protected int DUMMY_ROW_WAIT = 8;
-	protected int DUMMY_ROW_FINISHED = 4;
-	protected int mRecordCount = 0; // cow total data count
-    
+    protected ObservableList<SpEntryInfo> mWaitEntryInfoDataList = FXCollections.observableArrayList(); // 대기중 출품
+    protected ObservableList<SpEntryInfo> mFinishedEntryInfoDataList = FXCollections.observableArrayList(); // 끝난 출품
+    protected ObservableList<SpBidding> mBiddingUserInfoDataList = FXCollections.observableArrayList(); // 응찰 현황
+    protected ObservableList<SpEntryInfo> mConnectionUserDataList = FXCollections.observableArrayList(); // 접속자 현황
+    protected ObservableList<SpEntryInfo> mDummyRow = FXCollections.observableArrayList(); // dummy row
+    protected int DUMMY_ROW_WAIT = 8;
+    protected int DUMMY_ROW_FINISHED = 4;
+    protected int mRecordCount = 0; // cow total data count
+
     protected ResourceBundle mResMsg = null; // 메세지 처리
 
     protected FXMLLoader mFxmlLoader = null;
@@ -450,11 +450,13 @@ public class BaseAuctionController implements NettyControllable {
             // 낙찰
             auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS);
             auctionResult.setSuccessBidder(bidder.getUserNo().getValue());
+            auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
             auctionResult.setSuccessBidPrice(bidder.getPrice().getValue());
         } else {
             // 유찰
             auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL);
             auctionResult.setSuccessBidder(null);
+            auctionResult.setSuccessAuctionJoinNum(null);
             auctionResult.setSuccessBidPrice(null);
         }
 
@@ -612,15 +614,15 @@ public class BaseAuctionController implements NettyControllable {
                     logContent.append(String.format(mResMsg.getString("log.auction.result.before.bidder"), disBidding.getUserNo().getValue()));
                     logContent.append(ENTER_LINE);
 
-                    for (SpBidding beforBidding : mBeForeBidderDataList) {
+                    for (SpBidding beforeBidding : mBeForeBidderDataList) {
 
-                        if (disBidding.getUserNo().getValue().equals(beforBidding.getUserNo().getValue())) {
-                            logContent.append(String.format(mResMsg.getString("log.auction.result.price"), beforBidding.getPriceInt()));
+                        if (disBidding.getUserNo().getValue().equals(beforeBidding.getUserNo().getValue())) {
+                            logContent.append(String.format(mResMsg.getString("log.auction.result.price"), beforeBidding.getPriceInt()));
                             logContent.append(EMPTY_SPACE);
                             logContent.append(EMPTY_SPACE);
-                            logContent.append(CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(beforBidding.getBiddingTime().getValue()));
+                            logContent.append(CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(beforeBidding.getBiddingTime().getValue()));
 
-                            if (beforBidding.getIsCancelBidding().getValue()) {
+                            if (beforeBidding.getIsCancelBidding().getValue()) {
                                 logContent.append(EMPTY_SPACE);
                                 logContent.append(EMPTY_SPACE);
                                 logContent.append(mResMsg.getString("log.auction.result.cancel.bidding"));
@@ -686,20 +688,21 @@ public class BaseAuctionController implements NettyControllable {
     protected Optional<ButtonType> showAlertPopupOneButton(String message) {
         return CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, mResMsg.getString("popup.btn.close"));
     }
-    
-    
+
+
     /**
-	 * EntryInfo -> SpEntryInfo
-	 * @param dataList
-	 * @return
-	 */
-	protected ObservableList<SpEntryInfo> getParsingEntryDataList(List<EntryInfo> dataList) {
-		
-		ObservableList<SpEntryInfo> resultDataList  = dataList.stream()
-				.map(item -> new SpEntryInfo(item))
-				.collect(Collectors.toCollection(FXCollections::observableArrayList));
-		
-		return resultDataList;
-	}
+     * EntryInfo -> SpEntryInfo
+     *
+     * @param dataList
+     * @return
+     */
+    protected ObservableList<SpEntryInfo> getParsingEntryDataList(List<EntryInfo> dataList) {
+
+        ObservableList<SpEntryInfo> resultDataList = dataList.stream()
+                .map(item -> new SpEntryInfo(item))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+        return resultDataList;
+    }
 
 }

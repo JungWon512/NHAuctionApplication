@@ -92,7 +92,13 @@ public class AuctionResult implements FromAuctionCommon {
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
+		return String.format("%c%c%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
 				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mResultCode,
 				AuctionShareSetting.DELIMITER, mSuccessBidder, AuctionShareSetting.DELIMITER, mSuccessAuctionJoinNum,
 				AuctionShareSetting.DELIMITER, mSuccessBidPrice);

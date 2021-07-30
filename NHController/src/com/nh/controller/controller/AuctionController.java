@@ -239,7 +239,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
         mAuctionInfoNameLabel.setText("89두");
         mHeaderAucInfoLabel.setText(auctionDate + "- " + this.auctionRound.getQcn() + "회차");
     }
-    
+
 
 	/**
 	 * 경매 서버 접속
@@ -388,7 +388,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						if(entryInfo.getEntryNum() != null) {
 							addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(entryInfo));
 						}
-						
+
 					}
 
 					addLogItem(String.format(mResMsg.getString("msg.send.entry.data.result"), mWaitEntryInfoDataList.size()));
@@ -398,7 +398,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					Platform.runLater(() -> {
 						CommonUtils.getInstance().dismissLoadingDialog();
 					});
-					
+
 				}
 			};
 
@@ -464,9 +464,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		Platform.exit();
 		System.exit(0);
 	}
-	
+
 	public void onStartAndStopAuction() {
-		
+
 		if (mBtnEnter.isDisable()) {
 			return;
 		}
@@ -480,7 +480,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			onStopAuction();
 			break;
 		}
-		
+
 	}
 
 	/**
@@ -616,7 +616,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 예정가 높이기
-	 * 
+	 *
 	 * @param event
 	 */
 	public void onUpPrice(MouseEvent event) {
@@ -627,7 +627,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 예정가 낮추기
-	 * 
+	 *
 	 * @param event
 	 */
 	public void onDownPrice(MouseEvent event) {
@@ -638,7 +638,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 예정가 Set
-	 * 
+	 *
 	 * @param price
 	 */
 	private void setLowPrice(int price) {
@@ -669,7 +669,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				addLogItem(mResMsg.getString("msg.connection.success") + responseConnectionInfo.getEncodedMessage());
 				// Setting 정보 전송
 				// TEST
-				EditSetting setting = new EditSetting(new String[]{this.auctionRound.getNaBzplc(), "Y", "Y", "Y", "Y", "N", "N", "Y", "Y", "N", "Y", "Y", "N", "N", "3"});
+				EditSetting setting = new EditSetting(new String[]{"", this.auctionRound.getNaBzplc(), "Y", "Y", "Y", "Y", "N", "Y", "Y", "N", "Y", "Y", "N", "N", "5"});
 				addLogItem(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
 				MoveStageUtil.getInstance().moveAuctionStage(mStage, mFxmlLoader);
 				break;
@@ -1104,7 +1104,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 전체 출품 정보 조회 EntryNum 없는 dummy row 제외
-	 * 
+	 *
 	 * @return
 	 */
 	public ObservableList<SpEntryInfo> getWaitEntryInfoDataList() {
@@ -1122,7 +1122,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 전체 출품 정보 조회 EntryNum 없는 dummy row 제외
-	 * 
+	 *
 	 * @return
 	 */
 	public ObservableList<SpEntryInfo> getWaitEntryInfoPendingDataList() {

@@ -47,16 +47,16 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
 /**
- * 
+ *
  * Netty 클라이언트
- * 
+ *
  * 사용 예) AuctionShareNettyClient.Builder builder = new
  * AuctionShareNettyClient.Builder("123.456.789.000", 12345);
  * builder.setController(controller); AuctionShareNettyClient client =
  * builder.buildAndRun();
- * 
+ *
  * controller는 통신으로 수신한 String을 처리할 객체, NettyControllable을 구현하여야 함
- * 
+ *
  * @see {@link NettyControllable}
  *
  */
@@ -66,7 +66,7 @@ public class AuctionShareNettyClient {
 	private int port; // 테스트를 위해 port 확인용 변수, 운영 환경에서는 이용하지 않는다.
 	private EventLoopGroup group;
 	private Channel channel;
-	
+
 	private SslContext mSSLContext;
 
 	private AuctionShareNettyClient(Builder builder) {
@@ -81,7 +81,7 @@ public class AuctionShareNettyClient {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		group = new NioEventLoopGroup();
 		try {
 			Bootstrap b = new Bootstrap();
@@ -99,8 +99,8 @@ public class AuctionShareNettyClient {
 							 * engine.setEnabledProtocols(new String[] {"TLSv1.2"}); pipeline.addLast(new
 							 * SslHandler(engine));
 							 */
-							pipeline.addLast(mSSLContext.newHandler(ch.alloc(),	AuctionShareSetting.SERVER_HOST, AuctionShareSetting.SERVER_PORT));
-							
+//							pipeline.addLast(mSSLContext.newHandler(ch.alloc(),	AuctionShareSetting.SERVER_HOST, AuctionShareSetting.SERVER_PORT));
+
 							pipeline.addLast(new DelimiterBasedFrameDecoder(AuctionShareSetting.NETTY_MAX_FRAME_LENGTH,
 									Delimiters.lineDelimiter()));
 							// pipeline.addLast(new WriteTimeoutHandler(15));
@@ -135,7 +135,7 @@ public class AuctionShareNettyClient {
 
 	/**
 	 * 객체를 송신할 때 사용한다.
-	 * 
+	 *
 	 * @param message 보낼 객체
 	 */
 	public void sendMessage(NettySendable object) {
@@ -144,7 +144,7 @@ public class AuctionShareNettyClient {
 
 	/**
 	 * 문자열을 송신할 때 사용한다.
-	 * 
+	 *
 	 * @param message 보낼 문자열
 	 */
 	public void sendMessage(String message) {
@@ -188,7 +188,7 @@ public class AuctionShareNettyClient {
 	public Channel getChannel() {
 		return channel;
 	}
-	
+
 	/**
 	 * 접속 상태 확인
 	 * @return

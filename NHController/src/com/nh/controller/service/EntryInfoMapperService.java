@@ -33,7 +33,7 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
         List<EntryInfo> list;
         try (SqlSession session = DBSessionFactory.getSession()) {
-            list = dao.selectAllEntryInfo(map, session);
+            list = getDao().selectAllEntryInfo(map, session);
         }
 
         if (!list.isEmpty()) {

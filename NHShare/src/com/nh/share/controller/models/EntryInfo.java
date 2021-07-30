@@ -387,7 +387,39 @@ public class EntryInfo implements FromAuctionController {
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
-				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+				"%c%c%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s%c" +
+						"%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
 				mEntryNum, AuctionShareSetting.DELIMITER, mEntryType, AuctionShareSetting.DELIMITER, mIndNum,
 				AuctionShareSetting.DELIMITER, mIndMngCd, AuctionShareSetting.DELIMITER, mFhsNum,
@@ -395,7 +427,7 @@ public class EntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mBrandName, AuctionShareSetting.DELIMITER, mBirthday,
 				AuctionShareSetting.DELIMITER, mKpn, AuctionShareSetting.DELIMITER, mGender,
 				AuctionShareSetting.DELIMITER, mMotherTypeCode, AuctionShareSetting.DELIMITER, mMotherObjNum,
-				AuctionShareSetting.DELIMITER, mMaTime, AuctionShareSetting.DELIMITER, mMaMonth,
+				AuctionShareSetting.DELIMITER, mMaTime,AuctionShareSetting.DELIMITER, mMaMonth,
 				AuctionShareSetting.DELIMITER, mPasgQcn, AuctionShareSetting.DELIMITER, mObjIdNum,
 				AuctionShareSetting.DELIMITER, mObjRegNum, AuctionShareSetting.DELIMITER, mObjRegTypeNum,
 				AuctionShareSetting.DELIMITER, mRgnName, AuctionShareSetting.DELIMITER, mDnaYn,

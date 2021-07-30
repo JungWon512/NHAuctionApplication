@@ -22,7 +22,7 @@ public class AuctionRoundMapperService extends BaseMapperService<AuctionRoundDao
     @Override
     public List<AuctionRound> getAllAuctionRoundData(String date) {
         try (SqlSession session = DBSessionFactory.getSession()) {
-            return dao.selectAllAuctionRound(date, session);
+            return getDao().selectAllAuctionRound(date, session);
         }
     }
 }
