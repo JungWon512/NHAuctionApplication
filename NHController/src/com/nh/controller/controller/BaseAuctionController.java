@@ -291,7 +291,7 @@ public class BaseAuctionController implements NettyControllable {
                 if (entryInfo != null) {
 
                     if (mIsPass) {
-                        mCurrentSpEntryInfo.getAuctionResult().setValue(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL);
+                        mCurrentSpEntryInfo.getAuctionResult().setValue(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
                         calculationRankingAndLog(entryInfo, true);
                     } else {
                         // 낙유찰 결과 전송
@@ -453,8 +453,8 @@ public class BaseAuctionController implements NettyControllable {
             auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
             auctionResult.setSuccessBidPrice(bidder.getPrice().getValue());
         } else {
-            // 유찰
-            auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL);
+            // 유찰&보류
+            auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
             auctionResult.setSuccessBidder(null);
             auctionResult.setSuccessAuctionJoinNum(null);
             auctionResult.setSuccessBidPrice(null);

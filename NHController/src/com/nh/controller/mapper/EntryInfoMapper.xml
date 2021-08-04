@@ -56,6 +56,10 @@
         <result property="mInitPrice" column="FIR_LOWS_SBID_LMT_AM"/>
         <result property="mLowPrice" column="LOWS_SBID_LMT_AM"/>
         <result property="mNote" column="RMK_CNTN"/>
+        <result property="mAucDt" column="AUC_DT"/>
+        <result property="mLsChgDtm" column="LSCHG_DTM"/>
+        <result property="mLsCmeNo" column="LS_CMENO"/>
+        <result property="mAuctionResult" column="SEL_STS_DSC"/>
     </resultMap>
 
     <!-- 출품 데이터 추출 -->
@@ -84,6 +88,10 @@
                B.RMK_CNTN,
                B.BRANDNM,
                B.PRNY_MTCN,
+               B.AUC_DT,
+               DATE_FORMAT(B.LSCHG_DTM,'%Y%m%d%H%i%S') as LSCHG_DTM,
+               B.LS_CMENO,
+               B.SEL_STS_DSC,
                C.FTSNM
         FROM tb_la_is_mm_indv as A
                  JOIN
@@ -101,4 +109,26 @@
           AND B.AUC_OBJ_DSC = #{entryType}
         ORDER BY B.AUC_PRG_SQ ASC;
     </select>
+    
+	<update id="updateEntryPrice" parameterType="EntryInfo">
+		UPDATE	TB_LA_IS_MH_SOG_COW 
+		   SET	LOWS_SBID_LMT_AM = #{mLowPrice},
+		   		LSCHG_DTM = NOW(),
+		   		LS_CMENO	= #{mLsCmeNo}
+		 WHERE	AUC_PRG_SQ	= #{mEntryNum}
+		   AND	NA_BZPLC	= #{mAuctionHouseCode}
+		   AND	AUC_OBJ_DSC	= #{mEntryType}
+		   AND	AUC_DT		= #{mAucDt}
+    </update>
+
+    <update id="updateEntryState" parameterType="EntryInfo">
+		UPDATE	TB_LA_IS_MH_SOG_COW 
+		   SET	SEL_STS_DSC = #{mAuctionResult},
+		   		LSCHG_DTM = NOW(),
+		   		LS_CMENO	= #{mLsCmeNo}
+		 WHERE	AUC_PRG_SQ	= #{mEntryNum}
+		   AND	NA_BZPLC	= #{mAuctionHouseCode}
+		   AND	AUC_OBJ_DSC	= #{mEntryType}
+		   AND	AUC_DT		= #{mAucDt}
+    </update>
 </mapper>

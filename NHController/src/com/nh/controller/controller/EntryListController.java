@@ -7,14 +7,14 @@ import com.nh.controller.model.SpEntryInfo;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
+import javafx.scene.input.MouseEvent;
 
 /**
  * 제어 메인 F4 -> 전체보기
@@ -33,9 +33,9 @@ public class EntryListController extends CommonController implements Initializab
 	@FXML // 대기중인 출품
 	private TableColumn<SpEntryInfo, String> mEntryNumColumn, mExhibitorColumn, mGenderColumn, mMotherColumn, mMatimeColumn, mPasgQcnColumn, mWeightColumn, mLowPriceColumn, mSuccessPriceColumn, mSuccessfulBidderColumn, mResultColumn, mNoteColumn;
 
-	
 	/**
 	 * 출품 목록 Set
+	 * 
 	 * @param dataList
 	 */
 	public void setEntryDataList(ObservableList<SpEntryInfo> dataList) {
@@ -50,10 +50,10 @@ public class EntryListController extends CommonController implements Initializab
 		if (resources != null) {
 			mResMsg = resources;
 		}
-		
+
 		initTableConfiguration();
 	}
-	
+
 	private void initTableConfiguration() {
 		// 테이블 컬럼 - 대기
 		mEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
@@ -68,9 +68,27 @@ public class EntryListController extends CommonController implements Initializab
 		mSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder());
 		mResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
-		
+
 		mEntryTableView.setPlaceholder(new Label(mResMsg.getString("msg.empty.list.default")));
 		mEntryTableView.setItems(mEntryDataList);
+
+		mEntryTableView.setRowFactory(tv -> {
+			
+			TableRow<SpEntryInfo> row = new TableRow<>();
+
+				row.setOnMouseClicked(event -> {
+					if (event.getClickCount() == 2 && row.getItem() != null && row.getItem().getEntryNum() != null && !row.getItem().getEntryNum().getValue().isEmpty()) {
+						int index = mEntryTableView.getSelectionModel().getSelectedIndex();
+						if(index > -1) {
+							mIntegerListener.callBack(mEntryTableView.getSelectionModel().getSelectedIndex());
+							mStage.close();
+						}
+					}
+				});
+			
+			return row;
+		});
+
 	}
 
 }

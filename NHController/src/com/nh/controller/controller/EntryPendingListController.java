@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -71,6 +72,23 @@ public class EntryPendingListController extends CommonController implements Init
 		
 		mEntryTableView.setPlaceholder(new Label(mResMsg.getString("msg.empty.list.default")));
 		mEntryTableView.setItems(mEntryDataList);
+		
+		mEntryTableView.setRowFactory(tv -> {
+			
+			TableRow<SpEntryInfo> row = new TableRow<>();
+
+				row.setOnMouseClicked(event -> {
+					if (event.getClickCount() == 2 && row.getItem() != null && row.getItem().getEntryNum() != null && !row.getItem().getEntryNum().getValue().isEmpty()) {
+						int index = mEntryTableView.getSelectionModel().getSelectedIndex();
+						if(index > -1) {
+							mIntegerListener.callBack(mEntryTableView.getSelectionModel().getSelectedIndex());
+							mStage.close();
+						}
+					}
+				});
+			
+			return row;
+		});
 	}
 
 }

@@ -17,4 +17,24 @@ public class EntryInfoDao {
     public List<EntryInfo> selectAllEntryInfo(Map<String, String> entryInfoMap, SqlSession session) {
         return session.selectList("selectAllEntry", entryInfoMap);
     }
+    
+    /**
+     * 가격 정보 업데이트
+     * @param entryInfo
+     * @param session
+     * @return
+     */
+    public int updateEntryPrice(EntryInfo entryInfo,SqlSession session) {
+        return session.update("updateEntryPrice", entryInfo);
+    }
+    
+    /**
+     * 가격 정보 업데이트
+     * @param entryInfo
+     * @param session
+     * @return
+     */
+    public int updateEntryState(EntryInfo entryInfo,SqlSession session) {
+        return session.update("updateEntryState", entryInfo);
+    }
 }

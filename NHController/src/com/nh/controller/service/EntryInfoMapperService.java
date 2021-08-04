@@ -3,6 +3,7 @@ package com.nh.controller.service;
 import com.nh.controller.dao.EntryInfoDao;
 import com.nh.controller.database.DBSessionFactory;
 import com.nh.controller.mapper.EntryInfoMapper;
+import com.nh.controller.utils.CommonUtils;
 import com.nh.share.controller.models.EntryInfo;
 import org.apache.ibatis.session.SqlSession;
 
@@ -17,6 +18,16 @@ import java.util.Map;
  */
 public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> implements EntryInfoMapper {
 
+	private static EntryInfoMapperService entryInfoMapperService = null;
+	
+	public static EntryInfoMapperService getInstance() {
+		
+		if (entryInfoMapperService == null) {
+			entryInfoMapperService = new EntryInfoMapperService();
+		}
+		return entryInfoMapperService;
+	}
+	
     public EntryInfoMapperService() {
         this.setDao(new EntryInfoDao());
     }
@@ -45,4 +56,52 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
         }
         return list;
     }
+
+	@Override
+	public int updateEntryPrice(EntryInfo entryInfo) {
+		
+		int resultValue = 0;
+		
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultValue = getDao().updateEntryPrice(entryInfo,session);
+			
+			if(resultValue > 0) {
+				session.commit();
+			}else {
+				session.rollback();
+			}
+			
+		}catch (Exception e) {
+			//exception에 대한 처리 시 사용
+			resultValue = -1;
+		}
+
+		return resultValue;
+	}
+    
+	@Override
+	public int updateEntryState(EntryInfo entryInfo) {
+		
+		int resultValue = 0;
+		
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultValue = getDao().updateEntryState(entryInfo,session);
+			
+			if(resultValue > 0) {
+				session.commit();
+			}else {
+				session.rollback();
+			}
+			
+		}catch (Exception e) {
+			//exception에 대한 처리 시 사용
+			resultValue = -1;
+		}
+
+		return resultValue;
+	}
+    
+    
 }

@@ -11,6 +11,7 @@ import com.nh.controller.controller.EntryListController;
 import com.nh.controller.controller.EntryPendingListController;
 import com.nh.controller.controller.LoginController;
 import com.nh.controller.controller.SettingController;
+import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.SpEntryInfo;
 
@@ -143,33 +144,11 @@ public class MoveStageUtil {
 	}
 
 	/**
-	 * @Description 전체보기 Dialog
-	 */
-	public void openEntryListDialog(Stage stage) {
-
-		try {
-
-			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
-
-			Parent parent = fxmlLoader.load();
-
-			EntryListController controller = fxmlLoader.getController();
-
-			controller.setStage(stage);
-
-			openDialog(stage, parent);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * 출품 리스트
 	 * 
 	 * @param stage
 	 */
-	public synchronized void openEntryListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList) {
+	public synchronized void openEntryListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList,IntegerListener listener) {
 
 		try {
 
@@ -181,7 +160,7 @@ public class MoveStageUtil {
 
 			EntryListController controller = fxmlLoader.getController();
 			controller.setEntryDataList(dataList);
-			controller.setStage(newStage);
+			controller.setStage(newStage,listener);
 
 			Scene scene = new Scene(parent);
 			newStage.setScene(scene);
@@ -202,7 +181,7 @@ public class MoveStageUtil {
 	 * 
 	 * @param stage
 	 */
-	public synchronized void openEntryPendingListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList) {
+	public synchronized void openEntryPendingListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList,IntegerListener listener) {
 
 		try {
 
@@ -214,7 +193,7 @@ public class MoveStageUtil {
 
 			EntryPendingListController controller = fxmlLoader.getController();
 			controller.setEntryDataList(dataList);
-			controller.setStage(newStage);
+			controller.setStage(newStage,listener);
 
 			Scene scene = new Scene(parent);
 			newStage.setScene(scene);
@@ -266,17 +245,27 @@ public class MoveStageUtil {
 	 * @param backStage
 	 * @param newStage
 	 */
-	private void setStageDisable(Stage backStage, Stage newStage) {
+	public void setStageDisable(Stage backStage, Stage newStage) {
 
 		backStage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
 		backStage.getScene().getRoot().setDisable(true);
 
 		Window window = newStage.getScene().getWindow();
 		window.setOnCloseRequest(e -> {
-			backStage.getScene().getRoot().setEffect(null); // 뒷 배경 블러처리 remove
-			backStage.getScene().getRoot().setDisable(false);
+			setBackStageDisableFalse(backStage);
 		});
 
+	}
+	
+	/**
+	 * 이전 Stage Disable
+	 * 
+	 * @param backStage
+	 * @param newStage
+	 */
+	public void setBackStageDisableFalse(Stage backStage) {
+		backStage.getScene().getRoot().setEffect(null); // 뒷 배경 블러처리 remove
+		backStage.getScene().getRoot().setDisable(false);
 	}
 
 	/**

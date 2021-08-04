@@ -6,8 +6,8 @@ package com.nh.controller.model;
  */
 public class SettingInfoData {
 
-	private int cowUpperLimitPrice = 100;		//상한가
-	private int cowLowerLimitPrice = 100;		//하한가
+	private int cowUpperLimitPrice = 100000;		//상한가
+	private int cowLowerLimitPrice = 100000;		//하한가
 	
 	public int getCowUpperLimitPrice() {
 		return cowUpperLimitPrice;

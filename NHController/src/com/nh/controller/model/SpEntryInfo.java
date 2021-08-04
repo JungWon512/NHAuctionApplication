@@ -53,6 +53,10 @@ public class SpEntryInfo implements FromAuctionController {
     private StringProperty mAuctionSucBidder; // 낙찰자
     private StringProperty mAuctionBidPrice; // 응찰금액
     private StringProperty mAuctionBidDateTime; // 응찰일시
+    private StringProperty mAucDt;				 // 경매일자
+    
+	private StringProperty mLsChgDtm; // 최종변경일시
+	private StringProperty mLsCmeNo; // 최종변경자개인번호
 
 
     public SpEntryInfo() {
@@ -90,12 +94,15 @@ public class SpEntryInfo implements FromAuctionController {
         this.mAuctionSucBidder = new SimpleStringProperty(entryInfo.getAuctionSucBidder());
         this.mAuctionBidPrice = new SimpleStringProperty(entryInfo.getAuctionBidPrice());
         this.mAuctionBidDateTime = new SimpleStringProperty(entryInfo.getAuctionBidDateTime());
-        this.mAuctionResult = new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_READY);
+        this.mAuctionResult = new SimpleStringProperty(entryInfo.getAuctionResult());
         this.mIsLastEntry = new SimpleStringProperty(entryInfo.getIsLastEntry());
+        this.mAucDt = new SimpleStringProperty(entryInfo.getAucDt());
+        this.mLsChgDtm = new SimpleStringProperty(entryInfo.getLsChgDtm());
+        this.mLsCmeNo = new SimpleStringProperty(entryInfo.getLsCmeNo()); 
     }
 
     public StringProperty getAuctionHouseCode() {
-        return mAuctionHouseCode;
+        return returnValue(mAuctionHouseCode);
     }
 
     public void setAuctionHouseCode(StringProperty mAuctionHouseCode) {
@@ -103,7 +110,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getEntryNum() {
-        return mEntryNum;
+    	return returnValue(mEntryNum);
     }
 
     public void setEntryNum(StringProperty mEntryNum) {
@@ -111,7 +118,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getEntryType() {
-        return mEntryType;
+    	return returnValue(mEntryType);
     }
 
     public void setEntryType(StringProperty mEntryType) {
@@ -119,7 +126,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getIndNum() {
-        return mIndNum;
+    	return returnValue(mIndNum);
     }
 
     public void setIndNum(StringProperty mIndNum) {
@@ -127,7 +134,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getIndMngCd() {
-        return mIndMngCd;
+    	return returnValue(mIndMngCd);
     }
 
     public void setIndMngCd(StringProperty mIndMngCd) {
@@ -135,7 +142,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getFhsNum() {
-        return mFhsNum;
+    	return returnValue(mFhsNum);
     }
 
     public void setFhsNum(StringProperty mFhsNum) {
@@ -143,7 +150,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getFarmMngNum() {
-        return mFarmMngNum;
+    	return returnValue(mFarmMngNum);
     }
 
     public void setFarmMngNum(StringProperty mFarmMngNum) {
@@ -151,7 +158,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getExhibitor() {
-        return mExhibitor;
+    	return returnValue(mExhibitor);
     }
 
     public void setExhibitor(StringProperty mExhibitor) {
@@ -159,7 +166,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getBrandName() {
-        return mBrandName;
+    	return returnValue(mBrandName);
     }
 
     public void setBrandName(StringProperty mBrandName) {
@@ -167,7 +174,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getBirthday() {
-        return mBirthday;
+    	return returnValue(mBirthday);
     }
 
     public void setBirthday(StringProperty mBirthday) {
@@ -175,7 +182,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getKpn() {
-        return mKpn;
+    	return returnValue(mKpn);
     }
 
     public void setKpn(StringProperty mKpn) {
@@ -183,7 +190,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getGender() {
-        return mGender;
+    	return returnValue(mGender);
     }
 
     public void setGender(StringProperty mGender) {
@@ -191,7 +198,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getMotherTypeCode() {
-        return mMotherTypeCode;
+    	return returnValue(mMotherTypeCode);
     }
 
     public void setMotherTypeCode(StringProperty mMotherTypeCode) {
@@ -199,7 +206,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getMotherObjNum() {
-        return mMotherObjNum;
+    	return returnValue(mMotherObjNum);
     }
 
     public void setMotherObjNum(StringProperty mMotherObjNum) {
@@ -207,7 +214,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getMatime() {
-        return mMatime;
+    	return returnValue(mMatime);
     }
 
     public void setMatime(StringProperty mMatime) {
@@ -215,7 +222,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getPasgQcn() {
-        return mPasgQcn;
+    	return returnValue(mPasgQcn);
     }
 
     public void setPasgQcn(StringProperty mPasgQcn) {
@@ -223,7 +230,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getObjIdNum() {
-        return mObjIdNum;
+    	return returnValue(mObjIdNum);
     }
 
     public void setObjIdNum(StringProperty mObjIdNum) {
@@ -231,7 +238,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getObjRegNum() {
-        return mObjRegNum;
+    	return returnValue(mObjRegNum);
     }
 
     public void setObjRegNum(StringProperty mObjRegNum) {
@@ -239,7 +246,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getObjRegTypeNum() {
-        return mObjRegTypeNum;
+    	return returnValue(mObjRegTypeNum);
     }
 
     public void setObjRegTypeNum(StringProperty mObjRegTypeNum) {
@@ -247,7 +254,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getIsNew() {
-        return mIsNew;
+    	return returnValue(mIsNew);
     }
 
     public void setIsNew(StringProperty mIsNew) {
@@ -255,7 +262,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getWeight() {
-        return mWeight;
+    	return returnValue(mWeight);
     }
 
     public void setWeight(StringProperty mWeight) {
@@ -263,7 +270,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getInitPrice() {
-        return mInitPrice;
+    	return returnValue(mInitPrice);
     }
 
     public void setInitPrice(StringProperty mInitPrice) {
@@ -271,7 +278,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getLowPrice() {
-        return mLowPrice;
+    	return returnValue(mLowPrice);
     }
 
     public void setMaMonth(StringProperty maMonth) {
@@ -279,14 +286,14 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getMaMonth() {
-        return mMaMonth;
+    	return returnValue(mMaMonth);
     }
 
     public int getLowPriceInt() {
 
         int lowPrice = 0;
 
-        if (getLowPrice() != null) {
+        if (getLowPrice() != null || !getLowPrice().getValue().isEmpty()) {
             lowPrice = Integer.parseInt(getLowPrice().getValue());
         }
 
@@ -298,7 +305,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getNote() {
-        return mNote;
+    	return returnValue(mNote);
     }
 
     public void setNote(StringProperty mNote) {
@@ -306,7 +313,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getIsLastEntry() {
-        return mIsLastEntry;
+    	return returnValue(mIsLastEntry);
     }
 
     public void setIsLastEntry(StringProperty mIsLastEntry) {
@@ -314,7 +321,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getRgnName() {
-        return mRgnName;
+    	return returnValue(mRgnName);
     }
 
     public void setRgnName(StringProperty mRgnName) {
@@ -322,7 +329,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getDnaYn() {
-        return mDnaYn;
+    	return returnValue(mDnaYn);
     }
 
     public void setDnaYn(StringProperty mDnaYn) {
@@ -330,7 +337,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getAuctionResult() {
-        return mAuctionResult;
+    	return returnValue(mAuctionResult);
     }
 
     public void setAuctionResult(StringProperty mAuctionResult) {
@@ -338,7 +345,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getAuctionSucBidder() {
-        return mAuctionSucBidder;
+    	return returnValue(mAuctionSucBidder);
     }
 
     public void setAuctionSucBidder(StringProperty mAuctionSucBidder) {
@@ -346,7 +353,7 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getAuctionBidPrice() {
-        return mAuctionBidPrice;
+    	return returnValue(mAuctionBidPrice);
     }
 
     public void setAuctionBidPrice(StringProperty mAuctionBidPrice) {
@@ -354,14 +361,38 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     public StringProperty getAuctionBidDateTime() {
-        return mAuctionBidDateTime;
+    	return returnValue(mAuctionBidDateTime);
     }
 
     public void setAuctionBidDateTime(StringProperty mAuctionBidDateTime) {
         this.mAuctionBidDateTime = mAuctionBidDateTime;
     }
 
-    public StringProperty getBiddingResult() {
+    public StringProperty getAucDt() {
+    	return returnValue(mAucDt);
+	}
+
+	public void setAucDt(StringProperty mAucDt) {
+		this.mAucDt = mAucDt;
+	}
+	
+	public StringProperty getLsChgDtm() {
+		return returnValue(mLsChgDtm);
+	}
+
+	public void setLsChgDtm(StringProperty mLsChgDtm) {
+		this.mLsChgDtm = mLsChgDtm;
+	}
+
+	public StringProperty getLsCmeNo() {
+		return returnValue(mLsCmeNo);
+	}
+
+	public void setLsCmeNo(StringProperty mLsCmeNo) {
+		this.mLsCmeNo = mLsCmeNo;
+	}
+
+	public StringProperty getBiddingResult() {
 
         SimpleStringProperty resultStr = new SimpleStringProperty();
 
@@ -373,8 +404,6 @@ public class SpEntryInfo implements FromAuctionController {
                 resultStr.setValue("대기");
             } else if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
                 resultStr.setValue("낙찰");
-            } else if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_FAIL)) {
-                resultStr.setValue("유찰");
             } else if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
                 resultStr.setValue("보류");
             }
@@ -382,6 +411,16 @@ public class SpEntryInfo implements FromAuctionController {
 
         return resultStr;
     }
+	
+	private StringProperty returnValue(StringProperty value) {
+
+		if(value !=  null) {
+			return value;
+		}else {
+			return new SimpleStringProperty("");
+		}
+
+	}
 
     @Override
     public String getEncodedMessage() {
@@ -453,4 +492,23 @@ public class SpEntryInfo implements FromAuctionController {
                 getIsLastEntry().getValue());
     }
 
+    @Override
+    public boolean equals(Object o) {
+    	
+        if (!(o instanceof SpEntryInfo)) {
+            return false;
+        }
+     
+        SpEntryInfo spEntryInfo = (SpEntryInfo) o;
+        
+        if(getEntryNum() == null || getEntryNum().getValue().isEmpty()) {
+        	return false;
+        }
+        
+        if (spEntryInfo.getEntryNum() == null || spEntryInfo.getEntryNum().getValue().isEmpty()) {
+            return false;
+        }
+
+        return spEntryInfo.getEntryNum().getValue().equals(getEntryNum().getValue());
+    }
 }
