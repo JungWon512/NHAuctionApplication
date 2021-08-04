@@ -128,6 +128,11 @@ public class EntryInfo implements FromAuctionController {
 		mIsLastEntry = messages[32];
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return ((EntryInfo)obj).mEntryNum.equals(mEntryNum);
+	}
+
 	public String getAuctionHouseCode() {
 		return mAuctionHouseCode;
 	}

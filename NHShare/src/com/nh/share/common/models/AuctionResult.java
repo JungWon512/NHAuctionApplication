@@ -8,7 +8,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 제어프로그램 -> 경매서버
  * 
- * AF | 조합구분코드 | 출품번호 | 낙/유찰결과코드(01/02) | 낙찰자회원번호(거래인번호) | 낙찰자경매참가번호 | 낙찰금액
+ * AF | 조합구분코드 | 출품번호 | 낙/유찰결과코드(11/22/23) | 낙찰자회원번호(거래인번호) | 낙찰자경매참가번호 | 낙찰금액
  *
  */
 public class AuctionResult implements FromAuctionCommon {

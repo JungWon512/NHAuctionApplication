@@ -3,6 +3,7 @@ package com.nh.share.common.models;
 import java.io.Serializable;
 
 import com.nh.share.common.interfaces.FromAuctionCommon;
+import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.setting.AuctionShareSetting;
 
 /**
@@ -32,6 +33,11 @@ public class ConnectionInfo implements FromAuctionCommon, Serializable {
 		mAuthToken = authToken;
 		mChannel = channel;
 		mOS = os;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return ((ConnectionInfo)obj).mUserMemNum.equals(mUserMemNum);
 	}
 
 	public String getAuctionHouseCode() {
