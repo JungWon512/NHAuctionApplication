@@ -25,13 +25,8 @@ public final class AuctionClientInboundDecoder extends MessageToMessageDecoder<S
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        // TODO Auto-generated method stub
         super.channelActive(ctx);
         mLogger.info(((InetSocketAddress)ctx.channel().remoteAddress()).getPort() + "번 포트 채널이 Active 되었습니다.");
-
-        if (mController != null) {
-            mController.onActiveChannel(ctx.channel());
-        }
     }
 
     @Override
