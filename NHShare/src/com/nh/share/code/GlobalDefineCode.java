@@ -79,10 +79,9 @@ public class GlobalDefineCode {
 	public static final String CONNECT_EXPIRE_WATCHER = "2006"; // 관전자 접속 만료
 
 	//경매 결과 코드
-	public static final String AUCTION_RESULT_CODE_READY = "00";		//대기
-	public static final String AUCTION_RESULT_CODE_SUCCESS = "01";		//낙찰
-	public static final String AUCTION_RESULT_CODE_FAIL = "02";			//유찰
-	public static final String AUCTION_RESULT_CODE_PENDING = "03";		//보류
+	public static final String AUCTION_RESULT_CODE_READY = "11";		//대기
+	public static final String AUCTION_RESULT_CODE_SUCCESS = "22";		//낙찰
+	public static final String AUCTION_RESULT_CODE_PENDING = "23";		//보류
 	
 	// 요청 결과 미존재
 	public static final String RESPONSE_REQUEST_NOT_RESULT = "4001";
