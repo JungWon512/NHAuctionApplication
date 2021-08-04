@@ -23,6 +23,7 @@ import io.netty.channel.ChannelId;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.handler.ssl.SslHandshakeCompletionEvent;
 import io.netty.util.concurrent.DefaultEventExecutor;
 
 @Sharable

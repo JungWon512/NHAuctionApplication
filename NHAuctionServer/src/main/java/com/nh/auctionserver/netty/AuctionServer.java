@@ -182,16 +182,20 @@ public class AuctionServer {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
 						ChannelPipeline pipeline = ch.pipeline();
-						//pipeline.addLast(mSSLContext.newHandler(ch.alloc(),	AuctionShareSetting.SERVER_HOST, AuctionShareSetting.SERVER_PORT));
+
 						pipeline.addLast(new LoggingHandler(LogLevel.INFO));
 
+						pipeline.addLast(mSSLContext.newHandler(ch.alloc()));
+						
 						pipeline.addLast("idleStateHandler",
 								new IdleStateHandler(AuctionServerSetting.AUCTION_SERVER_READ_CHECK_SESSION_TIME,
 										AuctionServerSetting.AUCTION_SERVER_WRITE_CHECK_SESSION_TIME, 0));
 						pipeline.addLast("AuctionUserDuplexHandler", new AuctionUserDuplexHandler(mConnectorInfoMap));
 						pipeline.addLast(new DelimiterBasedFrameDecoder(AuctionShareSetting.NETTY_MAX_FRAME_LENGTH,
 								Delimiters.lineDelimiter()));
+						
 						pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
+						pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
 						pipeline.addLast(new AuctionServerInboundDecoder());
 
 						pipeline.addLast(new AuctionServerConnectorHandler(AuctionServer.this, mAuctioneer,
@@ -239,8 +243,6 @@ public class AuctionServer {
 						pipeline.addLast(new AuctionServerDecodedRequestLogoutHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
-
-						pipeline.addFirst(new StringEncoder(CharsetUtil.UTF_8));
 					}
 				})
 				/* Nagle 알고리즘 비활성화 여부 설정 */

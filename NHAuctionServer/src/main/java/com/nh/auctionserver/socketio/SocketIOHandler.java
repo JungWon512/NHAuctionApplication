@@ -1,6 +1,7 @@
 package com.nh.auctionserver.socketio;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -21,20 +22,16 @@ import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.share.code.GlobalDefineCode;
-import com.nh.share.common.models.AuctionReponseSession;
 import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
-import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.RefreshConnector;
 import com.nh.share.common.models.ResponseConnectionInfo;
-import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
-import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ShowEntryInfo;
 import com.nh.share.server.models.ToastMessage;
@@ -73,16 +70,20 @@ public class SocketIOHandler {
 	@Value("${socketio.pingInterval}")
 	private int pingInterval;
 
-	@Value("${ssl.cert-name}")
+	@Value("${socketio.ssl.cert-name}")
 	private String mCertName;
-	@Value("${ssl.key-name}")
+	@Value("${socketio.ssl.key-name}")
 	private String mKeyName;
+	@Value("${socketio.ssl.jks-name}")
+	private String mJksName;
 
 	private SocketIOServer mSocketIOServer;
 
 	private Auctioneer mAuctioneer;
 
 	private Map<ChannelId, ConnectionInfo> mConnectorInfoMap;
+	
+	private SslContext mSslContext;
 
 	// 접속 그룹 Map
 	private static Map<String, Map<UUID, SocketIOClient>> mWatchChannelClientMap = new ConcurrentHashMap<>();
@@ -96,13 +97,15 @@ public class SocketIOHandler {
 		ClassPathResource certPath = new ClassPathResource(mCertName);
 		ClassPathResource keyPath = new ClassPathResource(mKeyName);
 
-		SslContext sslContext = null;
+		mSslContext = null;
 		try {
-			sslContext = SslContextBuilder.forServer(certPath.getInputStream(), keyPath.getInputStream()).build();
+			//mSslContext = SslContextBuilder.forServer(certPath.getInputStream(), keyPath.getInputStream()).protocols("TLSv1.3").build();
+			mSslContext = SslContextBuilder.forServer(certPath.getInputStream(), keyPath.getInputStream()).build();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return sslContext;
+		
+		return mSslContext;
 	}
 
 	@Bean
@@ -128,8 +131,17 @@ public class SocketIOHandler {
 		config.setPingTimeout(pingTimeout);
 		config.setPingInterval(pingInterval);
 
+		config.setKeyStorePassword("ishift7150!");
+        ClassPathResource jksPath = new ClassPathResource(mJksName);
+        try {
+			config.setKeyStore(jksPath.getInputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
 		mSocketIOServer = new SocketIOServer(config, this);
-
+        
 		mSocketIOServer.addNamespace(GlobalDefineCode.NAMESPACE_WATCH);
 		mSocketIOServer.addNamespace(GlobalDefineCode.NAMESPACE_CONNECTOR);
 		mSocketIOServer.addNamespace(GlobalDefineCode.NAMESPACE_AUCTION_RESULT);

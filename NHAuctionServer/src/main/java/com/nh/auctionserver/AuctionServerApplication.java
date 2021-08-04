@@ -11,6 +11,7 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import com.corundumstudio.socketio.SocketIOChannelInitializer;
 import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.auctionserver.socketio.SocketIOServer;
 import com.nh.share.setting.AuctionShareSetting;

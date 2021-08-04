@@ -27,6 +27,7 @@ public final class AuctionServerInboundDecoder extends MessageToMessageDecoder<S
 
     @Override
     protected void decode(ChannelHandlerContext ctx, String message, List<Object> out) throws Exception {
+    	mLogger.info("AuctionServerInboundDecoder : " + message);
         switch (message.charAt(0)) {
         case FromAuctionCommon.ORIGIN:
             FromAuctionCommon commonParsedMessage = CommonMessageParser.parse(message);
