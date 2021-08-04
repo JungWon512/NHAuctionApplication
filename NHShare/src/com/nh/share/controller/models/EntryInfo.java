@@ -44,11 +44,16 @@ public class EntryInfo implements FromAuctionController {
 	private String mInitPrice; // 최초최저낙찰한도금액
 	private String mLowPrice; // 최저낙찰한도금액
 	private String mNote; // 비고내용
-	private String mAuctionResult; // 낙유찰결과(01:낙찰/02:유찰)
+	private String mAuctionResult; // 낙유찰결과 (11 대기 ,22 낙찰 ,23 보류)
 	private String mAuctionSucBidder; // 낙찰자
 	private String mAuctionBidPrice; // 응찰금액
 	private String mAuctionBidDateTime; // 응찰일시
 	private String mIsLastEntry; // 마지막 출품 여부
+	
+	private String mAucDt; // 경매일
+	private String mLsChgDtm; // 최종변경일시
+	private String mLsCmeNo; // 최종변경자개인번호
+	
 
 	public EntryInfo() {
 	}
@@ -387,6 +392,30 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setIsLastEntry(String mIsLastEntry) {
 		this.mIsLastEntry = mIsLastEntry;
+	}
+
+	public String getAucDt() {
+		return mAucDt;
+	}
+
+	public void setAucDt(String mAucDt) {
+		this.mAucDt = mAucDt;
+	}
+	
+	public String getLsChgDtm() {
+		return mLsChgDtm;
+	}
+
+	public void setLsChgDtm(String mLsChgDtm) {
+		this.mLsChgDtm = mLsChgDtm;
+	}
+
+	public String getLsCmeNo() {
+		return mLsCmeNo;
+	}
+
+	public void setLsCmeNo(String mLsCmeNo) {
+		this.mLsCmeNo = mLsCmeNo;
 	}
 
 	@Override
