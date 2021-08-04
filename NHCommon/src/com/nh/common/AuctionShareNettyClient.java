@@ -2,7 +2,7 @@ package com.nh.common;
 
 import java.lang.invoke.MethodHandles;
 
-import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLEngine;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +35,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
@@ -68,6 +67,7 @@ public class AuctionShareNettyClient {
 	private Channel channel;
 
 	private SslContext mSSLContext;
+	private SslHandler mSslHandler;
 
 	private AuctionShareNettyClient(Builder builder) {
 		this.port = builder.port;
@@ -75,13 +75,6 @@ public class AuctionShareNettyClient {
 	}
 
 	private void createNettyClient(String host, int port, NettyControllable controller) {
-		try {
-			mSSLContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-		} catch (SSLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
 		group = new NioEventLoopGroup();
 		try {
 			Bootstrap b = new Bootstrap();
@@ -91,18 +84,34 @@ public class AuctionShareNettyClient {
 						@Override
 						public void initChannel(SocketChannel ch) throws Exception {
 							ChannelPipeline pipeline = ch.pipeline();
-							/*
-							 * 사설 인증서 - 사용시 주석 해제 SslContext sslContext =
-							 * SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.
-							 * INSTANCE).build(); SSLEngine engine = sslContext.newEngine(ch.alloc(),
-							 * AuctionShareSetting.Server.SSL_HOST, AuctionShareSetting.Server.SSL_PORT);
-							 * engine.setEnabledProtocols(new String[] {"TLSv1.2"}); pipeline.addLast(new
-							 * SslHandler(engine));
-							 */
-//							pipeline.addLast(mSSLContext.newHandler(ch.alloc(),	AuctionShareSetting.SERVER_HOST, AuctionShareSetting.SERVER_PORT));
 
-							pipeline.addLast(new DelimiterBasedFrameDecoder(AuctionShareSetting.NETTY_MAX_FRAME_LENGTH,
-									Delimiters.lineDelimiter()));
+							// 사설 인증서 - 사용시 주석 해제
+							SslContext sslContext = SslContextBuilder.forClient()
+									.trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+							SSLEngine engine = sslContext.newEngine(ch.alloc(), AuctionShareSetting.SERVER_HOST,
+									AuctionShareSetting.SERVER_PORT);
+//							engine.setEnabledProtocols(new String[] { "TLSv1.3" });
+//							engine.setEnabledCipherSuites(new String[] {"TLS_AES_128_GCM_SHA256"});
+							
+
+							pipeline.addLast("ssl", new SslHandler(engine));
+
+//							try {
+//								mSSLContext = SslContextBuilder.forClient().sslProvider(SslProvider.JDK)
+//										.trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+//								mSslHandler = mSSLContext.newHandler(ch.alloc());
+//								//mSslHandler.engine().setEnabledCipherSuites(new String[] {"X.509"});
+//								//mSslHandler.engine().setEnabledProtocols(new String[] {"TLSv1.2" });
+//							} catch (SSLException e1) {
+//								// TODO Auto-generated catch block
+//								e1.printStackTrace();
+//							}
+//
+//							pipeline.addLast(mSslHandler);
+
+							// pipeline.addLast(new
+							// DelimiterBasedFrameDecoder(AuctionShareSetting.NETTY_MAX_FRAME_LENGTH,
+							// Delimiters.lineDelimiter()));
 							// pipeline.addLast(new WriteTimeoutHandler(15));
 							// pipeline.addLast(new ReadTimeoutHandler(15));
 							pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
@@ -119,8 +128,8 @@ public class AuctionShareNettyClient {
 							pipeline.addLast(new AuctionClientDecodedCheckSessionHandler(controller)); // 경매 서버 접속 유효 확인
 							pipeline.addLast(new AuctionClientDecodedAuctionResultHandler(controller)); // 낙유찰 정보
 							pipeline.addLast(new AuctionClientDecodedCancelBiddingHandler(controller)); // 응찰 취소 정보
-							pipeline.addLast(new AuctionClientDecodedRequestAuctionResultHandler(controller)); // 낙유찰 정보 요청
-
+							pipeline.addLast(new AuctionClientDecodedRequestAuctionResultHandler(controller)); // 낙유찰 정보
+																												// 요청
 
 							pipeline.addFirst(new StringEncoder(CharsetUtil.UTF_8));
 						}
@@ -191,6 +200,7 @@ public class AuctionShareNettyClient {
 
 	/**
 	 * 접속 상태 확인
+	 * 
 	 * @return
 	 */
 	public boolean isEmptyChannel() {
