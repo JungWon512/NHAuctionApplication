@@ -25,6 +25,8 @@
                    type="com.nh.share.common.models.ConnectionInfo"/>
         <typeAlias alias="UserInfo"
                    type="com.nh.controller.model.UserInfo"/>
+        <typeAlias alias="AuctionRound"
+                   type="com.nh.controller.model.AuctionRound"/>
     </typeAliases>
 
     <environments default="development">

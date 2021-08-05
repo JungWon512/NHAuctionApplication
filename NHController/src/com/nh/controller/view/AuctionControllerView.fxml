@@ -345,7 +345,7 @@
             <Insets right="10.0" />
          </BorderPane.margin>
          <children>
-            <Label fx:id="mAuctionStateLabel" alignment="CENTER" maxHeight="110.0" maxWidth="1.7976931348623157E308" minHeight="110.0" prefHeight="110.0" styleClass="label-status" text="경매진행" VBox.vgrow="ALWAYS" />
+            <Label fx:id="mAuctionStateLabel" alignment="CENTER" maxHeight="110.0" maxWidth="1.7976931348623157E308" minHeight="110.0" prefHeight="110.0" styleClass="label-status" text="경매대기" VBox.vgrow="ALWAYS" />
             <Pane styleClass="bidding-user-info">
                <children>
                   <TableView fx:id="mBiddingInfoTableView" focusTraversable="false" minHeight="514.0" mouseTransparent="true" prefHeight="514.0">
@@ -395,10 +395,10 @@
                   <Button fx:id="mBtnF3" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F3]보류" />
                   <Button fx:id="mBtnF4" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F4]전체보기" />
                   <Button fx:id="mBtnF5" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F5]보류보기" />
-                  <Button fx:id="mBtnF6" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F6]강제낙찰" />
-                  <Button fx:id="mBtnF7" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F7]강제유찰" />
+                  <Button fx:id="mBtnF6" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F6]강제낙찰" />
+                  <Button fx:id="mBtnF7" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F7]강제유찰" />
                   <Button fx:id="mBtnF8" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F8]환경설정" />
-                  <Button fx:id="mBtnEnter" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[ENTER]시작" />
+                  <Button fx:id="mBtnEnter" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[ENTER]시작" />
                   <Button fx:id="mBtnUpPrice" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="예정가 높이기" />
                   <Button fx:id="mBtnDownPrice" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="예정가 낮추기" />
                </children>

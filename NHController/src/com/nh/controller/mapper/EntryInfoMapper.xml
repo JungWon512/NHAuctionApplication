@@ -62,37 +62,88 @@
         <result property="mAuctionResult" column="SEL_STS_DSC"/>
     </resultMap>
 
+ <!--TODO 경매 결과 관련 추가 해야함 -->
+    <resultMap type="EntryInfo" id="entryInfoMap">
+        <result property="mAuctionHouseCode" column="NA_BZPLC"/>
+        <result property="mEntryNum" column="AUC_PRG_SQ"/>
+        <result property="mEntryType" column="AUC_OBJ_DSC"/>
+        <result property="mIndNum" column="SRA_INDV_AMNNO"/>
+        <result property="mIndMngCd" column="SRA_SRS_DSC"/>
+        <result property="mFhsNum" column="FHS_ID_NO"/>
+        <result property="mFarmMngNum" column="FARM_AMNNO"/>
+        <result property="mExhibitor" column="FTSNM"/>
+        <result property="mBrandName" column="BRANDNM"/>
+        <result property="mBirthday" column="BIRTH"/>
+        <result property="mKpn" column="KPN_NO"/>
+        <result property="mGender" column="INDV_SEX_C"/>
+        <result property="mMotherTypeCode" column="MCOW_DSC"/>
+        <result property="mMotherObjNum" column="MCOW_SRA_INDV_AMNNO"/>
+        <result property="mMaTime" column="MATIME"/>
+        <result property="mMaMonth" column="PRNY_MTCN"/>
+        <result property="mPasgQcn" column="SRA_INDV_PASG_QCN"/>
+        <result property="mObjIdNum" column="INDV_ID_NO"/>
+        <result property="mObjRegNum" column="SRA_INDV_BRDSRA_RG_NO"/>
+        <result property="mObjRegTypeNum" column="RG_DSC"/>
+        <result property="mRgnName" column="SRA_PD_RGNNM"/>
+        <result property="mDnaYn" column="DNA_YN"/>
+        <result property="mIsNew" column="ANW_YN"/>
+        <result property="mWeight" column="COW_SOG_WT"/>
+        <result property="mInitPrice" column="FIR_LOWS_SBID_LMT_AM"/>
+        <result property="mLowPrice" column="LOWS_SBID_LMT_AM"/>
+        <result property="mNote" column="RMK_CNTN"/>
+        <result property="mAucDt" column="AUC_DT"/>
+        <result property="mLsChgDtm" column="LSCHG_DTM"/>
+        <result property="mLsCmeNo" column="LS_CMENO"/>
+        <result property="mAuctionResult" column="SEL_STS_DSC"/>
+    </resultMap>
+
+	<!-- tb_la_is_mh_sog_cow -->
+	<sql id="sogCowColumn">
+		${alias}.NA_BZPLC,
+		${alias}.SRA_INDV_AMNNO,
+		${alias}.SRA_SRS_DSC,
+		${alias}.FHS_ID_NO,
+		${alias}.FARM_AMNNO,
+		${alias}.BIRTH,
+		${alias}.MCOW_DSC,
+		${alias}.KPN_NO,
+		${alias}.INDV_SEX_C,
+		${alias}.MCOW_SRA_INDV_AMNNO,
+		${alias}.MATIME,
+		${alias}.SRA_INDV_PASG_QCN,
+		${alias}.INDV_ID_NO,
+		${alias}.SRA_INDV_BRDSRA_RG_NO,
+		${alias}.RG_DSC,
+		${alias}.ANW_YN
+	</sql>
+	
+	<!-- tb_la_is_mm_indv -->
+	<sql id="indvColumn">
+		${alias}.AUC_PRG_SQ,
+		${alias}.COW_SOG_WT,
+		${alias}.AUC_OBJ_DSC,
+		${alias}.FIR_LOWS_SBID_LMT_AM,
+		${alias}.LOWS_SBID_LMT_AM,
+		${alias}.RMK_CNTN,
+		${alias}.BRANDNM,
+		${alias}.PRNY_MTCN,
+		${alias}.AUC_DT,
+		DATE_FORMAT(${alias}.LSCHG_DTM,'%Y%m%d%H%i%S') as LSCHG_DTM,
+		${alias}.LS_CMENO,
+		${alias}.SEL_STS_DSC
+	</sql>
+	
+	<!-- tb_la_is_mm_fhs -->
+	<sql id="fhsColumn">
+		${alias}.FTSNM
+	</sql>
+	
     <!-- 출품 데이터 추출 -->
     <select id="selectAllEntry" resultMap="entryInfoMap" resultType="linkedHashMap">
-        SELECT B.AUC_PRG_SQ,
-               A.NA_BZPLC,
-               A.SRA_INDV_AMNNO,
-               A.SRA_SRS_DSC,
-               A.FHS_ID_NO,
-               A.FARM_AMNNO,
-               A.BIRTH,
-               A.MCOW_DSC,
-               A.KPN_NO,
-               A.INDV_SEX_C,
-               A.MCOW_SRA_INDV_AMNNO,
-               A.MATIME,
-               A.SRA_INDV_PASG_QCN,
-               A.INDV_ID_NO,
-               A.SRA_INDV_BRDSRA_RG_NO,
-               A.RG_DSC,
-               A.ANW_YN,
-               B.COW_SOG_WT,
-               B.AUC_OBJ_DSC,
-               B.FIR_LOWS_SBID_LMT_AM,
-               B.LOWS_SBID_LMT_AM,
-               B.RMK_CNTN,
-               B.BRANDNM,
-               B.PRNY_MTCN,
-               B.AUC_DT,
-               DATE_FORMAT(B.LSCHG_DTM,'%Y%m%d%H%i%S') as LSCHG_DTM,
-               B.LS_CMENO,
-               B.SEL_STS_DSC,
-               C.FTSNM
+		SELECT 
+			<include refid="sogCowColumn"><property name="alias" value="A"/></include>,
+			<include refid="indvColumn"><property name="alias" value="B"/></include>,
+			<include refid="fhsColumn"><property name="alias" value="C"/></include>
         FROM tb_la_is_mm_indv as A
                  JOIN
              tb_la_is_mh_sog_cow AS B
@@ -104,10 +155,22 @@
                      B.NA_BZPLC = C.NA_BZPLC AND
                      B.FHS_ID_NO = C.FHS_ID_NO AND
                      B.FARM_AMNNO = C.FARM_AMNNO
-        WHERE B.AUC_DT = #{auctionDate}
-          AND B.NA_BZPLC = #{auctionHouseCode}
-          AND B.AUC_OBJ_DSC = #{entryType}
-        ORDER BY B.AUC_PRG_SQ ASC;
+		WHERE B.AUC_DT = #{aucDt}
+		AND B.NA_BZPLC = #{naBzplc}
+		AND B.AUC_OBJ_DSC = #{aucObjDsc}
+		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('S')">
+			AND B.SEL_STS_DSC = '22'
+		</if>
+		
+		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('P')">
+			AND B.SEL_STS_DSC = '23'
+		</if>
+		
+		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('SP')">
+			AND B.SEL_STS_DSC >= '22'
+		</if>
+
+		ORDER BY B.AUC_PRG_SQ ASC;
     </select>
     
 	<update id="updateEntryPrice" parameterType="EntryInfo">

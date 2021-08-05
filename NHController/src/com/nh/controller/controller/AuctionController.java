@@ -293,7 +293,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					public void handle(ActionEvent event) {
 
 						if (mCurrentSpEntryInfo == null) {
-							selecIndextWaitTable(0, false);
+							selectIndexWaitTable(0, false);
 						}
 
 						mWaitTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldItem, newItem) -> {
@@ -552,7 +552,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
 
 				if (value > -1) {
-					selecIndextWaitTable(value, true);
+					selectIndexWaitTable(value, true);
 				}
 			}
 		});
@@ -881,7 +881,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				
 				mCurrentSpEntryInfo = mWaitTableView.getItems().get(i);
 
-				selecIndextWaitTable(i, true);
+				selectIndexWaitTable(i, true);
 
 				switch (mCurrentSpEntryInfo.getAuctionResult().getValue()) {
 				case GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS:
@@ -1081,7 +1081,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			PauseTransition pauseTransition = new PauseTransition(Duration.millis(2000));
 			pauseTransition.setOnFinished(event -> {
 				// 다음 출품 번호 이동
-				selecIndextWaitTable(1, false);
+				selectIndexWaitTable(1, false);
 			});
 			pauseTransition.play();
 
@@ -1284,7 +1284,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							mWaitTableView.scrollTo(mRecordCount - 1);
 							setCurrentEntryInfo();
 						} else {
-							selecIndextWaitTable(-1, false);
+							selectIndexWaitTable(-1, false);
 						}
 
 						ke.consume();
@@ -1296,7 +1296,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							return;
 						}
 
-						selecIndextWaitTable(1, false);
+						selectIndexWaitTable(1, false);
 						ke.consume();
 					}
 				}
@@ -1309,7 +1309,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 *
 	 * @param index
 	 */
-	private void selecIndextWaitTable(int index, boolean isPopupClicked) {
+	private void selectIndexWaitTable(int index, boolean isPopupClicked) {
 
 		if (mWaitTableView.getItems().size() == 0) {
 			return;

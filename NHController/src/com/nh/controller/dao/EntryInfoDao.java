@@ -1,5 +1,6 @@
 package com.nh.controller.dao;
 
+import com.nh.controller.model.AuctionRound;
 import com.nh.share.controller.models.EntryInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
@@ -14,8 +15,8 @@ import java.util.Map;
  */
 public class EntryInfoDao {
 
-    public List<EntryInfo> selectAllEntryInfo(Map<String, String> entryInfoMap, SqlSession session) {
-        return session.selectList("selectAllEntry", entryInfoMap);
+    public List<EntryInfo> selectAllEntryInfo(AuctionRound auctionRound, SqlSession session) {
+        return session.selectList("selectAllEntry", auctionRound);
     }
     
     /**

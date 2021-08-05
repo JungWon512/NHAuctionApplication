@@ -1,13 +1,15 @@
 package com.nh.controller.model;
 
 import java.time.LocalDateTime;
+
+import com.nh.share.controller.models.EntryInfo;
 /**
  * 경매 회차정보 DTO
  * 
  * @author dhKim
  *
  */
-public class AuctionRound {
+public class AuctionRound extends SearchParamData{
 
 	private String naBzplc; // 경제통합사업장코드
 	private int aucObjDsc; // 경매대상구분코드
@@ -26,6 +28,8 @@ public class AuctionRound {
 	private String fsgmnEno; // 최초등록자개인번호
 	private LocalDateTime lschgDtm; // 최종변경일시
 	private String lsCmeno; // 최초변경자개인번호
+	
+	
 
 	public AuctionRound() {
 	}

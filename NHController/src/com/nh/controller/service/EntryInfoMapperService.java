@@ -3,10 +3,13 @@ package com.nh.controller.service;
 import com.nh.controller.dao.EntryInfoDao;
 import com.nh.controller.database.DBSessionFactory;
 import com.nh.controller.mapper.EntryInfoMapper;
+import com.nh.controller.model.AuctionRound;
 import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.GlobalDefine;
 import com.nh.share.controller.models.EntryInfo;
 import org.apache.ibatis.session.SqlSession;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,18 +36,11 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
     }
 
     @Override
-    public List<EntryInfo> getAllEntryData(String date,
-                                           String auctionHouseCode,
-                                           String entryType) {
-
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put("auctionDate", date);
-        map.put("auctionHouseCode", auctionHouseCode);
-        map.put("entryType", entryType);
+    public List<EntryInfo> getAllEntryData(AuctionRound auctionRound) {
 
         List<EntryInfo> list;
         try (SqlSession session = DBSessionFactory.getSession()) {
-            list = getDao().selectAllEntryInfo(map, session);
+            list = getDao().selectAllEntryInfo(auctionRound, session);
         }
 
         if (!list.isEmpty()) {
@@ -57,6 +53,26 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
         return list;
     }
 
+	@Override
+	public List<EntryInfo> getFinishedEntryData(AuctionRound auctionRound) {
+		
+		List<EntryInfo> list = null;
+		
+		try (SqlSession session = DBSessionFactory.getSession()) {
+			
+			auctionRound.setAuctionResultParam(GlobalDefine.ETC_INFO.AUCTION_SEARCH_PARAM_SP);
+
+			list = getDao().selectAllEntryInfo(auctionRound,session);
+			
+			auctionRound.setAuctionResultParam(null);
+			
+		}catch (Exception e) {
+			return new ArrayList<EntryInfo>();
+		}
+		
+		return list;
+	}
+	
 	@Override
 	public int updateEntryPrice(EntryInfo entryInfo) {
 		
@@ -79,7 +95,7 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 		return resultValue;
 	}
-    
+
 	@Override
 	public int updateEntryState(EntryInfo entryInfo) {
 		
@@ -102,6 +118,5 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 		return resultValue;
 	}
-    
-    
+
 }

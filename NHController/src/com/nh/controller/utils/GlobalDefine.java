@@ -36,10 +36,11 @@ public class GlobalDefine {
      */
     public static final class AUCTION_INFO {
 
-        public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
+//        public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
 //		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민
+		public static final String AUCTION_HOST = "115.41.222.25"; // dev
 
 		public static final int AUCTION_PORT = 5001; // Server Port
 		
@@ -67,6 +68,12 @@ public class GlobalDefine {
 	public static final class FILE_INFO{
 		public static final String AUCTION_LOG_FILE_PATH = "c:/NHAuction/LogFile/";
 		public static final String AUCTION_LOG_FILE_EXTENSION = ".txt";
+	}
+	
+	public static final class ETC_INFO {
+		public static final String AUCTION_SEARCH_PARAM_S = "S";	//낙찰만
+		public static final String AUCTION_SEARCH_PARAM_P = "P";	//보류만
+		public static final String AUCTION_SEARCH_PARAM_SP = "SP";	//낙찰&보류
 	}
 
 }

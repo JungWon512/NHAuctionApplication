@@ -1,5 +1,6 @@
 package com.nh.controller.mapper;
 
+import com.nh.controller.model.AuctionRound;
 import com.nh.share.controller.models.EntryInfo;
 import org.apache.ibatis.annotations.Param;
 
@@ -12,9 +13,16 @@ import java.util.List;
  */
 public interface EntryInfoMapper {
 
-    List<EntryInfo> getAllEntryData(@Param("auctionDate") String date,
-                                    @Param("auctionHouseCode") String auctionHouseCode,
-                                    @Param("entryType") String entryType); // TODO: 쿼리 및 param 수정
+    List<EntryInfo> getAllEntryData(AuctionRound auctionRound);
+    
+
+    /**
+     * 낙찰/보류 목록 조회
+     * @param auctionRound
+     * @return
+     */
+    List<EntryInfo> getFinishedEntryData(AuctionRound auctionRound);
+/**
     /**
      * 가격 정보 업데이트
      * @param entryInfo

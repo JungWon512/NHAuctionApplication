@@ -333,7 +333,7 @@ public class BaseAuctionController implements NettyControllable {
     public void onChannelInactive(int port) {
         mLogger.debug("onChannelInactive : " + port);
         addLogItem(mResMsg.getString("msg.disconnection"));
-        showAlertPopupOneButton("msg.disconnection");
+        Platform.runLater(() ->showAlertPopupOneButton(mResMsg.getString("msg.disconnection")));
     }
 
     @Override
