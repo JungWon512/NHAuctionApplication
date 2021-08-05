@@ -8,6 +8,12 @@
 <!--        private String mChannel; // 접속 요청 채널-->
 <!--        private String mOS; // 사용 채널-->
 <mapper namespace="com.nh.controller.mapper.ConnectionInfoMapper">
+    <!--  관리자 로그인 체크  -->
+    <select id="selectAdminInfo" parameterType="String">
+        SELECT auction.usrnm
+        FROM auction.tb_la_is_mm_usr as A
+        WHERE A.USRID = #{userId} A.PW = #{userPwd};
+    </select>
 
     <!--  유저 유무 체크  -->
     <select id="selectConnectionInfo" parameterType="String"
