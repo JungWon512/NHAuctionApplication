@@ -3,7 +3,7 @@
 /* pane background */
 .grid-pane {
     -fx-background-color: #ffffff;
-    -fx-background-radius: 5;
+    -fx-background-radius: 5px;
     -fx-padding: 10;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .label-background {
-    -fx-background-color: #0A1931;
+    -fx-background-color: #27293d;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
@@ -43,19 +43,21 @@
 /* 버튼 */
 .btn-submit {
     -fx-border-width: 1px;
-    -fx-border-color: #0082e5;
-    -fx-background-color: #0082e5;
+    -fx-border-color: #ffe135;
+    -fx-background-color: #ffe135;
     -fx-text-fill: #111;
     -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;
     -fx-padding: 0px 12px 0px 12px;
+    -fx-border-radius: 5px;
 }
 
 .btn-submit:hover {
     -fx-border-width: 2px;
-    -fx-border-color: #0082e5;
-    -fx-background-color: #e6efff;
+    -fx-border-color: #ffe135;
+    -fx-background-color: #ffe279;
     -fx-text-fill: #111;
     -fx-padding: 0px 12px 0px 12px;
+    -fx-border-radius: 5px;
 }
 
 /* 체크박스 */
@@ -78,8 +80,10 @@
     -fx-background-color: #0082e5;
 }
 
-/*.check-box:hover .box {*/
-/*}*/
+.check-box:pressed .box {
+    -fx-scale-y: 0.90;
+    -fx-scale-x: 0.90;
+}
 
 /* 라디오버튼 */
 .radio-button {
@@ -89,11 +93,16 @@
 
 .radio-button .radio {
     -fx-border-width: 1px;
-    -fx-border-color: #111;
+    -fx-border-color: #27293d;
     -fx-background-color: white;
     -fx-background-image: null;
     -fx-border-radius: 15px;
     -fx-background-insets: 0;
+}
+
+.radio-button:pressed .radio {
+    -fx-scale-y: 0.90;
+    -fx-scale-x: 0.90;
 }
 
 .radio-button .radio:selected {

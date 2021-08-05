@@ -83,19 +83,19 @@ public class LoginController implements Initializable {
 //		mPortTextField.setText(Integer.toString(AUCTION_INFO.AUCTION_PORT));
 //		mIdTextField.setText(AUCTION_INFO.AUCTION_MEMBER);
 
-        if (!mIpTextField.getText().isEmpty() && !mPortTextField.getText().isEmpty() && !mIdTextField.getText().isEmpty()) {
-
-            CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
-
-            String ip = mIpTextField.getText().toString().trim();
-            int port = Integer.parseInt(mPortTextField.getText().toString().trim());
-            String id = mIdTextField.getText().toString().trim();
-
-            MoveStageUtil.getInstance().onConnectServer(mStage, ip, port, id);
-
-        } else {
-            CommonUtils.getInstance().showAlertPopupOneButton(mStage, "접속 정보를 입력해주세요.", mResMsg.getString("popup.btn.close"));
-        }
+//        if (!mIpTextField.getText().isEmpty() && !mPortTextField.getText().isEmpty() && !mIdTextField.getText().isEmpty()) {
+//
+//            CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
+//
+//            String ip = mIpTextField.getText().toString().trim();
+//            int port = Integer.parseInt(mPortTextField.getText().toString().trim());
+//            String id = mIdTextField.getText().toString().trim();
+//
+//            MoveStageUtil.getInstance().onConnectServer(mStage, ip, port, id);
+//
+//        } else {
+//            CommonUtils.getInstance().showAlertPopupOneButton(mStage, "접속 정보를 입력해주세요.", mResMsg.getString("popup.btn.close"));
+//        }
 
     }
 
