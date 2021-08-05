@@ -33,6 +33,17 @@ public class ConnectionInfoMapperService extends BaseMapperService<ConnectionInf
     }
 
     @Override
+    public String selectAdminInfo(String userId, String userPwd) {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("userId", userId);
+        map.put("userPwd", userPwd);
+
+        try (SqlSession session = DBSessionFactory.getSession()) {
+            return getDao().selectAdminInfo(map, session);
+        }
+    }
+
+    @Override
     public String selectConnectionInfo(String auctionHouseCode, String auctionDate, String entryType, String userMemNum) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put("auctionHouseCode", auctionHouseCode);

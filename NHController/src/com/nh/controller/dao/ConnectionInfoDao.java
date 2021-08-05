@@ -13,6 +13,10 @@ import java.util.Map;
  */
 public class ConnectionInfoDao {
 
+    public String selectAdminInfo(Map<String, String> adminInfo, SqlSession session) {
+        return session.selectOne("selectAdminInfo", adminInfo);
+    }
+
     public String selectUserInfo(Map<String, String> connectionInfo, SqlSession session) {
         return session.selectOne("selectConnectionInfo", connectionInfo);
     }

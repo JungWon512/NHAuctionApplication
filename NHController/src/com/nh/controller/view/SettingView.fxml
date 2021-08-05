@@ -1,8 +1,667 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="576.0" prefWidth="720.0" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.SettingController">
-
-</AnchorPane>
+<BorderPane prefHeight="900.0" prefWidth="1280.0" styleClass="base-pane" stylesheets="@../css/setting.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.SettingController">
+    <center>
+        <GridPane maxHeight="780.0" prefWidth="1260.0" styleClass="grid-pane" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="120.0" minWidth="10.0" prefWidth="10.0"/>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="246.0" minWidth="100.0" prefWidth="213.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="110.0" minWidth="10.0" prefWidth="10.0"/>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="100.0" prefWidth="250.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="110.0" minWidth="10.0" prefWidth="10.0"/>
+                <ColumnConstraints hgrow="ALWAYS" minWidth="50.0"/>
+                <ColumnConstraints hgrow="ALWAYS" minWidth="100.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.0" minWidth="1.0" prefWidth="1.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="80.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER"/>
+            </rowConstraints>
+            <children>
+                <Label contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="전광판 설정" textFill="WHITE" GridPane.columnSpan="7">
+                    <GridPane.margin>
+                        <Insets left="10.0"/>
+                    </GridPane.margin>
+                    <font>
+                        <Font name="System Bold" size="18.0"/>
+                    </font>
+                </Label>
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="전광판 1" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="2"/>
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="전광판 2" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="전광판 3" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <children>
+                        <TextField promptText="IP"/>
+                        <TextField minWidth="90.0" prefWidth="90.0" promptText="PORT"/>
+                    </children>
+                    <padding>
+                        <Insets left="10.0" right="10.0"/>
+                    </padding>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                    <children>
+                        <TextField promptText="IP"/>
+                        <TextField minWidth="90.0" prefWidth="90.0" promptText="PORT"/>
+                    </children>
+                    <padding>
+                        <Insets left="10.0" right="10.0"/>
+                    </padding>
+                </HBox>
+                <HBox alignment="CENTER" fillHeight="false" spacing="20.0" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                    <children>
+                        <VBox spacing="5.0">
+                            <children>
+                                <RadioButton mnemonicParsing="false" selected="true" text="없음" textFill="WHITE">
+                                    <toggleGroup>
+                                        <ToggleGroup fx:id="firstToggleGroup"/>
+                                    </toggleGroup>
+                                </RadioButton>
+                                <RadioButton mnemonicParsing="false" text="고정 A-type" toggleGroup="$firstToggleGroup"/>
+                                <RadioButton mnemonicParsing="false" text="흐름 B-type" toggleGroup="$firstToggleGroup"/>
+                            </children>
+                            <padding>
+                                <Insets left="10.0"/>
+                            </padding>
+                        </VBox>
+                        <HBox alignment="CENTER" spacing="10.0">
+                            <children>
+                                <TextField promptText="IP">
+                                    <HBox.margin>
+                                        <Insets/>
+                                    </HBox.margin>
+                                </TextField>
+                                <TextField minWidth="90.0" prefWidth="90.0" promptText="PORT"/>
+                            </children>
+                        </HBox>
+                    </children>
+                    <GridPane.margin>
+                        <Insets/>
+                    </GridPane.margin>
+                    <padding>
+                        <Insets right="10.0"/>
+                    </padding>
+                </HBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="PDP 화면설정" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="4"/>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="617.0" spacing="12.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="4">
+                    <children>
+                        <RadioButton mnemonicParsing="false" selected="true" text="전광판화면">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="secondToggleGroup"/>
+                            </toggleGroup>
+                        </RadioButton>
+                        <RadioButton mnemonicParsing="false" text="경매진행화면" toggleGroup="$secondToggleGroup"/>
+                        <Label styleClass="font-s" text="PDP는 1개만 가능하며 사용하지 않은 PDP는 0과 공백으로 입력">
+                            <font>
+                                <Font size="12.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                    <opaqueInsets>
+                        <Insets/>
+                    </opaqueInsets>
+                    <GridPane.margin>
+                        <Insets left="5.0"/>
+                    </GridPane.margin>
+                    <padding>
+                        <Insets left="10.0"/>
+                    </padding>
+                </HBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="140.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="40.0" styleClass="label-background" text="표출 데이터 포맷" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4"
+                       GridPane.rowIndex="4"/>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                    <children>
+                        <TextField maxWidth="50.0" minWidth="50.0" prefWidth="50.0"/>
+                        <Label text="1 : 포맷 1"/>
+                        <Label layoutX="171.0" layoutY="22.0" text="2 : 포맷 2"/>
+                    </children>
+                    <GridPane.margin>
+                        <Insets/>
+                    </GridPane.margin>
+                    <padding>
+                        <Insets left="10.0"/>
+                    </padding>
+                </HBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="140.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="PDP 셋톱박스" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="6"/>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                    <children>
+                        <TextField promptText="IP"/>
+                        <TextField minWidth="90.0" prefWidth="90.0" promptText="PORT"/>
+                    </children>
+                    <padding>
+                        <Insets left="10.0" right="10.0"/>
+                    </padding>
+                </HBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="180.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="응찰석 셋톱박스" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="3" GridPane.rowIndex="6">
+                    <children>
+                        <TextField promptText="IP"/>
+                        <TextField minWidth="90.0" prefWidth="90.0" promptText="PORT"/>
+                    </children>
+                    <padding>
+                        <Insets left="10.0" right="10.0"/>
+                    </padding>
+                </HBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="377.0" layoutY="180.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="PDP 셋톱박스3" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4"
+                       GridPane.rowIndex="6"/>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                    <children>
+                        <TextField promptText="IP"/>
+                        <TextField minWidth="90.0" prefWidth="90.0" promptText="PORT"/>
+                    </children>
+                    <padding>
+                        <Insets left="10.0"/>
+                    </padding>
+                </HBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="180.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="전광판 표출" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="8"/>
+                <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+                            <children>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="경매번호"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="KPN"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="출하주"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="지역명"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="성별"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="비고"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="중량"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="최저가"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="어미"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="낙찰가"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="계대"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="낙찰자"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="산차"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="친자"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                            <children>
+                                <Label alignment="CENTER" styleClass="font-s" text="낙찰자 3 입력시 참가번호 6 입력시 성명으로 출력됨">
+                                    <HBox.margin>
+                                        <Insets left="10.0"/>
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                        </HBox>
+                    </children>
+                    <GridPane.margin>
+                        <Insets top="10.0"/>
+                    </GridPane.margin>
+                    <padding>
+                        <Insets left="10.0"/>
+                    </padding>
+                </VBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="220.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="PDP 표출" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="10"/>
+                <VBox alignment="CENTER_LEFT" layoutX="127.0" layoutY="230.0" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="10">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+                            <children>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="경매번호"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="KPN"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="출하주"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="지역명"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="성별"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="비고"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="중량"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="최저가"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="어미"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="낙찰가"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="계대"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="낙찰자"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                    <children>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="산차"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <children>
+                                                <Label text="친자"/>
+                                                <TextField minWidth="50.0" prefWidth="50.0"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                            <children>
+                                <Label alignment="CENTER" styleClass="font-s" text="낙찰자 3 입력시 참가번호 6 입력시 성명으로 출력됨">
+                                    <HBox.margin>
+                                        <Insets/>
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <VBox.margin>
+                                <Insets left="10.0"/>
+                            </VBox.margin>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets left="10.0"/>
+                    </padding>
+                    <GridPane.margin>
+                        <Insets top="10.0"/>
+                    </GridPane.margin>
+                </VBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="320.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="응찰상한가(A)" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="12"/>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="46.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="12">
+                    <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="송아지" textAlignment="CENTER" textFill="WHITE"/>
+                        <TextField promptText="가격(원)"/>
+                        <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline"/>
+                    </children>
+                    <padding>
+                        <Insets left="50.0"/>
+                    </padding>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" layoutX="127.0" layoutY="420.0" prefHeight="100.0" prefWidth="200.0" spacing="50.0" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="12">
+                    <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="비육우" textAlignment="CENTER" textFill="WHITE"/>
+                        <TextField promptText="가격(원)"/>
+                        <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline"/>
+                    </children>
+                    <padding>
+                        <Insets left="40.0"/>
+                    </padding>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" layoutX="511.0" layoutY="420.0" prefHeight="100.0" prefWidth="200.0" spacing="50.0" GridPane.columnIndex="5" GridPane.columnSpan="2147483647" GridPane.rowIndex="12">
+                    <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="번식우" textAlignment="CENTER" textFill="WHITE"/>
+                        <TextField promptText="가격(원)"/>
+                    </children>
+                    <padding>
+                        <Insets left="30.0"/>
+                    </padding>
+                </HBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="420.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="하한가낮추기" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="14"/>
+                <HBox alignment="CENTER_LEFT" layoutX="228.0" layoutY="420.0" prefHeight="100.0" prefWidth="200.0" spacing="46.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="14">
+                    <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="송아지" textAlignment="CENTER" textFill="WHITE"/>
+                        <TextField promptText="가격(원)"/>
+                        <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline"/>
+                    </children>
+                    <padding>
+                        <Insets left="50.0"/>
+                    </padding>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="14">
+                    <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="비육우" textAlignment="CENTER" textFill="WHITE"/>
+                        <TextField promptText="가격(원)"/>
+                        <Pane prefWidth="1.0" styleClass="underline"/>
+                    </children>
+                    <padding>
+                        <Insets left="40.0"/>
+                    </padding>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0" GridPane.columnIndex="5" GridPane.columnSpan="2147483647" GridPane.rowIndex="14">
+                    <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="번식우" textAlignment="CENTER" textFill="WHITE"/>
+                        <TextField promptText="가격(원)"/>
+                    </children>
+                    <padding>
+                        <Insets left="30.0"/>
+                    </padding>
+                </HBox>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="3"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="5"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="9"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="11"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="13"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="23"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnIndex="7" GridPane.rowIndex="1" GridPane.rowSpan="2147483647"/>
+                <Label contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="경매진행 설정" textFill="WHITE" GridPane.columnSpan="7" GridPane.rowIndex="16">
+                    <font>
+                        <Font name="System Bold" size="18.0"/>
+                    </font>
+                    <GridPane.margin>
+                        <Insets/>
+                    </GridPane.margin>
+                    <padding>
+                        <Insets left="10.0"/>
+                    </padding>
+                </Label>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="15"/>
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="경매종료 멘트 설정" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="18">
+                    <font>
+                        <Font size="12.0"/>
+                    </font>
+                </Label>
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="비고창 설정" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="18"/>
+                <CheckBox mnemonicParsing="false" text="비고 사용" GridPane.columnIndex="3" GridPane.rowIndex="18">
+                    <GridPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                    </GridPane.margin>
+                </CheckBox>
+                <CheckBox mnemonicParsing="false" selected="true" text="멘트 사용" GridPane.columnIndex="1" GridPane.rowIndex="18">
+                    <GridPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                    </GridPane.margin>
+                </CheckBox>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="21"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="17"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="19"/>
+                <Label contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="모바일노출 설정" textFill="WHITE" GridPane.columnSpan="2147483647" GridPane.rowIndex="20">
+                    <font>
+                        <Font name="System Bold" size="18.0"/>
+                    </font>
+                    <padding>
+                        <Insets left="10.0"/>
+                    </padding>
+                    <GridPane.margin>
+                        <Insets/>
+                    </GridPane.margin>
+                </Label>
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="모바일 표출" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="22"/>
+                <VBox GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="22">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+                            <children>
+                                <VBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" selected="true" text="경매번호"/>
+                                        <CheckBox mnemonicParsing="false" selected="true" text="KPN"/>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" selected="true" text="출하주"/>
+                                        <CheckBox mnemonicParsing="false" text="지역명"/>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" selected="true" text="성별"/>
+                                        <CheckBox mnemonicParsing="false" text="비고"/>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" selected="true" text="중량"/>
+                                        <CheckBox mnemonicParsing="false" text="최저가"/>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" selected="true" text="어미"/>
+                                        <CheckBox mnemonicParsing="false" text="낙찰가"/>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" selected="true" text="계대"/>
+                                        <CheckBox mnemonicParsing="false" text="낙찰자"/>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" selected="true" text="산차"/>
+                                        <CheckBox mnemonicParsing="false" text="친자"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                        <Label alignment="CENTER" styleClass="font-s" text="최대 8개까지 선택 가능">
+                            <VBox.margin>
+                                <Insets left="10.0"/>
+                            </VBox.margin>
+                        </Label>
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="10.0"/>
+                    </padding>
+                    <GridPane.margin>
+                        <Insets top="5.0"/>
+                    </GridPane.margin>
+                </VBox>
+            </children>
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+            <BorderPane.margin>
+                <Insets left="10.0" right="10.0"/>
+            </BorderPane.margin>
+        </GridPane>
+    </center>
+    <top>
+        <HBox alignment="BOTTOM_RIGHT" BorderPane.alignment="BOTTOM_RIGHT">
+            <children>
+                <Button maxHeight="40.0" maxWidth="100.0" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" styleClass="btn-submit" text="[F5] 저장" textAlignment="CENTER">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Button>
+            </children>
+            <padding>
+                <Insets right="25.0" top="15.0"/>
+            </padding>
+            <BorderPane.margin>
+                <Insets top="10.0"/>
+            </BorderPane.margin>
+        </HBox>
+    </top>
+</BorderPane>

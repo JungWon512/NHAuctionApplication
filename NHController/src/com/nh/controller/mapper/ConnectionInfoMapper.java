@@ -13,6 +13,16 @@ import java.util.List;
 public interface ConnectionInfoMapper {
 
     /**
+     * 관리자 로그인
+     *
+     * @param userId  아이디
+     * @param userPwd 비밀번호
+     * @return 사용자 이름
+     */
+    String selectAdminInfo(@Param("userId") String userId,
+                           @Param("userPwd") String userPwd);
+
+    /**
      * 가축경매 참여자 번호 조회
      *
      * @param auctionHouseCode 조합구분코드

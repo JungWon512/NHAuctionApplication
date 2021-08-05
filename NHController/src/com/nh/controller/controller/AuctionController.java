@@ -663,6 +663,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mBtnF7.setDisable(true);
 			mBtnEnter.setDisable(true);
 			addLogItem(mResMsg.getString("msg.auction.send.pass") + AuctionDelegate.getInstance().onPassAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
+
+//			addFinishedTableViewItem(mCurrentSpEntryInfo); // 강제 유찰 완료상태에 넣어야되면 주석해제~
+
+			// 낙유찰 화면 딜레이 2초 후 경매 대기 전환
+			PauseTransition pauseTransition = new PauseTransition(Duration.millis(2000));
+			pauseTransition.setOnFinished(event -> {
+				selecIndextWaitTable(1);
+				// 경매 대기
+				setAuctionStatus(GlobalDefineCode.AUCTION_STATUS_READY);
+				setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+			});
+			pauseTransition.play();
 			break;
 		}
 	}
