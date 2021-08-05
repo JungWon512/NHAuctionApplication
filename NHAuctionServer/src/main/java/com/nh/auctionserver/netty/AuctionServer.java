@@ -1000,10 +1000,17 @@ public class AuctionServer {
 
 		for (ChannelId key : mConnectorInfoMap.keySet()) {
 			try {
-				if (JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken())
-						.equals(closeMember)) {
-					channelId = key;
-					break;
+				if(mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
+					if((mConnectorInfoMap.get(key).getAuctionHouseCode() + "_" + mConnectorInfoMap.get(key).getUserMemNum()).equals(closeMember)) {
+						channelId = key;
+						break;
+					}
+				} else {
+					if (JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken())
+							.equals(closeMember)) {
+						channelId = key;
+						break;
+					}
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -1013,9 +1020,11 @@ public class AuctionServer {
 
 		if (mConnectorInfoMap.containsKey(channelId)) {
 			// 사용자 접속 해제 상테 전송
-			itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), mConnectorInfoMap.get(channelId).getAuctionJoinNum(),
-					mConnectorInfoMap.get(channelId).getChannel(), mConnectorInfoMap.get(channelId).getOS(), "L", "0")
-							.getEncodedMessage());
+			if(mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+				itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), mConnectorInfoMap.get(channelId).getAuctionJoinNum(),
+						mConnectorInfoMap.get(channelId).getChannel(), mConnectorInfoMap.get(channelId).getOS(), "L", "0")
+								.getEncodedMessage());
+			}
 
 			mConnectorInfoMap.remove(channelId);
 
