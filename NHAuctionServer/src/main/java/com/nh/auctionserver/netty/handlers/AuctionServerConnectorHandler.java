@@ -158,6 +158,12 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 												|| mAuctionScheduler
 														.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
 														.equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+
+											ctx.writeAndFlush(new CurrentEntryInfo(
+													mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+															.getCurrentEntryInfo()).getEncodedMessage()
+													+ "\r\n");
+
 											// 정상 접속자 초기 경매 상태 정보 전달 처리
 											ctx.channel()
 													.writeAndFlush(mAuctionScheduler
@@ -218,6 +224,12 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 										.equals(GlobalDefineCode.AUCTION_STATUS_PASS)
 										|| mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
 												.equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+									
+									ctx.writeAndFlush(new CurrentEntryInfo(mAuctionScheduler
+											.getAuctionState(connectionInfo.getAuctionHouseCode()).getCurrentEntryInfo())
+													.getEncodedMessage()
+											+ "\r\n");
+									
 									// 정상 접속자 초기 경매 상태 정보 전달 처리
 									ctx.channel().writeAndFlush(
 											mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
