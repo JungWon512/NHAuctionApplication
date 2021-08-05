@@ -4,6 +4,8 @@ import com.nh.controller.service.ConnectionInfoMapperService;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine.AUCTION_INFO;
 import com.nh.controller.utils.MoveStageUtil;
+import com.nh.controller.utils.SharedPreference;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -50,7 +52,21 @@ public class LoginController implements Initializable {
         }
 
         mBtnConnection.setOnMouseClicked(event -> onConnectServer(event));
+        
+      //Test
+      testShared();
     }
+    
+    private void testShared() {
+		//Shared Sample
+		SharedPreference sharedPreference = new SharedPreference();
+		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_AAA,"TEST_AAAAAA");
+		
+		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_BBB,true);
+		
+		System.out.println(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_AAA, ""));
+		System.out.println(sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_BBB, false));
+	}
 
     /**
      * 구성 설정
