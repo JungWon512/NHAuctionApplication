@@ -29,6 +29,7 @@ import com.nh.share.server.models.CurrentEntryInfo;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -303,8 +304,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 								SpEntryInfo oldSpEntryInfo = oldItem;
 								SpEntryInfo newSpEntryInfo = newItem;
 
-								if (newSpEntryInfo.getEntryNum() == null) {
-									if (oldSpEntryInfo.getEntryNum() != null) {
+								if (isEmptyProperty(newSpEntryInfo.getEntryNum())) {
+									if (!isEmptyProperty(newSpEntryInfo.getEntryNum())) {
 										mWaitTableView.getSelectionModel().clearSelection();
 										mWaitTableView.getSelectionModel().select(oldSpEntryInfo);
 									}
@@ -336,16 +337,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		if (CommonUtils.getInstance().isListEmpty(newEntryDataList)) {
 			return;
 		}
-
-		SpEntryInfo testE = new SpEntryInfo();
-		testE.setEntryNum(new SimpleStringProperty("5555"));
-		testE.setLowPrice(new SimpleStringProperty("11111"));
-		newEntryDataList.add(testE);
-		testE = new SpEntryInfo();
-		testE.setEntryNum(new SimpleStringProperty("4444"));
-		testE.setLowPrice(new SimpleStringProperty("33333"));
-
-		newEntryDataList.add(testE);
 
 		// 현재 최종 수정시간 < 조회된 최종 수정시간 -> 데이터 갱신&서버 전달
 		for (int i = 0; mRecordCount > i; i++) {
@@ -413,21 +404,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mFinishedEntryInfoDataList.addAll(dummyRow);
 		} else {
 
-			int checkSize = dataList.size() - DUMMY_ROW_FINISHED;
+			int sumSize = dataList.size() - DUMMY_ROW_FINISHED;
 
-			mFinishedTableView.setItems(dataList);
-
-			if (checkSize < 0) {
-
-				mFinishedTableView.setItems(dataList);
+			if (sumSize < 0) {
 
 				ObservableList<SpEntryInfo> dummyRow = FXCollections.observableArrayList(); // dummy row
 
-				for (int i = 0; (checkSize * 1) > i; i++) {
+				int reSize = sumSize * -1;
+				
+				for (int i = 0; reSize > i; i++) {
 					dummyRow.add(new SpEntryInfo());
 				}
+				
+				System.out.println("sizee " + dummyRow.size() + " / " + reSize);
 
-				mFinishedTableView.getItems().addAll(dummyRow);
+				mFinishedTableView.setItems(dummyRow);
+				
+				mFinishedTableView.getItems().addAll(dataList);
 			}
 
 			mFinishedTableView.scrollTo(mFinishedTableView.getItems().size() - 1);
@@ -733,7 +726,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// [경매회차조회] TEST!! 일단 경매정보 하나만 가져옴!!
 		AuctionRoundMapperService service = new AuctionRoundMapperService();
 //        List<AuctionRound> list = service.getAllAuctionRoundData(CommonUtils.getInstance().getCurrentTime("yyyyMMdd")); // 실제사용
-		List<AuctionRound> list = service.getAllAuctionRoundData("20210702"); // 테스트
+		List<AuctionRound> list = service.getAllAuctionRoundData("20210806"); // 테스트
 		this.auctionRound = list.get(0); // 테스트
 //        for (AuctionRound t : list) {
 //            qcn = t.getQcn();
@@ -889,12 +882,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					mAuctionStateProgressLabel.setDisable(true);
 					mAuctionStateSuccessLabel.setDisable(false);
 					mAuctionStateFailLabel.setDisable(true);
+					mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.success"));
 					break;
 				case GlobalDefineCode.AUCTION_RESULT_CODE_PENDING:
 					mAuctionStateReadyLabel.setDisable(true);
 					mAuctionStateProgressLabel.setDisable(true);
 					mAuctionStateSuccessLabel.setDisable(true);
 					mAuctionStateFailLabel.setDisable(false);
+					mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.fail"));
 					break;
 				}
 			}
@@ -1014,7 +1009,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				//가격 상승,다운 활성화
 				mBtnUpPrice.setDisable(false);
 				mBtnDownPrice.setDisable(false);
-
+				
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_FINISH:
 
@@ -1069,10 +1064,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mCurrentSpEntryInfo.setAuctionBidPrice(new SimpleStringProperty(bidder.getPrice().getValue()));
 				mCurrentSpEntryInfo.setAuctionResult(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS));
 				mCurrentSpEntryInfo.setAuctionBidDateTime(new SimpleStringProperty(bidder.getBiddingTime().getValue()));
+				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.success"));
 			} else {
 				mAuctionStateSuccessLabel.setDisable(true);
 				mAuctionStateFailLabel.setDisable(false);
 				mCurrentSpEntryInfo.setAuctionResult(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING));
+				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.fail"));
 			}
 
 			addFinishedTableViewItem(mCurrentSpEntryInfo);
@@ -1121,13 +1118,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		SpEntryInfo currentEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
 
-		if (currentEntryInfo == null || currentEntryInfo.getEntryNum() == null) {
+		if (isEmptyProperty(currentEntryInfo.getEntryNum())) {
 			return;
 		}
-
-//		if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(currentEntryInfo.getEntryNum().getValue())) {
-//			return;
-//		}
 
 		Platform.runLater(() -> {
 
@@ -1356,7 +1349,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		ObservableList<SpEntryInfo> dataList = FXCollections.observableArrayList();
 
 		for (SpEntryInfo spEntryInfo : mWaitEntryInfoDataList) {
-			if (spEntryInfo.getEntryNum() != null) {
+			if (!isEmptyProperty(spEntryInfo.getEntryNum())) {
 				dataList.add(spEntryInfo);
 			}
 		}
@@ -1375,8 +1368,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		for (SpEntryInfo spEntryInfo : mWaitEntryInfoDataList) {
 
-			if (spEntryInfo.getEntryNum() != null && spEntryInfo.getAuctionResult() != null) {
-
+			if (!isEmptyProperty(spEntryInfo.getEntryNum()) && !isEmptyProperty(spEntryInfo.getAuctionResult())) {
 				if (spEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
 					dataList.add(spEntryInfo);
 				}
@@ -1385,5 +1377,21 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		return dataList;
 	}
+	
+
+	/**
+	 * null : true , not null : false;
+	 * @param strProperty
+	 * @return
+	 */
+    public boolean isEmptyProperty(StringProperty strProperty) {
+
+    	if(strProperty != null && !strProperty.getValue().equals("")) {
+    		return false;
+    	}else {
+    		return true;
+    	}
+    }
+    
 
 }
