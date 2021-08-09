@@ -49,6 +49,7 @@ public class EntryInfo implements FromAuctionController {
 	private String mAuctionBidPrice; // 응찰금액
 	private String mAuctionBidDateTime; // 응찰일시
 	private String mIsLastEntry; // 마지막 출품 여부
+	private String mLwprChgNt; // 최저가 변경 횟수
 	
 	private String mAucDt; // 경매일
 	private String mLsChgDtm; // 최종변경일시
@@ -416,6 +417,14 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setLsCmeNo(String mLsCmeNo) {
 		this.mLsCmeNo = mLsCmeNo;
+	}
+	
+	public String getLwprChgNt() {
+		return mLwprChgNt;
+	}
+
+	public void setLwprChgNt(String mLwprChgNt) {
+		this.mLwprChgNt = mLwprChgNt;
 	}
 
 	@Override
