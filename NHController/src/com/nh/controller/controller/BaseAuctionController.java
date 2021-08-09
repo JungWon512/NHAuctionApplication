@@ -211,13 +211,13 @@ public class BaseAuctionController implements NettyControllable {
         String userNum;
         // 접속자 정보
         ConnectionInfoMapperService service = new ConnectionInfoMapperService();
-//          userNum = service.selectConnectionInfo(
-//                auctionHouseCode,
-//                CommonUtils.getInstance().getCurrentTime("yyyyMMdd"),
-//                String.valueOf(auctionRound.getAucObjDsc()),
-//                userMemNum
-//        ); // 실세사용
-        userNum = service.selectConnectionInfo(auctionHouseCode, "20210702", "3", userMemNum); // 테스트
+        userNum = service.selectConnectionInfo(
+                auctionHouseCode,
+                CommonUtils.getInstance().getCurrentTime("yyyyMMdd"),
+                String.valueOf(auctionRound.getAucObjDsc()),
+                userMemNum
+        ); // 실세사용
+//        userNum = service.selectConnectionInfo(auctionHouseCode, "20210702", "3", userMemNum); // 테스트
         mLogger.debug("onConnectionInfo - userNum :\t" + userNum);
 
         if (userNum == null || userNum.isEmpty()) {
@@ -335,7 +335,7 @@ public class BaseAuctionController implements NettyControllable {
     public void onChannelInactive(int port) {
         mLogger.debug("onChannelInactive : " + port);
         addLogItem(mResMsg.getString("msg.disconnection"));
-        Platform.runLater(() ->showAlertPopupOneButton(mResMsg.getString("msg.disconnection")));
+        Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("msg.disconnection")));
     }
 
     @Override

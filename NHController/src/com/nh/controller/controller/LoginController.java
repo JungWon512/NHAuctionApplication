@@ -50,24 +50,9 @@ public class LoginController implements Initializable {
         if (resources != null) {
             mResMsg = resources;
         }
-
         mBtnConnection.setOnMouseClicked(event -> onConnectServer(event));
-        
-      //Test
-      testShared();
     }
     
-    private void testShared() {
-		//Shared Sample
-		SharedPreference sharedPreference = new SharedPreference();
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_AAA,"TEST_AAAAAA");
-		
-		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_BBB,true);
-		
-		System.out.println(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_AAA, ""));
-		System.out.println(sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_BBB, false));
-	}
-
     /**
      * 구성 설정
      */

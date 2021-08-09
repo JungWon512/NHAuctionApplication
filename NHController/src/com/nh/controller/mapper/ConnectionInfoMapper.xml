@@ -23,7 +23,9 @@
         WHERE A.na_bzplc = #{auctionHouseCode}
           AND A.auc_dt = #{auctionDate}
           AND A.auc_obj_dsc = #{entryType}
-          And A.trmn_amnno = #{userMemNum};
+          And A.trmn_amnno = #{userMemNum}
+        ORDER BY A.lvst_auc_ptc_mn_no
+                DESC LIMIT 1;
     </select>
 
     <!--   시퀀스 아이디 생성  -->

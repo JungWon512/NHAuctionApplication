@@ -11,9 +11,24 @@ import java.util.prefs.Preferences;
 public class SharedPreference {
 
     // 경매 응찰 프로그램 환경설정 [START]
-    public static final String PREFERENCE_SETTING_AAA = "PREFERENCE_SETTING_AAA"; // TEST AAA
-    public static final String PREFERENCE_SETTING_BBB = "PREFERENCE_SETTING_BBB"; // TEST BBB
-    public static final String PREFERENCE_SETTING_MOBILE_CHECK_BOX = "PREFERENCE_SETTING_MOBILE_CHECK_BOX"; // 모바일 설정 Checkbox
+    // --- 모바일 노출설정 ---
+    public static final String PREFERENCE_SETTING_MOBILE_ENTRYNUM = "PREFERENCE_SETTING_MOBILE_ENTRYNUM"; // 경매번호노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_EXHIBITOR = "PREFERENCE_SETTING_MOBILE_EXHIBITOR"; // 출하주노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_GENDER = "PREFERENCE_SETTING_MOBILE_GENDER"; // 성별노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_WEIGHT = "PREFERENCE_SETTING_MOBILE_WEIGHT"; // 중량노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_MOTHER = "PREFERENCE_SETTING_MOBILE_MOTHER"; // 어미노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_PASSAGE = "PREFERENCE_SETTING_MOBILE_PASSAGE"; // 계대노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_MATIME = "PREFERENCE_SETTING_MOBILE_MATIME"; // 산차노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_KPN = "PREFERENCE_SETTING_MOBILE_KPN"; // kpn노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_REGION = "PREFERENCE_SETTING_MOBILE_REGION"; // 지역명노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_NOTE = "PREFERENCE_SETTING_MOBILE_NOTE"; // 비고노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_LOWPRICE = "PREFERENCE_SETTING_MOBILE_LOWPRICE"; // 최저가노출여부
+    public static final String PREFERENCE_SETTING_MOBILE_DNA = "PREFERENCE_SETTING_MOBILE_DNA"; // 친자노출여부
+
+    public static final String PREFERENCE_SETTING_ANNOUNCEMENT = "PREFERENCE_SETTING_ANNOUNCEMENT"; // 경매종료 멘트 설정
+    public static final String PREFERENCE_SETTING_NOTE = "PREFERENCE_SETTING_NOTE"; // 비고창 설정
+
+
     // 경매 응찰 프로그램 환경설정 [END]
 
     public final Preferences prefs;
@@ -108,7 +123,7 @@ public class SharedPreference {
      * @return boolean 반환값
      * @author 김도희
      */
-    public byte[] getByteArr(String key, byte[] defaultValue) { return prefs.getByteArray(key,defaultValue); }
+    public byte[] getByteArr(String key, byte[] defaultValue) { return prefs.getByteArray(key, defaultValue); }
 
     /**
      * @MethodName clearAll

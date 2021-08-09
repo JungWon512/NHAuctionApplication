@@ -28,22 +28,43 @@ public class EditSetting implements FromAuctionController {
     private String mIsShowDna; // 친자노출여부
     private String mCountDown; // 카운트다운횟수(초)
 
-	public EditSetting(String[] messages) {
-		this.mAuctionHouseCode = messages[1];
-		this.mIsShowEntryNum = messages[2];
-		this.mIsShowExhUser = messages[3];
-		this.mIsShowGender = messages[4];
-		this.mIsShowWeight = messages[5];
-		this.mIsShowMother = messages[6];
-		this.mIsShowPasg = messages[7];
-		this.mIsShowCaving = messages[8];
-		this.mIsShowKpn = messages[9];
-		this.mIsShowLocation = messages[10];
-		this.mIsShowNote = messages[11];
-		this.mIsShowLowPrice = messages[12];
-		this.mIsShowDna = messages[13];
-		this.mCountDown = messages[14];
-	}
+    public EditSetting(String[] messages) {
+        this.mAuctionHouseCode = messages[1];
+        this.mIsShowEntryNum = messages[2];
+        this.mIsShowExhUser = messages[3];
+        this.mIsShowGender = messages[4];
+        this.mIsShowWeight = messages[5];
+        this.mIsShowMother = messages[6];
+        this.mIsShowPasg = messages[7];
+        this.mIsShowCaving = messages[8];
+        this.mIsShowKpn = messages[9];
+        this.mIsShowLocation = messages[10];
+        this.mIsShowNote = messages[11];
+        this.mIsShowLowPrice = messages[12];
+        this.mIsShowDna = messages[13];
+        this.mCountDown = messages[14];
+    }
+
+    public EditSetting(String mAuctionHouseCode, String mIsShowEntryNum, String mIsShowExhUser,
+                       String mIsShowGender, String mIsShowWeight, String mIsShowMother, String mIsShowPasg,
+                       String mIsShowCaving, String mIsShowKpn, String mIsShowLocation, String mIsShowNote,
+                       String mIsShowLowPrice, String mIsShowDna, String mCountDown
+    ) {
+        this.mAuctionHouseCode = mAuctionHouseCode;
+        this.mIsShowEntryNum = mIsShowEntryNum;
+        this.mIsShowExhUser = mIsShowExhUser;
+        this.mIsShowGender = mIsShowGender;
+        this.mIsShowWeight = mIsShowWeight;
+        this.mIsShowMother = mIsShowMother;
+        this.mIsShowPasg = mIsShowPasg;
+        this.mIsShowCaving = mIsShowCaving;
+        this.mIsShowKpn = mIsShowKpn;
+        this.mIsShowLocation = mIsShowLocation;
+        this.mIsShowNote = mIsShowNote;
+        this.mIsShowLowPrice = mIsShowLowPrice;
+        this.mIsShowDna = mIsShowDna;
+        this.mCountDown = mCountDown;
+    }
 
     public String getAuctionHouseCode() {
         return mAuctionHouseCode;
@@ -157,15 +178,15 @@ public class EditSetting implements FromAuctionController {
         this.mCountDown = countDown;
     }
 
-	@Override
-	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
-				AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mIsShowEntryNum,
-				AuctionShareSetting.DELIMITER, mIsShowExhUser, AuctionShareSetting.DELIMITER, mIsShowGender,
-				AuctionShareSetting.DELIMITER, mIsShowWeight, AuctionShareSetting.DELIMITER, mIsShowMother,
-				AuctionShareSetting.DELIMITER, mIsShowPasg, AuctionShareSetting.DELIMITER, mIsShowCaving,
-				AuctionShareSetting.DELIMITER, mIsShowKpn, AuctionShareSetting.DELIMITER, mIsShowLocation,
-				AuctionShareSetting.DELIMITER, mIsShowNote, AuctionShareSetting.DELIMITER, mIsShowLowPrice,
-				AuctionShareSetting.DELIMITER, mIsShowDna, AuctionShareSetting.DELIMITER, mCountDown);
-	}
+    @Override
+    public String getEncodedMessage() {
+        return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
+                AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mIsShowEntryNum,
+                AuctionShareSetting.DELIMITER, mIsShowExhUser, AuctionShareSetting.DELIMITER, mIsShowGender,
+                AuctionShareSetting.DELIMITER, mIsShowWeight, AuctionShareSetting.DELIMITER, mIsShowMother,
+                AuctionShareSetting.DELIMITER, mIsShowPasg, AuctionShareSetting.DELIMITER, mIsShowCaving,
+                AuctionShareSetting.DELIMITER, mIsShowKpn, AuctionShareSetting.DELIMITER, mIsShowLocation,
+                AuctionShareSetting.DELIMITER, mIsShowNote, AuctionShareSetting.DELIMITER, mIsShowLowPrice,
+                AuctionShareSetting.DELIMITER, mIsShowDna, AuctionShareSetting.DELIMITER, mCountDown);
+    }
 }
