@@ -13,6 +13,7 @@ import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ResponseCode;
+import com.nh.share.server.models.ShowEntryInfo;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
@@ -97,8 +98,7 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 				}
 
 				// 현재 출품 정보 노출 설정 정보 전송
-				// clientChannelContext.writeAndFlush(new
-				// ShowEntryInfo(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode())).getEncodedMessage());
+				clientChannelContext.writeAndFlush(new ShowEntryInfo(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode())).getEncodedMessage() + "\r\n");
 
 				// 현재 출품 정보 전송
 				if (mAuctionScheduler.getCurrentAuctionStatus(responseConnectionInfo.getAuctionHouseCode())

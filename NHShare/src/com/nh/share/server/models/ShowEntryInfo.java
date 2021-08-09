@@ -44,6 +44,8 @@ public class ShowEntryInfo implements FromAuctionServer {
 	public ShowEntryInfo(EditSetting editSetting) {
 		currentItem = 0;
 		
+		mAuctionHouseCode = editSetting.getAuctionHouseCode();
+		
 		if(editSetting.getIsShowEntryNum().equals("Y")) {
 			currentItem++;
 			setData(ITEM_ENTRY_NUM);

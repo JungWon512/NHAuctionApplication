@@ -362,7 +362,7 @@ public class Auctioneer {
 		EntryInfo entryInfo = null;
 
 		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)) {
-			entryInfo = mAuctionEntryRepositoryMap.get(auctionHouseCode).getEntryInfo(entryNum);
+			entryInfo = mAuctionEntryRepositoryMap.get(auctionHouseCode).popEntry(entryNum);
 		}
 
 		return entryInfo;

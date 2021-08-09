@@ -8,6 +8,9 @@ import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.RefreshConnector;
+import com.nh.share.common.models.RequestBiddingInfo;
+import com.nh.share.common.models.RequestEntryInfo;
+import com.nh.share.common.models.ResponseBiddingInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.setting.AuctionShareSetting;
 
@@ -38,6 +41,12 @@ public class CommonMessageParser {
 			return new CancelBidding(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6]);
 		case RefreshConnector.TYPE:
 			return new RefreshConnector(messages[1]);
+		case RequestEntryInfo.TYPE:
+			return new RequestEntryInfo(messages[1], messages[2], messages[3]); // 출품 정보 전송 요청
+		case RequestBiddingInfo.TYPE:
+			return new RequestBiddingInfo(messages[1], messages[2], messages[3], messages[4]); // 응찰 정보 전송 요청
+		case ResponseBiddingInfo.TYPE:
+			return new ResponseBiddingInfo(messages[1], messages[2], messages[3], messages[4], messages[5]); // 응찰 정보 응답
 		default:
 			return null;
 		}

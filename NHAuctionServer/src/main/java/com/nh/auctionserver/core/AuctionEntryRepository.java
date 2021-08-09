@@ -79,8 +79,8 @@ public class AuctionEntryRepository {
 	public synchronized void pushEntry(EntryInfo entry) {
 		if (mEntryList != null) {
 
-			if (mEntryList.contains(entry)) {
-				mEntryList.set((Integer.valueOf(entry.getEntryNum()) - 1), entry);
+			if (mEntryList.contains(entry) && mEntryList.indexOf(entry) != -1) {
+				mEntryList.set(mEntryList.indexOf(entry), entry);
 			} else {
 				mEntryList.add(entry);
 				mTotalCount++;
