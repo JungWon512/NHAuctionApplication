@@ -7,6 +7,8 @@ import com.nh.controller.model.AuctionRound;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.SendAuctionResult;
+
 import org.apache.ibatis.session.SqlSession;
 
 import java.util.ArrayList;
@@ -104,6 +106,29 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 		try (SqlSession session = DBSessionFactory.getSession()) {
 
 			resultValue = getDao().updateEntryState(entryInfo,session);
+			
+			if(resultValue > 0) {
+				session.commit();
+			}else {
+				session.rollback();
+			}
+			
+		}catch (Exception e) {
+			//exception에 대한 처리 시 사용
+			resultValue = -1;
+		}
+
+		return resultValue;
+	}
+
+	@Override
+	public int updateAuctionResult(SendAuctionResult auctionResult) {
+
+		int resultValue = 0;
+		
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultValue = getDao().updateAuctionResult(auctionResult,session);
 			
 			if(resultValue > 0) {
 				session.commit();

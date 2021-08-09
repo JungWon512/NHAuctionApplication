@@ -59,8 +59,11 @@
         <result property="mAucDt" column="AUC_DT"/>
         <result property="mLsChgDtm" column="LSCHG_DTM"/>
         <result property="mLsCmeNo" column="LS_CMENO"/>
-        <result property="mAuctionResult" column="SEL_STS_DSC"/>
         <result property="mLwprChgNt" column="LWPR_CHG_NT"/>
+        <result property="mAuctionResult" column="SEL_STS_DSC"/>
+        <result property="mAuctionSucBidder" column="LVST_AUC_PTC_MN_NO"/>
+        <result property="mAuctionBidPrice" column="SRA_SBID_AM"/>
+          
         
     </resultMap>
 
@@ -98,7 +101,9 @@
 		DATE_FORMAT(${alias}.LSCHG_DTM,'%Y%m%d%H%i%S') as LSCHG_DTM,
 		${alias}.LS_CMENO,
 		${alias}.SEL_STS_DSC,
-		${alias}.LWPR_CHG_NT
+		${alias}.LWPR_CHG_NT,
+		${alias}.LVST_AUC_PTC_MN_NO,
+		${alias}.SRA_SBID_AM
 	</sql>
 	
 	<!-- tb_la_is_mm_fhs -->
@@ -163,10 +168,13 @@
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
 		   AND	AUC_DT		= #{mAucDt}
     </update>
-    
-     <update id="updateAuctionResult" parameterType="EntryInfo">
+
+     <update id="updateAuctionResult" parameterType="AuctionResult">
 		UPDATE	TB_LA_IS_MH_SOG_COW 
-		   SET	SEL_STS_DSC = #{mAuctionResult},
+		   SET	SEL_STS_DSC = #{mResultCode},
+		  		LVST_AUC_PTC_MN_NO = #{mSuccessAuctionJoinNum},
+		  		SRA_SBID_AM = #{mSuccessBidPrice},
+		  		SRA_SBID_UPR = #{mSuccessBidUpr},
 		   		LSCHG_DTM = NOW(),
 		   		LS_CMENO	= #{mLsCmeNo}
 		 WHERE	AUC_PRG_SQ	= #{mEntryNum}

@@ -2,6 +2,8 @@ package com.nh.controller.dao;
 
 import com.nh.controller.model.AuctionRound;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.SendAuctionResult;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 
@@ -37,5 +39,15 @@ public class EntryInfoDao {
      */
     public int updateEntryState(EntryInfo entryInfo,SqlSession session) {
         return session.update("updateEntryState", entryInfo);
+    }
+    
+    /**
+     * 경매 결과 저장
+     * @param auctionResult
+     * @param session
+     * @return
+     */
+    public int updateAuctionResult(SendAuctionResult auctionResult,SqlSession session) {
+        return session.update("updateAuctionResult", auctionResult);
     }
 }

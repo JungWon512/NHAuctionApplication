@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
@@ -17,6 +16,7 @@ import com.nh.controller.service.AuctionRoundMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
@@ -363,7 +363,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						mWaitEntryInfoDataList.set(i, newEntryDataList.get(j));
 						// 출품정보 전송 후 변경된 사항 전달.
 						if (mBtnF1.isDisable()) {
+
+							String tmpIsLastEntry = newEntryDataList.get(j).getIsLastEntry().getValue();
+							
+							newEntryDataList.get(j).getIsLastEntry().setValue(GlobalDefine.ETC_INFO.AUCTION_DATA_MODIFY_M);
+							
 							AuctionDelegate.getInstance().onSendEntryData(newEntryDataList.get(j));
+							
+							newEntryDataList.get(j).getIsLastEntry().setValue(tmpIsLastEntry);
+							
 							mLogger.debug("변경된 출품 정보 서버 전송 : " + newEntryDataList.get(j).getEntryNum().getValue());
 						}
 					}
@@ -442,7 +450,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				public void run() {
 
 					for (SpEntryInfo entryInfo : mWaitEntryInfoDataList) {
-						if ( !isEmptyProperty(entryInfo.getEntryNum())) {
+						if (!isEmptyProperty(entryInfo.getEntryNum())) {
 							addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(entryInfo));
 						}
 					}
@@ -489,7 +497,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				entryInfo.setEntryType(entryType);
 				entryInfo.setAucDt(aucDt);
 				entryInfo.setAuctionResult(state);
-				entryInfo.setLsCmeNo("admin");
+				entryInfo.setLsCmeNo(GlobalDefineCode.AUCTION_LOGIN_TYPE_MANAGER);
 
 				final int resultValue = EntryInfoMapperService.getInstance().updateEntryState(entryInfo);
 
@@ -522,7 +530,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			@Override
 			public void callBack(int value) {
-
+				
+				setWaitEntryDataList(dataList);
+				
 				MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
 
 				if (value > -1) {
@@ -531,6 +541,26 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		});
 
+	}
+	
+	private void setWaitEntryDataList(ObservableList<SpEntryInfo> dataList) {
+		
+		Platform.runLater(() -> {
+			
+			mRecordCount = dataList.size();
+			mWaitEntryInfoDataList.clear();
+			mWaitEntryInfoDataList.addAll(dataList);
+			
+			for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
+				mWaitEntryInfoDataList.add(new SpEntryInfo());
+			}
+
+			System.out.println("mRecordCount >> " + mRecordCount);
+			
+			mWaitTableView.refresh();
+		
+		});
+		
 	}
 
 	/**
@@ -545,13 +575,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			@Override
 			public void callBack(int value) {
 				
+				if(CommonUtils.getInstance().isListEmpty(dataList)) {
+					return;
+				}
 				
-				mWaitTableView.setItems(dataList);
-				mWaitTableView.refresh();
+				setWaitEntryDataList(dataList);
 				
+				if (value > -1) {
+					selectIndexWaitTable(value, true);
+				}
 
 				MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
-
+		
 			}
 		});
 	}
@@ -780,7 +815,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		entryInfo.setEntryType(targetEntryType);
 		entryInfo.setAucDt(targetAucDt);
 		entryInfo.setLowPrice(updatePrice);
-		entryInfo.setLsCmeNo("admin");
+		entryInfo.setLsCmeNo(GlobalDefineCode.AUCTION_LOGIN_TYPE_MANAGER);
 		entryInfo.setLwprChgNt(Integer.toString(lowPriceCnt));
 		
 		if (updatePrice == null || updatePrice.isEmpty() || Integer.parseInt(updatePrice) < 0) {
@@ -795,7 +830,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			spEntryInfo.getLowPrice().setValue(updatePrice);
 			spEntryInfo.getLwprChgNt().setValue(Integer.toString(lowPriceCnt));
 			setCurrentEntryInfo();
+
+			String tmpIsLastEntry = spEntryInfo.getIsLastEntry().getValue();
+
+			spEntryInfo.getIsLastEntry().setValue(GlobalDefine.ETC_INFO.AUCTION_DATA_MODIFY_M);
+
 			AuctionDelegate.getInstance().onSendEntryData(spEntryInfo);
+
+			spEntryInfo.getIsLastEntry().setValue(tmpIsLastEntry);
+
 		} else {
 			mLogger.debug("가격 업데이트 실패 : " + spEntryInfo.getEntryNum().getValue() + "=> " + updatePrice);
 		}
@@ -1129,8 +1172,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mCurPasgQcnLabel.setText(mCurrentSpEntryInfo.getPasgQcn().getValue());
 			mCurWeightLabel.setText(mCurrentSpEntryInfo.getWeight().getValue());
 			mCurLowPriceLabel.setText(String.format(mResMsg.getString("str.price"), mCurrentSpEntryInfo.getLowPriceInt()));
-			mCurSuccessPriceLabel.setText("");
-			mCurSuccessfulBidderLabel.setText("");
+			mCurSuccessPriceLabel.setText(mCurrentSpEntryInfo.getAuctionBidPrice().getValue());
+			mCurSuccessfulBidderLabel.setText(mCurrentSpEntryInfo.getAuctionSucBidder().getValue());
 			mCurResultLabel.setText(mCurrentSpEntryInfo.getBiddingResult().getValue());
 			mCurNoteLabel.setText(mCurrentSpEntryInfo.getNote().getValue());
 			mLowPriceChgNtLabel.setText(mCurrentSpEntryInfo.getLwprChgNt().getValue());

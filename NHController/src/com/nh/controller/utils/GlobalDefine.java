@@ -74,6 +74,7 @@ public class GlobalDefine {
 		public static final String AUCTION_SEARCH_PARAM_S = "S";	//낙찰만
 		public static final String AUCTION_SEARCH_PARAM_P = "P";	//보류만
 		public static final String AUCTION_SEARCH_PARAM_SP = "SP";	//낙찰&보류
+		public static final String AUCTION_DATA_MODIFY_M = "M";		//데이터 수정 여부 
 	}
 
 }

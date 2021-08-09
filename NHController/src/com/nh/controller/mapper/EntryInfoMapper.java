@@ -2,6 +2,8 @@ package com.nh.controller.mapper;
 
 import com.nh.controller.model.AuctionRound;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.SendAuctionResult;
+
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -36,4 +38,12 @@ public interface EntryInfoMapper {
      * @return
      */
     int updateEntryState(EntryInfo entryInfo); 
+    
+    /**
+     * 경매 결과 저장
+     * @param entryInfo
+     * @return
+     */
+    int updateAuctionResult(SendAuctionResult auctionResult); 
+    
 }

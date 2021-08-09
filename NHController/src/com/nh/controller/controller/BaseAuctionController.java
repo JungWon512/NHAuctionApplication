@@ -27,6 +27,7 @@ import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.service.ConnectionInfoMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionResult;
@@ -446,12 +447,9 @@ public class BaseAuctionController implements NettyControllable {
         SendAuctionResult auctionResult = new SendAuctionResult();
         auctionResult.setAuctionHouseCode(spEntryInfo.getAuctionHouseCode().getValue());
         auctionResult.setEntryNum(spEntryInfo.getEntryNum().getValue());
-
-    	String entryNum = spEntryInfo.getEntryNum().getValue();
-		String auctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
-		String entryType = spEntryInfo.getEntryType().getValue();
-		String aucDt = spEntryInfo.getAucDt().getValue();
-		String state = null;
+        auctionResult.setEntryType(spEntryInfo.getEntryType().getValue());
+        auctionResult.setAucDt(spEntryInfo.getAucDt().getValue());
+        auctionResult.setLsCmeNo(GlobalDefineCode.AUCTION_LOGIN_TYPE_MANAGER);
 
         if (isSuccess) {
             // 낙찰
@@ -459,27 +457,17 @@ public class BaseAuctionController implements NettyControllable {
             auctionResult.setSuccessBidder(bidder.getUserNo().getValue());
             auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
             auctionResult.setSuccessBidPrice(bidder.getPrice().getValue());
-            
-            state = GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS;
+            auctionResult.setSuccessBidUpr(bidder.getPrice().getValue());
         } else {
             // 유찰&보류
             auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
             auctionResult.setSuccessBidder(null);
             auctionResult.setSuccessAuctionJoinNum(null);
-            auctionResult.setSuccessBidPrice(null);
-            
-        	state = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
+            auctionResult.setSuccessBidPrice("0");
+            auctionResult.setSuccessBidUpr("0");
         }
- 
-		EntryInfo entryInfo = new EntryInfo();
-		entryInfo.setEntryNum(entryNum);
-		entryInfo.setAuctionHouseCode(auctionHouseCode);
-		entryInfo.setEntryType(entryType);
-		entryInfo.setAucDt(aucDt);
-		entryInfo.setAuctionResult(state);
-		entryInfo.setLsCmeNo("admin");
 		
-        final int resultValue = EntryInfoMapperService.getInstance().updateEntryState(entryInfo);
+        final int resultValue = EntryInfoMapperService.getInstance().updateAuctionResult(auctionResult);
 
         if(resultValue > 0) {
         	updateAuctionStateInfo(mAuctionStatus.getState(), isSuccess, bidder);

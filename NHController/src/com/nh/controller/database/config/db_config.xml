@@ -27,6 +27,8 @@
                    type="com.nh.controller.model.UserInfo"/>
         <typeAlias alias="AuctionRound"
                    type="com.nh.controller.model.AuctionRound"/>
+        <typeAlias alias="AuctionResult"
+                   type="com.nh.share.controller.models.SendAuctionResult"/>
     </typeAliases>
 
     <environments default="development">
