@@ -18,7 +18,13 @@ public class SendAuctionResult implements FromAuctionController {
     private String mResultCode; // 낙,유찰 결과 코드
     private String mSuccessBidder; // 낙찰자 회원번호(거래인번호)
     private String mSuccessAuctionJoinNum; // 낙찰자 경매참가번호
-    private String mSuccessBidPrice;
+    private String mSuccessBidPrice;	//금액 원단위
+    private String mSuccessBidUpr;		//금액 만단위
+    
+    private String mEntryType;	// 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
+    private String mAucDt;		// 경매일
+    private String mLsCmeNo;
+    
 
     public SendAuctionResult() {
     }
@@ -94,8 +100,40 @@ public class SendAuctionResult implements FromAuctionController {
         return new AuctionResult(mAuctionHouseCode, mEntryNum, mResultCode, mSuccessBidder, mSuccessAuctionJoinNum,
                 mSuccessBidPrice);
     }
+    
+    public String getEntryType() {
+		return mEntryType;
+	}
 
-    @Override
+	public void setEntryType(String mEntryType) {
+		this.mEntryType = mEntryType;
+	}
+	
+	public String getAucDt() {
+		return mAucDt;
+	}
+
+	public void setAucDt(String mAucDt) {
+		this.mAucDt = mAucDt;
+	}
+	
+	public String getLsCmeNo() {
+		return mLsCmeNo;
+	}
+
+	public void setLsCmeNo(String mLsCmeNo) {
+		this.mLsCmeNo = mLsCmeNo;
+	}
+
+	public String getSuccessBidUpr() {
+		return mSuccessBidUpr;
+	}
+
+	public void setSuccessBidUpr(String mSuccessBidUpr) {
+		this.mSuccessBidUpr = mSuccessBidUpr;
+	}
+
+	@Override
     public String getEncodedMessage() {
         return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
                 mAuctionHouseCode, AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mResultCode,

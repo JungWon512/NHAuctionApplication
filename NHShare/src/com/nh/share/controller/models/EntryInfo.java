@@ -44,17 +44,18 @@ public class EntryInfo implements FromAuctionController {
 	private String mInitPrice; // 최초최저낙찰한도금액
 	private String mLowPrice; // 최저낙찰한도금액
 	private String mNote; // 비고내용
+	private String mAucDt; // 경매일
+	
 	private String mAuctionResult; // 낙유찰결과 (11 대기 ,22 낙찰 ,23 보류)
 	private String mAuctionSucBidder; // 낙찰자
-	private String mAuctionBidPrice; // 응찰금액
+	private String mAuctionBidPrice; // 응찰금액/낙찰금액
 	private String mAuctionBidDateTime; // 응찰일시
-	private String mIsLastEntry; // 마지막 출품 여부
-	private String mLwprChgNt; // 최저가 변경 횟수
-	
-	private String mAucDt; // 경매일
+
 	private String mLsChgDtm; // 최종변경일시
 	private String mLsCmeNo; // 최종변경자개인번호
+	private String mLwprChgNt; // 최저가 변경 횟수
 	
+	private String mIsLastEntry; // 마지막 출품 여부
 
 	public EntryInfo() {
 	}
