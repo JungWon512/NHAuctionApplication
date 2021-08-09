@@ -57,6 +57,7 @@ public class SpEntryInfo implements FromAuctionController {
     
 	private StringProperty mLsChgDtm; // 최종변경일시
 	private StringProperty mLsCmeNo; // 최종변경자개인번호
+	private StringProperty mLwprChgNt; // 최저가 변경 횟수
 
 
     public SpEntryInfo() {
@@ -98,7 +99,8 @@ public class SpEntryInfo implements FromAuctionController {
         this.mIsLastEntry = new SimpleStringProperty(entryInfo.getIsLastEntry());
         this.mAucDt = new SimpleStringProperty(entryInfo.getAucDt());
         this.mLsChgDtm = new SimpleStringProperty(entryInfo.getLsChgDtm());
-        this.mLsCmeNo = new SimpleStringProperty(entryInfo.getLsCmeNo()); 
+        this.mLsCmeNo = new SimpleStringProperty(entryInfo.getLsCmeNo());
+        this.mLwprChgNt = new SimpleStringProperty(Integer.toString((int) Double.parseDouble(entryInfo.getLwprChgNt())));
     }
 
     public StringProperty getAuctionHouseCode() {
@@ -390,6 +392,14 @@ public class SpEntryInfo implements FromAuctionController {
 
 	public void setLsCmeNo(StringProperty mLsCmeNo) {
 		this.mLsCmeNo = mLsCmeNo;
+	}
+	
+	public StringProperty getLwprChgNt() {
+		return mLwprChgNt;
+	}
+	
+	public void setLwprChgNt(StringProperty mLwprChgNt) {
+		this.mLwprChgNt = mLwprChgNt;
 	}
 
 	public StringProperty getBiddingResult() {

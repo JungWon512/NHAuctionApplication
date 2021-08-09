@@ -675,7 +675,7 @@ public class BaseAuctionController implements NettyControllable {
      */
     protected void addLogItem(String str) {
         if (!str.isEmpty()) {
-            System.out.println("str : " + str);
+        	mLogger.debug("Log : " + str);
         }
     }
 

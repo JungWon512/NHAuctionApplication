@@ -60,10 +60,12 @@
         <result property="mLsChgDtm" column="LSCHG_DTM"/>
         <result property="mLsCmeNo" column="LS_CMENO"/>
         <result property="mAuctionResult" column="SEL_STS_DSC"/>
+        <result property="mLwprChgNt" column="LWPR_CHG_NT"/>
+        
     </resultMap>
 
-	<!-- tb_la_is_mh_sog_cow -->
-	<sql id="sogCowColumn">
+	<!-- tb_la_is_mm_indv -->
+	<sql id="indvColumn">
 		${alias}.NA_BZPLC,
 		${alias}.SRA_INDV_AMNNO,
 		${alias}.SRA_SRS_DSC,
@@ -81,9 +83,9 @@
 		${alias}.RG_DSC,
 		${alias}.ANW_YN
 	</sql>
-	
-	<!-- tb_la_is_mm_indv -->
-	<sql id="indvColumn">
+
+	<!-- tb_la_is_mh_sog_cow -->
+	<sql id="sogCowColumn">
 		${alias}.AUC_PRG_SQ,
 		${alias}.COW_SOG_WT,
 		${alias}.AUC_OBJ_DSC,
@@ -95,7 +97,8 @@
 		${alias}.AUC_DT,
 		DATE_FORMAT(${alias}.LSCHG_DTM,'%Y%m%d%H%i%S') as LSCHG_DTM,
 		${alias}.LS_CMENO,
-		${alias}.SEL_STS_DSC
+		${alias}.SEL_STS_DSC,
+		${alias}.LWPR_CHG_NT
 	</sql>
 	
 	<!-- tb_la_is_mm_fhs -->
@@ -106,8 +109,8 @@
     <!-- 출품 데이터 추출 -->
     <select id="selectAllEntry" resultMap="entryInfoMap" resultType="linkedHashMap">
 		SELECT 
-			<include refid="sogCowColumn"><property name="alias" value="A"/></include>,
-			<include refid="indvColumn"><property name="alias" value="B"/></include>,
+			<include refid="indvColumn"><property name="alias" value="A"/></include>,
+			<include refid="sogCowColumn"><property name="alias" value="B"/></include>,
 			<include refid="fhsColumn"><property name="alias" value="C"/></include>
         FROM tb_la_is_mm_indv as A
                  JOIN
@@ -141,6 +144,7 @@
 	<update id="updateEntryPrice" parameterType="EntryInfo">
 		UPDATE	TB_LA_IS_MH_SOG_COW 
 		   SET	LOWS_SBID_LMT_AM = #{mLowPrice},
+		   		LWPR_CHG_NT = #{mLwprChgNt},
 		   		LSCHG_DTM = NOW(),
 		   		LS_CMENO	= #{mLsCmeNo}
 		 WHERE	AUC_PRG_SQ	= #{mEntryNum}

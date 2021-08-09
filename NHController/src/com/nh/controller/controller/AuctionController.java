@@ -94,6 +94,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	@FXML // 메세지 보내기 버튼
 	private ImageView mImgMessage;
+	
+	@FXML // 감가 기준 금액 / 횟수
+	private Label mDeprePriceLabel, mLowPriceChgNtLabel;
 
 	private List<Label> cntList = new ArrayList<Label>(); // 남은 시간 Bar list
 
@@ -461,7 +464,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				public void run() {
 
 					for (SpEntryInfo entryInfo : mWaitEntryInfoDataList) {
-						if (entryInfo.getEntryNum() != null && !entryInfo.getEntryNum().getValue().isEmpty()) {
+						if ( !isEmptyProperty(entryInfo.getEntryNum())) {
 							addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(entryInfo));
 						}
 					}
@@ -756,7 +759,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	public void onUpPrice(MouseEvent event) {
 		System.out.println("예정가 높이기");
 		int upPrice = SettingApplication.getInstance().getInfo().getCowUpperLimitPrice();
-		setLowPrice(upPrice);
+		setLowPrice(upPrice,true);
 	}
 
 	/**
@@ -767,7 +770,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	public void onDownPrice(MouseEvent event) {
 		System.out.println("예정가 낮추기");
 		int lowPrice = SettingApplication.getInstance().getInfo().getCowLowerLimitPrice() * -1;
-		setLowPrice(lowPrice);
+		setLowPrice(lowPrice,false);
 	}
 
 	/**
@@ -775,7 +778,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 *
 	 * @param price
 	 */
-	private void setLowPrice(int price) {
+	private void setLowPrice(int price,boolean isUp) {
 
 		// 현재 선택된 row
 		SpEntryInfo spEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
@@ -784,7 +787,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		String targetAuctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
 		String targetEntryType = spEntryInfo.getEntryType().getValue();
 		String targetAucDt = spEntryInfo.getAucDt().getValue();
-		String updatePrice = Integer.toString(mCurrentSpEntryInfo.getLowPriceInt() + price);
+		String updatePrice = Integer.toString(spEntryInfo.getLowPriceInt() + price);
+		int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
+		
+		if(isUp) {
+			lowPriceCnt += -1;
+		}else {
+			lowPriceCnt += 1;
+		}
 
 		EntryInfo entryInfo = new EntryInfo();
 		entryInfo.setEntryNum(targetEntryNum);
@@ -793,16 +803,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		entryInfo.setAucDt(targetAucDt);
 		entryInfo.setLowPrice(updatePrice);
 		entryInfo.setLsCmeNo("admin");
-
+		entryInfo.setLwprChgNt(Integer.toString(lowPriceCnt));
+		
 		if (updatePrice == null || updatePrice.isEmpty() || Integer.parseInt(updatePrice) < 0) {
 			// 가격정보 null, 0보다 작으면 리턴
 			return;
 		}
-
+		
 		final int resultValue = EntryInfoMapperService.getInstance().updateEntryPrice(entryInfo);
 
 		if (resultValue > 0) { // 업데이트 성공시 UI갱신, 서버로 바뀐 정보 보냄
+			System.out.println("lowPriceCnt : " + lowPriceCnt);
 			spEntryInfo.getLowPrice().setValue(updatePrice);
+			spEntryInfo.getLwprChgNt().setValue(Integer.toString(lowPriceCnt));
 			setCurrentEntryInfo();
 			AuctionDelegate.getInstance().onSendEntryData(spEntryInfo);
 		} else {
@@ -1029,6 +1042,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mCurSuccessfulBidderLabel.setText("");
 				mCurResultLabel.setText("");
 				mCurNoteLabel.setText("");
+				mLowPriceChgNtLabel.setText("");
 
 				initBiddingInfoDataList();
 
@@ -1137,6 +1151,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mCurSuccessfulBidderLabel.setText("");
 			mCurResultLabel.setText(mCurrentSpEntryInfo.getBiddingResult().getValue());
 			mCurNoteLabel.setText(mCurrentSpEntryInfo.getNote().getValue());
+			mLowPriceChgNtLabel.setText(mCurrentSpEntryInfo.getLwprChgNt().getValue());
 
 			System.out.println("현재 준비 소 : " + mCurrentSpEntryInfo.getEntryNum().getValue());
 		});
