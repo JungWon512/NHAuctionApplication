@@ -25,6 +25,7 @@ import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.model.UserInfo;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.service.ConnectionInfoMapperService;
+import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
 import com.nh.share.code.GlobalDefineCode;
@@ -440,11 +441,17 @@ public class BaseAuctionController implements NettyControllable {
      * @param currentEntryInfo
      * @param bidder
      */
-    private void sendAuctionResult(boolean isSuccess, SpEntryInfo entryInfo, SpBidding bidder) {
+    private void sendAuctionResult(boolean isSuccess, SpEntryInfo spEntryInfo, SpBidding bidder) {
 
         SendAuctionResult auctionResult = new SendAuctionResult();
-        auctionResult.setAuctionHouseCode(entryInfo.getAuctionHouseCode().getValue());
-        auctionResult.setEntryNum(entryInfo.getEntryNum().getValue());
+        auctionResult.setAuctionHouseCode(spEntryInfo.getAuctionHouseCode().getValue());
+        auctionResult.setEntryNum(spEntryInfo.getEntryNum().getValue());
+
+    	String entryNum = spEntryInfo.getEntryNum().getValue();
+		String auctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
+		String entryType = spEntryInfo.getEntryType().getValue();
+		String aucDt = spEntryInfo.getAucDt().getValue();
+		String state = null;
 
         if (isSuccess) {
             // 낙찰
@@ -452,18 +459,33 @@ public class BaseAuctionController implements NettyControllable {
             auctionResult.setSuccessBidder(bidder.getUserNo().getValue());
             auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
             auctionResult.setSuccessBidPrice(bidder.getPrice().getValue());
+            
+            state = GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS;
         } else {
             // 유찰&보류
             auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
             auctionResult.setSuccessBidder(null);
             auctionResult.setSuccessAuctionJoinNum(null);
             auctionResult.setSuccessBidPrice(null);
+            
+        	state = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
         }
+ 
+		EntryInfo entryInfo = new EntryInfo();
+		entryInfo.setEntryNum(entryNum);
+		entryInfo.setAuctionHouseCode(auctionHouseCode);
+		entryInfo.setEntryType(entryType);
+		entryInfo.setAucDt(aucDt);
+		entryInfo.setAuctionResult(state);
+		entryInfo.setLsCmeNo("admin");
+		
+        final int resultValue = EntryInfoMapperService.getInstance().updateEntryState(entryInfo);
 
-        updateAuctionStateInfo(mAuctionStatus.getState(), isSuccess, bidder);
-
-        // 낙유찰 결과 전송
-        addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+        if(resultValue > 0) {
+        	updateAuctionStateInfo(mAuctionStatus.getState(), isSuccess, bidder);
+        	// 낙유찰 결과 전송
+            addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+        }
 
     }
 

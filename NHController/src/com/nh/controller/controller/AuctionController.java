@@ -379,9 +379,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		if (!CommonUtils.getInstance().isListEmpty(newDataList)) {
 			mWaitEntryInfoDataList.addAll(mRecordCount, newDataList);
 			mRecordCount += newDataList.size();
-
 		}
 
+		mWaitTableView.setItems(mWaitEntryInfoDataList);
 		mWaitTableView.refresh();
 
 	}
@@ -396,38 +396,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 경매 완료 초기값
 	 */
-	private void initFinishedEntryDataList(ObservableList<SpEntryInfo> dataList) {
+	private void initFinishedEntryDataList() {
 
-		if (CommonUtils.getInstance().isListEmpty(dataList)) {
-			// dummy row
-			ObservableList<SpEntryInfo> dummyRow = FXCollections.observableArrayList(); // dummy row
-			for (int i = 0; DUMMY_ROW_FINISHED > i; i++) {
-				dummyRow.add(new SpEntryInfo());
-			}
-			mFinishedEntryInfoDataList.addAll(dummyRow);
-		} else {
-
-			int sumSize = dataList.size() - DUMMY_ROW_FINISHED;
-
-			if (sumSize < 0) {
-
-				ObservableList<SpEntryInfo> dummyRow = FXCollections.observableArrayList(); // dummy row
-
-				int reSize = sumSize * -1;
-				
-				for (int i = 0; reSize > i; i++) {
-					dummyRow.add(new SpEntryInfo());
-				}
-				
-				System.out.println("sizee " + dummyRow.size() + " / " + reSize);
-
-				mFinishedTableView.setItems(dummyRow);
-				
-				mFinishedTableView.getItems().addAll(dataList);
-			}
-
-			mFinishedTableView.scrollTo(mFinishedTableView.getItems().size() - 1);
+		// dummy row
+		mDummyRow.clear();
+		for (int i = 0; DUMMY_ROW_FINISHED > i; i++) {
+			mDummyRow.add(new SpEntryInfo());
 		}
+
+		mFinishedEntryInfoDataList.addAll(mDummyRow);
+		mFinishedTableView.setItems(mFinishedEntryInfoDataList);
 	}
 
 	/**
@@ -497,7 +475,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			SpEntryInfo spEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
 
-			if (!spEntryInfo.getAuctionResult().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+			if (!spEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
 
 				String entryNum = spEntryInfo.getEntryNum().getValue();
 				String auctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
@@ -566,6 +544,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			@Override
 			public void callBack(int value) {
+				
+				
+				mWaitTableView.setItems(dataList);
+				mWaitTableView.refresh();
+				
 
 				MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
 
@@ -737,16 +720,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		// 경매 출품 데이터 가져오기
 		EntryInfoMapperService entryService = new EntryInfoMapperService();
-
-		List<EntryInfo> finishedEntryInfoDataList = entryService.getFinishedEntryData(this.auctionRound);
-		mFinishedEntryInfoDataList.clear();
-		mFinishedEntryInfoDataList = getParsingEntryDataList(finishedEntryInfoDataList);
-
 		List<EntryInfo> entryInfoDataList = entryService.getAllEntryData(this.auctionRound); // 테스트
 		mWaitEntryInfoDataList.clear();
 		mWaitEntryInfoDataList = getParsingEntryDataList(entryInfoDataList);
 
-		initFinishedEntryDataList(mFinishedEntryInfoDataList);
+		initFinishedEntryDataList();
 		initWaitEntryDataList(mWaitEntryInfoDataList);
 
 	}
@@ -864,50 +842,55 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@Override
 	public void onCurrentEntryInfo(CurrentEntryInfo currentEntryInfo) {
 		super.onCurrentEntryInfo(currentEntryInfo);
-
-		// 21-08-05 경매 도중 프로그램 재 시작시 현재 경매 진행중인 아이템으로 이동.
-		// 경매 종료 상태에 따라 라벨 표시
-		if (mWaitTableView.getItems().size() <= 0) {
-			return;
-		}
-
-		String currentEntryNum = currentEntryInfo.getEntryNum();
-
-		if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(currentEntryNum)) {
-			return;
-		}
-
-		for (int i = 0; mWaitTableView.getItems().size() > i; i++) {
-
-			String entryNum = mWaitTableView.getItems().get(i).getEntryNum().getValue();
-
-			if (currentEntryNum.equals(entryNum)) {
-
-				System.out.println("[!! 재접속 스크롤 설정] : " + entryNum + " / index : " + i);
-				
-				mCurrentSpEntryInfo = mWaitTableView.getItems().get(i);
-
-				selectIndexWaitTable(i, true);
-
-				switch (mCurrentSpEntryInfo.getAuctionResult().getValue()) {
-				case GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS:
-					mAuctionStateReadyLabel.setDisable(true);
-					mAuctionStateProgressLabel.setDisable(true);
-					mAuctionStateSuccessLabel.setDisable(false);
-					mAuctionStateFailLabel.setDisable(true);
-					mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.success"));
-					break;
-				case GlobalDefineCode.AUCTION_RESULT_CODE_PENDING:
-					mAuctionStateReadyLabel.setDisable(true);
-					mAuctionStateProgressLabel.setDisable(true);
-					mAuctionStateSuccessLabel.setDisable(true);
-					mAuctionStateFailLabel.setDisable(false);
-					mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.fail"));
-					break;
-				}
+		
+		Platform.runLater(()->{
+	
+			// 21-08-05 경매 도중 프로그램 재 시작시 현재 경매 진행중인 아이템으로 이동.
+			// 경매 종료 상태에 따라 라벨 표시
+			if (mWaitTableView.getItems().size() <= 0) {
+				return;
 			}
 
-		}
+			String currentEntryNum = currentEntryInfo.getEntryNum();
+
+			if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(currentEntryNum)) {
+				return;
+			}
+
+			for (int i = 0; mWaitTableView.getItems().size() > i; i++) {
+
+				String entryNum = mWaitTableView.getItems().get(i).getEntryNum().getValue();
+
+				if (currentEntryNum.equals(entryNum)) {
+
+					System.out.println("[!! 재접속 스크롤 설정] : " + entryNum + " / index : " + i);
+					
+					mCurrentSpEntryInfo = mWaitTableView.getItems().get(i);
+
+					selectIndexWaitTable(i, true);
+
+					switch (mCurrentSpEntryInfo.getAuctionResult().getValue()) {
+					case GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS:
+						mAuctionStateReadyLabel.setDisable(true);
+						mAuctionStateProgressLabel.setDisable(true);
+						mAuctionStateSuccessLabel.setDisable(false);
+						mAuctionStateFailLabel.setDisable(true);
+						mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.success"));
+						break;
+					case GlobalDefineCode.AUCTION_RESULT_CODE_PENDING:
+						mAuctionStateReadyLabel.setDisable(true);
+						mAuctionStateProgressLabel.setDisable(true);
+						mAuctionStateSuccessLabel.setDisable(true);
+						mAuctionStateFailLabel.setDisable(false);
+						mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.fail"));
+						break;
+					}
+				}
+
+			}
+			
+		});
+
 
 //		setCurrentEntryInfo(currentEntryInfo);
 	}
@@ -1086,11 +1069,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.fail"));
 			}
 
-			addFinishedTableViewItem(mCurrentSpEntryInfo);
-
 			// 낙유찰 화면 딜레이 2초 후 경매 대기 전환
 			PauseTransition pauseTransition = new PauseTransition(Duration.millis(2000));
 			pauseTransition.setOnFinished(event -> {
+				addFinishedTableViewItem(mCurrentSpEntryInfo);
 				// 다음 출품 번호 이동
 				selectIndexWaitTable(1, false);
 			});

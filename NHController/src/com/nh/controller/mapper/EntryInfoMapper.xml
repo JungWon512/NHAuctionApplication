@@ -163,4 +163,15 @@
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
 		   AND	AUC_DT		= #{mAucDt}
     </update>
+    
+     <update id="updateAuctionResult" parameterType="EntryInfo">
+		UPDATE	TB_LA_IS_MH_SOG_COW 
+		   SET	SEL_STS_DSC = #{mAuctionResult},
+		   		LSCHG_DTM = NOW(),
+		   		LS_CMENO	= #{mLsCmeNo}
+		 WHERE	AUC_PRG_SQ	= #{mEntryNum}
+		   AND	NA_BZPLC	= #{mAuctionHouseCode}
+		   AND	AUC_OBJ_DSC	= #{mEntryType}
+		   AND	AUC_DT		= #{mAucDt}
+    </update>
 </mapper>

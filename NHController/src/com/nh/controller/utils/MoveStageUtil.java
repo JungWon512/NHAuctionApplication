@@ -112,7 +112,6 @@ public class MoveStageUtil {
 			stage.show();
 			// show 후에 ..
 			controller.initConfiguration();
-			setScreenMinSize(stage);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

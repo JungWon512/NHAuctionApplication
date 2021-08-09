@@ -403,11 +403,11 @@
                   <Button fx:id="mBtnDownPrice" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="예정가 낮추기" />
                   <Label contentDisplay="RIGHT" minHeight="40.0" prefHeight="40.0" style="-fx-background-color: #ffffff;" text="감가액">
                      <graphic>
-                        <Label fx:id="mDeprePriceLabel" contentDisplay="RIGHT" minHeight="40.0" prefHeight="40.0" style="-fx-background-color: #ffffff;" text="100000">
+                        <Label fx:id="mDeprePriceLabel" contentDisplay="RIGHT" minHeight="40.0" minWidth="67.0" prefHeight="40.0" prefWidth="67.0" style="-fx-background-color: #ffffff;" text="100000">
                            <graphic>
                               <Label contentDisplay="RIGHT" minHeight="40.0" prefHeight="40.0" style="-fx-background-color: #ffffff;" text="|">
                                  <graphic>
-                                    <Label fx:id="mLowPriceChgNtLabel" contentDisplay="RIGHT" minHeight="40.0" prefHeight="40.0" style="-fx-background-color: #ffffff;" text="100" />
+                                    <Label fx:id="mLowPriceChgNtLabel" contentDisplay="RIGHT" minHeight="40.0" prefHeight="40.0" style="-fx-background-color: #ffffff;" text="0" textFill="RED" />
                                  </graphic>
                               </Label>
                            </graphic>
