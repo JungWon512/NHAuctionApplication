@@ -15,6 +15,15 @@ import java.util.List;
  */
 public class AuctionRoundMapperService extends BaseMapperService<AuctionRoundDao> implements AuctionRoundMapper {
 
+    private static AuctionRoundMapperService auctionRoundMapperService = null;
+
+    public static AuctionRoundMapperService getInstance() {
+        if (auctionRoundMapperService == null) {
+            auctionRoundMapperService = new AuctionRoundMapperService();
+        }
+        return auctionRoundMapperService;
+    }
+
     public AuctionRoundMapperService() {
         this.setDao(new AuctionRoundDao());
     }

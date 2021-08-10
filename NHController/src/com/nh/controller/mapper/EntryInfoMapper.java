@@ -41,7 +41,7 @@ public interface EntryInfoMapper {
     
     /**
      * 경매 결과 저장
-     * @param entryInfo
+     * @param auctionResult
      * @return
      */
     int updateAuctionResult(SendAuctionResult auctionResult); 

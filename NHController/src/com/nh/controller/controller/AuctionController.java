@@ -95,7 +95,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	@FXML // 메세지 보내기 버튼
 	private ImageView mImgMessage;
-	
+
 	@FXML // 감가 기준 금액 / 횟수
 	private Label mDeprePriceLabel, mLowPriceChgNtLabel;
 
@@ -547,11 +547,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			@Override
 			public void callBack(int value) {
-				
-				
+
+
 				mWaitTableView.setItems(dataList);
 				mWaitTableView.refresh();
-				
+
 
 				MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
 
@@ -713,17 +713,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void requestEntryData() {
 		// [경매회차조회] TEST!! 일단 경매정보 하나만 가져옴!!
-		AuctionRoundMapperService service = new AuctionRoundMapperService();
-//        List<AuctionRound> list = service.getAllAuctionRoundData(CommonUtils.getInstance().getCurrentTime("yyyyMMdd")); // 실제사용
-		List<AuctionRound> list = service.getAllAuctionRoundData("20210806"); // 테스트
+		// TODO: 경매정보 리스트 뿌리기
+//        List<AuctionRound> list = AuctionRoundMapperService.getInstance().getAllAuctionRoundData(CommonUtils.getInstance().getCurrentTime("yyyyMMdd")); // 실제사용
+		List<AuctionRound> list = AuctionRoundMapperService.getInstance().getAllAuctionRoundData("20210813"); // 테스트
 		this.auctionRound = list.get(0); // 테스트
 //        for (AuctionRound t : list) {
 //            qcn = t.getQcn();
 //        }
 
 		// 경매 출품 데이터 가져오기
-		EntryInfoMapperService entryService = new EntryInfoMapperService();
-		List<EntryInfo> entryInfoDataList = entryService.getAllEntryData(this.auctionRound); // 테스트
+		List<EntryInfo> entryInfoDataList = EntryInfoMapperService.getInstance().getAllEntryData(this.auctionRound); // 테스트
 		mWaitEntryInfoDataList.clear();
 		mWaitEntryInfoDataList = getParsingEntryDataList(entryInfoDataList);
 
@@ -770,7 +769,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		String targetAucDt = spEntryInfo.getAucDt().getValue();
 		String updatePrice = Integer.toString(spEntryInfo.getLowPriceInt() + price);
 		int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
-		
+
 		if(isUp) {
 			lowPriceCnt += -1;
 		}else {
@@ -785,12 +784,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		entryInfo.setLowPrice(updatePrice);
 		entryInfo.setLsCmeNo("admin");
 		entryInfo.setLwprChgNt(Integer.toString(lowPriceCnt));
-		
+
 		if (updatePrice == null || updatePrice.isEmpty() || Integer.parseInt(updatePrice) < 0) {
 			// 가격정보 null, 0보다 작으면 리턴
 			return;
 		}
-		
+
 		final int resultValue = EntryInfoMapperService.getInstance().updateEntryPrice(entryInfo);
 
 		if (resultValue > 0) { // 업데이트 성공시 UI갱신, 서버로 바뀐 정보 보냄
@@ -836,8 +835,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"),
 						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
                         preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"),
-                        "5");
-//				EditSetting setting = new EditSetting(new String[] { "", this.auctionRound.getNaBzplc(), "Y", "Y", "Y", "Y", "N", "Y", "Y", "N", "Y", "Y", "N", "N", "5" });
+                        preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
 				addLogItem(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
 				MoveStageUtil.getInstance().moveAuctionStage(mStage, mFxmlLoader);
 				break;
@@ -859,9 +857,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@Override
 	public void onCurrentEntryInfo(CurrentEntryInfo currentEntryInfo) {
 		super.onCurrentEntryInfo(currentEntryInfo);
-		
+
 		Platform.runLater(()->{
-	
+
 			// 21-08-05 경매 도중 프로그램 재 시작시 현재 경매 진행중인 아이템으로 이동.
 			// 경매 종료 상태에 따라 라벨 표시
 			if (mWaitTableView.getItems().size() <= 0) {
@@ -881,7 +879,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				if (currentEntryNum.equals(entryNum)) {
 
 					System.out.println("[!! 재접속 스크롤 설정] : " + entryNum + " / index : " + i);
-					
+
 					mCurrentSpEntryInfo = mWaitTableView.getItems().get(i);
 
 					selectIndexWaitTable(i, true);
@@ -905,7 +903,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				}
 
 			}
-			
+
 		});
 
 
@@ -1022,7 +1020,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				//가격 상승,다운 활성화
 				mBtnUpPrice.setDisable(false);
 				mBtnDownPrice.setDisable(false);
-				
+
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_FINISH:
 
@@ -1391,7 +1389,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		return dataList;
 	}
-	
+
 
 	/**
 	 * null : true , not null : false;
@@ -1406,6 +1404,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
     		return true;
     	}
     }
-    
+
 
 }

@@ -36,45 +36,48 @@ public class GlobalDefine {
      */
     public static final class AUCTION_INFO {
 
-//        public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
+//      public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
+//		public static final String AUCTION_HOST = "192.168.0.13"; // Server Host 도히꺼
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
 //		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민
-		public static final String AUCTION_HOST = "192.168.0.23"; // dev
+		public static final String AUCTION_HOST = "192.168.0.23"; // dev local server
+//        public static final String AUCTION_HOST = "115.41.222.25"; // dev remote server
 
-		public static final int AUCTION_PORT = 5001; // Server Port
-		
-		public static final String AUCTION_MEMBER = "C000011005"; // 테스트 회원 번호
-		
-		// 경매 진행 상태
-		public static final String AUCTION_STATUS_NONE = "8000";
-		public static final String AUCTION_STATUS_READY = "8001"; // 경매 준비 상태
-		public static final String AUCTION_STATUS_START = "8002"; // 경매 시작 상태
-		public static final String AUCTION_STATUS_SLOWDOWN = "8003"; // 경매 자동상승 상태
-		public static final String AUCTION_STATUS_PROGRESS = "8004"; // 경매 진행 상태
-		public static final String AUCTION_STATUS_COMPETITIVE = "8005"; // 경매 경쟁 상태
-		public static final String AUCTION_STATUS_SUCCESS = "8006"; // 경매 낙찰 상태
-		public static final String AUCTION_STATUS_FAIL = "8007"; // 경매 유찰 상태
-		public static final String AUCTION_STATUS_STOP = "8008"; // 경매 정지 상태
-		public static final String AUCTION_STATUS_COMPLETED = "8009"; // 경매 출품 건 완료 상태
-		public static final String AUCTION_STATUS_FINISH = "8010"; // 경매 종료 상태
-	}
-	
-	/**
-	 * 파일 관련 정보
-	 * @author jhlee
-	 *
-	 */
-	public static final class FILE_INFO{
-		public static final String AUCTION_LOG_FILE_PATH = "c:/NHAuction/LogFile/";
-		public static final String AUCTION_LOG_FILE_EXTENSION = ".txt";
-	}
-	
-	public static final class ETC_INFO {
-		public static final String AUCTION_SEARCH_PARAM_S = "S";	//낙찰만
-		public static final String AUCTION_SEARCH_PARAM_P = "P";	//보류만
-		public static final String AUCTION_SEARCH_PARAM_SP = "SP";	//낙찰&보류
-		public static final String AUCTION_DATA_MODIFY_M = "M";		//데이터 수정 여부 
-	}
+
+        public static final int AUCTION_PORT = 5001; // Server Port
+
+        public static final String AUCTION_MEMBER = "C000011005"; // 테스트 회원 번호
+
+        // 경매 진행 상태
+        public static final String AUCTION_STATUS_NONE = "8000";
+        public static final String AUCTION_STATUS_READY = "8001"; // 경매 준비 상태
+        public static final String AUCTION_STATUS_START = "8002"; // 경매 시작 상태
+        public static final String AUCTION_STATUS_SLOWDOWN = "8003"; // 경매 자동상승 상태
+        public static final String AUCTION_STATUS_PROGRESS = "8004"; // 경매 진행 상태
+        public static final String AUCTION_STATUS_COMPETITIVE = "8005"; // 경매 경쟁 상태
+        public static final String AUCTION_STATUS_SUCCESS = "8006"; // 경매 낙찰 상태
+        public static final String AUCTION_STATUS_FAIL = "8007"; // 경매 유찰 상태
+        public static final String AUCTION_STATUS_STOP = "8008"; // 경매 정지 상태
+        public static final String AUCTION_STATUS_COMPLETED = "8009"; // 경매 출품 건 완료 상태
+        public static final String AUCTION_STATUS_FINISH = "8010"; // 경매 종료 상태
+    }
+
+    /**
+     * 파일 관련 정보
+     *
+     * @author jhlee
+     */
+    public static final class FILE_INFO {
+        public static final String AUCTION_LOG_FILE_PATH = "c:/NHAuction/LogFile/";
+        public static final String AUCTION_LOG_FILE_EXTENSION = ".txt";
+    }
+
+    public static final class ETC_INFO {
+        public static final String AUCTION_SEARCH_PARAM_S = "S";    //낙찰만
+        public static final String AUCTION_SEARCH_PARAM_P = "P";    //보류만
+        public static final String AUCTION_SEARCH_PARAM_SP = "SP";    //낙찰&보류
+        public static final String AUCTION_DATA_MODIFY_M = "M";        //데이터 수정 여부
+    }
 
 }

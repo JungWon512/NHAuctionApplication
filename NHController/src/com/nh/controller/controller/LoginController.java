@@ -62,11 +62,9 @@ public class LoginController implements Initializable {
 
     public void onConnectServer(MouseEvent event) {
 
-//		MoveStageUtil.getInstance().openSettingDialog(mStage);
-
 		mIpTextField.setText(AUCTION_INFO.AUCTION_HOST);
-		mPortTextField.setText(Integer.toString(AUCTION_INFO.AUCTION_PORT));
-		mIdTextField.setText(AUCTION_INFO.AUCTION_MEMBER);
+        mPortTextField.setText(Integer.toString(AUCTION_INFO.AUCTION_PORT));
+        mIdTextField.setText(AUCTION_INFO.AUCTION_MEMBER);
 
         if (!mIpTextField.getText().isEmpty() && !mPortTextField.getText().isEmpty() && !mIdTextField.getText().isEmpty()) {
 

@@ -8,8 +8,8 @@
 	<!-- 경매 회차 정보 조회 -->
 	<select id="selectAllAuctionRound" resultType="AuctionRound">
 		SELECT * FROM
-		tb_la_is_mh_auc_qcn as A WHERE A.AUC_DT=#{date} AND
-		A.DDL_YN='1';
+            auction.tb_la_is_mh_auc_qcn as A WHERE A.AUC_DT=#{date} AND
+		A.DDL_YN='0';
 	</select>
 
 </mapper>

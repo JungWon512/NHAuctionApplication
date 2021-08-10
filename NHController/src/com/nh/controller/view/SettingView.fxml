@@ -21,12 +21,12 @@
         <GridPane maxHeight="780.0" prefWidth="1260.0" styleClass="grid-pane" BorderPane.alignment="CENTER">
             <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="120.0" minWidth="10.0" prefWidth="10.0"/>
-                <ColumnConstraints hgrow="ALWAYS" maxWidth="246.0" minWidth="100.0" prefWidth="213.0"/>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="100.0" prefWidth="250.0"/>
                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="110.0" minWidth="10.0" prefWidth="10.0"/>
                 <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="100.0" prefWidth="250.0"/>
                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="110.0" minWidth="10.0" prefWidth="10.0"/>
-                <ColumnConstraints hgrow="ALWAYS" minWidth="50.0"/>
-                <ColumnConstraints hgrow="ALWAYS" minWidth="100.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="150.0" prefWidth="150.0"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
                 <ColumnConstraints hgrow="ALWAYS" maxWidth="1.0" minWidth="1.0" prefWidth="1.0"/>
             </columnConstraints>
             <rowConstraints>
@@ -629,6 +629,19 @@
                         <Insets top="5.0"/>
                     </GridPane.margin>
                 </VBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="카운트 설정" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.rowIndex="18"/>
+                <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="5" GridPane.rowIndex="18">
+                    <children>
+                        <TextField fx:id="mCountTextField" maxWidth="50.0" minWidth="50.0" prefWidth="50.0"/>
+                        <Label alignment="CENTER" styleClass="font-s" text="1 ~ 9 (초)"/>
+                    </children>
+                    <GridPane.margin>
+                        <Insets/>
+                    </GridPane.margin>
+                    <padding>
+                        <Insets left="10.0" right="10.0"/>
+                    </padding>
+                </HBox>
             </children>
             <opaqueInsets>
                 <Insets/>

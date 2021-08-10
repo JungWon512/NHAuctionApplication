@@ -24,6 +24,15 @@ public class ConnectionInfoMapperService extends BaseMapperService<ConnectionInf
 
     private String userNum = "-1";
 
+    private static ConnectionInfoMapperService connectionInfoMapperService = null;
+
+    public static ConnectionInfoMapperService getInstance() {
+        if (connectionInfoMapperService == null) {
+            connectionInfoMapperService = new ConnectionInfoMapperService();
+        }
+        return connectionInfoMapperService;
+    }
+
     public ConnectionInfoMapperService() {
         this.setDao(new ConnectionInfoDao());
     }
