@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.common.interfaces.NettyControllable;
+import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
@@ -26,8 +27,8 @@ import com.nh.controller.model.UserInfo;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.service.ConnectionInfoMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
+import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
-import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionResult;
@@ -187,6 +188,12 @@ public class BaseAuctionController implements NettyControllable {
     @Override
     public void onBidding(Bidding bidding) {
         addLogItem(mResMsg.getString("msg.auction.get.bidding") + bidding.getEncodedMessage());
+        
+        if(bidding.getAuctionJoinNum() == null || bidding.getPrice() == null 
+        		|| bidding.getAuctionJoinNum().equals("") || bidding.getPrice().equals("")) {
+        	return;
+        }
+
         setBidding(bidding);
         calculationRanking();
     }
@@ -286,7 +293,7 @@ public class BaseAuctionController implements NettyControllable {
 
         if (mWaitEntryInfoDataList != null && mWaitEntryInfoDataList.size() > 0) {
 
-            if (mCurrentSpEntryInfo.getEntryNum().getValue().equals(requestAuctionResult.getEntryNum())) {
+            if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(requestAuctionResult.getEntryNum())) {
 
                 SpEntryInfo entryInfo = mCurrentSpEntryInfo;
 
@@ -353,17 +360,35 @@ public class BaseAuctionController implements NettyControllable {
 
         SpBidding spBidding = new SpBidding(bidding);
 
-        if (mCurrentBidderMap.containsKey(spBidding.getUserNo().getValue())) {
+        if (mCurrentBidderMap.containsKey(spBidding.getAuctionJoinNum().getValue())) {
 
-            SpBidding beforeBidder = mCurrentBidderMap.get(spBidding.getUserNo().getValue());
+            SpBidding beforeBidder = mCurrentBidderMap.get(spBidding.getAuctionJoinNum().getValue());
 
             // 이전 응찰 내역에 저장
             mBeForeBidderDataList.add(beforeBidder);
             // 현재 응찰에 저장
-            mCurrentBidderMap.put(spBidding.getUserNo().getValue(), spBidding);
+            mCurrentBidderMap.put(spBidding.getAuctionJoinNum().getValue(), spBidding);
         } else {
-            mCurrentBidderMap.put(spBidding.getUserNo().getValue(), spBidding);
+            mCurrentBidderMap.put(spBidding.getAuctionJoinNum().getValue(), spBidding);
         }
+
+        //응찰 로그 저장
+		AucEntrData aucEntrData = new AucEntrData();
+		aucEntrData.setNaBzplc(this.auctionRound.getNaBzplc());
+		aucEntrData.setAucObjDsc(this.auctionRound.getAucObjDsc());
+		aucEntrData.setAucDt(this.auctionRound.getAucDt());
+		aucEntrData.setLvstAucPtcMnNo(bidding.getAuctionJoinNum());
+		aucEntrData.setAtdrAm(bidding.getPrice());
+		aucEntrData.setAtdrDtm(bidding.getBiddingTime());
+		aucEntrData.setAucPrgSq(bidding.getEntryNum());
+
+		int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
+
+		if(resultValue > 0) {
+			addLogItem("응찰 내역 저장 완료 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
+		}else {
+			addLogItem("응찰 내역 저장 실패 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
+		}
 
     }
 
@@ -408,12 +433,7 @@ public class BaseAuctionController implements NettyControllable {
 
             // 최저가
             int startPrice = Integer.parseInt(entryInfo.getLowPrice().getValue());
-
-            // 경매 결과 Obj
-            SendAuctionResult auctionResult = new SendAuctionResult();
-            auctionResult.setAuctionHouseCode(entryInfo.getAuctionHouseCode().getValue());
-            auctionResult.setEntryNum(entryInfo.getEntryNum().getValue());
-
+            
             // 응찰 금액이 최저가와 같거나 큰 경우 낙찰
             if (Integer.parseInt(biddingUser.getPrice().getValue()) >= startPrice) {
                 isSuccess = true;
@@ -457,7 +477,8 @@ public class BaseAuctionController implements NettyControllable {
             auctionResult.setSuccessBidder(bidder.getUserNo().getValue());
             auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
             auctionResult.setSuccessBidPrice(bidder.getPrice().getValue());
-            auctionResult.setSuccessBidUpr(bidder.getPrice().getValue());
+            int priceUpr = CommonUtils.getInstance().getBaseUnitDivision(bidder.getPrice().getValue(), SettingApplication.getInstance().getInfo().getBaseUnit());
+            auctionResult.setSuccessBidUpr(Integer.toString(priceUpr));
         } else {
             // 유찰&보류
             auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
@@ -598,7 +619,8 @@ public class BaseAuctionController implements NettyControllable {
 
                 for (int i = 0; i < biddingList.size(); i++) {
                     logContent.append(ENTER_LINE);
-                    String rankUser = String.format(mResMsg.getString("log.auction.result.rank"), Integer.toString((i + 1)), biddingList.get(i).getUserNo().getValue());
+                    String user = biddingList.get(i).getAuctionJoinNum().getValue() + "(" +biddingList.get(i).getUserNo().getValue()+ ")" ;
+                    String rankUser = String.format(mResMsg.getString("log.auction.result.rank"), Integer.toString((i + 1)), user);
                     String price = String.format(mResMsg.getString("log.auction.result.price"), biddingList.get(i).getPriceInt()) + EMPTY_SPACE + CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(biddingList.get(i).getBiddingTime().getValue());
                     logContent.append(rankUser + EMPTY_SPACE + price);
 
@@ -621,7 +643,9 @@ public class BaseAuctionController implements NettyControllable {
                 for (SpBidding disBidding : distintListData) {
 
                     logContent.append(ENTER_LINE);
-                    logContent.append(String.format(mResMsg.getString("log.auction.result.before.bidder"), disBidding.getUserNo().getValue()));
+              
+                    String user = disBidding.getAuctionJoinNum().getValue() + "(" +disBidding.getUserNo().getValue()+ ")" ;
+                    logContent.append(String.format(mResMsg.getString("log.auction.result.before.bidder"), user));
                     logContent.append(ENTER_LINE);
 
                     for (SpBidding beforeBidding : mBeForeBidderDataList) {
