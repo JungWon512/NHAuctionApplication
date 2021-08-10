@@ -2,9 +2,17 @@ package com.nh.controller.controller;
 
 import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
+import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
 
+import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class CommonController {
 
@@ -48,5 +56,25 @@ public class CommonController {
 	public void initConfiguration() {
 		CommonUtils.getInstance().canMoveStage(mStage, null);
 	}
+	
 
+	/**
+	 * 컬럼 데이터 콤마 표시
+	 * 
+	 * @param column
+	 */
+	protected synchronized <T> void setNumberColumnFactory(TableColumn<T, String> column) {
+
+		column.setCellFactory(col -> new TableCell<T, String>() {
+			@Override
+			protected void updateItem(String value, boolean empty) {
+				super.updateItem(value, empty);
+				if (value != null && !value.isEmpty() && !value.isBlank()) {
+					setText(CommonUtils.getInstance().getNumberFormatComma(Integer.parseInt(value)));
+				} else {
+					setText("");
+				}
+			}
+		});
+	}
 }

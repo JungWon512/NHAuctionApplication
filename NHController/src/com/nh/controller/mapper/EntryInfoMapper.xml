@@ -146,6 +146,7 @@
 		ORDER BY B.AUC_PRG_SQ ASC;
     </select>
     
+      <!-- 가격 정보 업데이트-->
 	<update id="updateEntryPrice" parameterType="EntryInfo">
 		UPDATE	TB_LA_IS_MH_SOG_COW 
 		   SET	LOWS_SBID_LMT_AM = #{mLowPrice},
@@ -157,7 +158,8 @@
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
 		   AND	AUC_DT		= #{mAucDt}
     </update>
-
+    
+  	<!-- 경매 상태 업데이트-->
     <update id="updateEntryState" parameterType="EntryInfo">
 		UPDATE	TB_LA_IS_MH_SOG_COW 
 		   SET	SEL_STS_DSC = #{mAuctionResult},
@@ -168,7 +170,8 @@
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
 		   AND	AUC_DT		= #{mAucDt}
     </update>
-
+    
+	<!-- 경매 결과 업데이트-->
      <update id="updateAuctionResult" parameterType="AuctionResult">
 		UPDATE	TB_LA_IS_MH_SOG_COW 
 		   SET	SEL_STS_DSC = #{mResultCode},
@@ -182,4 +185,28 @@
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
 		   AND	AUC_DT		= #{mAucDt}
     </update>
+    
+
+	<!-- 응찰 내역 업데이트-->
+	<insert id="insertBiddingHistory" parameterType="list">
+		INSERT INTO AUCTION.TB_LA_IS_MH_AUC_ENTR(
+			NA_BZPLC,
+			AUC_OBJ_DSC,
+			AUC_DT,
+			LVST_AUC_PTC_MN_NO,
+			ATDR_AM,
+			ATDR_DTM,
+			AUC_PRG_SQ
+		)
+		VALUES (
+			#{naBzplc},
+			#{aucObjDsc},
+			#{aucDt},
+			#{lvstAucPtcMnNo},
+			#{atdrAm},
+			#{atdrDtm},
+			#{aucPrgSq}
+		)
+	</insert>
+    
 </mapper>

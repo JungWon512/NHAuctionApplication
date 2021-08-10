@@ -72,6 +72,10 @@ public class EntryListController extends CommonController implements Initializab
 		mEntryTableView.setPlaceholder(new Label(mResMsg.getString("msg.empty.list.default")));
 		mEntryTableView.setItems(mEntryDataList);
 
+		setNumberColumnFactory(mWeightColumn);
+		setNumberColumnFactory(mLowPriceColumn);
+		setNumberColumnFactory(mSuccessPriceColumn);
+
 		mEntryTableView.setRowFactory(tv -> {
 			
 			TableRow<SpEntryInfo> row = new TableRow<>();

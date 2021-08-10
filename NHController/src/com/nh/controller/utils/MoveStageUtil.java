@@ -16,12 +16,15 @@ import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.SpEntryInfo;
 
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -147,7 +150,7 @@ public class MoveStageUtil {
 	 * 
 	 * @param stage
 	 */
-	public synchronized void openEntryListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList,IntegerListener listener) {
+	public synchronized void openEntryListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList, IntegerListener listener) {
 
 		try {
 
@@ -159,7 +162,7 @@ public class MoveStageUtil {
 
 			EntryListController controller = fxmlLoader.getController();
 			controller.setEntryDataList(dataList);
-			controller.setStage(newStage,listener);
+			controller.setStage(newStage, listener);
 
 			Scene scene = new Scene(parent);
 			newStage.setScene(scene);
@@ -169,18 +172,28 @@ public class MoveStageUtil {
 			controller.initConfiguration();
 			// disable and dim
 			setStageDisable(stage, newStage);
+			
+			scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+				public void handle(KeyEvent ke) {
+					if (ke.getCode() == KeyCode.ESCAPE) {
+						newStage.close();
+						setBackStageDisableFalse(stage);
+					}
+				}
+			});
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 보류 리스트
 	 * 
 	 * @param stage
 	 */
-	public synchronized void openEntryPendingListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList,IntegerListener listener) {
+	public synchronized void openEntryPendingListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList, IntegerListener listener) {
 
 		try {
 
@@ -192,7 +205,7 @@ public class MoveStageUtil {
 
 			EntryPendingListController controller = fxmlLoader.getController();
 			controller.setEntryDataList(dataList);
-			controller.setStage(newStage,listener);
+			controller.setStage(newStage, listener);
 
 			Scene scene = new Scene(parent);
 			newStage.setScene(scene);
@@ -202,6 +215,15 @@ public class MoveStageUtil {
 			controller.initConfiguration();
 			// disable and dim
 			setStageDisable(stage, newStage);
+
+			scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+				public void handle(KeyEvent ke) {
+					if (ke.getCode() == KeyCode.ESCAPE) {
+						newStage.close();
+						setBackStageDisableFalse(stage);
+					}
+				}
+			});
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -219,7 +241,7 @@ public class MoveStageUtil {
 		DialogPane dialogPane = new DialogPane();
 //		dialogPane.getStylesheets().add(getApplicationClass().getResource("css/application.css").toExternalForm());
 //		dialog.initStyle(StageStyle.UNDECORATED);
-		
+
 		dialog.initModality(Modality.NONE);
 		dialog.setDialogPane(dialogPane);
 
@@ -251,11 +273,12 @@ public class MoveStageUtil {
 
 		Window window = newStage.getScene().getWindow();
 		window.setOnCloseRequest(e -> {
+			System.out.println("aaaaa");
 			setBackStageDisableFalse(backStage);
 		});
 
 	}
-	
+
 	/**
 	 * 이전 Stage Disable
 	 * 

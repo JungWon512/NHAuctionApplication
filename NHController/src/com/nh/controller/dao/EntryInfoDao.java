@@ -1,5 +1,6 @@
 package com.nh.controller.dao;
 
+import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
@@ -49,5 +50,15 @@ public class EntryInfoDao {
      */
     public int updateAuctionResult(SendAuctionResult auctionResult,SqlSession session) {
         return session.update("updateAuctionResult", auctionResult);
+    }
+    
+    /**
+     * 경매 결과 저장
+     * @param auctionResult
+     * @param session
+     * @return
+     */
+    public int insertBiddingHistory(AucEntrData aucEntrData,SqlSession session) {
+        return session.update("insertBiddingHistory", aucEntrData);
     }
 }

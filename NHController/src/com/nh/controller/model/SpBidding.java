@@ -1,5 +1,7 @@
 package com.nh.controller.model;
 
+import com.nh.controller.setting.SettingApplication;
+import com.nh.controller.utils.CommonUtils;
 import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.setting.AuctionShareSetting;
@@ -42,11 +44,13 @@ public class SpBidding implements FromAuctionCommon, Serializable, Comparable<Sp
         auctionHouseCode = new SimpleStringProperty(bidding.getAuctionHouseCode());
         channel = new SimpleStringProperty(bidding.getChannel());
         userNo = new SimpleStringProperty(bidding.getUserNo());
-        price = new SimpleStringProperty(bidding.getPrice());
         auctionJoinNum = new SimpleStringProperty(bidding.getAuctionJoinNum());
         entryNum = new SimpleStringProperty(bidding.getEntryNum());
         isNewBid = new SimpleStringProperty(bidding.getIsNewBid());
         biddingTime = new SimpleStringProperty(bidding.getBiddingTime());
+        //기준금액 적용
+        int divisionPrice = CommonUtils.getInstance().getBaseUnitDivision(bidding.getPrice(), SettingApplication.getInstance().getInfo().getBaseUnit());
+        price = new SimpleStringProperty(Integer.toString(divisionPrice));
     }
 
     public StringProperty getAuctionHouseCode() {

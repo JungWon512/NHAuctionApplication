@@ -423,15 +423,14 @@ public class SpEntryInfo implements FromAuctionController {
 
 		return resultStr;
 	}
-
+	
 	private StringProperty returnValue(StringProperty value) {
 
-		if (value != null) {
+		if (value != null && value.getValue() != null && !value.getValue().isBlank()) {
 			return value;
 		} else {
 			return new SimpleStringProperty("");
 		}
-
 	}
 
 	@Override

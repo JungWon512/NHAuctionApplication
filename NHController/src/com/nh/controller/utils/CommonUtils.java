@@ -31,6 +31,8 @@ import javafx.util.Duration;
 
 import java.lang.reflect.Field;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -924,5 +926,50 @@ public class CommonUtils {
 	 */
 	public void removeStyleClass(Node node, String name) {
 		node.getStyleClass().removeAll(Collections.singleton(name));
+	}
+	
+	/**
+	 * 기준 금액 적용
+	 * param (str : 4,500,000 , baseUnit : 10,000)
+	 * @param str
+	 * @return 4,500,000 / 10,000 = 450
+	 */
+	public int getBaseUnitDivision(String str , int baseUnit) {
+
+		int price = Integer.parseInt(str);
+		int resultPrice = price / baseUnit;
+
+		return resultPrice;
+	}
+	
+	/**
+	 * 기준 금액 적용
+	 * param (str : 450 , baseUnit : 10,000)
+	 * @param str
+	 * @return 450 * 10000 = 4,500,000
+	 */
+	public int getBaseUnitMultipl(String str , int baseUnit) {
+
+		int price = Integer.parseInt(str);
+		int resultPrice = price * baseUnit;
+
+		return resultPrice;
+	}
+	
+	
+	/**
+	 * 콤마 표시
+	 * @param str
+	 * @return
+	 */
+	public String getNumberFormatComma(int value) {
+		
+		if(value <= 0) {
+			return "0";
+		}
+		
+		NumberFormat integerFormat = new DecimalFormat("#,###");
+		
+		return integerFormat.format(value);
 	}
 }

@@ -1,20 +1,18 @@
 package com.nh.controller.service;
 
-import com.nh.controller.dao.EntryInfoDao;
-import com.nh.controller.database.DBSessionFactory;
-import com.nh.controller.mapper.EntryInfoMapper;
-import com.nh.controller.model.AuctionRound;
-import com.nh.controller.utils.CommonUtils;
-import com.nh.controller.utils.GlobalDefine;
-import com.nh.share.controller.models.EntryInfo;
-import com.nh.share.controller.models.SendAuctionResult;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import com.nh.controller.dao.EntryInfoDao;
+import com.nh.controller.database.DBSessionFactory;
+import com.nh.controller.mapper.EntryInfoMapper;
+import com.nh.controller.model.AucEntrData;
+import com.nh.controller.model.AuctionRound;
+import com.nh.controller.utils.GlobalDefine;
+import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.SendAuctionResult;
 
 /**
  * 출품 데이터 MapperService
@@ -143,5 +141,29 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 		return resultValue;
 	}
+
+	@Override
+	public int insertBiddingHistory(AucEntrData aucEntrData) {
+	int resultValue = 0;
+		
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultValue = getDao().insertBiddingHistory(aucEntrData,session);
+			
+			if(resultValue > 0) {
+				session.commit();
+			}else {
+				session.rollback();
+			}
+			
+		}catch (Exception e) {
+			//exception에 대한 처리 시 사용
+			resultValue = -1;
+		}
+
+		return resultValue;
+	}
+	
+	
 
 }
