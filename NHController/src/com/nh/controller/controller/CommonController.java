@@ -2,20 +2,18 @@ package com.nh.controller.controller;
 
 import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
-import com.nh.controller.setting.SettingApplication;
+import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.utils.CommonUtils;
 
-import javafx.application.Platform;
-import javafx.event.EventHandler;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 public class CommonController {
 
+	protected ObservableList<SpEntryInfo> mEntryDataList = FXCollections.observableArrayList(); // 출품 목록
 	protected Stage mStage = null; // 현재 Stage
 	protected IntegerListener mIntegerListener = null; // listener
 	protected StringListener mStringListener = null; // listener
@@ -39,7 +37,6 @@ public class CommonController {
 		this.mIntegerListener = listener;
 	}
 
-
 	/**
 	 * setStage
 	 *
@@ -51,10 +48,29 @@ public class CommonController {
 	}
 	
 	/**
+	 * setListener
+	 * @param listener
+	 */
+	public void setListener(IntegerListener listener) {
+		this.mIntegerListener = listener;
+	}
+	
+
+	/**
+	 * 출품 목록 Set
+	 * 
+	 * @param dataList
+	 */
+	public void setEntryDataList(ObservableList<SpEntryInfo> dataList) {
+		mEntryDataList.clear();
+		mEntryDataList.addAll(dataList);
+	}
+
+	/**
 	 * 구성 설정
 	 */
 	public void initConfiguration() {
-		CommonUtils.getInstance().canMoveStage(mStage, null);
+//		CommonUtils.getInstance().canMoveStage(mStage, null);
 	}
 	
 

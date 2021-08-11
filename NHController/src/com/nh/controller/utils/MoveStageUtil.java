@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.nh.controller.ControllerApplication;
 import com.nh.controller.controller.AuctionController;
 import com.nh.controller.controller.AuctionMessageController;
+import com.nh.controller.controller.CommonController;
 import com.nh.controller.controller.EntryListController;
 import com.nh.controller.controller.EntryPendingListController;
 import com.nh.controller.controller.LoginController;
@@ -15,12 +16,15 @@ import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.SpEntryInfo;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.input.KeyCode;
@@ -40,6 +44,13 @@ import javafx.stage.Window;
 public class MoveStageUtil {
 
 	private static MoveStageUtil instance = null;
+	
+	private Dialog<Void> mDialog = null;
+	
+	public enum EntryDialogType{
+		ENTRY_LIST,
+		ENTRY_PENDING_LIST
+	}
 
 	public static synchronized MoveStageUtil getInstance() {
 
@@ -67,6 +78,7 @@ public class MoveStageUtil {
 			Scene scene = new Scene(parent);
 			stage.setScene(scene);
 			stage.show();
+			centerOnScreen(stage);
 			// show 후에 ..
 			controller.initConfiguration();
 
@@ -126,6 +138,10 @@ public class MoveStageUtil {
 	 */
 	public void openSettingDialog(Stage stage) {
 
+		if(mDialog != null && mDialog.isShowing()) {
+			return;
+		}
+		
 		try {
 
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("SettingView.fxml"), getResourceBundle());
@@ -144,91 +160,55 @@ public class MoveStageUtil {
 			e.printStackTrace();
 		}
 	}
-
+	
+	
 	/**
 	 * 출품 리스트
+	 * 출품 보류 리스트
 	 * 
 	 * @param stage
 	 */
-	public synchronized void openEntryListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList, IntegerListener listener) {
-
+	
+	public synchronized void openEntryListDialog(EntryDialogType type,Stage stage, ObservableList<SpEntryInfo> dataList, IntegerListener listener) {
+		
+		if(mDialog != null && mDialog.isShowing()) {
+			return;
+		}
+		
 		try {
 
-			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
-
-			Parent parent = fxmlLoader.load();
-
-			Stage newStage = new Stage();
-
-			EntryListController controller = fxmlLoader.getController();
-			controller.setEntryDataList(dataList);
-			controller.setStage(newStage, listener);
-
-			Scene scene = new Scene(parent);
-			newStage.setScene(scene);
-			newStage.show();
-
-			// show 후에 ..
-			controller.initConfiguration();
-			// disable and dim
-			setStageDisable(stage, newStage);
+			FXMLLoader fxmlLoader = null;
 			
-			scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-				public void handle(KeyEvent ke) {
-					if (ke.getCode() == KeyCode.ESCAPE) {
-						newStage.close();
-						setBackStageDisableFalse(stage);
-					}
-				}
-			});
+			switch (type) {
+			case ENTRY_LIST:
+				fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
+				break;
+			case ENTRY_PENDING_LIST:
+				fxmlLoader = new FXMLLoader(getFXMLResource("EntryPendingListView.fxml"), getResourceBundle());
+				break;
+			}
 
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 보류 리스트
-	 * 
-	 * @param stage
-	 */
-	public synchronized void openEntryPendingListPopUp(Stage stage, ObservableList<SpEntryInfo> dataList, IntegerListener listener) {
-
-		try {
-
-			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryPendingListView.fxml"), getResourceBundle());
-
+			if(fxmlLoader == null) {
+				return;
+			}
+			
 			Parent parent = fxmlLoader.load();
 
-			Stage newStage = new Stage();
-
-			EntryPendingListController controller = fxmlLoader.getController();
+			CommonController controller = fxmlLoader.getController();
 			controller.setEntryDataList(dataList);
-			controller.setStage(newStage, listener);
+			controller.setListener(listener);
 
-			Scene scene = new Scene(parent);
-			newStage.setScene(scene);
-			newStage.show();
+			openDialog(stage, parent);
 
-			// show 후에 ..
 			controller.initConfiguration();
-			// disable and dim
-			setStageDisable(stage, newStage);
 
-			scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-				public void handle(KeyEvent ke) {
-					if (ke.getCode() == KeyCode.ESCAPE) {
-						newStage.close();
-						setBackStageDisableFalse(stage);
-					}
-				}
-			});
-
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
+	
+	
 
 	/**
 	 * Open Dialog 전체보기,보류보기,환경설정
@@ -237,27 +217,40 @@ public class MoveStageUtil {
 	 */
 	public void openDialog(Stage stage, Parent parent) {
 
-		Dialog<Void> dialog = new Dialog<>();
+		mDialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane();
-//		dialogPane.getStylesheets().add(getApplicationClass().getResource("css/application.css").toExternalForm());
+		dialogPane.getStylesheets().add(getApplicationClass().getResource("css/dialog.css").toExternalForm());
 //		dialog.initStyle(StageStyle.UNDECORATED);
-
-		dialog.initModality(Modality.NONE);
-		dialog.setDialogPane(dialogPane);
+		
+		mDialog.setResizable(true);
+		mDialog.initModality(Modality.NONE);
+		mDialog.setDialogPane(dialogPane);
+		mDialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+		
+		Node closeButton = mDialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+		closeButton.setVisible(false);
 
 		dialogPane.setContent(parent);
-		dialog.initOwner(stage);
+		mDialog.initOwner(stage);
 
 		stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
-
-		Window window = dialog.getDialogPane().getScene().getWindow();
+		stage.getScene().getRoot().setDisable(true);
+		Window window = mDialog.getDialogPane().getScene().getWindow();
 		window.setOnCloseRequest(e -> {
-			dialog.close();
+			mDialog.close();
 			stage.getScene().getRoot().setEffect(null); // 뒷 배경 블러처리 remove
+			stage.getScene().getRoot().setDisable(false);
 		});
 
-		dialog.show();
-
+		mDialog.show();
+	}
+	
+	public void dismissDialog() {
+		if(mDialog != null) {
+			if(mDialog.isShowing()) {
+				mDialog.close();
+			}
+		}
 	}
 
 	/**
@@ -273,7 +266,6 @@ public class MoveStageUtil {
 
 		Window window = newStage.getScene().getWindow();
 		window.setOnCloseRequest(e -> {
-			System.out.println("aaaaa");
 			setBackStageDisableFalse(backStage);
 		});
 
@@ -410,6 +402,16 @@ public class MoveStageUtil {
 		double centerYPosition = parentStage.getY() + parentStage.getHeight() / 2d;
 		stage.setX(centerXPosition - stage.getWidth() / 2d);
 		stage.setY(centerYPosition - stage.getHeight() / 2d);
+	}
+	
+	/**
+	 * Stage 중앙 배치
+	 * @param primaryStage
+	 */
+	public synchronized void centerOnScreen(Stage primaryStage) {
+		Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+		primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
+		primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
 	}
 
 	/**

@@ -23,8 +23,6 @@ import javafx.scene.input.MouseEvent;
  */
 public class EntryListController extends CommonController implements Initializable {
 
-	private ObservableList<SpEntryInfo> mEntryDataList = FXCollections.observableArrayList(); // 출품 목록
-
 	private ResourceBundle mResMsg;
 
 	@FXML
@@ -32,16 +30,6 @@ public class EntryListController extends CommonController implements Initializab
 
 	@FXML // 대기중인 출품
 	private TableColumn<SpEntryInfo, String> mEntryNumColumn, mExhibitorColumn, mGenderColumn, mMotherColumn, mMatimeColumn, mPasgQcnColumn, mWeightColumn, mLowPriceColumn, mSuccessPriceColumn, mSuccessfulBidderColumn, mResultColumn, mNoteColumn;
-
-	/**
-	 * 출품 목록 Set
-	 * 
-	 * @param dataList
-	 */
-	public void setEntryDataList(ObservableList<SpEntryInfo> dataList) {
-		mEntryDataList.clear();
-		mEntryDataList.addAll(dataList);
-	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -85,7 +73,6 @@ public class EntryListController extends CommonController implements Initializab
 						int index = mEntryTableView.getSelectionModel().getSelectedIndex();
 						if(index > -1) {
 							mIntegerListener.callBack(mEntryTableView.getSelectionModel().getSelectedIndex());
-							mStage.close();
 						}
 					}
 				});

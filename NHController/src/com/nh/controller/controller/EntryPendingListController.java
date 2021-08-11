@@ -24,8 +24,6 @@ import javafx.stage.Stage;
  */
 public class EntryPendingListController extends CommonController implements Initializable {
 
-	private ObservableList<SpEntryInfo> mEntryDataList = FXCollections.observableArrayList(); // 출품 목록
-
 	private ResourceBundle mResMsg;
 
 	@FXML
@@ -86,7 +84,6 @@ public class EntryPendingListController extends CommonController implements Init
 						int index = mEntryTableView.getSelectionModel().getSelectedIndex();
 						if(index > -1) {
 							mIntegerListener.callBack(mEntryTableView.getSelectionModel().getSelectedIndex());
-							mStage.close();
 						}
 					}
 				});

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
@@ -19,6 +18,7 @@ import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
+import com.nh.controller.utils.MoveStageUtil.EntryDialogType;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
@@ -544,10 +544,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoDataList();
 
-		MoveStageUtil.getInstance().openEntryListPopUp(mStage, dataList, new IntegerListener() {
+		MoveStageUtil.getInstance().openEntryListDialog(EntryDialogType.ENTRY_LIST ,mStage, dataList, new IntegerListener() {
 
 			@Override
 			public void callBack(int value) {
+
+				MoveStageUtil.getInstance().dismissDialog();
 
 				setWaitEntryDataList(dataList);
 
@@ -586,10 +588,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoPendingDataList();
 
-		MoveStageUtil.getInstance().openEntryPendingListPopUp(mStage, dataList, new IntegerListener() {
-
+		MoveStageUtil.getInstance().openEntryListDialog(EntryDialogType.ENTRY_PENDING_LIST ,mStage, dataList, new IntegerListener() {
 			@Override
 			public void callBack(int value) {
+				
+				MoveStageUtil.getInstance().dismissDialog();
 
 				if (CommonUtils.getInstance().isListEmpty(dataList)) {
 					return;

@@ -1,0 +1,15 @@
+@import "common.css";
+.dialog-pane{
+	-fx-border-width: 0px;
+	-fx-border-color: #0082e5;
+	-fx-padding: 0px;
+}
+.dialog-pane .content{
+	-fx-background-color: #27293d;
+	-fx-padding: 0px;
+}
+
+.dialog-pane > .button-bar > .container {
+	-fx-padding: 0px;
+	-fx-background-color: #27293d;
+}
