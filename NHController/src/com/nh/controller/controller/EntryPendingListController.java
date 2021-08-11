@@ -18,7 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
- * 제어 메인 F4 -> 전체보기
+ * 제어 메인 F5 -> 보류보기
  *
  * @author jhlee
  */

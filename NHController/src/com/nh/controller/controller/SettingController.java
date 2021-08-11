@@ -80,17 +80,17 @@ public class SettingController implements Initializable {
     private CheckBox mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox, mMotherCheckBox, mPassageCheckBox, mMaTimeCheckBox, mKpnCheckBox,
             mRegionCheckBox, mNoteCheckBox, mLowPriceCheckBox, mDNACheckBox;
 
-    private ArrayList<CheckBox> mobileCheckBoxSelectedList = null;
-    private ArrayList<CheckBox> mobileCheckBoxList = null;
-    private String boardToggleType = "None";
-    private String pdpToggleType = "BoardType";
-
-    String[] sharedMobileArray = new String[]{
+    private final static String[] SHARED_MOBILE_ARRAY = new String[]{
             SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER,
             SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE,
             SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, SharedPreference.PREFERENCE_SETTING_MOBILE_REGION,
             SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, SharedPreference.PREFERENCE_SETTING_MOBILE_DNA
     };
+
+    private ArrayList<CheckBox> mobileCheckBoxSelectedList = null;
+    private ArrayList<CheckBox> mobileCheckBoxList = null;
+    private String boardToggleType = "None";
+    private String pdpToggleType = "BoardType";
 
     public enum MobileCheckBoxType {
         SETTING_MOBILE_ENTRYNUM("mEntryNumCheckBox"),
@@ -177,6 +177,11 @@ public class SettingController implements Initializable {
         }));
     }
 
+    /**
+     * TextFields Preference에 저장
+     *
+     * @author dhKim
+     */
     private void setTextFields() {
         // 전광판 설정 IP, PORT
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, mIpBoardTextField1.getText().trim());
@@ -233,6 +238,11 @@ public class SettingController implements Initializable {
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, mLowerLimitBreedingCattleTextField.getText().trim());
     }
 
+    /**
+     * TextFields Preference에서 가져오기
+     *
+     * @author dhKim
+     */
     private void getTextFields() {
         // 전광판 설정 IP, PORT
         mIpBoardTextField1.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""));
@@ -289,13 +299,21 @@ public class SettingController implements Initializable {
         mLowerLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, ""));
     }
 
-    ///  경매종료멘트, 비고 창 value setting
+    /**
+     * 경매종료멘트, 비고 창 value setting
+     *
+     * @author dhKim
+     */
     private void setAnnounceNoteCheckboxPreference() {
         sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_ANNOUNCEMENT, (mUseAnnouncementCheckBox.isSelected()));
         sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, (mUseNoteCheckBox.isSelected()));
     }
 
-    ///  경매종료멘트, 비고 창 value 가져오기
+    /**
+     * 경매종료멘트, 비고 창 value 가져오기
+     *
+     * @author dhKim
+     */
     private void getAnnounceNoteCheckboxPreference() {
         boolean isAnnouncement = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_ANNOUNCEMENT, true);
         boolean isNote = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, true);
@@ -303,18 +321,30 @@ public class SettingController implements Initializable {
         mUseNoteCheckBox.setSelected(isNote);
     }
 
-    // 카운트 설정
+    /**
+     * 카운트 설정 Preference에 저장
+     *
+     * @author dhKim
+     */
     private void setCountTextField() {
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, mCountTextField.getText().trim());
     }
 
-    // 카운트 설정 가져오기
+    /**
+     * 카운트 설정 가져오기
+     *
+     * @author dhKim
+     */
     private void getCountTextField() {
         String second = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5");
         mCountTextField.setText(second);
     }
 
-    /// toggle group setting
+    /**
+     * toggle group setting
+     *
+     * @author dhKim
+     */
     private void setToggleGroups() {
         getToggleTypes();
         boardToggleGroup.selectedToggleProperty().
@@ -328,11 +358,21 @@ public class SettingController implements Initializable {
                 });
     }
 
+    /**
+     * toggle type Preference에 저장
+     *
+     * @author dhKim
+     */
     private void setToggleTypes() {
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_BOARD_TOGGLE_TYPE, boardToggleType);
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PDP_TOGGLE_TYPE, pdpToggleType);
     }
 
+    /**
+     * toggle type Preference에서 가져오기
+     *
+     * @author dhKim
+     */
     private void getToggleTypes() {
         String boardToggle = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_BOARD_TOGGLE_TYPE, "None");
         String pdpToggle = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PDP_TOGGLE_TYPE, "BoardType");
@@ -349,7 +389,11 @@ public class SettingController implements Initializable {
         }
     }
 
-    /// 모바일 노출설정 checkbox init
+    /**
+     * 모바일 노출설정 checkbox init
+     *
+     * @author dhKim
+     */
     private void setMobileCheckBoxLists() {
         mobileCheckBoxList = new ArrayList<>(
                 Arrays.asList(mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox, mMotherCheckBox, mPassageCheckBox,
@@ -360,9 +404,7 @@ public class SettingController implements Initializable {
                     if (mobileCheckBoxSelectedList.size() > 8) {
                         mobileCheckBoxSelectedList.remove(checkBox);
                         checkBox.setSelected(false);
-                        CommonUtils.getInstance().showAlertPopupOneButton(
-                                this.mStage, "모바일 노출 설정은\n최대 8개까지만 가능합니다.", "확인"
-                        );
+                        showAlertMobileSettingLimit();
                     }
                 }
         )));
@@ -370,7 +412,11 @@ public class SettingController implements Initializable {
         mobileCheckBoxSelectedList.forEach(checkBox -> checkBox.setSelected(true));
     }
 
-    /// 모바일 노출설정 checkBox Setting
+    /**
+     * 모바일 노출설정 checkBox Setting
+     *
+     * @author dhKim
+     */
     private void handleMobileCheckBox(CheckBox checkBox) {
         if (checkBox.isSelected()) {
             mobileCheckBoxSelectedList.add(checkBox);
@@ -388,24 +434,24 @@ public class SettingController implements Initializable {
      * @author dhKim
      */
     private void setMobileCheckboxPreference(ArrayList<CheckBox> mobileCheckBoxSelectedList) {
-        for (String key : sharedMobileArray) {  // 모바일 노출설정 Preference 초기화
+        for (String key : SHARED_MOBILE_ARRAY) {  // 모바일 노출설정 Preference 초기화
             sharedPreference.setString(key, "N");
         }
 
         for (CheckBox checkBox : mobileCheckBoxSelectedList) {
             switch (MobileCheckBoxType.find(checkBox.getId())) {
-                case SETTING_MOBILE_ENTRYNUM -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "Y");
-                case SETTING_MOBILE_EXHIBITOR -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "Y");
-                case SETTING_MOBILE_GENDER -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y");
-                case SETTING_MOBILE_WEIGHT -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y");
-                case SETTING_MOBILE_MOTHER -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y");
-                case SETTING_MOBILE_PASSAGE -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y");
-                case SETTING_MOBILE_MATIME -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y");
-                case SETTING_MOBILE_KPN -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "Y");
-                case SETTING_MOBILE_REGION -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "Y");
-                case SETTING_MOBILE_NOTE -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "Y");
-                case SETTING_MOBILE_LOWPRICE -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y");
-                case SETTING_MOBILE_DNA -> sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "Y");
+                case SETTING_MOBILE_ENTRYNUM -> sharedPreference.setString(SHARED_MOBILE_ARRAY[0], "Y");
+                case SETTING_MOBILE_EXHIBITOR -> sharedPreference.setString(SHARED_MOBILE_ARRAY[1], "Y");
+                case SETTING_MOBILE_GENDER -> sharedPreference.setString(SHARED_MOBILE_ARRAY[2], "Y");
+                case SETTING_MOBILE_WEIGHT -> sharedPreference.setString(SHARED_MOBILE_ARRAY[3], "Y");
+                case SETTING_MOBILE_MOTHER -> sharedPreference.setString(SHARED_MOBILE_ARRAY[4], "Y");
+                case SETTING_MOBILE_PASSAGE -> sharedPreference.setString(SHARED_MOBILE_ARRAY[5], "Y");
+                case SETTING_MOBILE_MATIME -> sharedPreference.setString(SHARED_MOBILE_ARRAY[6], "Y");
+                case SETTING_MOBILE_KPN -> sharedPreference.setString(SHARED_MOBILE_ARRAY[7], "Y");
+                case SETTING_MOBILE_REGION -> sharedPreference.setString(SHARED_MOBILE_ARRAY[8], "Y");
+                case SETTING_MOBILE_NOTE -> sharedPreference.setString(SHARED_MOBILE_ARRAY[9], "Y");
+                case SETTING_MOBILE_LOWPRICE -> sharedPreference.setString(SHARED_MOBILE_ARRAY[10], "Y");
+                case SETTING_MOBILE_DNA -> sharedPreference.setString(SHARED_MOBILE_ARRAY[11], "Y");
                 default -> mLogger.debug("setMobileCheckboxPreference default");
             }
         }
@@ -422,18 +468,18 @@ public class SettingController implements Initializable {
 
         for (CheckBox checkBox : mobileCheckBoxList) {
             switch (MobileCheckBoxType.find(checkBox.getId())) {
-                case SETTING_MOBILE_ENTRYNUM -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_ENTRYNUM.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "N"));
-                case SETTING_MOBILE_EXHIBITOR -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_EXHIBITOR.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "N"));
-                case SETTING_MOBILE_GENDER -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_GENDER.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "N"));
-                case SETTING_MOBILE_WEIGHT -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_WEIGHT.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "N"));
-                case SETTING_MOBILE_MOTHER -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_MOTHER.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "N"));
-                case SETTING_MOBILE_PASSAGE -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_PASSAGE.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "N"));
-                case SETTING_MOBILE_MATIME -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_MATIME.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "N"));
-                case SETTING_MOBILE_KPN -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_KPN.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"));
-                case SETTING_MOBILE_REGION -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_REGION.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"));
-                case SETTING_MOBILE_NOTE -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_NOTE.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"));
-                case SETTING_MOBILE_LOWPRICE -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_LOWPRICE.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "N"));
-                case SETTING_MOBILE_DNA -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_DNA.getId(), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"));
+                case SETTING_MOBILE_ENTRYNUM -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_ENTRYNUM.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[0], "N"));
+                case SETTING_MOBILE_EXHIBITOR -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_EXHIBITOR.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[1], "N"));
+                case SETTING_MOBILE_GENDER -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_GENDER.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[2], "N"));
+                case SETTING_MOBILE_WEIGHT -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_WEIGHT.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[3], "N"));
+                case SETTING_MOBILE_MOTHER -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_MOTHER.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[4], "N"));
+                case SETTING_MOBILE_PASSAGE -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_PASSAGE.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[5], "N"));
+                case SETTING_MOBILE_MATIME -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_MATIME.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[6], "N"));
+                case SETTING_MOBILE_KPN -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_KPN.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[7], "N"));
+                case SETTING_MOBILE_REGION -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_REGION.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[8], "N"));
+                case SETTING_MOBILE_NOTE -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_NOTE.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[9], "N"));
+                case SETTING_MOBILE_LOWPRICE -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_LOWPRICE.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[10], "N"));
+                case SETTING_MOBILE_DNA -> tempMap.put(MobileCheckBoxType.SETTING_MOBILE_DNA.getId(), sharedPreference.getString(SHARED_MOBILE_ARRAY[11], "N"));
                 default -> mLogger.debug("getAllMobileCheckboxPreference default");
             }
         }
@@ -463,7 +509,7 @@ public class SettingController implements Initializable {
     }
 
     /**
-     * 모바일 노출설정 Preference에 저장
+     * 설정 Preference에 저장
      *
      * @author dhKim
      */
@@ -477,18 +523,18 @@ public class SettingController implements Initializable {
             setToggleTypes();
             // 서버에 edit setting 전송
             EditSetting setting = new EditSetting(sharedPreference.getString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, ""),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "Y"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "Y"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
-                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[0], "Y"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[1], "Y"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[2], "Y"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[3], "Y"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[4], "Y"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[5], "Y"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[6], "Y"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[7], "N"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[8], "N"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[9], "N"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[10], "Y"),
+                    sharedPreference.getString(SHARED_MOBILE_ARRAY[11], "N"),
                     sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
             mLogger.debug(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
             showAlertSuccess();
@@ -528,6 +574,12 @@ public class SettingController implements Initializable {
             return false;
         }
         return true;
+    }
+
+    private void showAlertMobileSettingLimit() {
+        CommonUtils.getInstance().showAlertPopupOneButton(
+                this.mStage, mResMsg.getString("dialog.setting.mobile.validation.fail"), mResMsg.getString("popup.btn.close")
+        );
     }
 
     private void showAlertDataFormat() {
