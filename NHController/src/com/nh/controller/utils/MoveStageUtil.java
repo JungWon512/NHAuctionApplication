@@ -245,11 +245,25 @@ public class MoveStageUtil {
 		mDialog.show();
 	}
 	
+	/**
+	 * dialog 종료
+	 */
 	public void dismissDialog() {
 		if(mDialog != null) {
 			if(mDialog.isShowing()) {
 				mDialog.close();
 			}
+		}
+	}
+	
+	/**
+	 * @return mDialog
+	 */
+	public Dialog<Void> getDialog(){
+		if(mDialog != null) {
+			return mDialog;
+		}else {
+			return null;
 		}
 	}
 

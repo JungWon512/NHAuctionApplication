@@ -543,6 +543,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 전체 보기
 	 */
 	public void openEntryListPopUp() {
+		
+		if(MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+			return;
+		}
+		
+		refreshWaitEntryDataList();
 
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoDataList();
 
@@ -587,6 +593,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 보류 목록 보기
 	 */
 	public void openEntryPendingListPopUp() {
+		
+		if(MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+			return;
+		}
 
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoPendingDataList();
 
@@ -617,6 +627,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void openSettingDialog() {
 
+		if(MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+			return;
+		}
+		
 		MoveStageUtil.getInstance().openSettingDialog(mStage);
 	}
 
@@ -1323,7 +1337,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					// 전체보기
 					if (ke.getCode() == KeyCode.F4) {
-						refreshWaitEntryDataList();
 						openEntryListPopUp();
 						ke.consume();
 					}
