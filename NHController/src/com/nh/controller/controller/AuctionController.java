@@ -103,7 +103,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	private List<Label> cntList = new ArrayList<Label>(); // 남은 시간 Bar list
 
-	public final int REMAINING_TIME_COUNT = 5; // 카운트다운 기준 시간
+    public static int REMAINING_TIME_COUNT = 5; // 카운트다운 기준 시간
 
 	private int mRemainingTimeCount = REMAINING_TIME_COUNT; // 카운트다운
 
@@ -179,7 +179,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 
-	}
+        // Setting
+        REMAINING_TIME_COUNT = Integer.parseInt(preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
+    }
 
 	/**
 	 * 테이블뷰 관련
@@ -773,6 +775,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// List<AuctionRound> list = AuctionRoundMapperService.getInstance().getAllAuctionRoundData(CommonUtils.getInstance().getCurrentTime("yyyyMMdd")); // 실제사용
 		List<AuctionRound> list = AuctionRoundMapperService.getInstance().getAllAuctionRoundData("20210813"); // 테스트
 		this.auctionRound = list.get(0); // 테스트
+		preference.setString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, this.auctionRound.getNaBzplc()); // Setting Controller 에서 필요..
 //        for (AuctionRound t : list) {
 //            qcn = t.getQcn();
 //        }
@@ -849,7 +852,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		final int resultValue = EntryInfoMapperService.getInstance().updateEntryPrice(entryInfo);
 
 		if (resultValue > 0) { // 업데이트 성공시 UI갱신, 서버로 바뀐 정보 보냄
-			
+
 			spEntryInfo.getLowPrice().setValue(updatePrice);
 			spEntryInfo.getLwprChgNt().setValue(Integer.toString(lowPriceCnt));
 			setCurrentEntryInfo();
@@ -1133,21 +1136,21 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mAuctionStateProgressLabel.setDisable(true);
 
 			SpEntryInfo spEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
-			
+
 			if (isSuccess) {
 				mAuctionStateSuccessLabel.setDisable(false);
 				mAuctionStateFailLabel.setDisable(true);
-				
+
 				spEntryInfo.getAuctionSucBidder().setValue(bidder.getAuctionJoinNum().getValue());
 				spEntryInfo.getAuctionBidPrice().setValue(bidder.getPrice().getValue());
 				spEntryInfo.getAuctionResult().setValue(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS);
 				spEntryInfo.getAuctionBidDateTime().setValue(bidder.getBiddingTime().getValue());
-				
+
 				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.success"));
 			} else {
 				mAuctionStateSuccessLabel.setDisable(true);
 				mAuctionStateFailLabel.setDisable(false);
-				
+
 				spEntryInfo.getAuctionSucBidder().setValue("");
 				spEntryInfo.getAuctionBidPrice().setValue("0");
 				spEntryInfo.getAuctionResult().setValue(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
@@ -1159,10 +1162,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			PauseTransition pauseTransition = new PauseTransition(Duration.millis(2000));
 			pauseTransition.setOnFinished(event -> {
 				addFinishedTableViewItem(spEntryInfo);
-				
+
 				// 출품 대기 테이블 활성화
 				mWaitTableView.setDisable(false);
-				
+
 				// 다음 출품 번호 이동
 				selectIndexWaitTable(1, false);
 			});
@@ -1470,7 +1473,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * null : true , not null : false;
-	 * 
+	 *
 	 * @param strProperty
 	 * @return
 	 */
@@ -1485,7 +1488,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 컬럼 데이터 콤마 표시
-	 * 
+	 *
 	 * @param column
 	 */
 	private synchronized <T> void setNumberColumnFactory(TableColumn<T, String> column, boolean isPrice) {

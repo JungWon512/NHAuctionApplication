@@ -456,7 +456,7 @@ public class BaseAuctionController implements NettyControllable {
     }
 
     /**
-     * 낙유찰 결과 전송
+     * 낙유찰 결과 전송 + 결과 DB 저장
      *
      * @param isSuccess
      * @param currentEntryInfo

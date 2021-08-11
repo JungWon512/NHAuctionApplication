@@ -10,6 +10,9 @@ import java.util.prefs.Preferences;
  */
 public class SharedPreference {
 
+    // 경매 관련 기본 정보
+    public static final String PREFERENCE_AUCTION_HOUSE_CODE = "PREFERENCE_AUCTION_HOUSE_CODE"; //  경제통합사업장코드
+
     // 경매 응찰 프로그램 환경설정 [START]
     // --- 모바일 노출설정 ---
     public static final String PREFERENCE_SETTING_MOBILE_ENTRYNUM = "PREFERENCE_SETTING_MOBILE_ENTRYNUM"; // 경매번호노출여부

@@ -1,7 +1,9 @@
 package com.nh.controller.controller;
 
+import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.SharedPreference;
+import com.nh.share.controller.models.EditSetting;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -165,6 +167,14 @@ public class SettingController implements Initializable {
         getTextFields();
         initKeyConfig();
         mBtnSave.setOnMouseClicked(event -> saveSettings());
+    }
+
+    private void initKeyConfig() {
+        Platform.runLater(() -> mStage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, ke -> {
+            if (ke.getCode() == KeyCode.F5) {
+                saveSettings();
+            }
+        }));
     }
 
     private void setTextFields() {
@@ -339,14 +349,6 @@ public class SettingController implements Initializable {
         }
     }
 
-    private void initKeyConfig() {
-        Platform.runLater(() -> mStage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, ke -> {
-            if (ke.getCode() == KeyCode.F5) {
-                saveSettings();
-            }
-        }));
-    }
-
     /// 모바일 노출설정 checkbox init
     private void setMobileCheckBoxLists() {
         mobileCheckBoxList = new ArrayList<>(
@@ -436,7 +438,6 @@ public class SettingController implements Initializable {
             }
         }
 
-
         tempMap.forEach((key, value) -> {
             if (value.equals("Y")) {
                 mobileCheckBoxSelectedList.add((CheckBox) mRoot.lookup("#" + key));
@@ -474,11 +475,26 @@ public class SettingController implements Initializable {
             setCountTextField();
             setMobileCheckboxPreference(mobileCheckBoxSelectedList);
             setToggleTypes();
-            CommonUtils.getInstance().showAlertPopupOneButton(
-                    this.mStage, "성공적으로 저장되었습니다.", "확인"
-            );
+            // 서버에 edit setting 전송
+            EditSetting setting = new EditSetting(sharedPreference.getString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, ""),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "Y"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "Y"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"),
+                    sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
+            mLogger.debug(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
+            showAlertSuccess();
         } else {
             mLogger.debug("validation failed!");
+            showAlertFailure();
         }
     }
 
@@ -492,15 +508,11 @@ public class SettingController implements Initializable {
         if (!mFormatTextField.getText().equals("") || !mFormatTextField.getText().isEmpty()) {
             int format = Integer.parseInt(mFormatTextField.getText());
             if (format < 1 || format > 2) {
-                CommonUtils.getInstance().showAlertPopupOneButton(
-                        this.mStage, "표출 데이터 포맷 설정은\n 1 또는 2만\n 가능합니다.", "확인"
-                );
+                showAlertDataFormat();
                 return false;
             }
         } else {
-            CommonUtils.getInstance().showAlertPopupOneButton(
-                    this.mStage, "표출 데이터 포맷 설정은\n 1 또는 2만\n 가능합니다.", "확인"
-            );
+            showAlertDataFormat();
             return false;
         }
 
@@ -508,17 +520,37 @@ public class SettingController implements Initializable {
         if (!mCountTextField.getText().equals("") || !mCountTextField.getText().isEmpty()) {
             int second = Integer.parseInt(mCountTextField.getText());
             if (second < 1 || second > 9) {
-                CommonUtils.getInstance().showAlertPopupOneButton(
-                        this.mStage, "카운트 설정은 1에서 9초까지\n 가능합니다.", "확인"
-                );
+                showAlertCountDown();
                 return false;
             }
         } else {
-            CommonUtils.getInstance().showAlertPopupOneButton(
-                    this.mStage, "카운트 설정은 1에서 9초까지\n 가능합니다.", "확인"
-            );
+            showAlertCountDown();
             return false;
         }
         return true;
+    }
+
+    private void showAlertDataFormat() {
+        CommonUtils.getInstance().showAlertPopupOneButton(
+                this.mStage, mResMsg.getString("dialog.setting.dataformat.validation.fail"), mResMsg.getString("popup.btn.close")
+        );
+    }
+
+    private void showAlertCountDown() {
+        CommonUtils.getInstance().showAlertPopupOneButton(
+                this.mStage, mResMsg.getString("dialog.setting.countdown.validation.fail"), mResMsg.getString("popup.btn.close")
+        );
+    }
+
+    private void showAlertSuccess() {
+        CommonUtils.getInstance().showAlertPopupOneButton(
+                this.mStage, mResMsg.getString("dialog.setting.validation.success"), mResMsg.getString("popup.btn.close")
+        );
+    }
+
+    private void showAlertFailure() {
+        CommonUtils.getInstance().showAlertPopupOneButton(
+                this.mStage, mResMsg.getString("dialog.setting.validation.failure"), mResMsg.getString("popup.btn.close")
+        );
     }
 }
