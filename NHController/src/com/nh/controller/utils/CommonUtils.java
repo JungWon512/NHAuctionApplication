@@ -553,7 +553,26 @@ public class CommonUtils {
 		Optional<ButtonType> result = dialog.showAndWait();
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * @MethodName showAlertPopupOneButton
+	 * @Description 버튼 1개 팝업창.
+	 * Dialog 위에 Dialog 상황일때 사용
+	 * 
+	 * @param message
+	 * @param buttonTitle
+	 * @return Optional<ButtonType>
+	 * 
+	 */
+	public Optional<ButtonType> showAlertPopupOneButton(Dialog<Void> showingDialog, String message, String buttonTitle) {
+		Dialog<ButtonType> dialog = setAlertPopupStyle(showingDialog, ALERTPOPUP_ONE_BUTTON, message, buttonTitle, "");
+		Optional<ButtonType> result = dialog.showAndWait();
+		return result;
+	}
+	
+	
+	
 	/**
 	 * 
 	 * @MethodName showAlertPopupTwoButton
@@ -594,7 +613,14 @@ public class CommonUtils {
 		};
 
 		dialogPane.getStylesheets().add(getClass().getResource("/com/nh/controller/css/utils.css").toExternalForm());
-		dialog.initOwner(stage);
+		
+		if(stage != null) {
+			dialog.initOwner(stage);
+		}else {
+			dialog.initOwner(dialogPane.getScene().getWindow());
+			
+		}
+	
 		dialog.initModality(Modality.WINDOW_MODAL);
 		dialog.initStyle(StageStyle.UNDECORATED);
 		dialog.setDialogPane(dialogPane);
@@ -634,21 +660,107 @@ public class CommonUtils {
 
 		// center alert stage to parent stage
 
-		double centerXPosition = stage.getX() + stage.getWidth() / 2d;
-		double centerYPosition = stage.getY() + stage.getHeight() / 2d;
-		dialog.setX(centerXPosition - dialogPane.getWidth() / 2d);
-		dialog.setY(centerYPosition - dialogPane.getHeight() / 2d);
+		if(stage != null) {
+			double centerXPosition = stage.getX() + stage.getWidth() / 2d;
+			double centerYPosition = stage.getY() + stage.getHeight() / 2d;
+			dialog.setX(centerXPosition - dialogPane.getWidth() / 2d);
+			dialog.setY(centerYPosition - dialogPane.getHeight() / 2d);
 
-		// 팝업창 뒷 배경 블러처리 Add
-		stage.getScene().getRoot().setEffect(getDialogBlurEffect());
+			// 팝업창 뒷 배경 블러처리 Add
+			stage.getScene().getRoot().setEffect(getDialogBlurEffect());
 
-		// 팝업창 뒷 배경 블러처리 remove
-		dialog.setOnCloseRequest(event -> {
-			stage.getScene().getRoot().setEffect(null);
-		});
+			// 팝업창 뒷 배경 블러처리 remove
+			dialog.setOnCloseRequest(event -> {
+				stage.getScene().getRoot().setEffect(null);
+			});
 
+		}
+	
 		return dialog;
 	}
+	
+	/**
+	 * 
+	 * @MethodName setAlertPopupStyle
+	 * @Description 팝업창 Layout 셋팅
+	 * 
+	 * @param alertPopupType
+	 * @param message
+	 * @param leftButtonTitle
+	 * @param rightButtonTitle
+	 * @return
+	 */
+	public Dialog<ButtonType> setAlertPopupStyle(Dialog<Void> showingDialog, String alertPopupType, String message, String leftButtonTitle, String rightButtonTitle) {
+		Dialog<ButtonType> dialog = new Dialog<>();
+		DialogPane dialogPane = new DialogPane() {
+			@Override
+			protected Node createButtonBar() {
+				ButtonBar buttonBar = (ButtonBar) super.createButtonBar();
+				buttonBar.setButtonOrder(ButtonBar.BUTTON_ORDER_NONE);
+				return buttonBar;
+			}
+		};
+
+		dialogPane.getStylesheets().add(getClass().getResource("/com/nh/controller/css/utils.css").toExternalForm());
+		dialog.initOwner(showingDialog.getDialogPane().getScene().getWindow());
+	
+		dialog.initModality(Modality.WINDOW_MODAL);
+		dialog.initStyle(StageStyle.UNDECORATED);
+		dialog.setDialogPane(dialogPane);
+		dialogPane.setPadding(new Insets(10));
+		dialogPane.setMinHeight(200);
+		dialogPane.setMinWidth(350);
+
+		// one button alert popup
+		if (alertPopupType.equals(ALERTPOPUP_ONE_BUTTON)) {
+			ButtonType buttonTypeOne = new ButtonType(leftButtonTitle, ButtonData.LEFT);
+			dialogPane.getButtonTypes().addAll(buttonTypeOne);
+		}
+		// two button alert popup
+		else {
+			ButtonType buttonTypeOne = new ButtonType(leftButtonTitle, ButtonData.LEFT);
+			ButtonType buttonTypeTwo = new ButtonType(rightButtonTitle, ButtonData.RIGHT);
+			dialogPane.getButtonTypes().addAll(buttonTypeOne, buttonTypeTwo);
+		}
+
+		// alert popup message label
+		Label contentText = new Label();
+		contentText.setText(message);
+		contentText.setTextAlignment(TextAlignment.CENTER);
+		contentText.setAlignment(Pos.CENTER);
+		contentText.getStyleClass().add("regular-font");
+		dialogPane.setContent(contentText);
+
+		Region spacer = new Region();
+		ButtonBar.setButtonData(spacer, ButtonBar.ButtonData.BIG_GAP);
+		HBox.setHgrow(spacer, Priority.ALWAYS);
+
+		dialogPane.applyCss();
+		dialogPane.layout();
+		HBox hbox = (HBox) dialogPane.lookup(".container");
+		hbox.setAlignment(Pos.CENTER);
+		hbox.getChildren().add(spacer);
+
+		if(showingDialog != null && showingDialog.isShowing()) {
+			
+			double centerXPosition = showingDialog.getX() + showingDialog.getWidth() / 2d;
+			double centerYPosition = showingDialog.getY() + showingDialog.getHeight() / 2d;
+			dialog.setX(centerXPosition - dialogPane.getWidth() / 2d);
+			dialog.setY(centerYPosition - dialogPane.getHeight() / 2d);
+
+			// 팝업창 뒷 배경 블러처리 Add
+			showingDialog.getDialogPane().getScene().getRoot().setEffect(getDialogBlurEffect());
+
+			// 팝업창 뒷 배경 블러처리 remove
+			dialog.setOnCloseRequest(event -> {
+				showingDialog.getDialogPane().getScene().getRoot().setEffect(null);
+			});
+		}
+		
+		
+		return dialog;
+	}
+	
 
 	/**
 	 * 

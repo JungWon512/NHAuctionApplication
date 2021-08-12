@@ -91,7 +91,7 @@
                               <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                            </rowConstraints>
                            <children>
-                              <HBox prefHeight="100.0" spacing="18.0" GridPane.columnIndex="1" GridPane.columnSpan="3">
+                              <HBox prefHeight="100.0" spacing="14.0" GridPane.columnIndex="1" GridPane.columnSpan="3">
                                  <children>
                                     <CheckBox fx:id="mEntryNumCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="순번" userData="2" />
                                     <CheckBox fx:id="mExhibitorCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="출하주" userData="2" />
@@ -120,8 +120,8 @@
                               </HBox>
                               <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="3" GridPane.rowSpan="2">
                                  <children>
+                                    <Button fx:id="mBtnSave" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="저장" visible="false" HBox.hgrow="ALWAYS" />
                                     <Button fx:id="mBtnSettingSound" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="음성설정" HBox.hgrow="ALWAYS" />
-                                    <Button fx:id="mBtnSave" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="저장" HBox.hgrow="ALWAYS" />
                                     <Button fx:id="mBtnStopSound" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="음성중지" HBox.hgrow="ALWAYS" />
                                     <Button fx:id="mBtnEntrySuccessList" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="낙찰결과" HBox.hgrow="ALWAYS" />
                                  </children>

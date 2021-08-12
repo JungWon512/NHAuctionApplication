@@ -20,6 +20,7 @@ import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.MoveStageUtil.EntryDialogType;
 import com.nh.controller.utils.SharedPreference;
+import com.nh.controller.utils.SoundUtil;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.ResponseConnectionInfo;
@@ -118,6 +119,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private int mRemainingTimeCount = REMAINING_TIME_COUNT; // 카운트다운
 
 	private final SharedPreference preference = new SharedPreference();
+	
+	// 사운드 클래스
+	private SoundUtil mEntryInfoSound = new SoundUtil();
+	// 사운드 클래스
+	private SoundUtil mMessageSound = new SoundUtil();
 
 	/**
 	 * setStage
@@ -166,6 +172,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void initViewConfiguration() {
 
+		initParsingSharedData();
 		initTableConfiguration();
 
 		cntList.add(cnt_1);
@@ -182,13 +189,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnEnter.setOnMouseClicked(event -> onStartAndStopAuction());
 		mBtnF7.setOnMouseClicked(event -> onPassAuction(event));
 		mBtnF8.setOnMouseClicked(event -> openSettingDialog());
-
 		mImgMessage.setOnMouseClicked(event -> openSendMessage(event));
 		mWaitTableView.setOnMouseClicked(event -> onClickWaitTableView(event));
-
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
-
+		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
+		mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo());
+		mBtnStopSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
+		mBtnEntrySuccessList.setOnMouseClicked(event -> openSettingSoundDialog(event));
+	
 		// Setting
 		REMAINING_TIME_COUNT = Integer.parseInt(preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
 	}
@@ -255,6 +264,45 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //		initFinishedEntryDataList();
 		initBiddingInfoDataList();
 		initConnectionUserDataList();
+	}
+
+	/**
+	 * 출품 정보 음성 설정 저장된 값들 셋팅
+	 */
+	private void initParsingSharedData() {
+
+		mEntryNumCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER,true));
+		mExhibitorCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR,true));
+		mGenderCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_GENDER,true));
+		mMotherObjNumCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MOTHER,true));
+		mMaTimeCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MATIME,true));
+		mPasgQcnCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_PASGQCN,true));
+		mWeightCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_WEIGHT,true));
+		mLowPriceCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE,true));
+		mBrandNameCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_BRAND,true));
+		mKpnCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_KPN,true));
+		
+		mEntryNumCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER);
+		mExhibitorCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR);
+		mGenderCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_GENDER);
+		mMotherObjNumCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MOTHER);
+		mMaTimeCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MATIME);
+		mPasgQcnCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_PASGQCN);
+		mWeightCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_WEIGHT);
+		mLowPriceCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE);
+		mBrandNameCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_BRAND);
+		mKpnCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_KPN);
+
+		mEntryNumCheckBox.setOnAction(mCheckBoxEventHandler);
+		mExhibitorCheckBox.setOnAction(mCheckBoxEventHandler);
+		mGenderCheckBox.setOnAction(mCheckBoxEventHandler);
+		mMotherObjNumCheckBox.setOnAction(mCheckBoxEventHandler);
+		mMaTimeCheckBox.setOnAction(mCheckBoxEventHandler);
+		mPasgQcnCheckBox.setOnAction(mCheckBoxEventHandler);
+		mWeightCheckBox.setOnAction(mCheckBoxEventHandler);
+		mLowPriceCheckBox.setOnAction(mCheckBoxEventHandler);
+		mBrandNameCheckBox.setOnAction(mCheckBoxEventHandler);
+		mKpnCheckBox.setOnAction(mCheckBoxEventHandler);
 	}
 
 	/**
@@ -630,6 +678,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		});
 	}
+	
+	/**
+	 * 사운드 메세지 설정
+	 * @param event
+	 */
+	public void openSettingSoundDialog(MouseEvent event) {
+		
+		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+			return;
+		}
+
+		MoveStageUtil.getInstance().openSettingSoundDialog(mStage);
+	}
 
 	/**
 	 * 환경 설정
@@ -641,6 +702,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 		MoveStageUtil.getInstance().openSettingDialog(mStage);
+	}
+	
+	private void saveMainSoundEntryInfo() {
+		
 	}
 
 	/**
@@ -692,6 +757,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_READY:
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
+			
+			//사운드 시작
+			mEntryInfoSound.playSound(0);
+
 			String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), mCurrentSpEntryInfo.getEntryNum().getValue());
 			// 시작
 			addLogItem(msgStart + AuctionDelegate.getInstance().onStartAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
@@ -1247,7 +1316,62 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			mCurLowPriceLabel.setText(String.format(mResMsg.getString("str.price"), price));
 			mCurSuccessPriceLabel.setText(String.format(mResMsg.getString("str.price"), bidPrice));
+	
+			setSoundData(currentEntryInfo);
 		});
+	}
+	
+	
+	private void setSoundData(SpEntryInfo spEntryInfo) {
+
+		// 사운드 텍스트 저장 리스트.
+		List<String> soundDataList = new ArrayList<String>();
+
+		StringBuffer entrySoundContent = new StringBuffer();
+		 String EMPTY_SPACE = " ";
+				
+		if(mEntryNumCheckBox.isSelected()) {
+			entrySoundContent.append(spEntryInfo.getEntryNum().getValue());
+		}
+		if(mExhibitorCheckBox.isSelected()) {
+			entrySoundContent.append(EMPTY_SPACE);
+			entrySoundContent.append(spEntryInfo.getExhibitor().getValue());
+		}
+		if(mGenderCheckBox.isSelected()) {
+			entrySoundContent.append(EMPTY_SPACE);
+			entrySoundContent.append(spEntryInfo.getGender().getValue());
+		}
+		if(mMotherObjNumCheckBox.isSelected()) {
+			entrySoundContent.append(EMPTY_SPACE);
+			entrySoundContent.append(spEntryInfo.getMotherObjNum().getValue());
+		}
+		if(mMaTimeCheckBox.isSelected()) {
+			entrySoundContent.append(EMPTY_SPACE);
+			entrySoundContent.append(spEntryInfo.getMatime().getValue());
+		}
+		if(mPasgQcnCheckBox.isSelected()) {
+			entrySoundContent.append(EMPTY_SPACE);
+			entrySoundContent.append(spEntryInfo.getPasgQcn().getValue());
+		}
+		if(mWeightCheckBox.isSelected()) {
+			entrySoundContent.append(EMPTY_SPACE);
+			entrySoundContent.append(spEntryInfo.getWeight().getValue());
+		}
+		if(mLowPriceCheckBox.isSelected()) {
+			entrySoundContent.append(EMPTY_SPACE);
+			entrySoundContent.append(spEntryInfo.getLowPrice().getValue());
+		}
+		if(mBrandNameCheckBox.isSelected()) {
+			entrySoundContent.append(EMPTY_SPACE);
+			entrySoundContent.append(spEntryInfo.getBrandName().getValue());
+		}
+		if(mKpnCheckBox.isSelected()) {
+			entrySoundContent.append(EMPTY_SPACE);
+			entrySoundContent.append(spEntryInfo.getKpn().getValue());
+		}
+		
+		soundDataList.add(entrySoundContent.toString());
+		mEntryInfoSound.setSoundDataList(soundDataList);
 	}
 
 	/**
@@ -1380,6 +1504,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						if (mWaitTableView.isDisable()) {
 							return;
 						}
+						
 						if (mWaitTableView.getSelectionModel().getSelectedIndex() > mRecordCount) {
 							mWaitTableView.getSelectionModel().select(mRecordCount - 2);
 							mWaitTableView.scrollTo(mRecordCount - 1);
@@ -1530,4 +1655,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		});
 	}
 
+	@SuppressWarnings("rawtypes")
+	private EventHandler mCheckBoxEventHandler = new EventHandler<ActionEvent>() {
+		@Override
+		public void handle(ActionEvent event) {
+			//체크박스 내부 저장
+			if (event.getSource() instanceof CheckBox) {
+				CheckBox checkBox = (CheckBox) event.getSource();
+				SharedPreference.getInstance().setBoolean(checkBox.getUserData().toString(), checkBox.isSelected());
+			}
+		}
+	};
 }

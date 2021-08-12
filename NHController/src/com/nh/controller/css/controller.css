@@ -140,6 +140,11 @@
 	-fx-max-height: 0;
 }
 
+.text-area .scroll-bar:vertical {
+    -fx-pref-width: 1;
+    -fx-opacity: 0;
+}
+
 /*테이블 row 선택 */
 .base-contents .table-view .table-row-cell:selected {
 	-fx-background-color: #EFEFEF;
@@ -260,6 +265,59 @@
 	-fx-text-fill: #ffffff;
 	-fx-font-size: 32px;
 	-fx-font-weight: bold;
+}
+
+
+.btn-style-1{
+	-fx-border-width: 1.0;
+	-fx-border-color: #0082e5;
+	-fx-background-color : #0082e5;
+	-fx-font-size: 12px;
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
+	-fx-text-fill: #ffffff;
+	-fx-padding: 12px 12px 12px 12px;
+}
+
+.btn-style-2{
+	-fx-border-width: 1px;
+    -fx-border-color: #ffe135;
+    -fx-background-color: #ffe135;
+    -fx-text-fill: #111;
+    -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;
+    -fx-padding: 12px 12px 12px 12px;
+}
+
+.btn-style-play{
+	-fx-border-width: 1.0;
+	-fx-border-color: #0082e5;
+	-fx-background-color : #0082e5;
+	-fx-font-size: 12px;
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
+	-fx-text-fill: #ffffff;
+}
+
+.btn-style-stop{
+	-fx-border-width: 1.0;
+	-fx-border-color: #0082e5;
+	-fx-background-color : #0082e5;
+	-fx-font-size: 12px;
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
+	-fx-text-fill: #ffffff;
+}
+
+.setting-sound .label{
+	-fx-font-size: 15px;
+}
+.text-area {
+	text-area-background: #ffffff ;
+}
+
+.text-area-style-1 .content{
+	-fx-border-width: 0px;
+	-fx-border-color: #ffffff;
+	-fx-background-color: text-area-background ;
+	-fx-text-fill: #111111;
+	-fx-border-radius: 0px;
 }
 
 .btn-bottom{

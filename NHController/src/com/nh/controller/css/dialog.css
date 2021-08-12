@@ -9,7 +9,13 @@
 	-fx-padding: 0px;
 }
 
+.dialog-pane .button-bar .container {
+	-fx-padding: 0px;
+}
+
 .dialog-pane > .button-bar > .container {
 	-fx-padding: 0px;
 	-fx-background-color: #27293d;
 }
+
+

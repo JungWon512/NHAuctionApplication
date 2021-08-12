@@ -12,6 +12,7 @@ import com.nh.controller.controller.EntryListController;
 import com.nh.controller.controller.EntryPendingListController;
 import com.nh.controller.controller.LoginController;
 import com.nh.controller.controller.SettingController;
+import com.nh.controller.controller.SettingSoundController;
 import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.SpEntryInfo;
@@ -219,15 +220,17 @@ public class MoveStageUtil {
 
 		mDialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane();
+
 		dialogPane.getStylesheets().add(getApplicationClass().getResource("css/dialog.css").toExternalForm());
 //		dialog.initStyle(StageStyle.UNDECORATED);
 		
 		mDialog.setResizable(true);
 		mDialog.initModality(Modality.NONE);
 		mDialog.setDialogPane(dialogPane);
-		mDialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
 		
-		Node closeButton = mDialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+		mDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+		Node closeButton = mDialog.getDialogPane().lookupButton(ButtonType.CLOSE);
+		closeButton.managedProperty().bind(closeButton.visibleProperty());
 		closeButton.setVisible(false);
 
 		dialogPane.setContent(parent);
@@ -240,10 +243,38 @@ public class MoveStageUtil {
 			mDialog.close();
 			stage.getScene().getRoot().setEffect(null); // 뒷 배경 블러처리 remove
 			stage.getScene().getRoot().setDisable(false);
+			System.out.println("setOnCloseRequest");
 		});
 
 		mDialog.show();
 	}
+	
+	/**
+	 * @Description 경매 음성 설정 Dialog
+	 */
+	public void openSettingSoundDialog(Stage stage) {
+
+		if(mDialog != null && mDialog.isShowing()) {
+			return;
+		}
+		
+		try {
+
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("SettingSoundView.fxml"), getResourceBundle());
+
+			Parent parent = fxmlLoader.load();
+
+			SettingSoundController controller = fxmlLoader.getController();
+			controller.setStage(stage);
+			openDialog(stage, parent);
+
+			controller.initConfiguration();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	/**
 	 * dialog 종료
@@ -252,6 +283,8 @@ public class MoveStageUtil {
 		if(mDialog != null) {
 			if(mDialog.isShowing()) {
 				mDialog.close();
+				mDialog = null;
+				System.out.println("dismissDialog()");
 			}
 		}
 	}
@@ -292,8 +325,10 @@ public class MoveStageUtil {
 	 * @param newStage
 	 */
 	public void setBackStageDisableFalse(Stage backStage) {
-		backStage.getScene().getRoot().setEffect(null); // 뒷 배경 블러처리 remove
-		backStage.getScene().getRoot().setDisable(false);
+		if(backStage != null) {
+			backStage.getScene().getRoot().setEffect(null); // 뒷 배경 블러처리 remove
+			backStage.getScene().getRoot().setDisable(false);
+		}
 	}
 
 	/**
