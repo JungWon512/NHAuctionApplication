@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -18,7 +19,7 @@
 
 <BorderPane fx:id="mRootPane" maxHeight="1024.0" maxWidth="1280.0" minHeight="1024.0" minWidth="1280.0" prefHeight="1024.0" prefWidth="1280.0" styleClass="base-pane" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
    <top>
-      <GridPane BorderPane.alignment="CENTER">
+      <GridPane maxHeight="71.0" minHeight="71.0" prefHeight="71.0" BorderPane.alignment="CENTER">
         <columnConstraints>
           <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
@@ -71,128 +72,188 @@
    <center>
       <VBox minWidth="970.0" prefWidth="970.0" spacing="10.0" styleClass="base-contents" BorderPane.alignment="CENTER">
          <children>
-            <HBox>
+            <HBox maxHeight="140.0" minHeight="140.0" prefHeight="140.0">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
                <children>
-                  <ImageView fitHeight="110.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../resource/images/ic_logo.png" />
-                     </image>
-                  </ImageView>
-                  <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                  <VBox spacing="4.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <HBox minHeight="50.0" prefHeight="50.0" spacing="6.0" VBox.vgrow="ALWAYS">
+                        <GridPane maxHeight="60.0" minHeight="60.0" prefHeight="60.0" VBox.vgrow="ALWAYS">
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints hgrow="ALWAYS" percentWidth="65.0" />
+                              <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+                              <ColumnConstraints percentWidth="30.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
+                              <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
+                           </rowConstraints>
                            <children>
-                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="118.0" prefWidth="118.0" styleClass="contents-auction-info-column-style-1" text="경매일자" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-column-style-1" text="회차" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-column-style-1" text="구분" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-column-style-1" text="경매" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="148.0" prefWidth="148.0" styleClass="contents-auction-info-column-style-2" text="낙찰대기시간" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="230.0" prefWidth="230.0" styleClass="contents-auction-info-column-style-2" text="경매상태" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                           <VBox.margin>
-                              <Insets left="6.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox minHeight="54.0" prefHeight="54.0" spacing="6.0">
-                           <children>
-                              <Label fx:id="mAuctionInfoDateLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="118.0" prefWidth="118.0" styleClass="contents-auction-info-val" text="경매일자" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="mAuctionInfoRoundLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-val" text="회차" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="mAuctionInfoGubunLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-val" text="구분" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="mAuctionInfoNameLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-val" text="경매" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <HBox minWidth="148.0" prefWidth="148.0" spacing="6.0" styleClass="contents-auction-info-count-down" HBox.hgrow="ALWAYS">
+                              <HBox prefHeight="100.0" spacing="18.0" GridPane.columnIndex="1" GridPane.columnSpan="3">
                                  <children>
-                                    <Label fx:id="cnt_5" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
-                                    <Label fx:id="cnt_4" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
-                                    <Label fx:id="cnt_3" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
-                                    <Label fx:id="cnt_2" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
-                                    <Label fx:id="cnt_1" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
+                                    <CheckBox fx:id="mEntryNumCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="순번" userData="2" />
+                                    <CheckBox fx:id="mExhibitorCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="출하주" userData="2" />
+                                    <CheckBox fx:id="mGenderCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="성별" userData="2" />
+                                    <CheckBox fx:id="mMotherObjNumCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="혈통" userData="2" />
+                                    <CheckBox fx:id="mMaTimeCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="산차" userData="2" />
+                                    <CheckBox fx:id="mPasgQcnCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="계대" userData="2" />
+                                    <CheckBox fx:id="mWeightCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="중량" userData="2" />
+                                    <CheckBox fx:id="mLowPriceCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="최저가" userData="2" />
+                                    <CheckBox fx:id="mBrandNameCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="브랜드" userData="2" />
+                                    <CheckBox fx:id="mKpnCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="KPN" userData="2" />
                                  </children>
                               </HBox>
-                              <HBox minWidth="230.0" prefWidth="230.0" spacing="6.0" HBox.hgrow="ALWAYS">
+                              <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
-                                    <Label fx:id="mAuctionStateReadyLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state" text="대기" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="mBtnIntroSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="경매전 인삿말" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="mBtnBuyerSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="매수인 안내" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="mBtnGuideSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="안내멘트" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="mBtnEtc_1_Sound" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="예비1" />
+                                    <Button fx:id="mBtnEtc_2_Sound" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="예비2" />
+                                    <Button fx:id="mBtnEtc_3_Sound" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="예비3" />
+                                    <Button fx:id="mBtnEtc_4_Sound" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="예비4" />
+                                    <Button fx:id="mBtnEtc_5_Sound" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="예비5" />
+                                    <Button fx:id="mBtnEtc_6_Sound" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="예비6" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="3" GridPane.rowSpan="2">
+                                 <children>
+                                    <Button fx:id="mBtnSettingSound" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="음성설정" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="mBtnSave" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="저장" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="mBtnStopSound" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="음성중지" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="mBtnEntrySuccessList" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="낙찰결과" HBox.hgrow="ALWAYS" />
+                                 </children>
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </HBox>
+                           </children>
+                        </GridPane>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints maxWidth="6.0" minWidth="6.0" prefWidth="6.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="6.0" minHeight="6.0" prefHeight="6.0" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="76.0" pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="3">
+                                 <image>
+                                    <Image url="@../resource/images/ic_logo.png" />
+                                 </image>
+                              </ImageView>
+                              <HBox minHeight="30.0" prefHeight="30.0" spacing="6.0" GridPane.columnIndex="2">
+                                 <children>
+                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="118.0" prefWidth="118.0" styleClass="contents-auction-info-column-style-1" text="경매일자" HBox.hgrow="ALWAYS">
                                        <font>
-                                          <Font size="18.0" />
+                                          <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="mAuctionStateProgressLabel" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state" text="진행" HBox.hgrow="ALWAYS">
+                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-column-style-1" text="회차" HBox.hgrow="ALWAYS">
                                        <font>
-                                          <Font size="18.0" />
+                                          <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="mAuctionStateSuccessLabel" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state" text="낙찰" HBox.hgrow="ALWAYS">
+                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-column-style-1" text="구분" HBox.hgrow="ALWAYS">
                                        <font>
-                                          <Font size="18.0" />
+                                          <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="mAuctionStateFailLabel" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state" text="보류" HBox.hgrow="ALWAYS">
+                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-column-style-1" text="경매" HBox.hgrow="ALWAYS">
                                        <font>
-                                          <Font size="18.0" />
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="148.0" prefWidth="148.0" styleClass="contents-auction-info-column-style-2" text="낙찰대기시간" HBox.hgrow="ALWAYS">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="230.0" prefWidth="230.0" styleClass="contents-auction-info-column-style-2" text="경매상태" HBox.hgrow="ALWAYS">
+                                       <font>
+                                          <Font size="14.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </HBox>
+                              <HBox minHeight="40.0" prefHeight="40.0" spacing="6.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                 <children>
+                                    <Label fx:id="mAuctionInfoDateLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="118.0" prefWidth="118.0" styleClass="contents-auction-info-val" text="경매일자" HBox.hgrow="ALWAYS">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="mAuctionInfoRoundLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-val" text="회차" HBox.hgrow="ALWAYS">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="mAuctionInfoGubunLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-val" text="구분" HBox.hgrow="ALWAYS">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="mAuctionInfoNameLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-val" text="경매" HBox.hgrow="ALWAYS">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <HBox minWidth="148.0" prefWidth="148.0" spacing="6.0" styleClass="contents-auction-info-count-down" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label fx:id="cnt_5" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
+                                          <Label fx:id="cnt_4" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
+                                          <Label fx:id="cnt_3" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
+                                          <Label fx:id="cnt_2" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
+                                          <Label fx:id="cnt_1" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
+                                       </children>
+                                    </HBox>
+                                    <HBox minWidth="230.0" prefWidth="230.0" spacing="6.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label fx:id="mAuctionStateReadyLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state" text="대기" HBox.hgrow="ALWAYS">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="mAuctionStateProgressLabel" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state" text="진행" HBox.hgrow="ALWAYS">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="mAuctionStateSuccessLabel" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state" text="낙찰" HBox.hgrow="ALWAYS">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="mAuctionStateFailLabel" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state" text="보류" HBox.hgrow="ALWAYS">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </HBox>
                            </children>
-                           <VBox.margin>
-                              <Insets left="6.0" />
-                           </VBox.margin>
-                        </HBox>
+                        </GridPane>
                      </children>
                   </VBox>
                </children>
             </HBox>
             <VBox VBox.vgrow="ALWAYS">
                <children>
-                  <VBox minHeight="260.0" prefHeight="260.0">
+                  <VBox minHeight="240.0" prefHeight="240.0">
                      <children>
-                        <HBox styleClass="border-right">
+                        <HBox>
                            <children>
                               <VBox prefWidth="40.0">
                                  <children>
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="40.0" minHeight="60.0" minWidth="40.0" prefHeight="60.0" prefWidth="40.0" styleClass="contents-auction-info-column-style-3">
+                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="40.0" minHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="40.0" styleClass="contents-auction-info-column-style-3">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -227,7 +288,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <HBox minHeight="62.0" prefHeight="62.0">
+                  <HBox VBox.vgrow="ALWAYS">
                            <children>
                               <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" styleClass="current-auction-row" text="현재">
                                  <font>
@@ -345,10 +406,10 @@
             <Insets right="10.0" />
          </BorderPane.margin>
          <children>
-            <Label fx:id="mAuctionStateLabel" alignment="CENTER" maxHeight="110.0" maxWidth="1.7976931348623157E308" minHeight="110.0" prefHeight="110.0" styleClass="label-status" text="경매대기" VBox.vgrow="ALWAYS" />
+            <Label fx:id="mAuctionStateLabel" alignment="CENTER" maxHeight="110.0" maxWidth="1.7976931348623157E308" minHeight="110.0" prefHeight="110.0" styleClass="label-status" text="경매대기" />
             <Pane styleClass="bidding-user-info">
                <children>
-                  <TableView fx:id="mBiddingInfoTableView" focusTraversable="false" minHeight="514.0" mouseTransparent="true" prefHeight="514.0">
+                  <TableView fx:id="mBiddingInfoTableView" focusTraversable="false" minHeight="515.0" mouseTransparent="true" prefHeight="515.0">
                     <columns>
                       <TableColumn fx:id="mBiddingPriceColumn" editable="false" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" sortable="false" text="응찰금액" />
                       <TableColumn fx:id="mBiddingUserColumn" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="응찰자" />

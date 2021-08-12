@@ -41,6 +41,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -101,9 +102,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@FXML // 감가 기준 금액 / 횟수
 	private Label mDeprePriceLabel, mLowPriceChgNtLabel;
 
+	@FXML // 음성 선택 check-box
+	private CheckBox mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mMotherObjNumCheckBox, mMaTimeCheckBox, mPasgQcnCheckBox, mWeightCheckBox, mLowPriceCheckBox, mBrandNameCheckBox, mKpnCheckBox;
+
+	@FXML // 음성 멘트 버튼
+	private Button mBtnIntroSound, mBtnBuyerSound, mBtnGuideSound, mBtnEtc_1_Sound, mBtnEtc_2_Sound, mBtnEtc_3_Sound, mBtnEtc_4_Sound, mBtnEtc_5_Sound, mBtnEtc_6_Sound;
+
+	@FXML //음성설정 ,저장 ,음성중지 ,낙찰결과
+	private Button mBtnSettingSound, mBtnSave, mBtnStopSound, mBtnEntrySuccessList;
+
 	private List<Label> cntList = new ArrayList<Label>(); // 남은 시간 Bar list
 
-    public static int REMAINING_TIME_COUNT = 5; // 카운트다운 기준 시간
+	public static int REMAINING_TIME_COUNT = 5; // 카운트다운 기준 시간
 
 	private int mRemainingTimeCount = REMAINING_TIME_COUNT; // 카운트다운
 
@@ -179,9 +189,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 
-        // Setting
-        REMAINING_TIME_COUNT = Integer.parseInt(preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
-    }
+		// Setting
+		REMAINING_TIME_COUNT = Integer.parseInt(preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
+	}
 
 	/**
 	 * 테이블뷰 관련
@@ -344,8 +354,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	}
 
 	/**
-	 * 대기중인 출품 목록 갱신
-	 * 변경/추가된 데이터 서버 전달
+	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
 	 */
 	private void refreshWaitEntryDataList() {
 
@@ -405,7 +414,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		if (!CommonUtils.getInstance().isListEmpty(newDataList)) {
 			mWaitEntryInfoDataList.addAll(mRecordCount, newDataList);
 			mRecordCount += newDataList.size();
-		}else {
+		} else {
 			addLogItem("추기된 데이터 없음.");
 		}
 
@@ -543,16 +552,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 전체 보기
 	 */
 	public void openEntryListPopUp() {
-		
-		if(MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+
+		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
 			return;
 		}
-		
+
 		refreshWaitEntryDataList();
 
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoDataList();
 
-		MoveStageUtil.getInstance().openEntryListDialog(EntryDialogType.ENTRY_LIST ,mStage, dataList, new IntegerListener() {
+		MoveStageUtil.getInstance().openEntryListDialog(EntryDialogType.ENTRY_LIST, mStage, dataList, new IntegerListener() {
 
 			@Override
 			public void callBack(int value) {
@@ -593,17 +602,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 보류 목록 보기
 	 */
 	public void openEntryPendingListPopUp() {
-		
-		if(MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+
+		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
 			return;
 		}
 
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoPendingDataList();
 
-		MoveStageUtil.getInstance().openEntryListDialog(EntryDialogType.ENTRY_PENDING_LIST ,mStage, dataList, new IntegerListener() {
+		MoveStageUtil.getInstance().openEntryListDialog(EntryDialogType.ENTRY_PENDING_LIST, mStage, dataList, new IntegerListener() {
 			@Override
 			public void callBack(int value) {
-				
+
 				MoveStageUtil.getInstance().dismissDialog();
 
 				if (CommonUtils.getInstance().isListEmpty(dataList)) {
@@ -627,10 +636,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void openSettingDialog() {
 
-		if(MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
 			return;
 		}
-		
+
 		MoveStageUtil.getInstance().openSettingDialog(mStage);
 	}
 
@@ -653,11 +662,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_READY:
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 
-			//갱신 후 변경점 있으면 서버 전달.
+			// 갱신 후 변경점 있으면 서버 전달.
 			refreshWaitEntryDataList();
-			//경매 뷰 초기화
+			// 경매 뷰 초기화
 			setAuctionVariableState(mAuctionStatus.getState());
-			//시작
+			// 시작
 			onStartAuction();
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_START:
@@ -786,7 +795,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private void requestEntryData() {
 		// [경매회차조회] TEST!! 일단 경매정보 하나만 가져옴!!
 		// TODO: 경매정보 리스트 뿌리기
-		// List<AuctionRound> list = AuctionRoundMapperService.getInstance().getAllAuctionRoundData(CommonUtils.getInstance().getCurrentTime("yyyyMMdd")); // 실제사용
+		// List<AuctionRound> list =
+		// AuctionRoundMapperService.getInstance().getAllAuctionRoundData(CommonUtils.getInstance().getCurrentTime("yyyyMMdd"));
+		// // 실제사용
 		List<AuctionRound> list = AuctionRoundMapperService.getInstance().getAllAuctionRoundData("20210813"); // 테스트
 		this.auctionRound = list.get(0); // 테스트
 		preference.setString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, this.auctionRound.getNaBzplc()); // Setting Controller 에서 필요..
@@ -902,21 +913,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			case GlobalDefineCode.CONNECT_SUCCESS:
 				addLogItem(mResMsg.getString("msg.connection.success") + responseConnectionInfo.getEncodedMessage());
 				// Setting 정보 전송
-                // TODO: default value setting이랑 맞추기
-				EditSetting setting = new EditSetting(this.auctionRound.getNaBzplc(),
-                        preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "Y"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "Y"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"),
-                        preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"),
-			        	preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
-                        preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"),
-                        preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
+				// TODO: default value setting이랑 맞추기
+				EditSetting setting = new EditSetting(this.auctionRound.getNaBzplc(), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "Y"),
+						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
+						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
+						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
+						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
 				addLogItem(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
 				MoveStageUtil.getInstance().moveAuctionStage(mStage, mFxmlLoader);
 				break;
