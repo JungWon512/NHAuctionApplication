@@ -373,14 +373,21 @@ public class BaseAuctionController implements NettyControllable {
         }
 
         //응찰 로그 저장
+        // TODO: OSLP_NO, RG_SQNO, TRMN_AMNNO 확인 및 수정
 		AucEntrData aucEntrData = new AucEntrData();
 		aucEntrData.setNaBzplc(this.auctionRound.getNaBzplc());
 		aucEntrData.setAucObjDsc(this.auctionRound.getAucObjDsc());
 		aucEntrData.setAucDt(this.auctionRound.getAucDt());
+		aucEntrData.setOslpNo(bidding.getUserNo());
+		aucEntrData.setRgSqno("121212");
+        aucEntrData.setTrmnAmnno("111111111");
 		aucEntrData.setLvstAucPtcMnNo(bidding.getAuctionJoinNum());
 		aucEntrData.setAtdrAm(bidding.getPrice());
 		aucEntrData.setAtdrDtm(bidding.getBiddingTime());
 		aucEntrData.setAucPrgSq(bidding.getEntryNum());
+//<!--	OSLP_NO            decimal       not null comment '원표번호',-->
+//<!--	RG_SQNO            decimal       not null comment '등록일련번호',-->
+//<!--	TRMN_AMNNO         decimal(8)    not null comment '거래인관리번호',-->
 
 		int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
 

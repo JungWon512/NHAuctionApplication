@@ -43,6 +43,7 @@ public interface ConnectionInfoMapper {
 
     /**
      * 가축경매 참여자 정보 추가
+     * TODO: tb_la_is_mm_mwmn (중도메인테이블)에서 TRMN_AMNNO 컬럼에 관리인 번호 있는지 확인
      *
      * @param info 참여자 정보
      */

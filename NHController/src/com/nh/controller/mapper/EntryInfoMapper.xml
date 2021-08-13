@@ -63,8 +63,8 @@
         <result property="mAuctionResult" column="SEL_STS_DSC"/>
         <result property="mAuctionSucBidder" column="LVST_AUC_PTC_MN_NO"/>
         <result property="mAuctionBidPrice" column="SRA_SBID_AM"/>
-          
-        
+
+
     </resultMap>
 
 	<!-- tb_la_is_mm_indv -->
@@ -105,15 +105,15 @@
 		${alias}.LVST_AUC_PTC_MN_NO,
 		${alias}.SRA_SBID_AM
 	</sql>
-	
+
 	<!-- tb_la_is_mm_fhs -->
 	<sql id="fhsColumn">
 		${alias}.FTSNM
 	</sql>
-	
+
     <!-- 출품 데이터 추출 -->
     <select id="selectAllEntry" resultMap="entryInfoMap" resultType="linkedHashMap">
-		SELECT 
+		SELECT
 			<include refid="indvColumn"><property name="alias" value="A"/></include>,
 			<include refid="sogCowColumn"><property name="alias" value="B"/></include>,
 			<include refid="fhsColumn"><property name="alias" value="C"/></include>
@@ -134,21 +134,21 @@
 		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('S')">
 			AND B.SEL_STS_DSC = '22'
 		</if>
-		
+
 		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('P')">
 			AND B.SEL_STS_DSC = '23'
 		</if>
-		
+
 		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('SP')">
 			AND B.SEL_STS_DSC >= '22'
 		</if>
 
 		ORDER BY B.AUC_PRG_SQ ASC;
     </select>
-    
+
       <!-- 가격 정보 업데이트-->
 	<update id="updateEntryPrice" parameterType="EntryInfo">
-		UPDATE	TB_LA_IS_MH_SOG_COW 
+		UPDATE	TB_LA_IS_MH_SOG_COW
 		   SET	LOWS_SBID_LMT_AM = #{mLowPrice},
 		   		LWPR_CHG_NT = #{mLwprChgNt},
 		   		LSCHG_DTM = NOW(),
@@ -158,10 +158,10 @@
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
 		   AND	AUC_DT		= #{mAucDt}
     </update>
-    
+
   	<!-- 경매 상태 업데이트-->
     <update id="updateEntryState" parameterType="EntryInfo">
-		UPDATE	TB_LA_IS_MH_SOG_COW 
+		UPDATE	TB_LA_IS_MH_SOG_COW
 		   SET	SEL_STS_DSC = #{mAuctionResult},
 		   		LSCHG_DTM = NOW(),
 		   		LS_CMENO	= #{mLsCmeNo}
@@ -170,10 +170,10 @@
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
 		   AND	AUC_DT		= #{mAucDt}
     </update>
-    
+
 	<!-- 경매 결과 업데이트-->
      <update id="updateAuctionResult" parameterType="AuctionResult">
-		UPDATE	TB_LA_IS_MH_SOG_COW 
+		UPDATE	TB_LA_IS_MH_SOG_COW
 		   SET	SEL_STS_DSC = #{mResultCode},
 		  		LVST_AUC_PTC_MN_NO = #{mSuccessAuctionJoinNum},
 		  		SRA_SBID_AM = #{mSuccessBidPrice},
@@ -185,14 +185,17 @@
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
 		   AND	AUC_DT		= #{mAucDt}
     </update>
-    
+
 
 	<!-- 응찰 내역 업데이트-->
-	<insert id="insertBiddingHistory" parameterType="list">
-		INSERT INTO AUCTION.TB_LA_IS_MH_AUC_ENTR(
+	<insert id="insertBiddingHistory" parameterType="EntryData">
+		INSERT INTO AUCTION.tb_la_is_mh_atdr_log(
 			NA_BZPLC,
 			AUC_OBJ_DSC,
 			AUC_DT,
+			OSLP_NO,
+			RG_SQNO,
+			TRMN_AMNNO,
 			LVST_AUC_PTC_MN_NO,
 			ATDR_AM,
 			ATDR_DTM,
@@ -202,11 +205,14 @@
 			#{naBzplc},
 			#{aucObjDsc},
 			#{aucDt},
+			#{oslpNo},
+            #{rgSqno},
+            #{trmnAmnno},
 			#{lvstAucPtcMnNo},
 			#{atdrAm},
 			#{atdrDtm},
 			#{aucPrgSq}
 		)
 	</insert>
-    
+
 </mapper>

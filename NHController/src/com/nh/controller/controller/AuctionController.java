@@ -975,7 +975,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
 
 		if (isUp) {
-			lowPriceCnt += -1;
+			lowPriceCnt -= 1;
 		} else {
 			lowPriceCnt += 1;
 		}

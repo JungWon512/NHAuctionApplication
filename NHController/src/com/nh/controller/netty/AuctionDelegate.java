@@ -7,6 +7,7 @@ import com.nh.controller.model.SpEntryInfo;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionReponseSession;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.models.*;
 import com.nh.share.interfaces.NettySendable;
 
@@ -57,16 +58,19 @@ public class AuctionDelegate {
     }
 
     /**
-     * @param nettySendable 접속자 정보
+     * @param responseConnectionInfo 접속자 정보
      * @Description 접속자 정보 전송: DB 조회한 사용자 정보
      */
-    public String onSendConnectionInfo(NettySendable nettySendable) {
-        return sendMessage(nettySendable);
+    public String onSendConnectionInfo(ResponseConnectionInfo responseConnectionInfo) {
+        return sendMessage(responseConnectionInfo);
     }
 
-
-    public String onSendSettingInfo(NettySendable nettySendable) {
-        return sendMessage(nettySendable);
+    /**
+     * @param editSetting 셋팅 정보
+     * @Description 셋팅 정보 전송
+     */
+    public String onSendSettingInfo(EditSetting editSetting) {
+        return sendMessage(editSetting);
     }
 
     /**
