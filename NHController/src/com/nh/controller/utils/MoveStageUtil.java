@@ -13,6 +13,7 @@ import com.nh.controller.controller.EntryPendingListController;
 import com.nh.controller.controller.LoginController;
 import com.nh.controller.controller.SettingController;
 import com.nh.controller.controller.SettingSoundController;
+import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.SpEntryInfo;
@@ -154,7 +155,7 @@ public class MoveStageUtil {
 			controller.setStage(stage);
 
 			openDialog(stage, parent);
-
+			setStageDisable(stage);
 			controller.initConfiguration();
 
 		} catch (IOException e) {
@@ -200,7 +201,7 @@ public class MoveStageUtil {
 			controller.setListener(listener);
 
 			openDialog(stage, parent);
-
+			setStageDisable(stage);
 			controller.initConfiguration();
 
 		} catch (IOException e) {
@@ -236,15 +237,15 @@ public class MoveStageUtil {
 		dialogPane.setContent(parent);
 		mDialog.initOwner(stage);
 
-		stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
-		stage.getScene().getRoot().setDisable(true);
-		Window window = mDialog.getDialogPane().getScene().getWindow();
-		window.setOnCloseRequest(e -> {
-			mDialog.close();
-			stage.getScene().getRoot().setEffect(null); // 뒷 배경 블러처리 remove
-			stage.getScene().getRoot().setDisable(false);
-			System.out.println("setOnCloseRequest");
-		});
+//		stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
+//		stage.getScene().getRoot().setDisable(true);
+//		Window window = mDialog.getDialogPane().getScene().getWindow();
+//		window.setOnCloseRequest(e -> {
+//			mDialog.close();
+//			stage.getScene().getRoot().setEffect(null); // 뒷 배경 블러처리 remove
+//			stage.getScene().getRoot().setDisable(false);
+//			System.out.println("setOnCloseRequest");
+//		});
 
 		mDialog.show();
 	}
@@ -252,7 +253,7 @@ public class MoveStageUtil {
 	/**
 	 * @Description 경매 음성 설정 Dialog
 	 */
-	public void openSettingSoundDialog(Stage stage) {
+	public void openSettingSoundDialog(Stage stage,BooleanListener listener) {
 
 		if(mDialog != null && mDialog.isShowing()) {
 			return;
@@ -266,7 +267,10 @@ public class MoveStageUtil {
 
 			SettingSoundController controller = fxmlLoader.getController();
 			controller.setStage(stage);
+			controller.setListener(listener);
 			openDialog(stage, parent);
+			
+			setStageDisable(stage,listener);
 
 			controller.initConfiguration();
 
@@ -306,18 +310,39 @@ public class MoveStageUtil {
 	 * @param backStage
 	 * @param newStage
 	 */
-	public void setStageDisable(Stage backStage, Stage newStage) {
+	public void setStageDisable(Stage backStage) {
 
 		backStage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
 		backStage.getScene().getRoot().setDisable(true);
 
-		Window window = newStage.getScene().getWindow();
+		Window window = mDialog.getDialogPane().getScene().getWindow();
 		window.setOnCloseRequest(e -> {
+			System.out.println("setStageDisable");
 			setBackStageDisableFalse(backStage);
 		});
 
 	}
 
+	/**
+	 * 이전 Stage Disable, Blower 처리 신규 Stage 닫기 처리
+	 * 
+	 * @param backStage
+	 * @param newStage
+	 */
+	public void setStageDisable(Stage backStage, BooleanListener listener) {
+
+		backStage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
+		backStage.getScene().getRoot().setDisable(true);
+
+		Window window = mDialog.getDialogPane().getScene().getWindow();
+		window.setOnCloseRequest(e -> {
+			System.out.println("setStageDisable");
+			listener.callBack(true);
+			setBackStageDisableFalse(backStage);
+		});
+
+	}
+	
 	/**
 	 * 이전 Stage Disable
 	 * 

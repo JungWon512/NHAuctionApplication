@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
@@ -51,6 +52,8 @@ public class SettingSoundController implements Initializable {
 
 	// 사운드 클래스
 	private SoundUtil mSoundUtil = new SoundUtil();
+	
+	private BooleanListener mBooleanListener = null;
 
 	/**
 	 * setStage
@@ -59,6 +62,14 @@ public class SettingSoundController implements Initializable {
 	 */
 	public void setStage(Stage stage) {
 		mStage = stage;
+	}
+	
+	/**
+	 * 콜백 리스너
+	 * @param listener
+	 */
+	public void setListener(BooleanListener listener) {
+		mBooleanListener = listener;
 	}
 
 	/**
@@ -174,7 +185,7 @@ public class SettingSoundController implements Initializable {
 	}
 
 	/**
-	 * 내부 저장된 메세지 가져옴.
+	 * 메세지 저장
 	 */
 	private void setSaveSharedMessage() {
 		
@@ -208,6 +219,7 @@ public class SettingSoundController implements Initializable {
 	 */
 	private void close() {
 		MoveStageUtil.getInstance().dismissDialog();
+		mBooleanListener.callBack(true);
 		MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
 	}
 

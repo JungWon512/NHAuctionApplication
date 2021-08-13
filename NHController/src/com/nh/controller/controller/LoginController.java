@@ -128,7 +128,6 @@ public class LoginController implements Initializable {
 		} else {
 			mLogger.debug("설치 후 첫 실행 아님.");
 		}
-
 	}
 
 }

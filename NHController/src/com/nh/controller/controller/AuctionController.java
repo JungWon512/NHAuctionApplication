@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AuctionRound;
@@ -123,7 +124,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	// 사운드 클래스
 	private SoundUtil mEntryInfoSound = new SoundUtil();
 	// 사운드 클래스
-	private SoundUtil mMessageSound = new SoundUtil();
+	private SoundUtil mAuctionInfoMessageSound = new SoundUtil();
 
 	/**
 	 * setStage
@@ -160,11 +161,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		requestEntryData();
 		// 경매 정보
 		setAuctionInfo();
-
-//		initFinishedEntryDataList();
-//		initWaitEntryDataList();
-//		initBiddingInfoDataList();
-//		initConnectionUserDataList();
 	}
 
 	/**
@@ -194,10 +190,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
-		mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo());
-		mBtnStopSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
-		mBtnEntrySuccessList.setOnMouseClicked(event -> openSettingSoundDialog(event));
-	
+		mBtnEntrySuccessList.setOnMouseClicked(event -> openEntryListPopUp());
+		//mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단 UI 표시 숨김.
+
+		mBtnStopSound.setOnMouseClicked(event -> mAuctionInfoMessageSound.stopSound());
+		mBtnIntroSound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(0));
+		mBtnBuyerSound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(1));
+		mBtnGuideSound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(2));
+		mBtnEtc_1_Sound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(6));
+		mBtnEtc_2_Sound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(7));
+		mBtnEtc_3_Sound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(8));
+		mBtnEtc_4_Sound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(9));
+		mBtnEtc_5_Sound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(10));
+		mBtnEtc_6_Sound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(11));
+
 		// Setting
 		REMAINING_TIME_COUNT = Integer.parseInt(preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
 	}
@@ -271,6 +277,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void initParsingSharedData() {
 
+		//메인 상단 체크박스 [S]
 		mEntryNumCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER,true));
 		mExhibitorCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR,true));
 		mGenderCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_GENDER,true));
@@ -303,8 +310,39 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mLowPriceCheckBox.setOnAction(mCheckBoxEventHandler);
 		mBrandNameCheckBox.setOnAction(mCheckBoxEventHandler);
 		mKpnCheckBox.setOnAction(mCheckBoxEventHandler);
+		//메인 상단 체크박스 [E]
+
+		//메세지 버튼 값 가져옴.
+		initParsingSoundDataList();
 	}
 
+	
+	/**
+	 * 내부 저장된 음성 메세지 가져옴.
+	 */
+	private List<String> initParsingSoundDataList() {
+
+		// 사운드 텍스트 저장 리스트.
+		List<String> soundDataList = new ArrayList<String>();
+
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_USE, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, ""));
+		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, ""));
+
+		mAuctionInfoMessageSound.setSoundDataList(soundDataList);
+		
+		return soundDataList;
+	}
+	
 	/**
 	 * 경매 정보
 	 */
@@ -605,6 +643,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
+		if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+			return;
+		}
+
 		refreshWaitEntryDataList();
 
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoDataList();
@@ -689,7 +731,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		MoveStageUtil.getInstance().openSettingSoundDialog(mStage);
+		MoveStageUtil.getInstance().openSettingSoundDialog(mStage,new BooleanListener() {
+			
+			@Override
+			public void callBack(Boolean isRefresh) {
+				
+				mLogger.debug("openSettingSoundDialog ");
+				
+				initParsingSoundDataList();
+			}
+		});
 	}
 
 	/**
@@ -726,7 +777,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_READY:
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
-
+		case GlobalDefineCode.AUCTION_STATUS_PASS:
 			// 갱신 후 변경점 있으면 서버 전달.
 			refreshWaitEntryDataList();
 			// 경매 뷰 초기화
@@ -757,7 +808,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_READY:
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
-			
+		case GlobalDefineCode.AUCTION_STATUS_PASS:
 			//사운드 시작
 			mEntryInfoSound.playSound(0);
 
@@ -817,14 +868,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //			addFinishedTableViewItem(mCurrentSpEntryInfo); // 강제 유찰 완료상태에 넣어야되면 주석해제~
 
 			// 낙유찰 화면 딜레이 2초 후 경매 대기 전환
-			PauseTransition pauseTransition = new PauseTransition(Duration.millis(2000));
-			pauseTransition.setOnFinished(event -> {
-				selectIndexWaitTable(1, false);
-				// 경매 대기
-				setAuctionStatus(GlobalDefineCode.AUCTION_STATUS_READY);
-				setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
-			});
-			pauseTransition.play();
+//			PauseTransition pauseTransition = new PauseTransition(Duration.millis(2000));
+//			pauseTransition.setOnFinished(event -> {
+//				selectIndexWaitTable(1, false);
+//				// 경매 대기
+//				setAuctionStatus(GlobalDefineCode.AUCTION_STATUS_PASS);
+//				setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_PASS);
+//			});
+//			pauseTransition.play();
 			break;
 		}
 	}
@@ -1136,6 +1187,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// ENTER 경매완료 css 적용
 				CommonUtils.getInstance().addStyleClass(mBtnEnter, "btn-auction-stop");
 
+				//전체보기 비활성화
+				mBtnF4.setDisable(true);
+				//보류보기 비활성화
+				mBtnF5.setDisable(true);
+				
 				// 강제 낙찰 버튼 활성화
 				mBtnF6.setDisable(false);
 				// 강제 유찰 버튼 활성화
@@ -1157,6 +1213,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnDownPrice.setDisable(true);
 
 				break;
+			case GlobalDefineCode.AUCTION_STATUS_PASS:
 			case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 
 				// ENTER 경매완료 -> 경매시작 으로 변경
@@ -1171,6 +1228,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// 가격 상승,다운 활성화
 				mBtnUpPrice.setDisable(false);
 				mBtnDownPrice.setDisable(false);
+
+				//전체보기 비활성화
+				mBtnF4.setDisable(false);
+				//보류보기 비활성화
+				mBtnF5.setDisable(false);
 
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_FINISH:
