@@ -355,6 +355,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mAuctionInfoGubunLabel.setText("큰소경매");
 		mAuctionInfoNameLabel.setText("89두");
 		mHeaderAucInfoLabel.setText(auctionDate + "- " + this.auctionRound.getQcn() + "회차");
+		
+		SettingApplication.getInstance().setAuctionObjDsc(this.auctionRound.getAucObjDsc());
 	}
 
 	/**
@@ -765,12 +767,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
 			return;
 		}
+		addLogItem("####11 hoho : " +SettingApplication.getInstance().isUseReAuction());
 
 		MoveStageUtil.getInstance().openSettingDialog(mStage,new BooleanListener() {
 			
 			@Override
 			public void callBack(Boolean isClose) {
 				dismissShowingDialog();
+				//환경설정 저장 후 값들 재설정
+				SettingApplication.getInstance().initSharedData();
 			}
 		});
 	}
@@ -963,7 +968,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void onUpPrice(MouseEvent event) {
 		System.out.println("예정가 높이기");
-		int upPrice = SettingApplication.getInstance().getInfo().getCowUpperLimitPrice();
+		int upPrice = SettingApplication.getInstance().getCowLowerLimitPrice();
 		setLowPrice(upPrice, true);
 	}
 
@@ -974,8 +979,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void onDownPrice(MouseEvent event) {
 		System.out.println("예정가 낮추기");
-		int lowPrice = SettingApplication.getInstance().getInfo().getCowLowerLimitPrice() * -1;
+		int lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice() * -1;
 		setLowPrice(lowPrice, false);
+		
 	}
 
 	/**
@@ -1394,8 +1400,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mLowPriceChgNtLabel.setText(mCurrentSpEntryInfo.getLwprChgNt().getValue());
 			mCurWeightLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getWeight().getValue())));
 
-			int price = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getLowPrice().getValue(), SettingApplication.getInstance().getInfo().getBaseUnit());
-			int bidPrice = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getAuctionBidPrice().getValue(), SettingApplication.getInstance().getInfo().getBaseUnit());
+			int price = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getLowPrice().getValue(), SettingApplication.getInstance().getBaseUnit());
+			int bidPrice = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getAuctionBidPrice().getValue(), SettingApplication.getInstance().getBaseUnit());
 
 			mCurLowPriceLabel.setText(String.format(mResMsg.getString("str.price"), price));
 			mCurSuccessPriceLabel.setText(String.format(mResMsg.getString("str.price"), bidPrice));

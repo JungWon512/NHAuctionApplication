@@ -88,6 +88,9 @@ public class LoginController implements Initializable {
 
 	}
 
+	/**
+	 * 첫 실행- 내부 저장
+	 */
 	private void initSharedConfigration() {
 
 		boolean isFirstApplication = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, true);

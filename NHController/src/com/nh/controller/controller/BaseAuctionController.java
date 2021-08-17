@@ -485,7 +485,7 @@ public class BaseAuctionController implements NettyControllable {
             auctionResult.setSuccessBidder(bidder.getUserNo().getValue());
             auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
             auctionResult.setSuccessBidPrice(bidder.getPrice().getValue());
-            int priceUpr = CommonUtils.getInstance().getBaseUnitDivision(bidder.getPrice().getValue(), SettingApplication.getInstance().getInfo().getBaseUnit());
+            int priceUpr = CommonUtils.getInstance().getBaseUnitDivision(bidder.getPrice().getValue(), SettingApplication.getInstance().getBaseUnit());
             auctionResult.setSuccessBidUpr(Integer.toString(priceUpr));
         } else {
             // 유찰&보류

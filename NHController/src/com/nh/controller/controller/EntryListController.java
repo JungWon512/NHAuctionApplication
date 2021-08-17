@@ -159,7 +159,7 @@ public class EntryListController implements Initializable {
 	 */
 	public void onDownPrice(MouseEvent event) {
 		System.out.println("예정가 낮추기");
-		int lowPrice = SettingApplication.getInstance().getInfo().getCowLowerLimitPrice() * -1;
+		int lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice() * -1;
 	}
 	
 	/**
