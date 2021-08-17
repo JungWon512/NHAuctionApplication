@@ -90,7 +90,7 @@ public class LoginController implements Initializable {
 
 	private void initSharedConfigration() {
 
-		boolean isFirstApplication = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATIOIN, true);
+		boolean isFirstApplication = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, true);
 
 		if (isFirstApplication) {
 			mLogger.debug("설치 후 첫 실행");
@@ -124,7 +124,7 @@ public class LoginController implements Initializable {
 			// [E] 경매 음성 메세지 기본 설정
 			
 			// 첫실행 후 false
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATIOIN, false);
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, false);
 		} else {
 			mLogger.debug("설치 후 첫 실행 아님.");
 		}

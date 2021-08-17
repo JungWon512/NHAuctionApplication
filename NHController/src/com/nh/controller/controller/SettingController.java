@@ -348,14 +348,10 @@ public class SettingController implements Initializable {
     private void setToggleGroups() {
         getToggleTypes();
         boardToggleGroup.selectedToggleProperty().
-                addListener((observableValue, oldValue, newValue) -> {
-                    boardToggleType = newValue.getUserData().toString().trim();
-                });
+                addListener((observableValue, oldValue, newValue) -> boardToggleType = newValue.getUserData().toString().trim());
 
         pdpToggleGroup.selectedToggleProperty().
-                addListener((observableValue, oldValue, newValue) -> {
-                    pdpToggleType = newValue.getUserData().toString().trim();
-                });
+                addListener((observableValue, oldValue, newValue) -> pdpToggleType = newValue.getUserData().toString().trim());
     }
 
     /**

@@ -34,6 +34,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -54,6 +55,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 
 public class AuctionController extends BaseAuctionController implements Initializable {
@@ -120,7 +122,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private int mRemainingTimeCount = REMAINING_TIME_COUNT; // 카운트다운
 
 	private final SharedPreference preference = new SharedPreference();
-	
+
 	// 사운드 클래스
 	private SoundUtil mEntryInfoSound = new SoundUtil();
 	// 사운드 클래스
@@ -288,7 +290,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mLowPriceCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE,true));
 		mBrandNameCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_BRAND,true));
 		mKpnCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_KPN,true));
-		
+
 		mEntryNumCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER);
 		mExhibitorCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR);
 		mGenderCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_GENDER);
@@ -316,7 +318,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		initParsingSoundDataList();
 	}
 
-	
+
 	/**
 	 * 내부 저장된 음성 메세지 가져옴.
 	 */
@@ -339,10 +341,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, ""));
 
 		mAuctionInfoMessageSound.setSoundDataList(soundDataList);
-		
+
 		return soundDataList;
 	}
-	
+
 	/**
 	 * 경매 정보
 	 */
@@ -720,24 +722,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		});
 	}
-	
+
 	/**
 	 * 사운드 메세지 설정
 	 * @param event
 	 */
 	public void openSettingSoundDialog(MouseEvent event) {
-		
+
 		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
 			return;
 		}
 
 		MoveStageUtil.getInstance().openSettingSoundDialog(mStage,new BooleanListener() {
-			
+
 			@Override
 			public void callBack(Boolean isRefresh) {
-				
+
 				mLogger.debug("openSettingSoundDialog ");
-				
+
 				initParsingSoundDataList();
 			}
 		});
@@ -754,9 +756,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		MoveStageUtil.getInstance().openSettingDialog(mStage);
 	}
-	
+
 	private void saveMainSoundEntryInfo() {
-		
+
 	}
 
 	/**
@@ -1191,7 +1193,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnF4.setDisable(true);
 				//보류보기 비활성화
 				mBtnF5.setDisable(true);
-				
+
 				// 강제 낙찰 버튼 활성화
 				mBtnF6.setDisable(false);
 				// 강제 유찰 버튼 활성화
@@ -1378,12 +1380,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			mCurLowPriceLabel.setText(String.format(mResMsg.getString("str.price"), price));
 			mCurSuccessPriceLabel.setText(String.format(mResMsg.getString("str.price"), bidPrice));
-	
+
 			setSoundData(currentEntryInfo);
 		});
 	}
-	
-	
+
+
 	private void setSoundData(SpEntryInfo spEntryInfo) {
 
 		// 사운드 텍스트 저장 리스트.
@@ -1391,7 +1393,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		StringBuffer entrySoundContent = new StringBuffer();
 		 String EMPTY_SPACE = " ";
-				
+
 		if(mEntryNumCheckBox.isSelected()) {
 			entrySoundContent.append(spEntryInfo.getEntryNum().getValue());
 		}
@@ -1431,7 +1433,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			entrySoundContent.append(EMPTY_SPACE);
 			entrySoundContent.append(spEntryInfo.getKpn().getValue());
 		}
-		
+
 		soundDataList.add(entrySoundContent.toString());
 		mEntryInfoSound.setSoundDataList(soundDataList);
 	}
@@ -1566,7 +1568,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						if (mWaitTableView.isDisable()) {
 							return;
 						}
-						
+
 						if (mWaitTableView.getSelectionModel().getSelectedIndex() > mRecordCount) {
 							mWaitTableView.getSelectionModel().select(mRecordCount - 2);
 							mWaitTableView.scrollTo(mRecordCount - 1);
@@ -1704,11 +1706,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					int reValue = 0;
 
-					if (isPrice) {
-						reValue = CommonUtils.getInstance().getBaseUnitDivision(value, SettingApplication.getInstance().getInfo().getBaseUnit());
-					} else {
+					// 응찰금액 기준 만원 적용시 주석 해제
+//					if (isPrice) {
+//						reValue = CommonUtils.getInstance().getBaseUnitDivision(value, SettingApplication.getInstance().getInfo().getBaseUnit());
+//					} else {
 						reValue = Integer.parseInt(value);
-					}
+//					}
 					setText(CommonUtils.getInstance().getNumberFormatComma(reValue));
 				} else {
 					setText("");

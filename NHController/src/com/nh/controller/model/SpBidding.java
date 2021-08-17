@@ -48,9 +48,9 @@ public class SpBidding implements FromAuctionCommon, Serializable, Comparable<Sp
         entryNum = new SimpleStringProperty(bidding.getEntryNum());
         isNewBid = new SimpleStringProperty(bidding.getIsNewBid());
         biddingTime = new SimpleStringProperty(bidding.getBiddingTime());
-        //기준금액 적용
-        int divisionPrice = CommonUtils.getInstance().getBaseUnitDivision(bidding.getPrice(), SettingApplication.getInstance().getInfo().getBaseUnit());
-        price = new SimpleStringProperty(Integer.toString(divisionPrice));
+        // 기준금액 적용 필요시 주석 해제
+//        int divisionPrice = CommonUtils.getInstance().getBaseUnitDivision(bidding.getPrice(), SettingApplication.getInstance().getInfo().getBaseUnit());
+        price = new SimpleStringProperty(bidding.getPrice());
     }
 
     public StringProperty getAuctionHouseCode() {

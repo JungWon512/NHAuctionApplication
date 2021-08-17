@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,6 +17,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.nh.controller.utils.GlobalDefine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,10 +191,10 @@ public class BaseAuctionController implements NettyControllable {
     @Override
     public void onBidding(Bidding bidding) {
         addLogItem(mResMsg.getString("msg.auction.get.bidding") + bidding.getEncodedMessage());
-        
-        if(bidding.getAuctionJoinNum() == null || bidding.getPrice() == null 
-        		|| bidding.getAuctionJoinNum().equals("") || bidding.getPrice().equals("")) {
-        	return;
+
+        if (bidding.getAuctionJoinNum() == null || bidding.getPrice() == null
+                || bidding.getAuctionJoinNum().equals("") || bidding.getPrice().equals("")) {
+            return;
         }
 
         setBidding(bidding);
@@ -373,30 +376,28 @@ public class BaseAuctionController implements NettyControllable {
         }
 
         //응찰 로그 저장
-        // TODO: OSLP_NO, RG_SQNO, TRMN_AMNNO 확인 및 수정
-		AucEntrData aucEntrData = new AucEntrData();
-		aucEntrData.setNaBzplc(this.auctionRound.getNaBzplc());
-		aucEntrData.setAucObjDsc(this.auctionRound.getAucObjDsc());
-		aucEntrData.setAucDt(this.auctionRound.getAucDt());
-		aucEntrData.setOslpNo(bidding.getUserNo());
-		aucEntrData.setRgSqno("121212");
-        aucEntrData.setTrmnAmnno("111111111");
-		aucEntrData.setLvstAucPtcMnNo(bidding.getAuctionJoinNum());
-		aucEntrData.setAtdrAm(bidding.getPrice());
-		aucEntrData.setAtdrDtm(bidding.getBiddingTime());
-		aucEntrData.setAucPrgSq(bidding.getEntryNum());
+        // TODO: OSLP_NO, RG_SQNO 확인 및 수정
+        AucEntrData aucEntrData = new AucEntrData();
+        aucEntrData.setNaBzplc(this.auctionRound.getNaBzplc());
+        aucEntrData.setAucObjDsc(this.auctionRound.getAucObjDsc());
+        aucEntrData.setAucDt(this.auctionRound.getAucDt());
+        aucEntrData.setOslpNo(bidding.getUserNo());
+        aucEntrData.setRgSqno("121212");
+        aucEntrData.setTrmnAmnno(bidding.getUserNo());
+        aucEntrData.setLvstAucPtcMnNo(bidding.getAuctionJoinNum());
+        aucEntrData.setAtdrAm(bidding.getPrice());
+        aucEntrData.setAtdrDtm(LocalDateTime.parse(bidding.getBiddingTime(), DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+        aucEntrData.setAucPrgSq(bidding.getEntryNum());
 //<!--	OSLP_NO            decimal       not null comment '원표번호',-->
 //<!--	RG_SQNO            decimal       not null comment '등록일련번호',-->
-//<!--	TRMN_AMNNO         decimal(8)    not null comment '거래인관리번호',-->
 
-		int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
+        int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
 
-		if(resultValue > 0) {
-			addLogItem("응찰 내역 저장 완료 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
-		}else {
-			addLogItem("응찰 내역 저장 실패 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
-		}
-
+        if (resultValue > 0) {
+            addLogItem("응찰 내역 저장 완료 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
+        } else {
+            addLogItem("응찰 내역 저장 실패 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
+        }
     }
 
     /**
@@ -440,7 +441,7 @@ public class BaseAuctionController implements NettyControllable {
 
             // 최저가
             int startPrice = Integer.parseInt(entryInfo.getLowPrice().getValue());
-            
+
             // 응찰 금액이 최저가와 같거나 큰 경우 낙찰
             if (Integer.parseInt(biddingUser.getPrice().getValue()) >= startPrice) {
                 isSuccess = true;
@@ -494,12 +495,12 @@ public class BaseAuctionController implements NettyControllable {
             auctionResult.setSuccessBidPrice("0");
             auctionResult.setSuccessBidUpr("0");
         }
-		
+
         final int resultValue = EntryInfoMapperService.getInstance().updateAuctionResult(auctionResult);
 
-        if(resultValue > 0) {
-        	updateAuctionStateInfo(mAuctionStatus.getState(), isSuccess, bidder);
-        	// 낙유찰 결과 전송
+        if (resultValue > 0) {
+            updateAuctionStateInfo(mAuctionStatus.getState(), isSuccess, bidder);
+            // 낙유찰 결과 전송
             addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
         }
 
@@ -626,7 +627,7 @@ public class BaseAuctionController implements NettyControllable {
 
                 for (int i = 0; i < biddingList.size(); i++) {
                     logContent.append(ENTER_LINE);
-                    String user = biddingList.get(i).getAuctionJoinNum().getValue() + "(" +biddingList.get(i).getUserNo().getValue()+ ")" ;
+                    String user = biddingList.get(i).getAuctionJoinNum().getValue() + "(" + biddingList.get(i).getUserNo().getValue() + ")";
                     String rankUser = String.format(mResMsg.getString("log.auction.result.rank"), Integer.toString((i + 1)), user);
                     String price = String.format(mResMsg.getString("log.auction.result.price"), biddingList.get(i).getPriceInt()) + EMPTY_SPACE + CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(biddingList.get(i).getBiddingTime().getValue());
                     logContent.append(rankUser + EMPTY_SPACE + price);
@@ -650,8 +651,8 @@ public class BaseAuctionController implements NettyControllable {
                 for (SpBidding disBidding : distintListData) {
 
                     logContent.append(ENTER_LINE);
-              
-                    String user = disBidding.getAuctionJoinNum().getValue() + "(" +disBidding.getUserNo().getValue()+ ")" ;
+
+                    String user = disBidding.getAuctionJoinNum().getValue() + "(" + disBidding.getUserNo().getValue() + ")";
                     logContent.append(String.format(mResMsg.getString("log.auction.result.before.bidder"), user));
                     logContent.append(ENTER_LINE);
 
@@ -716,7 +717,7 @@ public class BaseAuctionController implements NettyControllable {
      */
     protected void addLogItem(String str) {
         if (!str.isEmpty()) {
-        	mLogger.debug("Log : " + str);
+            mLogger.debug("Log : " + str);
         }
     }
 
