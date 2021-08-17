@@ -108,6 +108,16 @@ public class SharedPreference {
 	public static final String PREFERENCE_SETTING_LOWER_FATTENING_TEXT = "PREFERENCE_SETTING_LOWER_FATTENING_TEXT";
 	public static final String PREFERENCE_SETTING_LOWER_BREEDING_TEXT = "PREFERENCE_SETTING_LOWER_BREEDING_TEXT";
 	// 경매 응찰 프로그램 환경설정 [END]
+	
+	// --- 동가 재경매 횟수 , 체크박스 ---
+	public static final String PREFERENCE_SETTING_RE_AUCTION_COUNT = "PREFERENCE_SETTING_RE_AUCTION_COUNT";
+	public static final String PREFERENCE_SETTING_RE_AUCTION_CHECK = "PREFERENCE_SETTING_RE_AUCTION_CHECK";
+	// 동가 재경매 횟수  [END]
+	
+	// --- 연속 ,음성 경매  ---
+	public static final String PREFERENCE_SETTING_USE_ONE_AUCTION = "PREFERENCE_SETTING_USE_ONE_AUCTION";
+	public static final String PREFERENCE_SETTING_USE_SOUND_AUCTION = "PREFERENCE_SETTING_SOUND_AUCTION";
+	// 연속 ,음성 경매  [END]
 
 	// --- 메인 -> 음성설정 -> 텍스트 ---
 	public static final String PREFERENCE_SETTING_SOUND_MSG_INTRO = "PREFERENCE_SETTING_SOUND_MSG_INTRO";

@@ -13,6 +13,12 @@
     -fx-font-size: 15px;
 }
 
+.description-label {
+    -fx-text-fill: #ff0000;
+    -fx-font-size: 13px;
+}
+
+
 .label-background {
     -fx-background-color: #27293d;
     -fx-text-fill: white;

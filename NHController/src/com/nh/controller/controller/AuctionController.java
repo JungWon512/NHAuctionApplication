@@ -34,7 +34,6 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -55,7 +54,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.Duration;
 
 public class AuctionController extends BaseAuctionController implements Initializable {
@@ -192,7 +190,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
-		mBtnEntrySuccessList.setOnMouseClicked(event -> openEntryListPopUp());
+		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
 		//mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단 UI 표시 숨김.
 
 		mBtnStopSound.setOnMouseClicked(event -> mAuctionInfoMessageSound.stopSound());
@@ -653,23 +651,25 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoDataList();
 
-		MoveStageUtil.getInstance().openEntryListDialog(EntryDialogType.ENTRY_LIST, mStage, dataList, new IntegerListener() {
+		openEntryDialog(EntryDialogType.ENTRY_LIST, dataList);
+		
+	}
+	
 
-			@Override
-			public void callBack(int value) {
+	/**
+	 * 낙찰 결과 보기
+	 */
+	public void openFinishedEntryListPopUp() {
+		
+		ObservableList<SpEntryInfo> dataList = getFinishedEntryInfoDataList();
 
-				MoveStageUtil.getInstance().dismissDialog();
+		if(CommonUtils.getInstance().isListEmpty(dataList)) {
+			addLogItem("경매 결과 없음.");
+			return;
+		}
 
-				setWaitEntryDataList(dataList);
-
-				MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
-
-				if (value > -1) {
-					selectIndexWaitTable(value, true);
-				}
-			}
-		});
-
+		openEntryDialog(EntryDialogType.ENTRY_FINISH_LIST, dataList);
+		
 	}
 
 	private void setWaitEntryDataList(ObservableList<SpEntryInfo> dataList) {
@@ -683,9 +683,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
 				mWaitEntryInfoDataList.add(new SpEntryInfo());
 			}
-
 			mWaitTableView.refresh();
-
 		});
 
 	}
@@ -701,13 +699,30 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoPendingDataList();
 
-		MoveStageUtil.getInstance().openEntryListDialog(EntryDialogType.ENTRY_PENDING_LIST, mStage, dataList, new IntegerListener() {
+		openEntryDialog(EntryDialogType.ENTRY_PENDING_LIST, dataList);
+	}
+	
+	/**
+	 * 전체보기,보류보기,낙찰결과보기 Dialog
+	 * @param type
+	 * @param dataList
+	 */
+	private void openEntryDialog(EntryDialogType type, ObservableList<SpEntryInfo> dataList ) {
+
+		MoveStageUtil.getInstance().openEntryListDialog(type, mStage, dataList, new IntegerListener() {
 			@Override
 			public void callBack(int value) {
 
-				MoveStageUtil.getInstance().dismissDialog();
-
+				dismissShowingDialog();
+				
+				addLogItem("Dialog callBack Value : " + value);
+				if (value < 0) {
+					return;
+				}
 				if (CommonUtils.getInstance().isListEmpty(dataList)) {
+					return;
+				}
+				if(type.equals(EntryDialogType.ENTRY_FINISH_LIST)) {
 					return;
 				}
 
@@ -716,9 +731,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				if (value > -1) {
 					selectIndexWaitTable(value, true);
 				}
-
-				MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
-
 			}
 		});
 	}
@@ -754,8 +766,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		MoveStageUtil.getInstance().openSettingDialog(mStage);
+		MoveStageUtil.getInstance().openSettingDialog(mStage,new BooleanListener() {
+			
+			@Override
+			public void callBack(Boolean isClose) {
+				dismissShowingDialog();
+			}
+		});
 	}
+
 
 	private void saveMainSoundEntryInfo() {
 
@@ -1653,6 +1672,27 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		return dataList;
 	}
+	
+
+	/**
+	 * 완료된 출품 정보 조회 EntryNum 없는 dummy row 제외
+	 *
+	 * @return
+	 */
+	public ObservableList<SpEntryInfo> getFinishedEntryInfoDataList() {
+
+		ObservableList<SpEntryInfo> dataList = FXCollections.observableArrayList();
+
+		for (SpEntryInfo spEntryInfo : mFinishedEntryInfoDataList) {
+			if (!isEmptyProperty(spEntryInfo.getEntryNum())) {
+				dataList.add(spEntryInfo);
+			}
+		}
+
+		return dataList;
+	}
+	
+	
 
 	/**
 	 * 보류 정보 조회 EntryNum 없는 dummy row 제외
@@ -1731,4 +1771,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		}
 	};
+	
+	/**
+	 * Showing dialog Close
+	 */
+	private void dismissShowingDialog() {
+		MoveStageUtil.getInstance().dismissDialog();
+		MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
+	}
 }

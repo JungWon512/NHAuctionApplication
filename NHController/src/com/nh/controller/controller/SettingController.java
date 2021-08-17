@@ -1,23 +1,40 @@
 package com.nh.controller.controller;
 
+import java.lang.invoke.MethodHandles;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.controller.models.EditSetting;
+
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.net.URL;
-import java.util.*;
 
 /**
  * 제어 메인 F8 -> 환경설정
@@ -79,6 +96,13 @@ public class SettingController implements Initializable {
     @FXML
     private CheckBox mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox, mMotherCheckBox, mPassageCheckBox, mMaTimeCheckBox, mKpnCheckBox,
             mRegionCheckBox, mNoteCheckBox, mLowPriceCheckBox, mDNACheckBox;
+    
+    @FXML	//동가 재경매 횟수
+    private TextField mReAuctionCountTextField;
+    
+    @FXML	//동가 재경매,연속경매,음성경부여부
+    private CheckBox mUseReAuction, mUseOneAuction,mUseSoundAuction;
+ 
 
     private final static String[] SHARED_MOBILE_ARRAY = new String[]{
             SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER,
@@ -91,7 +115,8 @@ public class SettingController implements Initializable {
     private ArrayList<CheckBox> mobileCheckBoxList = null;
     private String boardToggleType = "None";
     private String pdpToggleType = "BoardType";
-
+    private BooleanListener mBooleanListener = null;
+    
     public enum MobileCheckBoxType {
         SETTING_MOBILE_ENTRYNUM("mEntryNumCheckBox"),
         SETTING_MOBILE_EXHIBITOR("mExhibitorCheckBox"),
@@ -139,8 +164,9 @@ public class SettingController implements Initializable {
      *
      * @param stage
      */
-    public void setStage(Stage stage) {
+    public void setStage(Stage stage, BooleanListener listener) {
         mStage = stage;
+        mBooleanListener=  listener;
     }
 
     /**
@@ -162,15 +188,19 @@ public class SettingController implements Initializable {
     private void initUI() {
         setMobileCheckBoxLists();
         getAnnounceNoteCheckboxPreference();
+        getReAuctionCheckboxPreference();
+        getUseOneAuctionCheckboxPreference();
+        getSoundAuctionCheckboxPreference();
         setToggleGroups();
         getCountTextField();
         getTextFields();
         initKeyConfig();
+        addReAuctionCountTextFieldListener();
         mBtnSave.setOnMouseClicked(event -> saveSettings());
     }
 
     private void initKeyConfig() {
-        Platform.runLater(() -> mStage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, ke -> {
+        Platform.runLater(() -> mRoot.getScene().addEventFilter(KeyEvent.KEY_PRESSED, ke -> {
             if (ke.getCode() == KeyCode.F5) {
                 saveSettings();
             }
@@ -236,6 +266,15 @@ public class SettingController implements Initializable {
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, mLowerLimitCalfTextField.getText().trim());
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, mLowerLimitFatteningCattleTextField.getText().trim());
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, mLowerLimitBreedingCattleTextField.getText().trim());
+        //동가재경매 횟수
+        
+        String  reAuctionCount = mReAuctionCountTextField.getText();
+        
+        if(reAuctionCount == null ||  reAuctionCount.equals("0")){
+        	reAuctionCount = "1";
+        }
+        sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, reAuctionCount); 
+        
     }
 
     /**
@@ -297,6 +336,8 @@ public class SettingController implements Initializable {
         mLowerLimitCalfTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, ""));
         mLowerLimitFatteningCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, ""));
         mLowerLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, ""));
+        //동가재경매 횟수
+        mReAuctionCountTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, "1"));
     }
 
     /**
@@ -319,6 +360,62 @@ public class SettingController implements Initializable {
         boolean isNote = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, true);
         mUseAnnouncementCheckBox.setSelected(isAnnouncement);
         mUseNoteCheckBox.setSelected(isNote);
+    }
+    
+    /**
+     * 동가 재경매  value 가져오기
+     *
+     * @author jhlee
+     */
+    private void getReAuctionCheckboxPreference() {
+        boolean isReAuction = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_CHECK, false);
+        mUseReAuction.setSelected(isReAuction);
+    }
+    
+    /**
+     * 동가 재경매  저장
+     *
+     * @author jhlee
+     */
+    private void setReAuctionCheckboxPreference() {
+    	  sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_CHECK, (mUseReAuction.isSelected()));
+    }
+    
+    /**
+     * 연속경매- 하나씩 진행 value 가져오기
+     *
+     * @author jhlee
+     */
+    private void getUseOneAuctionCheckboxPreference() {
+        boolean isOnePlayAuction = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_USE_ONE_AUCTION, false);
+        mUseOneAuction.setSelected(isOnePlayAuction);
+    }
+
+    /**
+     * 연속경매 하나씩 진행   저장
+     *
+     * @author jhlee
+     */
+    private void setUseOneAuctionCheckboxPreference() {
+    	sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_USE_ONE_AUCTION, (mUseOneAuction.isSelected()));
+    }
+    /**
+     * 음성경부여부 value 가져오기
+     *
+     * @author jhlee
+     */
+    private void getSoundAuctionCheckboxPreference() {
+        boolean isSoundAuction = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, false);
+        mUseSoundAuction.setSelected(isSoundAuction);
+    }
+
+    /**
+     * 음성경부여부 저장
+     *
+     * @author jhlee
+     */
+    private void setSoundAuctionCheckboxPreference() {
+    	sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, (mUseSoundAuction.isSelected()));	
     }
 
     /**
@@ -503,6 +600,30 @@ public class SettingController implements Initializable {
                 Arrays.asList(mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox)
         );
     }
+    
+    /**
+     * 동가 재경매 횟수 1자릿수로 고정
+     */
+    private void addReAuctionCountTextFieldListener() {
+    	 mReAuctionCountTextField.textProperty().addListener(new ChangeListener<String>() {
+    	        @Override
+    	        public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+    	        	
+    	            if (mReAuctionCountTextField.getText().length() > 1) {
+    	            	
+    	                String str = mReAuctionCountTextField.getText().substring(0, 1);
+    	            
+    	                if(Integer.parseInt(str) > 0) {
+    	                	mReAuctionCountTextField.setText(str);
+    	                }else {
+    	                	//default Value
+    	                	mReAuctionCountTextField.setText("1");
+    	                }
+    	                
+    	            }
+    	        }
+    	    });
+    }
 
     /**
      * 설정 Preference에 저장
@@ -514,6 +635,9 @@ public class SettingController implements Initializable {
             mLogger.debug("save Settings...");
             setTextFields();
             setAnnounceNoteCheckboxPreference();
+            setReAuctionCheckboxPreference();
+            setUseOneAuctionCheckboxPreference();
+            setSoundAuctionCheckboxPreference();
             setCountTextField();
             setMobileCheckboxPreference(mobileCheckBoxSelectedList);
             setToggleTypes();
@@ -574,26 +698,31 @@ public class SettingController implements Initializable {
 
     private void showAlertMobileSettingLimit() {
         CommonUtils.getInstance().showAlertPopupOneButton(
-                this.mStage, mResMsg.getString("dialog.setting.mobile.validation.fail"), mResMsg.getString("popup.btn.close")
+        		MoveStageUtil.getInstance().getDialog(), mResMsg.getString("dialog.setting.mobile.validation.fail"), mResMsg.getString("popup.btn.close")
         );
     }
 
     private void showAlertDataFormat() {
         CommonUtils.getInstance().showAlertPopupOneButton(
-                this.mStage, mResMsg.getString("dialog.setting.dataformat.validation.fail"), mResMsg.getString("popup.btn.close")
+        		MoveStageUtil.getInstance().getDialog(), mResMsg.getString("dialog.setting.dataformat.validation.fail"), mResMsg.getString("popup.btn.close")
         );
     }
 
     private void showAlertCountDown() {
         CommonUtils.getInstance().showAlertPopupOneButton(
-                this.mStage, mResMsg.getString("dialog.setting.countdown.validation.fail"), mResMsg.getString("popup.btn.close")
+        		MoveStageUtil.getInstance().getDialog(), mResMsg.getString("dialog.setting.countdown.validation.fail"), mResMsg.getString("popup.btn.close")
         );
     }
 
     private void showAlertSuccess() {
-        CommonUtils.getInstance().showAlertPopupOneButton(
-                this.mStage, mResMsg.getString("dialog.setting.validation.success"), mResMsg.getString("popup.btn.close")
-        );
+    	
+    	Optional<ButtonType> btnResult= CommonUtils.getInstance().showAlertPopupOneButton(MoveStageUtil.getInstance().getDialog(), mResMsg.getString("dialog.setting.validation.success"), mResMsg.getString("popup.btn.close"));
+		if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+			if(mBooleanListener != null) {
+				mBooleanListener.callBack(true);
+			}
+		}
+        		
     }
 
     private void showAlertFailure() {

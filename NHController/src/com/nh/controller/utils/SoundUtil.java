@@ -7,6 +7,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.share.common.models.Bidding;
+
 /**
  * 음성 실행 클래스
  * @author jhlee
@@ -31,7 +33,7 @@ public class SoundUtil {
 	 * @param index
 	 */
 	public void playSound(int index) {
-			
+		
 		if(index < 0) {
 			mLogger.debug("SOUND INDEX IS NULL !!");
 			return;

@@ -7,9 +7,7 @@ import java.util.ResourceBundle;
 import com.nh.controller.ControllerApplication;
 import com.nh.controller.controller.AuctionController;
 import com.nh.controller.controller.AuctionMessageController;
-import com.nh.controller.controller.CommonController;
 import com.nh.controller.controller.EntryListController;
-import com.nh.controller.controller.EntryPendingListController;
 import com.nh.controller.controller.LoginController;
 import com.nh.controller.controller.SettingController;
 import com.nh.controller.controller.SettingSoundController;
@@ -18,9 +16,7 @@ import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.SpEntryInfo;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -29,8 +25,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -51,7 +45,8 @@ public class MoveStageUtil {
 	
 	public enum EntryDialogType{
 		ENTRY_LIST,
-		ENTRY_PENDING_LIST
+		ENTRY_PENDING_LIST,
+		ENTRY_FINISH_LIST
 	}
 
 	public static synchronized MoveStageUtil getInstance() {
@@ -138,7 +133,7 @@ public class MoveStageUtil {
 	/**
 	 * @Description 환경설정 Dialog
 	 */
-	public void openSettingDialog(Stage stage) {
+	public void openSettingDialog(Stage stage,BooleanListener listener) {
 
 		if(mDialog != null && mDialog.isShowing()) {
 			return;
@@ -152,7 +147,7 @@ public class MoveStageUtil {
 
 			SettingController controller = fxmlLoader.getController();
 
-			controller.setStage(stage);
+			controller.setStage(stage,listener);
 
 			openDialog(stage, parent);
 			setStageDisable(stage);
@@ -167,7 +162,7 @@ public class MoveStageUtil {
 	/**
 	 * 출품 리스트
 	 * 출품 보류 리스트
-	 * 
+	 * 낙찰 결과 리스트
 	 * @param stage
 	 */
 	
@@ -179,30 +174,12 @@ public class MoveStageUtil {
 		
 		try {
 
-			FXMLLoader fxmlLoader = null;
-			
-			switch (type) {
-			case ENTRY_LIST:
-				fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
-				break;
-			case ENTRY_PENDING_LIST:
-				fxmlLoader = new FXMLLoader(getFXMLResource("EntryPendingListView.fxml"), getResourceBundle());
-				break;
-			}
-
-			if(fxmlLoader == null) {
-				return;
-			}
-			
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
-
-			CommonController controller = fxmlLoader.getController();
-			controller.setEntryDataList(dataList);
-			controller.setListener(listener);
-
+			EntryListController controller = fxmlLoader.getController();
+			controller.setConfig(dataList,type,listener);
 			openDialog(stage, parent);
 			setStageDisable(stage);
-			controller.initConfiguration();
 
 		} catch (IOException e) {
 			e.printStackTrace();

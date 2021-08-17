@@ -151,6 +151,11 @@
 	-fx-background-insets: 0;
 	-fx-background-radius: 1;
 }
+.base-contents .table-view .table-row-cell:odd:selected {
+	-fx-background-color: #EFEFEF;
+	-fx-background-insets: 0;
+	-fx-background-radius: 1;
+}
 
 /*테이블 row 선택 텍스트 흰색
 .table-row-cell:selected .text {
