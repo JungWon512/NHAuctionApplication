@@ -55,7 +55,7 @@ public final class AuctionServerDecodedCancelBiddingHandler extends SimpleChanne
 	protected void channelRead0(ChannelHandlerContext ctx, CancelBidding cancelBidding) throws Exception {
 		if (mConnectionInfoMap.containsKey(ctx.channel().id())
 				&& mBidderChannelsMap.get(cancelBidding.getAuctionHouseCode()).contains(ctx.channel())) {
-			
+
 			// 제어 프로그램 상태가 유효하지 않을 경우 예외 처리
 			if (mControllerChannelsMap.get(cancelBidding.getAuctionHouseCode()).size() <= 0) {
 				ctx.channel().writeAndFlush(new ResponseConnectionInfo(cancelBidding.getAuctionHouseCode(),
@@ -64,11 +64,15 @@ public final class AuctionServerDecodedCancelBiddingHandler extends SimpleChanne
 
 				return;
 			}
-			
-			if (mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
-					.equals(GlobalDefineCode.AUCTION_STATUS_START)
+
+			// 취소 요청에 대하여 현재 진행 중인 출품번호와 경매 상태가 적합한지 확인
+			if (cancelBidding.getEntryNum()
+					.equals(mAuctionScheduler.getAuctionState(cancelBidding.getAuctionHouseCode()).getCurrentEntryInfo()
+							.getEntryNum())
+					&& (mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
+							.equals(GlobalDefineCode.AUCTION_STATUS_START)
 					|| mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
-							.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+							.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS))) {
 
 				mLogger.debug("Message ADD : " + cancelBidding.getEncodedMessage());
 

@@ -56,7 +56,7 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 	protected void channelRead0(ChannelHandlerContext ctx, Bidding bidding) throws Exception {
 		if (mConnectionInfoMap.containsKey(ctx.channel().id())
 				&& mBidderChannelsMap.get(bidding.getAuctionHouseCode()).contains(ctx.channel())) {
-			
+
 			// 제어 프로그램 상태가 유효하지 않을 경우 예외 처리
 			if (mControllerChannelsMap.get(bidding.getAuctionHouseCode()).size() <= 0) {
 				ctx.channel().writeAndFlush(new ResponseConnectionInfo(bidding.getAuctionHouseCode(),
@@ -65,7 +65,7 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 
 				return;
 			}
-			
+
 			if (mAuctionScheduler.getCurrentAuctionStatus(bidding.getAuctionHouseCode())
 					.equals(GlobalDefineCode.AUCTION_STATUS_START)
 					|| mAuctionScheduler.getCurrentAuctionStatus(bidding.getAuctionHouseCode())
@@ -73,8 +73,12 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 
 				mLogger.debug("Message ADD : " + bidding.getEncodedMessage());
 
-				if (bidding.getPriceInt() >= Integer
-						.valueOf(mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getStartPrice())) {
+				// 현재 진행 출품번호 및 최저가에 만족하는지 확인
+				if (bidding.getEntryNum()
+						.equals(mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getCurrentEntryInfo()
+								.getEntryNum())
+						&& bidding.getPriceInt() >= Integer.valueOf(
+								mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getStartPrice())) {
 
 					ctx.writeAndFlush(
 							new ResponseCode(bidding.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_SUCCESS_BIDDING)
