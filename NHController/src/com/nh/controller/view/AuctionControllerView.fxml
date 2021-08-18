@@ -406,10 +406,10 @@
             <Insets right="10.0" />
          </BorderPane.margin>
          <children>
-            <Label fx:id="mAuctionStateLabel" alignment="CENTER" maxHeight="110.0" maxWidth="1.7976931348623157E308" minHeight="110.0" prefHeight="110.0" styleClass="label-status" text="경매대기" />
+            <Label fx:id="mAuctionStateLabel" alignment="CENTER" maxHeight="140.0" maxWidth="1.7976931348623157E308" minHeight="140.0" prefHeight="140.0" styleClass="label-status" text="경매대기" />
             <Pane styleClass="bidding-user-info">
                <children>
-                  <TableView fx:id="mBiddingInfoTableView" focusTraversable="false" minHeight="515.0" mouseTransparent="true" prefHeight="515.0">
+                  <TableView fx:id="mBiddingInfoTableView" focusTraversable="false" maxHeight="515.0" minHeight="515.0" mouseTransparent="true" prefHeight="515.0">
                     <columns>
                       <TableColumn fx:id="mBiddingPriceColumn" editable="false" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" sortable="false" text="응찰금액" />
                       <TableColumn fx:id="mBiddingUserColumn" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="응찰자" />

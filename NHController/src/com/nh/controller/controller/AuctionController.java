@@ -110,14 +110,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@FXML // 음성 멘트 버튼
 	private Button mBtnIntroSound, mBtnBuyerSound, mBtnGuideSound, mBtnEtc_1_Sound, mBtnEtc_2_Sound, mBtnEtc_3_Sound, mBtnEtc_4_Sound, mBtnEtc_5_Sound, mBtnEtc_6_Sound;
 
-	@FXML //음성설정 ,저장 ,음성중지 ,낙찰결과
+	@FXML // 음성설정 ,저장 ,음성중지 ,낙찰결과
 	private Button mBtnSettingSound, mBtnSave, mBtnStopSound, mBtnEntrySuccessList;
 
 	private List<Label> cntList = new ArrayList<Label>(); // 남은 시간 Bar list
 
-	public static int REMAINING_TIME_COUNT = 5; // 카운트다운 기준 시간
-
-	private int mRemainingTimeCount = REMAINING_TIME_COUNT; // 카운트다운
+	private int mRemainingTimeCount = 5; // 카운트다운
 
 	private final SharedPreference preference = new SharedPreference();
 
@@ -191,7 +189,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
-		//mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단 UI 표시 숨김.
+		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단 UI
+		// 표시 숨김.
 
 		mBtnStopSound.setOnMouseClicked(event -> mAuctionInfoMessageSound.stopSound());
 		mBtnIntroSound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(0));
@@ -204,8 +203,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnEtc_5_Sound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(10));
 		mBtnEtc_6_Sound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(11));
 
-		// Setting
-		REMAINING_TIME_COUNT = Integer.parseInt(preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
 	}
 
 	/**
@@ -277,17 +274,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void initParsingSharedData() {
 
-		//메인 상단 체크박스 [S]
-		mEntryNumCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER,true));
-		mExhibitorCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR,true));
-		mGenderCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_GENDER,true));
-		mMotherObjNumCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MOTHER,true));
-		mMaTimeCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MATIME,true));
-		mPasgQcnCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_PASGQCN,true));
-		mWeightCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_WEIGHT,true));
-		mLowPriceCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE,true));
-		mBrandNameCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_BRAND,true));
-		mKpnCheckBox.setSelected(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_KPN,true));
+		List<Boolean> checkList = SettingApplication.getInstance().getParsingMainSoundFlag();
+
+		// 메인 상단 체크박스 [S]
+		mEntryNumCheckBox.setSelected(checkList.get(0));
+		mExhibitorCheckBox.setSelected(checkList.get(1));
+		mGenderCheckBox.setSelected(checkList.get(2));
+		mMotherObjNumCheckBox.setSelected(checkList.get(3));
+		mMaTimeCheckBox.setSelected(checkList.get(4));
+		mPasgQcnCheckBox.setSelected(checkList.get(5));
+		mWeightCheckBox.setSelected(checkList.get(6));
+		mLowPriceCheckBox.setSelected(checkList.get(7));
+		mBrandNameCheckBox.setSelected(checkList.get(8));
+		mKpnCheckBox.setSelected(checkList.get(9));
 
 		mEntryNumCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER);
 		mExhibitorCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR);
@@ -310,12 +309,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mLowPriceCheckBox.setOnAction(mCheckBoxEventHandler);
 		mBrandNameCheckBox.setOnAction(mCheckBoxEventHandler);
 		mKpnCheckBox.setOnAction(mCheckBoxEventHandler);
-		//메인 상단 체크박스 [E]
+		// 메인 상단 체크박스 [E]
 
-		//메세지 버튼 값 가져옴.
+		// 메세지 버튼 값 가져옴.
 		initParsingSoundDataList();
 	}
-
 
 	/**
 	 * 내부 저장된 음성 메세지 가져옴.
@@ -323,23 +321,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private List<String> initParsingSoundDataList() {
 
 		// 사운드 텍스트 저장 리스트.
-		List<String> soundDataList = new ArrayList<String>();
-
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_USE, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, ""));
-
+		List<String> soundDataList = SettingApplication.getInstance().getParsingSoundDataList();
 		mAuctionInfoMessageSound.setSoundDataList(soundDataList);
-
 		return soundDataList;
 	}
 
@@ -355,7 +338,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mAuctionInfoGubunLabel.setText("큰소경매");
 		mAuctionInfoNameLabel.setText("89두");
 		mHeaderAucInfoLabel.setText(auctionDate + "- " + this.auctionRound.getQcn() + "회차");
-		
+
 		SettingApplication.getInstance().setAuctionObjDsc(this.auctionRound.getAucObjDsc());
 	}
 
@@ -467,7 +450,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				if (curEntryNum.equals(newEntryNum)) {
 
-					if (newEntryDataList.get(j).getLsChgDtm() == null || newEntryDataList.get(j).getLsChgDtm().getValue().isEmpty() || mWaitEntryInfoDataList.get(i).getLsChgDtm() == null || mWaitEntryInfoDataList.get(i).getLsChgDtm().getValue().isEmpty()) {
+				
+					if (isEmptyProperty(newEntryDataList.get(j).getLsChgDtm()) || isEmptyProperty(mWaitEntryInfoDataList.get(i).getLsChgDtm())) {
 						break;
 					}
 
@@ -645,7 +629,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 			return;
 		}
 
@@ -654,24 +638,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoDataList();
 
 		openEntryDialog(EntryDialogType.ENTRY_LIST, dataList);
-		
+
 	}
-	
 
 	/**
 	 * 낙찰 결과 보기
 	 */
 	public void openFinishedEntryListPopUp() {
-		
+
 		ObservableList<SpEntryInfo> dataList = getFinishedEntryInfoDataList();
 
-		if(CommonUtils.getInstance().isListEmpty(dataList)) {
+		if (CommonUtils.getInstance().isListEmpty(dataList)) {
 			addLogItem("경매 결과 없음.");
 			return;
 		}
 
 		openEntryDialog(EntryDialogType.ENTRY_FINISH_LIST, dataList);
-		
+
 	}
 
 	private void setWaitEntryDataList(ObservableList<SpEntryInfo> dataList) {
@@ -703,20 +686,21 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		openEntryDialog(EntryDialogType.ENTRY_PENDING_LIST, dataList);
 	}
-	
+
 	/**
 	 * 전체보기,보류보기,낙찰결과보기 Dialog
+	 * 
 	 * @param type
 	 * @param dataList
 	 */
-	private void openEntryDialog(EntryDialogType type, ObservableList<SpEntryInfo> dataList ) {
+	private void openEntryDialog(EntryDialogType type, ObservableList<SpEntryInfo> dataList) {
 
 		MoveStageUtil.getInstance().openEntryListDialog(type, mStage, dataList, new IntegerListener() {
 			@Override
 			public void callBack(int value) {
 
 				dismissShowingDialog();
-				
+
 				addLogItem("Dialog callBack Value : " + value);
 				if (value < 0) {
 					return;
@@ -724,7 +708,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				if (CommonUtils.getInstance().isListEmpty(dataList)) {
 					return;
 				}
-				if(type.equals(EntryDialogType.ENTRY_FINISH_LIST)) {
+				if (type.equals(EntryDialogType.ENTRY_FINISH_LIST)) {
 					return;
 				}
 
@@ -739,6 +723,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 사운드 메세지 설정
+	 * 
 	 * @param event
 	 */
 	public void openSettingSoundDialog(MouseEvent event) {
@@ -747,7 +732,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		MoveStageUtil.getInstance().openSettingSoundDialog(mStage,new BooleanListener() {
+		MoveStageUtil.getInstance().openSettingSoundDialog(mStage, new BooleanListener() {
 
 			@Override
 			public void callBack(Boolean isRefresh) {
@@ -767,22 +752,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
 			return;
 		}
-		addLogItem("####11 hoho : " +SettingApplication.getInstance().isUseReAuction());
 
-		MoveStageUtil.getInstance().openSettingDialog(mStage,new BooleanListener() {
-			
+		MoveStageUtil.getInstance().openSettingDialog(mStage, new BooleanListener() {
+
 			@Override
 			public void callBack(Boolean isClose) {
 				dismissShowingDialog();
-				//환경설정 저장 후 값들 재설정
+				// 환경설정 저장 후 값들 재설정
 				SettingApplication.getInstance().initSharedData();
 			}
 		});
-	}
-
-
-	private void saveMainSoundEntryInfo() {
-
 	}
 
 	/**
@@ -835,7 +814,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_READY:
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 		case GlobalDefineCode.AUCTION_STATUS_PASS:
-			//사운드 시작
+			// 사운드 시작
 			mEntryInfoSound.playSound(0);
 
 			String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), mCurrentSpEntryInfo.getEntryNum().getValue());
@@ -981,7 +960,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		System.out.println("예정가 낮추기");
 		int lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice() * -1;
 		setLowPrice(lowPrice, false);
-		
+
 	}
 
 	/**
@@ -1060,13 +1039,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			case GlobalDefineCode.CONNECT_SUCCESS:
 				addLogItem(mResMsg.getString("msg.connection.success") + responseConnectionInfo.getEncodedMessage());
 				// Setting 정보 전송
-				// TODO: default value setting이랑 맞추기
-				EditSetting setting = new EditSetting(this.auctionRound.getNaBzplc(), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "Y"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
-						preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
-				addLogItem(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
+				onSendSettingInfo();
 				MoveStageUtil.getInstance().moveAuctionStage(mStage, mFxmlLoader);
 				break;
 			case GlobalDefineCode.CONNECT_FAIL:
@@ -1082,6 +1055,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 
 		});
+	}
+	
+	private void onSendSettingInfo() {
+		// TODO: default value setting이랑 맞추기
+		EditSetting setting = new EditSetting(this.auctionRound.getNaBzplc(), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "Y"),
+				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
+				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
+				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
+				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
+		addLogItem(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
 	}
 
 	@Override
@@ -1183,7 +1166,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					cntList.get(i).setDisable(false);
 				}
 				// 카운트 시간 초기화
-				mRemainingTimeCount = REMAINING_TIME_COUNT;
+				mRemainingTimeCount = SettingApplication.getInstance().getAuctionCountdown();
 				// 현재 응찰 내역 초기화
 				mCurrentBidderMap.clear();
 				// 이전 응찰 내역 초기화
@@ -1214,9 +1197,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// ENTER 경매완료 css 적용
 				CommonUtils.getInstance().addStyleClass(mBtnEnter, "btn-auction-stop");
 
-				//전체보기 비활성화
+				// 전체보기 비활성화
 				mBtnF4.setDisable(true);
-				//보류보기 비활성화
+				// 보류보기 비활성화
 				mBtnF5.setDisable(true);
 
 				// 강제 낙찰 버튼 활성화
@@ -1256,9 +1239,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnUpPrice.setDisable(false);
 				mBtnDownPrice.setDisable(false);
 
-				//전체보기 비활성화
+				// 전체보기 비활성화
 				mBtnF4.setDisable(false);
-				//보류보기 비활성화
+				// 보류보기 비활성화
 				mBtnF5.setDisable(false);
 
 				break;
@@ -1410,51 +1393,50 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		});
 	}
 
-
 	private void setSoundData(SpEntryInfo spEntryInfo) {
 
 		// 사운드 텍스트 저장 리스트.
 		List<String> soundDataList = new ArrayList<String>();
 
 		StringBuffer entrySoundContent = new StringBuffer();
-		 String EMPTY_SPACE = " ";
+		String EMPTY_SPACE = " ";
 
-		if(mEntryNumCheckBox.isSelected()) {
+		if (mEntryNumCheckBox.isSelected()) {
 			entrySoundContent.append(spEntryInfo.getEntryNum().getValue());
 		}
-		if(mExhibitorCheckBox.isSelected()) {
+		if (mExhibitorCheckBox.isSelected()) {
 			entrySoundContent.append(EMPTY_SPACE);
 			entrySoundContent.append(spEntryInfo.getExhibitor().getValue());
 		}
-		if(mGenderCheckBox.isSelected()) {
+		if (mGenderCheckBox.isSelected()) {
 			entrySoundContent.append(EMPTY_SPACE);
 			entrySoundContent.append(spEntryInfo.getGender().getValue());
 		}
-		if(mMotherObjNumCheckBox.isSelected()) {
+		if (mMotherObjNumCheckBox.isSelected()) {
 			entrySoundContent.append(EMPTY_SPACE);
 			entrySoundContent.append(spEntryInfo.getMotherObjNum().getValue());
 		}
-		if(mMaTimeCheckBox.isSelected()) {
+		if (mMaTimeCheckBox.isSelected()) {
 			entrySoundContent.append(EMPTY_SPACE);
 			entrySoundContent.append(spEntryInfo.getMatime().getValue());
 		}
-		if(mPasgQcnCheckBox.isSelected()) {
+		if (mPasgQcnCheckBox.isSelected()) {
 			entrySoundContent.append(EMPTY_SPACE);
 			entrySoundContent.append(spEntryInfo.getPasgQcn().getValue());
 		}
-		if(mWeightCheckBox.isSelected()) {
+		if (mWeightCheckBox.isSelected()) {
 			entrySoundContent.append(EMPTY_SPACE);
 			entrySoundContent.append(spEntryInfo.getWeight().getValue());
 		}
-		if(mLowPriceCheckBox.isSelected()) {
+		if (mLowPriceCheckBox.isSelected()) {
 			entrySoundContent.append(EMPTY_SPACE);
 			entrySoundContent.append(spEntryInfo.getLowPrice().getValue());
 		}
-		if(mBrandNameCheckBox.isSelected()) {
+		if (mBrandNameCheckBox.isSelected()) {
 			entrySoundContent.append(EMPTY_SPACE);
 			entrySoundContent.append(spEntryInfo.getBrandName().getValue());
 		}
-		if(mKpnCheckBox.isSelected()) {
+		if (mKpnCheckBox.isSelected()) {
 			entrySoundContent.append(EMPTY_SPACE);
 			entrySoundContent.append(spEntryInfo.getKpn().getValue());
 		}
@@ -1561,6 +1543,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						ke.consume();
 					}
 
+					// 강제낙찰
+					if (ke.getCode() == KeyCode.F6) {
+						ke.consume();
+					}
+
 					// 강제유찰?
 					if (ke.getCode() == KeyCode.F7) {
 						onPassAuction();
@@ -1614,9 +1601,42 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						selectIndexWaitTable(1, false);
 						ke.consume();
 					}
+
+					if (ke.getCode() == KeyCode.DIGIT1) {
+						sendCountDown(1);
+						ke.consume();
+					}
+
+					if (ke.getCode() == KeyCode.DIGIT2) {
+						sendCountDown(2);
+						ke.consume();
+					}
+					if (ke.getCode() == KeyCode.DIGIT3) {
+						sendCountDown(3);
+						ke.consume();
+					}
+
+					if (ke.getCode() == KeyCode.DIGIT4) {
+						sendCountDown(4);
+						ke.consume();
+					}
+					if (ke.getCode() == KeyCode.DIGIT5) {
+						sendCountDown(5);
+						ke.consume();
+					}
 				}
 			});
 		});
+	}
+
+	private void sendCountDown(int countDown) {
+		switch (mAuctionStatus.getState()) {
+		case GlobalDefineCode.AUCTION_STATUS_START:
+		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+			
+			System.out.println("countDown : " +  countDown);
+			break;
+		}
 	}
 
 	/**
@@ -1678,7 +1698,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		return dataList;
 	}
-	
 
 	/**
 	 * 완료된 출품 정보 조회 EntryNum 없는 dummy row 제외
@@ -1697,8 +1716,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		return dataList;
 	}
-	
-	
 
 	/**
 	 * 보류 정보 조회 EntryNum 없는 dummy row 제외
@@ -1756,7 +1773,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //					if (isPrice) {
 //						reValue = CommonUtils.getInstance().getBaseUnitDivision(value, SettingApplication.getInstance().getInfo().getBaseUnit());
 //					} else {
-						reValue = Integer.parseInt(value);
+					reValue = Integer.parseInt(value);
 //					}
 					setText(CommonUtils.getInstance().getNumberFormatComma(reValue));
 				} else {
@@ -1770,14 +1787,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private EventHandler mCheckBoxEventHandler = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			//체크박스 내부 저장
+			// 체크박스 내부 저장
 			if (event.getSource() instanceof CheckBox) {
 				CheckBox checkBox = (CheckBox) event.getSource();
 				SharedPreference.getInstance().setBoolean(checkBox.getUserData().toString(), checkBox.isSelected());
 			}
 		}
 	};
-	
+
 	/**
 	 * Showing dialog Close
 	 */
