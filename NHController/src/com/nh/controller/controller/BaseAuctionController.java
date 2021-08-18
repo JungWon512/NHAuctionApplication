@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.nh.controller.netty.BillboardDelegate;
 import com.nh.controller.utils.GlobalDefine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,6 +120,7 @@ public class BaseAuctionController implements NettyControllable {
      */
     protected void createClient(String host, int port, String userMemNum, String watchMode) {
         AuctionDelegate.getInstance().createClients(host, port, userMemNum, watchMode, this);
+        BillboardDelegate.getInstance().createClients("192.168.0.18", 9881, this); // UDP TEST !!!
     }
 
     @Override

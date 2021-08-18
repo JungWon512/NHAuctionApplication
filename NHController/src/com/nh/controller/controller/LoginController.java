@@ -1,23 +1,21 @@
 package com.nh.controller.controller;
 
-import java.lang.invoke.MethodHandles;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine.AUCTION_INFO;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * 로그인

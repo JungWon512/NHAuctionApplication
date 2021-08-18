@@ -128,17 +128,17 @@ public class SettingApplication {
 		
 		int baseUnit = 1;
 		
-		switch (aucObjDsc) {
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1:
-			baseUnit = getUpperLimitCalf();
-			break;
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:
-			baseUnit = getUpperLimitFatteningCattle();
-			break;
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:
-			baseUnit = getUpperLimitBreedingCattle();
-			break;
-		}
+//		switch (aucObjDsc) {
+//		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1:
+//			baseUnit = getUpperLimitCalf();
+//			break;
+//		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:
+//			baseUnit = getUpperLimitFatteningCattle();
+//			break;
+//		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:
+//			baseUnit = getUpperLimitBreedingCattle();
+//			break;
+//		}
 		
 		return baseUnit;
 	}
@@ -151,17 +151,17 @@ public class SettingApplication {
 		
 	int lowerLimitPrice = 1;
 		
-		switch (aucObjDsc) {
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1:
-			lowerLimitPrice = getLowerLimitCalf();
-			break;
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:
-			lowerLimitPrice = getLowerLimitFatteningCattle();
-			break;
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:
-			lowerLimitPrice = getLowerLimitBreedingCattle();
-			break;
-		}
+//		switch (aucObjDsc) {
+//		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1:
+//			lowerLimitPrice = getLowerLimitCalf();
+//			break;
+//		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:
+//			lowerLimitPrice = getLowerLimitFatteningCattle();
+//			break;
+//		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:
+//			lowerLimitPrice = getLowerLimitBreedingCattle();
+//			break;
+//		}
 		
 		return lowerLimitPrice;
 	}

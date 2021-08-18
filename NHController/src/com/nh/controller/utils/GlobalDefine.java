@@ -37,10 +37,10 @@ public class GlobalDefine {
     public static final class AUCTION_INFO {
 
 //      public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
-		public static final String AUCTION_HOST = "192.168.0.13"; // Server Host 도히꺼
+//		public static final String AUCTION_HOST = "192.168.0.13"; // Server Host 도히꺼
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
-//		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민
+		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민
 //		public static final String AUCTION_HOST = "192.168.0.23"; // dev local server
 //        public static final String AUCTION_HOST = "115.41.222.25"; // dev remote server
 

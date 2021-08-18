@@ -31,6 +31,7 @@
     <resultMap type="EntryInfo" id="entryInfoMap">
         <result property="mAuctionHouseCode" column="NA_BZPLC"/>
         <result property="mEntryNum" column="AUC_PRG_SQ"/>
+		<result property="mAuctionQcn" column="QCN"/>
         <result property="mEntryType" column="AUC_OBJ_DSC"/>
         <result property="mIndNum" column="SRA_INDV_AMNNO"/>
         <result property="mIndMngCd" column="SRA_SRS_DSC"/>
@@ -63,7 +64,6 @@
         <result property="mAuctionResult" column="SEL_STS_DSC"/>
         <result property="mAuctionSucBidder" column="LVST_AUC_PTC_MN_NO"/>
         <result property="mAuctionBidPrice" column="SRA_SBID_AM"/>
-
 
     </resultMap>
 
@@ -111,12 +111,18 @@
 		${alias}.FTSNM
 	</sql>
 
+	<sql id="qcnColumn">
+		${alias}.QCN
+	</sql>
+
     <!-- 출품 데이터 추출 -->
     <select id="selectAllEntry" resultMap="entryInfoMap" resultType="linkedHashMap">
 		SELECT
 			<include refid="indvColumn"><property name="alias" value="A"/></include>,
 			<include refid="sogCowColumn"><property name="alias" value="B"/></include>,
-			<include refid="fhsColumn"><property name="alias" value="C"/></include>
+			<include refid="fhsColumn"><property name="alias" value="C"/></include>,
+			<include refid="qcnColumn"><property name="alias" value="D"/></include>
+# 		tb_la_is_mh_auc_qcn
         FROM tb_la_is_mm_indv as A
                  JOIN
              tb_la_is_mh_sog_cow AS B
@@ -128,6 +134,11 @@
                      B.NA_BZPLC = C.NA_BZPLC AND
                      B.FHS_ID_NO = C.FHS_ID_NO AND
                      B.FARM_AMNNO = C.FARM_AMNNO
+                 JOIN
+			tb_la_is_mh_auc_qcn as D
+			 ON
+				B.NA_BZPLC = D.NA_BZPLC AND
+				B.AUC_DT = D.AUC_DT AND
 		WHERE B.AUC_DT = #{aucDt}
 		AND B.NA_BZPLC = #{naBzplc}
 		AND B.AUC_OBJ_DSC = #{aucObjDsc}

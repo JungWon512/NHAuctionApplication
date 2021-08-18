@@ -10,10 +10,9 @@ import java.io.Reader;
 
 public class DBSessionFactory {
 
-    private static SqlSessionFactory sqlSessionFactory;
+    private static SqlSessionFactory sqlSessionFactory = null;
 
     static {
-
         try {
             String resource = "com/nh/controller/database/config/db_config.xml";
             Reader reader = Resources.getResourceAsReader(resource);
@@ -21,13 +20,14 @@ public class DBSessionFactory {
             if (sqlSessionFactory == null) {
                 sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
             }
+            reader.close();
         } catch (IOException fileNotFoundException) {
             fileNotFoundException.printStackTrace();
         }
     }
 
     public static SqlSession getSession() {
-        return sqlSessionFactory.openSession(false);
+        return sqlSessionFactory.openSession();
     }
 
 //	public static SqlSessionFactory getSqlSessionFactory() {

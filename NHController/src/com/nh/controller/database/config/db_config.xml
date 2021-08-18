@@ -6,7 +6,6 @@
 <configuration>
     <properties
             resource="com/nh/controller/support/properties/db_value.properties"/>
-
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
         <setting name="cacheEnabled" value="false"/>
@@ -35,7 +34,9 @@
 
     <environments default="development">
         <environment id="development">
-            <transactionManager type="JDBC"/>
+            <transactionManager type="JDBC">
+                <property name="closeConnection" value="true"/>
+            </transactionManager>
             <dataSource type="POOLED">
                 <property name="driver" value="${db.driver}"/>
                 <property name="url" value="${db.url}"/>
@@ -45,8 +46,9 @@
                 <property name="poolPingEnabled" value="true"/>  <!-- 핑 쿼리 -->
                 <property name="poolMaximumActiveConnections" value="100"/> <!-- 주어진 시간에 존재할수 있는 활성화된 커넥션 수 -->
                 <property name="poolMaximumIdleConnections" value="100"/>    <!-- 주어진 시간에 존재할 수 있는 유휴 커넥션의 수 -->
-                <property name="poolPingConnectionsNotUsedFor" value="7200000"/> <!--  유휴상태의 커넥션이 닫히는지 판단할 시간(ms): 2시간마다 -->
-                <property name="poolTimeToWait" value="20000"/> <!-- 사용된 커넥션을 기다리는 시간(ms): 20초(default) -->
+                <property name="poolPingConnectionsNotUsedFor" value="60000"/> <!--  poolPingQuery 가 얼마나 자주 사용될지 설정(ms): 1분마다 -->
+                <property name="poolTimeToWait" value="5000"/> <!-- 사용된 커넥션을 기다리는 시간(ms): 5초(default: 20초) -->
+                <property name="poolMaximumCheckoutTime" value="5000"/> <!-- default: 20초 -->
             </dataSource>
         </environment>
     </environments>
