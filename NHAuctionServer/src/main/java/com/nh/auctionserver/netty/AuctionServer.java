@@ -41,6 +41,7 @@ import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.RefreshConnector;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.ControllerMessageParser;
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.controller.models.EditSetting;
@@ -592,6 +593,10 @@ public class AuctionServer {
 					}
 				}
 			}
+			
+			if (commonParsedMessage instanceof RetryTargetInfo) {
+				channelItemWriteAndFlush((RetryTargetInfo) commonParsedMessage);
+			}
 			break;
 		default:
 			break;
@@ -1004,6 +1009,29 @@ public class AuctionServer {
 					for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
 						if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
 							mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+				break;
+			case RetryTargetInfo.TYPE: // 재경매 대상 정보 전송
+				// Web Socket Broadcast
+				if (mSocketIOHandler != null) {
+					mSocketIOHandler.sendPacketData(message);
+				}
+
+				// Netty Broadcast
+				if (mBidderChannelsMap != null) {
+					for (String key : mBidderChannelsMap.keySet()) {
+						if (mBidderChannelsMap.get(key).size() > 0) {
+							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+
+				if (mWatcherChannelsMap != null) {
+					for (String key : mWatcherChannelsMap.keySet()) {
+						if (mWatcherChannelsMap.get(key).size() > 0) {
+							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
 						}
 					}
 				}

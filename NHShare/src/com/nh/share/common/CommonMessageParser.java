@@ -12,6 +12,7 @@ import com.nh.share.common.models.RequestBiddingInfo;
 import com.nh.share.common.models.RequestEntryInfo;
 import com.nh.share.common.models.ResponseBiddingInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.setting.AuctionShareSetting;
 
 /**
@@ -47,6 +48,8 @@ public class CommonMessageParser {
 			return new RequestBiddingInfo(messages[1], messages[2], messages[3], messages[4]); // 응찰 정보 전송 요청
 		case ResponseBiddingInfo.TYPE:
 			return new ResponseBiddingInfo(messages[1], messages[2], messages[3], messages[4], messages[5]); // 응찰 정보 응답
+		case RetryTargetInfo.TYPE:
+			return new RetryTargetInfo(messages[1], messages[2], messages[3]); // 재경매 대상 참여자번호
 		default:
 			return null;
 		}

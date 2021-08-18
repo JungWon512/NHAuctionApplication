@@ -32,6 +32,7 @@ import com.nh.share.common.models.RequestBiddingInfo;
 import com.nh.share.common.models.RequestEntryInfo;
 import com.nh.share.common.models.ResponseBiddingInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
@@ -697,6 +698,8 @@ public class SocketIOHandler {
 				break;
 			case ResponseBiddingInfo.TYPE:
 				result = new ResponseBiddingInfo(messages[1], messages[2], messages[3], messages[4], messages[5]);
+			case RetryTargetInfo.TYPE: // 재경매 대상 정보 전송
+				result = new RetryTargetInfo(messages[1], messages[2], messages[3]);
 			default:
 				result = null;
 				break;
@@ -1104,6 +1107,36 @@ public class SocketIOHandler {
 							.get(((ResponseBiddingInfo) parseObject).getAuctionHouseCode()).keySet()) {
 						mBidderChannelClientMap.get(((ResponseBiddingInfo) parseObject).getAuctionHouseCode()).get(uuid)
 								.sendEvent("ResponseBiddingInfo", message);
+					}
+				}
+			}
+		} else if (parseObject instanceof RetryTargetInfo) {
+			if (mBidderChannelClientMap.containsKey(((RetryTargetInfo) parseObject).getAuctionHouseCode())) {
+				if (mBidderChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mBidderChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mBidderChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("RetryTargetInfo", message);
+					}
+				}
+			}
+
+			if (mWatchChannelClientMap.containsKey(((RetryTargetInfo) parseObject).getAuctionHouseCode())) {
+				if (mWatchChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mWatchChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mWatchChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("RetryTargetInfo", message);
+					}
+				}
+			}
+
+			if (mConnectorChannelClientMap.containsKey(((RetryTargetInfo) parseObject).getAuctionHouseCode())) {
+				if (mConnectorChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mConnectorChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mConnectorChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("RetryTargetInfo", message);
 					}
 				}
 			}
