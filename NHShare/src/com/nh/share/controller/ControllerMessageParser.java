@@ -1,12 +1,11 @@
 package com.nh.share.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PassAuction;
+import com.nh.share.controller.models.PauseAuction;
 import com.nh.share.controller.models.ReadyEntryInfo;
 import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.controller.models.SendAuctionResult;
@@ -30,9 +29,13 @@ public class ControllerMessageParser {
 		case PassAuction.TYPE: // 강제 유찰 처리
 			return new PassAuction(messages[1], messages[2]);
 		case StopAuction.TYPE: // 경매 정치 기능
-			return new StopAuction(messages[1], messages[2]);
+			return new StopAuction(messages[1], messages[2], messages[3]);
 		case StartAuction.TYPE: // 경매 시작 처리
-			return new StartAuction(messages[1], messages[2]);
+			return new StartAuction(messages[1], messages[2], messages[3]);
+		case PauseAuction.TYPE: // 경매 정지 취소 처리
+			return new PauseAuction(messages[1], messages[2]);
+		case InitEntryInfo.TYPE:
+			return new InitEntryInfo(messages[1], messages[2]);
 		case ToastMessageRequest.TYPE: // 메시지 전송 요청
 			return new ToastMessageRequest(messages[1], messages[2]);
 		case RequestLogout.TYPE: // 로그아웃 처리 요청

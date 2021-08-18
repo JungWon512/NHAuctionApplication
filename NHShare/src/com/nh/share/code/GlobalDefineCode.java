@@ -42,6 +42,7 @@ public class GlobalDefineCode {
 	// 경매 접속자 모니터링 채널
 	public static final String CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR = "6005";
 
+	public static final String NAMESPACE_BIDDER = "/" + CONNECT_CHANNEL_BIDDER;
 	public static final String NAMESPACE_WATCH = "/" + CONNECT_CHANNEL_WATCHER;
 	public static final String NAMESPACE_AUCTION_RESULT = "/" + CONNECT_CHANNEL_AUCTION_RESULT_MONITOR;
 	public static final String NAMESPACE_CONNECTOR = "/" + CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR;
@@ -82,6 +83,7 @@ public class GlobalDefineCode {
 	public static final String AUCTION_RESULT_CODE_READY = "11";		//대기
 	public static final String AUCTION_RESULT_CODE_SUCCESS = "22";		//낙찰
 	public static final String AUCTION_RESULT_CODE_PENDING = "23";		//보류
+	public static final String AUCTION_RESULT_CODE_CANCEL = "24";		//취소
 	
 	// 요청 결과 미존재
 	public static final String RESPONSE_REQUEST_NOT_RESULT = "4001";

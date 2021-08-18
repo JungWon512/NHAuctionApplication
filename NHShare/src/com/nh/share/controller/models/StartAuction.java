@@ -8,17 +8,19 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 제어프로그램 -> 경매서버
  * 
- * CA | 조합구분코드 | 출품번호
+ * CA | 조합구분코드 | 출품번호 | 재경매여부
  *
  */
 public class StartAuction implements FromAuctionController {
 	public static final char TYPE = 'A';
 	private String mAuctionHouseCode; // 거점코드
 	private String mEntryNum; // 출품번호
+	private String mIsRetry; // 재경매여부
 
-	public StartAuction(String auctionHouseCode, String entryNum) {
+	public StartAuction(String auctionHouseCode, String entryNum, String isRetry) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
+		mIsRetry = isRetry;
 	}
 
 	public String getAuctionHouseCode() {
@@ -37,9 +39,17 @@ public class StartAuction implements FromAuctionController {
 		this.mEntryNum = entryNum;
 	}
 
+	public String getIsRetry() {
+		return mIsRetry;
+	}
+
+	public void setIsRetry(String isRetry) {
+		this.mIsRetry = isRetry;
+	}
+
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode,
-				AuctionShareSetting.DELIMITER, mEntryNum);
+		return String.format("%c%c%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode,
+				AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mIsRetry);
 	}
 }

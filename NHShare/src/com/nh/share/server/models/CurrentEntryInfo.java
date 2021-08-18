@@ -9,7 +9,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 공통
  * 
- * SC | 조합구분코드 | 출품번호 | 경매대상구분코드 | 축산개체관리번호 | 축산축종구분코드 | 농가식별번호 | 농장관리번호 | 농가명 |
+ * SC | 조합구분코드 | 출품번호 | 경매회차 | 경매대상구분코드 | 축산개체관리번호 | 축산축종구분코드 | 농가식별번호 | 농장관리번호 | 농가명 |
  * 브랜드명 | 생년월일 | KPN번호 | 개체성별코드 | 어미소구분코드 | 어미소축산개체관리번호 | 산차 | 임신개월수 | 계대 |
  * 계체식별번호 | 축산개체종축등록번호 | 등록구분번호 | 출하생산지역 | 친자검사결과여부 | 신규여부 | 우출하중량 | 최초최저낙찰한도금액
  * | 최저낙찰한도금액 | 비고내용 | 낙유찰결과 | 낙찰자 | 낙찰금액 | 응찰일시 | 마지막출품여부
@@ -19,6 +19,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	public static final char TYPE = 'C';
 	private String mAuctionHouseCode; // 조합구분코드
 	private String mEntryNum; // 출품 번호
+	private String mAuctionQcn; // 경매회차
 	private String mEntryType; // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
 	private String mIndNum; // 축산개체관리번호
 	private String mIndMngCd; // 축산축종구분코드
@@ -50,7 +51,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	private String mAuctionBidDateTime; // 응찰일시
 	private String mIsLastEntry; // 마지막 출품 여부
 
-	public CurrentEntryInfo(String auctionHouseCode, String entryNum, String entryType, String indNum, String indMngCd,
+	public CurrentEntryInfo(String auctionHouseCode, String entryNum, String auctionQcn, String entryType, String indNum, String indMngCd,
 			String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday, String kpn,
 			String gender, String motherTypeCode, String motherObjNum, String maTime, String maMonth, String pasgQcn,
 			String objIdNum, String objRegNum, String objRegTypeNum, String rgnName, String dnaYn, String isNew,
@@ -58,6 +59,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 			String auctionSucBidder, String auctionBidPrice, String auctionBidDateTime, String isLastEntry) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
+		mAuctionQcn = auctionQcn;
 		mEntryType = entryType;
 		mIndNum = indNum;
 		mIndMngCd = indMngCd;
@@ -93,41 +95,43 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	public CurrentEntryInfo(String[] messages) {
 		mAuctionHouseCode = messages[1];
 		mEntryNum = messages[2];
-		mEntryType = messages[3];
-		mIndNum = messages[4];
-		mIndMngCd = messages[5];
-		mFhsNum = messages[6];
-		mFarmMngNum = messages[7];
-		mExhibitor = messages[8];
-		mBrandName = messages[9];
-		mBirthday = messages[10];
-		mKpn = messages[11];
-		mGender = messages[12];
-		mMotherTypeCode = messages[13];
-		mMotherObjNum = messages[14];
-		mMaTime = messages[15];
-		mMaMonth = messages[16];
-		mPasgQcn = messages[17];
-		mObjIdNum = messages[18];
-		mObjRegNum = messages[19];
-		mObjRegTypeNum = messages[20];
-		mRgnName = messages[21];
-		mDnaYn = messages[22];
-		mIsNew = messages[23];
-		mWeight = messages[24];
-		mInitPrice = messages[25];
-		mLowPrice = messages[26];
-		mNote = messages[27];
-		mAuctionResult = messages[28];
-		mAuctionSucBidder = messages[29];
-		mAuctionBidPrice = messages[30];
-		mAuctionBidDateTime = messages[31];
-		mIsLastEntry = messages[32];
+		mAuctionQcn = messages[3];
+		mEntryType = messages[4];
+		mIndNum = messages[5];
+		mIndMngCd = messages[6];
+		mFhsNum = messages[7];
+		mFarmMngNum = messages[8];
+		mExhibitor = messages[9];
+		mBrandName = messages[10];
+		mBirthday = messages[11];
+		mKpn = messages[12];
+		mGender = messages[13];
+		mMotherTypeCode = messages[14];
+		mMotherObjNum = messages[15];
+		mMaTime = messages[16];
+		mMaMonth = messages[17];
+		mPasgQcn = messages[18];
+		mObjIdNum = messages[19];
+		mObjRegNum = messages[20];
+		mObjRegTypeNum = messages[21];
+		mRgnName = messages[22];
+		mDnaYn = messages[23];
+		mIsNew = messages[24];
+		mWeight = messages[25];
+		mInitPrice = messages[26];
+		mLowPrice = messages[27];
+		mNote = messages[28];
+		mAuctionResult = messages[29];
+		mAuctionSucBidder = messages[30];
+		mAuctionBidPrice = messages[31];
+		mAuctionBidDateTime = messages[32];
+		mIsLastEntry = messages[33];
 	}
 
 	public CurrentEntryInfo(EntryInfo entryInfo) {
 		mAuctionHouseCode = entryInfo.getAuctionHouseCode();
 		mEntryNum = entryInfo.getEntryNum();
+		mAuctionQcn = entryInfo.getAuctionQcn();
 		mEntryType = entryInfo.getEntryType();
 		mIndNum = entryInfo.getIndNum();
 		mIndMngCd = entryInfo.getIndMngCd();
@@ -176,6 +180,14 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		this.mEntryNum = mEntryNum;
 	}
 
+	public String getAuctionQcn() {
+		return mAuctionQcn;
+	}
+
+	public void setAuctionQcn(String auctionQcn) {
+		this.mAuctionQcn = auctionQcn;
+	}
+	
 	public String getEntryType() {
 		return mEntryType;
 	}
@@ -419,9 +431,9 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
-				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
-				mEntryNum, AuctionShareSetting.DELIMITER, mEntryType, AuctionShareSetting.DELIMITER, mIndNum,
+				mEntryNum, AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mEntryType, AuctionShareSetting.DELIMITER, mIndNum,
 				AuctionShareSetting.DELIMITER, mIndMngCd, AuctionShareSetting.DELIMITER, mFhsNum,
 				AuctionShareSetting.DELIMITER, mFarmMngNum, AuctionShareSetting.DELIMITER, mExhibitor,
 				AuctionShareSetting.DELIMITER, mBrandName, AuctionShareSetting.DELIMITER, mBirthday,
