@@ -9,6 +9,11 @@ public class AuctionEntryRepository {
 	private int mTotalCount = 0;
 	private LinkedList<EntryInfo> mEntryList = new LinkedList<EntryInfo>();
 
+	public synchronized void removeAllEntryList( ) {
+		mEntryList = new LinkedList<EntryInfo>();
+		mTotalCount = 0;
+	}
+	
 	public synchronized void setInitialEntryList(List<EntryInfo> entryList) {
 		if (mTotalCount != 0) {
 			mEntryList.addAll(entryList);

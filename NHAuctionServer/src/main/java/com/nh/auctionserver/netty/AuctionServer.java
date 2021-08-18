@@ -9,6 +9,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.corundumstudio.socketio.SocketIOClient;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.handlers.AuctionServerConnectorHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionResponseConnectionInfoHandler;
@@ -18,7 +19,9 @@ import com.nh.auctionserver.netty.handlers.AuctionServerDecodedBiddingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedCancelBiddingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedEditSettingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedEntryInfoHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedInitEntryInfoAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedPassAuctionHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedPauseAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedReadyEntryInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRequestLogoutHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedStartAuctionHandler;
@@ -42,7 +45,9 @@ import com.nh.share.controller.ControllerMessageParser;
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PassAuction;
+import com.nh.share.controller.models.PauseAuction;
 import com.nh.share.controller.models.ReadyEntryInfo;
 import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.controller.models.SendAuctionResult;
@@ -64,7 +69,6 @@ import com.nh.share.setting.AuctionShareSetting;
 import com.nh.share.utils.JwtCertTokenUtils;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -98,8 +102,8 @@ public class AuctionServer {
 
 	private static Auctioneer mAuctioneer;
 
-	private Map<ChannelId, ConnectionInfo> mConnectorInfoMap = new HashMap<ChannelId, ConnectionInfo>();
-	private Map<String, ChannelHandlerContext> mConnectorChannelInfoMap = new HashMap<String, ChannelHandlerContext>();
+	private Map<Object, ConnectionInfo> mConnectorInfoMap = new HashMap<Object, ConnectionInfo>();
+	private Map<String, Object> mConnectorChannelInfoMap = new HashMap<String, Object>();
 
 	private boolean mWaitServerShutDown = false;
 
@@ -130,8 +134,11 @@ public class AuctionServer {
 	public void setSocketIOHandler(SocketIOHandler socketIOHandler, SslContext sslContext) {
 		this.mSocketIOHandler = socketIOHandler;
 		this.mSSLContext = sslContext;
+		mSocketIOHandler.setAuctionServer(this);
 		mSocketIOHandler.setAuctioneer(mAuctioneer);
 		mSocketIOHandler.setNettyConnectionInfoMap(mConnectorInfoMap);
+		mSocketIOHandler.setNettyConnectionChannelInfoMap(mConnectorChannelInfoMap);
+		mSocketIOHandler.setNettyControllerChannelGroupMap(mControllerChannelsMap);
 
 		mLogger.debug("Register SocketIOHandler Completed" + this.mSocketIOHandler);
 	}
@@ -217,10 +224,16 @@ public class AuctionServer {
 						pipeline.addLast(new AuctionServerDecodedPassAuctionHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedPauseAuctionHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedStopAuctionHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedReadyEntryInfoHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedInitEntryInfoAuctionHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedStartAuctionHandler(AuctionServer.this, mAuctioneer,
@@ -417,12 +430,32 @@ public class AuctionServer {
 				}
 			}
 
+			if (controllerParsedMessage instanceof PauseAuction) {
+				mLogger.info("경매 정지 취소 요청 거점코드 : " + ((PauseAuction) controllerParsedMessage).getAuctionHouseCode());
+				mLogger.info("경매 정지 취소 요청 : " + ((PauseAuction) controllerParsedMessage).getEntryNum());
+
+				if (mAuctioneer.getCurrentAuctionStatus(((PauseAuction) controllerParsedMessage).getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_READY)
+						|| mAuctioneer
+								.getCurrentAuctionStatus(((PauseAuction) controllerParsedMessage).getAuctionHouseCode())
+								.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+					mAuctioneer.pauseAuction(((PauseAuction) controllerParsedMessage).getAuctionHouseCode());
+				} else {
+					mControllerChannelsMap.get(((PauseAuction) controllerParsedMessage).getAuctionHouseCode())
+							.writeAndFlush(
+									new ResponseCode(((PauseAuction) controllerParsedMessage).getAuctionHouseCode(),
+											GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage() + "\r\n");
+				}
+			}
+			
 			if (controllerParsedMessage instanceof StopAuction) {
 				mLogger.info("경매 진행 정지 요청 거점코드 : " + ((StopAuction) controllerParsedMessage).getAuctionHouseCode());
 				mLogger.info("경매 진행 정지 요청 : " + ((StopAuction) controllerParsedMessage).getEntryNum());
+				mLogger.info("경매 진행 정지 요청 적용 카운트다운(초) : " + ((StopAuction) controllerParsedMessage).getCountDown());
 
 				if (mAuctioneer.getCurrentAuctionStatus(((StopAuction) controllerParsedMessage).getAuctionHouseCode())
 						.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+					mAuctioneer.setAuctionCountDown(((StopAuction) controllerParsedMessage).getAuctionHouseCode(), ((StopAuction) controllerParsedMessage).getCountDown());
 					mAuctioneer.stopAuction(((StopAuction) controllerParsedMessage).getAuctionHouseCode());
 				} else {
 					mControllerChannelsMap.get(((StopAuction) controllerParsedMessage).getAuctionHouseCode())
@@ -452,6 +485,13 @@ public class AuctionServer {
 				}
 			}
 
+			if (controllerParsedMessage instanceof InitEntryInfo) {
+				mLogger.info("경매 출품 데이터 초기화 요청 거점코드 : " + ((InitEntryInfo) controllerParsedMessage).getAuctionHouseCode());
+				mLogger.info("경매 출품 데이터 초기화 요청 회차 : " + ((InitEntryInfo) controllerParsedMessage).getAuctionQcn());
+
+				mAuctioneer.initEntryInfo(((InitEntryInfo) controllerParsedMessage).getAuctionHouseCode());
+			}
+			
 			if (controllerParsedMessage instanceof ToastMessageRequest) {
 				mAuctioneer.broadcastToastMessage((ToastMessageRequest) controllerParsedMessage);
 			}
@@ -543,7 +583,7 @@ public class AuctionServer {
 			
 			if(commonParsedMessage instanceof RefreshConnector) {
 				// 접속자 정보 최초 전송
-				for (ChannelId key : mConnectorInfoMap.keySet()) {
+				for (Object key : mConnectorInfoMap.keySet()) {
 					if (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(((RefreshConnector)commonParsedMessage).getAuctionHouseCode()) && mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 						channelItemWriteAndFlush(new BidderConnectInfo(mConnectorInfoMap.get(key).getAuctionHouseCode(),
 								mConnectorInfoMap.get(key).getAuctionJoinNum(),
@@ -786,6 +826,11 @@ public class AuctionServer {
 				break;
 
 			case ShowEntryInfo.TYPE: // 출품 정보 노출 설정 정보 전송
+				// Web Socket Broadcast
+				if (mSocketIOHandler != null) {
+					mSocketIOHandler.sendPacketData(message);
+				}
+				
 				// Netty Broadcast
 				if (mBidderChannelsMap != null) {
 					for (String key : mBidderChannelsMap.keySet()) {
@@ -998,17 +1043,17 @@ public class AuctionServer {
 		ChannelId channelId = null;
 		String closeMember = requestLogout.getUserNo();
 
-		for (ChannelId key : mConnectorInfoMap.keySet()) {
+		for (Object key : mConnectorInfoMap.keySet()) {
 			try {
 				if(mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
 					if((mConnectorInfoMap.get(key).getAuctionHouseCode() + "_" + mConnectorInfoMap.get(key).getUserMemNum()).equals(closeMember)) {
-						channelId = key;
+						channelId = (ChannelId) key;
 						break;
 					}
 				} else {
 					if (JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken())
 							.equals(closeMember)) {
-						channelId = key;
+						channelId = (ChannelId) key;
 						break;
 					}
 				}
@@ -1089,5 +1134,12 @@ public class AuctionServer {
 		} else {
 			mBiddingInfoMap.put(auctionHouseCode, new HashMap<Integer, Object>());
 		}
+	}
+	
+	public void responseWebSocketConnection(SocketIOClient client, ConnectionInfo connectionInfo, ResponseConnectionInfo responseConnectionInfo) {
+		mLogger.debug("responseWebSocketConnection ConnectionInfo : " + connectionInfo.getEncodedMessage());
+		mLogger.debug("responseWebSocketConnection ResponseConnectionInfo : " + responseConnectionInfo.getEncodedMessage());
+		
+		mSocketIOHandler.connectWebBidderClient(client, connectionInfo, responseConnectionInfo);
 	}
 }

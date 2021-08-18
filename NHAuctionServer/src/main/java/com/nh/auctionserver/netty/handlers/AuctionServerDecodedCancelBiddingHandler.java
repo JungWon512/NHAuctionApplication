@@ -10,6 +10,7 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.ResponseCode;
 
 import io.netty.channel.Channel;
@@ -31,13 +32,13 @@ public final class AuctionServerDecodedCancelBiddingHandler extends SimpleChanne
 	private Map<String, ChannelGroup> mWatcherChannelsMap = null;
 	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
-	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
-	private Map<String, ChannelHandlerContext> mConnectionChannelInfoMap;
+	private Map<Object, ConnectionInfo> mConnectionInfoMap;
+	private Map<String, Object> mConnectionChannelInfoMap;
 
 	public AuctionServerDecodedCancelBiddingHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelHandlerContext> connectionChannelInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
-			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
-			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
+			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap,
+			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
+			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
 		mAuctionServer = auctionServer;
 		mConnectionInfoMap = connectionInfoMap;
@@ -54,6 +55,16 @@ public final class AuctionServerDecodedCancelBiddingHandler extends SimpleChanne
 	protected void channelRead0(ChannelHandlerContext ctx, CancelBidding cancelBidding) throws Exception {
 		if (mConnectionInfoMap.containsKey(ctx.channel().id())
 				&& mBidderChannelsMap.get(cancelBidding.getAuctionHouseCode()).contains(ctx.channel())) {
+			
+			// 제어 프로그램 상태가 유효하지 않을 경우 예외 처리
+			if (mControllerChannelsMap.get(cancelBidding.getAuctionHouseCode()).size() <= 0) {
+				ctx.channel().writeAndFlush(new ResponseConnectionInfo(cancelBidding.getAuctionHouseCode(),
+						GlobalDefineCode.CONNECT_CONTROLLER_ERROR, null, null).getEncodedMessage() + "\r\n");
+				ctx.channel().close();
+
+				return;
+			}
+			
 			if (mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
 					.equals(GlobalDefineCode.AUCTION_STATUS_START)
 					|| mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
@@ -63,7 +74,7 @@ public final class AuctionServerDecodedCancelBiddingHandler extends SimpleChanne
 
 				ctx.writeAndFlush(new ResponseCode(cancelBidding.getAuctionHouseCode(),
 						GlobalDefineCode.RESPONSE_SUCCESS_CANCEL_BIDDING).getEncodedMessage() + "\r\n");
-				
+
 				mAuctionServer.itemAdded(cancelBidding.getEncodedMessage());
 
 			} else {

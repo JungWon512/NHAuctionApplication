@@ -32,12 +32,11 @@ public final class AuctionServerDecodedRequestBiddingInfoHandler
 	private Map<String, ChannelGroup> mWatcherChannelsMap = null;
 	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
-	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
-	private Map<String, ChannelHandlerContext> mConnectionChannelInfoMap;
+	private Map<Object, ConnectionInfo> mConnectionInfoMap;
+	private Map<String, Object> mConnectionChannelInfoMap;
 
 	public AuctionServerDecodedRequestBiddingInfoHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectionInfoMap,
-			Map<String, ChannelHandlerContext> connectionChannelInfoMap,
+			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap,
 			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
 			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
@@ -57,6 +56,16 @@ public final class AuctionServerDecodedRequestBiddingInfoHandler
 		if (mConnectionInfoMap.containsKey(ctx.channel().id())
 				&& mConnectionChannelInfoMap.containsKey(requestBiddingInfo.getUserNo())
 				&& mBidderChannelsMap.get(requestBiddingInfo.getAuctionHouseCode()).contains(ctx.channel())) {
+			
+			// 제어 프로그램 상태가 유효하지 않을 경우 예외 처리
+			if (mControllerChannelsMap.get(requestBiddingInfo.getAuctionHouseCode()).size() <= 0) {
+				ctx.channel().writeAndFlush(new ResponseConnectionInfo(requestBiddingInfo.getAuctionHouseCode(),
+						GlobalDefineCode.CONNECT_CONTROLLER_ERROR, null, null).getEncodedMessage() + "\r\n");
+				ctx.channel().close();
+
+				return;
+			}
+			
 			// 응찰 정보 조회 요청
 			if (mControllerChannelsMap != null
 					&& mControllerChannelsMap.containsKey(requestBiddingInfo.getAuctionHouseCode())

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
+import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.controller.models.SendAuctionResult;
 
@@ -29,11 +30,11 @@ public final class AuctionServerDecodedAuctionResultHandler extends SimpleChanne
 	private Map<String, ChannelGroup> mWatcherChannelsMap = null;
 	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
-	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
-	private Map<String, ChannelHandlerContext> mConnectionChannelInfoMap;
+	private Map<Object, ConnectionInfo> mConnectionInfoMap;
+	private Map<String, Object> mConnectionChannelInfoMap;
 
 	public AuctionServerDecodedAuctionResultHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelHandlerContext> connectionChannelInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
+			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
 			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
 			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
@@ -53,11 +54,25 @@ public final class AuctionServerDecodedAuctionResultHandler extends SimpleChanne
 		mLogger.info(sendAuctionResult.getAuctionHouseCode() + " / " + sendAuctionResult.getEntryNum()
 				+ "번 경매 낙/유찰 결과 수신 : " + sendAuctionResult.getEncodedMessage());
 
-		if (mControllerChannelsMap.get(sendAuctionResult.getAuctionHouseCode()).contains(ctx.channel()) == true) {
-			mLogger.info("정상 채널에서 경매 결과를 수신 받았습니다.");
-			mAuctionServer.itemAdded(sendAuctionResult.getEncodedMessage());
+		// 경매 취소의 경우 해당 출품 건을 대기 상태로 초기화 처리
+		if(sendAuctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL)) {
+			if (mControllerChannelsMap.get(sendAuctionResult.getAuctionHouseCode()).contains(ctx.channel()) == true) {
+				mLogger.info("정상 채널에서 경매 결과를 수신 받았습니다.");
+				mAuctionServer.itemAdded(sendAuctionResult.getEncodedMessage());
+			} else {
+				mLogger.info("비정상 채널에서 경매 결과를 수신받았으나, 해당 요청이 거부되었습니다.");
+			}
+			
+			mAuctionScheduler.readyEntryInfo(sendAuctionResult.getAuctionHouseCode(), sendAuctionResult.getEntryNum());
 		} else {
-			mLogger.info("비정상 채널에서 경매 결과를 수신받았으나, 해당 요청이 거부되었습니다.");
+			mAuctionScheduler.setAuctionCompleted(sendAuctionResult.getAuctionHouseCode());
+			
+			if (mControllerChannelsMap.get(sendAuctionResult.getAuctionHouseCode()).contains(ctx.channel()) == true) {
+				mLogger.info("정상 채널에서 경매 결과를 수신 받았습니다.");
+				mAuctionServer.itemAdded(sendAuctionResult.getEncodedMessage());
+			} else {
+				mLogger.info("비정상 채널에서 경매 결과를 수신받았으나, 해당 요청이 거부되었습니다.");
+			}
 		}
 	}
 }

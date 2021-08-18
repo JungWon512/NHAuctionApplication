@@ -5,6 +5,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.corundumstudio.socketio.SocketIOClient;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.common.models.ConnectionInfo;
@@ -26,12 +27,12 @@ public class AuctionServerDecodedResponseBiddingInfoHandler extends SimpleChanne
 	private Map<String, ChannelGroup> mWatcherChannelsMap = null;
 	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
-	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
-	private Map<String, ChannelHandlerContext> mConnectionChannelInfoMap;
+	private Map<Object, ConnectionInfo> mConnectionInfoMap;
+	private Map<String, Object> mConnectionChannelInfoMap;
 
 	public AuctionServerDecodedResponseBiddingInfoHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectionInfoMap,
-			Map<String, ChannelHandlerContext> connectionChannelInfoMap,
+			Map<Object, ConnectionInfo> connectionInfoMap,
+			Map<String, Object> connectionChannelInfoMap,
 			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
 			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
@@ -50,10 +51,19 @@ public class AuctionServerDecodedResponseBiddingInfoHandler extends SimpleChanne
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, ResponseBiddingInfo responseBiddingInfo) throws Exception {
 		if (mConnectionChannelInfoMap.containsKey(responseBiddingInfo.getUserNo())) {
-			ChannelHandlerContext clientChannelContext = mConnectionChannelInfoMap.get(responseBiddingInfo.getUserNo());
+			 if (mConnectionChannelInfoMap
+						.get(responseBiddingInfo.getUserNo()) instanceof ChannelHandlerContext) {
+				 ChannelHandlerContext clientChannelContext = (ChannelHandlerContext) mConnectionChannelInfoMap.get(responseBiddingInfo.getUserNo());
 
-			// 조회 된 응찰 정보 전송 처리
-			clientChannelContext.channel().writeAndFlush(responseBiddingInfo.getEncodedMessage() + "\r\n");
+					// 조회 된 응찰 정보 전송 처리
+					clientChannelContext.channel().writeAndFlush(responseBiddingInfo.getEncodedMessage() + "\r\n");
+			 } else if (mConnectionChannelInfoMap
+						.get(responseBiddingInfo.getUserNo()) instanceof SocketIOClient) {
+				 SocketIOClient socketIOClient = (SocketIOClient) mConnectionChannelInfoMap
+							.get(responseBiddingInfo.getUserNo());
+
+				 socketIOClient.sendEvent("ResponseBiddingInfo", responseBiddingInfo.getEncodedMessage());
+			 }
 		}
 	}
 }

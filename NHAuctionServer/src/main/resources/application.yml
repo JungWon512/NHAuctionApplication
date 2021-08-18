@@ -3,7 +3,7 @@ server:
   port: 8089
 logging:
   level:
-    org.springframework: INFO
+    org.springframework: DEBUG
     org.springframework.web: DEBUG
 #socket.io 설정
 socketio:

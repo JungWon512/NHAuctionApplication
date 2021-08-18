@@ -10,6 +10,7 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.ResponseCode;
 
@@ -32,13 +33,13 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 	private Map<String, ChannelGroup> mWatcherChannelsMap = null;
 	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
-	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
-	private Map<String, ChannelHandlerContext> mConnectionChannelInfoMap;
+	private Map<Object, ConnectionInfo> mConnectionInfoMap;
+	private Map<String, Object> mConnectionChannelInfoMap;
 
 	public AuctionServerDecodedBiddingHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectionInfoMap, Map<String, ChannelHandlerContext> connectionChannelInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
-			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
-			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
+			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap,
+			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
+			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
 		mAuctionServer = auctionServer;
 		mConnectionInfoMap = connectionInfoMap;
@@ -55,6 +56,16 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 	protected void channelRead0(ChannelHandlerContext ctx, Bidding bidding) throws Exception {
 		if (mConnectionInfoMap.containsKey(ctx.channel().id())
 				&& mBidderChannelsMap.get(bidding.getAuctionHouseCode()).contains(ctx.channel())) {
+			
+			// 제어 프로그램 상태가 유효하지 않을 경우 예외 처리
+			if (mControllerChannelsMap.get(bidding.getAuctionHouseCode()).size() <= 0) {
+				ctx.channel().writeAndFlush(new ResponseConnectionInfo(bidding.getAuctionHouseCode(),
+						GlobalDefineCode.CONNECT_CONTROLLER_ERROR, null, null).getEncodedMessage() + "\r\n");
+				ctx.channel().close();
+
+				return;
+			}
+			
 			if (mAuctionScheduler.getCurrentAuctionStatus(bidding.getAuctionHouseCode())
 					.equals(GlobalDefineCode.AUCTION_STATUS_START)
 					|| mAuctionScheduler.getCurrentAuctionStatus(bidding.getAuctionHouseCode())
@@ -64,21 +75,24 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 
 				if (bidding.getPriceInt() >= Integer
 						.valueOf(mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getStartPrice())) {
-					
-					ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
-							GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage() + "\r\n");
-					
+
+					ctx.writeAndFlush(
+							new ResponseCode(bidding.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_SUCCESS_BIDDING)
+									.getEncodedMessage() + "\r\n");
+
 					// 응찰 정보 수집
 					mAuctionServer.itemAdded(bidding.getEncodedMessage());
-				
+
 				} else {
 					mLogger.debug("=============================================");
 					mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
 					mLogger.debug("=============================================");
-					ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage() + "\r\n");
+					ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+							GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage() + "\r\n");
 				}
 			} else {
-				ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage() + "\r\n");
+				ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+						GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage() + "\r\n");
 			}
 		} else {
 			mLogger.debug("=============================================");

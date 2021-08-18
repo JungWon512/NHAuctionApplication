@@ -11,8 +11,6 @@ import com.nh.share.controller.models.EntryInfo;
 public class AuctionState {
 	private final Logger mLogger = LoggerFactory.getLogger(AuctionState.class);
 
-	private Auctioneer mAuctioneer;
-
 	private boolean mSettingsInformationLoaded = false;
 	private boolean mEntryInformationLoaded = false;
 	private boolean mEntryFavoriteCarInfoLoaded = true;
@@ -24,6 +22,7 @@ public class AuctionState {
 	private int mAuctionCountDownTime = 0;
 
 	private String mEntryNum; // 현재 진행 중인 출품번호
+	private String mAuctionQcn; // 현재 진행 중인 경매회차
 	private String mStartPrice; // 현재 응찰 가격
 	private String mCurrentBidderCount; // 현재 응찰자 수
 	private String mState = GlobalDefineCode.AUCTION_STATUS_NONE; // 경매상태
@@ -55,13 +54,12 @@ public class AuctionState {
 	// 거점코드
 	private String mAuctionHouseCode;
 
-	public AuctionState(String auctionHouseCode, Auctioneer auctioneer) {
-		mAuctioneer = auctioneer;
+	public AuctionState(String auctionHouseCode) {
 		mAuctionHouseCode = auctionHouseCode;
 	}
 
 	public AuctionStatus getAuctionStatus() {
-		AuctionStatus auctionStatus = new AuctionStatus(mAuctionHouseCode, mEntryNum, mStartPrice, mCurrentBidderCount,
+		AuctionStatus auctionStatus = new AuctionStatus(mAuctionHouseCode, mEntryNum, mAuctionQcn, mStartPrice, mCurrentBidderCount,
 				mState, mRank1MemberNum, mRank2MemberNum, mRank3MemberNum, mFinishEntryCount, mRemainEntryCount);
 
 		return auctionStatus;
@@ -70,6 +68,7 @@ public class AuctionState {
 	public void setAuctionStatus(AuctionStatus auctionStatus) {
 		mAuctionHouseCode = auctionStatus.getAuctionHouseCode();
 		mEntryNum = auctionStatus.getEntryNum();
+		mAuctionQcn = auctionStatus.getAuctionQcn();
 		mStartPrice = auctionStatus.getStartPrice();
 		mCurrentBidderCount = auctionStatus.getCurrentBidderCount();
 		mState = auctionStatus.getState();
@@ -86,6 +85,14 @@ public class AuctionState {
 
 	public void setEntryNum(String entryNum) {
 		this.mEntryNum = entryNum;
+	}
+
+	public String getAuctionQcn() {
+		return mAuctionQcn;
+	}
+
+	public void setAuctionQcn(String auctionQcn) {
+		this.mAuctionQcn = auctionQcn;
 	}
 
 	public String getStartPrice() {

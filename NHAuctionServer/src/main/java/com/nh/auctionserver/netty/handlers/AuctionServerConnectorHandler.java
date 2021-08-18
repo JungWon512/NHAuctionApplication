@@ -44,12 +44,12 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 	private Map<String, ChannelGroup> mWatcherChannelsMap = null;
 	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
-	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
-	private Map<String, ChannelHandlerContext> mConnectionChannelInfoMap;
+	private Map<Object, ConnectionInfo> mConnectionInfoMap;
+	private Map<String, Object> mConnectionChannelInfoMap;
 
 	public AuctionServerConnectorHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectionInfoMap,
-			Map<String, ChannelHandlerContext> connectionChannelInfoMap,
+			Map<Object, ConnectionInfo> connectionInfoMap,
+			Map<String, Object> connectionChannelInfoMap,
 			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
 			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
@@ -110,7 +110,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					mLogger.info("Controller Channel Count : " + mControllerChannelsMap.size());
 
 					if (mConnectionInfoMap.size() > 0) {
-						for (ChannelId key : mConnectionInfoMap.keySet()) {
+						for (Object key : mConnectionInfoMap.keySet()) {
 							if (mConnectionInfoMap.get(key).getChannel()
 									.equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
 								mLogger.info("이미 제어 프로그램이 실행 중인 상태로 추가 실행이 불가합니다.");
@@ -344,7 +344,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					}
 
 					// 접속자 정보 최초 전송
-					for (ChannelId key : mConnectionInfoMap.keySet()) {
+					for (Object key : mConnectionInfoMap.keySet()) {
 						if (mConnectionInfoMap.get(key).getAuctionHouseCode().equals(connectionInfo.getAuctionHouseCode())
 								&& mConnectionInfoMap.get(key).getChannel()
 										.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
@@ -453,7 +453,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					}
 
 					// 접속자 정보 최초 전송
-					for (ChannelId key : mConnectionInfoMap.keySet()) {
+					for (Object key : mConnectionInfoMap.keySet()) {
 						if (mConnectionInfoMap.get(key).getAuctionHouseCode().equals(connectionInfo.getAuctionHouseCode())
 								&& mConnectionInfoMap.get(key).getChannel()
 										.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {

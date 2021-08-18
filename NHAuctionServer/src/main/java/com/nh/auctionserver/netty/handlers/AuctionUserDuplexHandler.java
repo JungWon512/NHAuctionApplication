@@ -19,9 +19,9 @@ import io.netty.handler.timeout.IdleStateEvent;
 @Sharable
 public final class AuctionUserDuplexHandler extends ChannelDuplexHandler {
 	private final Logger mLogger = LoggerFactory.getLogger(AuctionUserDuplexHandler.class);
-	private Map<ChannelId, ConnectionInfo> mConnectorInfoMap;
+	private Map<Object, ConnectionInfo> mConnectorInfoMap;
 
-	public AuctionUserDuplexHandler(Map<ChannelId, ConnectionInfo> connectorInfoMap) {
+	public AuctionUserDuplexHandler(Map<Object, ConnectionInfo> connectorInfoMap) {
 		// TODO Auto-generated constructor stub
 		mConnectorInfoMap = connectorInfoMap;
 	}

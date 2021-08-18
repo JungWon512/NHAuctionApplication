@@ -10,6 +10,7 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.RequestEntryInfo;
+import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ResponseCode;
 
@@ -31,12 +32,11 @@ public final class AuctionServerDecodedRequestEntryInfoHandler extends SimpleCha
 	private Map<String, ChannelGroup> mWatcherChannelsMap = null;
 	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = null;
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
-	private Map<ChannelId, ConnectionInfo> mConnectionInfoMap;
-	private Map<String, ChannelHandlerContext> mConnectionChannelInfoMap;
+	private Map<Object, ConnectionInfo> mConnectionInfoMap;
+	private Map<String, Object> mConnectionChannelInfoMap;
 
 	public AuctionServerDecodedRequestEntryInfoHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<ChannelId, ConnectionInfo> connectionInfoMap,
-			Map<String, ChannelHandlerContext> connectionChannelInfoMap,
+			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap,
 			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
 			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
@@ -55,6 +55,16 @@ public final class AuctionServerDecodedRequestEntryInfoHandler extends SimpleCha
 	protected void channelRead0(ChannelHandlerContext ctx, RequestEntryInfo requestEntryInfo) throws Exception {
 		if (mConnectionInfoMap.containsKey(ctx.channel().id())
 				&& mBidderChannelsMap.get(requestEntryInfo.getAuctionHouseCode()).contains(ctx.channel())) {
+			
+			// 제어 프로그램 상태가 유효하지 않을 경우 예외 처리
+			if (mControllerChannelsMap.get(requestEntryInfo.getAuctionHouseCode()).size() <= 0) {
+				ctx.channel().writeAndFlush(new ResponseConnectionInfo(requestEntryInfo.getAuctionHouseCode(),
+						GlobalDefineCode.CONNECT_CONTROLLER_ERROR, null, null).getEncodedMessage() + "\r\n");
+				ctx.channel().close();
+
+				return;
+			}
+			
 			// 요청된 출품 정보 확인 및 결과 전송 처리
 			if (mAuctionScheduler.getCurrentAuctionStatus(requestEntryInfo.getAuctionHouseCode())
 					.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
