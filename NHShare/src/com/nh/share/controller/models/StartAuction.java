@@ -16,7 +16,7 @@ public class StartAuction implements FromAuctionController {
 	private String mAuctionHouseCode; // 거점코드
 	private String mEntryNum; // 출품번호
 
-	public StartAuction(String auctionHouseCode, String entryNum, String isRetry) {
+	public StartAuction(String auctionHouseCode, String entryNum) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 	}

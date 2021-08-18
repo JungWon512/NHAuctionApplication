@@ -31,7 +31,7 @@ public class ControllerMessageParser {
 		case StopAuction.TYPE: // 경매 정치 기능
 			return new StopAuction(messages[1], messages[2], messages[3]);
 		case StartAuction.TYPE: // 경매 시작 처리
-			return new StartAuction(messages[1], messages[2], messages[3]);
+			return new StartAuction(messages[1], messages[2]);
 		case PauseAuction.TYPE: // 경매 정지 취소 처리
 			return new PauseAuction(messages[1], messages[2]);
 		case InitEntryInfo.TYPE:
