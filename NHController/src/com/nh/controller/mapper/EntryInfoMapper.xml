@@ -138,7 +138,7 @@
 			tb_la_is_mh_auc_qcn as D
 			 ON
 				B.NA_BZPLC = D.NA_BZPLC AND
-				B.AUC_DT = D.AUC_DT AND
+				B.AUC_DT = D.AUC_DT
 		WHERE B.AUC_DT = #{aucDt}
 		AND B.NA_BZPLC = #{naBzplc}
 		AND B.AUC_OBJ_DSC = #{aucObjDsc}

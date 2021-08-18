@@ -129,7 +129,7 @@ public class AuctionDelegate {
      * @Description 정지 전송
      */
     public String onPauseAuction(String entrySeq) {
-        return sendMessage(new StopAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq));
+        return sendMessage(new StopAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq, "Y"));
     }
 
     /**
