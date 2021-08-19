@@ -249,7 +249,7 @@
 
 /* 응찰자 정보 테이블 셀 크기 */
 .base-contents .bidding-user-info .table-row-cell{
-	-fx-cell-size: 40px;
+	-fx-cell-size: 45px;
 	-fx-background-color: #ffffff;
 	-fx-text-fill: #111111;
 	-fx-border-color: #cccccc;
@@ -368,8 +368,10 @@
 }
 
 
-
 /* etc .. */
+.bg-color-0a1931{
+	-fx-background-color : #0a1931;
+}
 .bg-color-cccccc{
 	-fx-background-color: #cccccc;
 }

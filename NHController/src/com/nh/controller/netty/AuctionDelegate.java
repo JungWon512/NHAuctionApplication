@@ -128,8 +128,14 @@ public class AuctionDelegate {
      * @return
      * @Description 정지 전송
      */
-    public String onPauseAuction(String entrySeq) {
-        return sendMessage(new StopAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq, "Y"));
+    public String onStopAuction(String entrySeq,int countDown) {
+    	
+    	//방어코드.. 0일경우 5로
+    	if(countDown <= 0 ) {
+    		countDown = 5;
+    	}
+    	
+        return sendMessage(new StopAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq, Integer.toString(countDown)));
     }
 
     /**
