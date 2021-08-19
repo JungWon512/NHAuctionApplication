@@ -450,9 +450,9 @@ public class AuctionState {
 	/**
 	 * 
 	 * @MethodName getAuctionCountDownStatus
-	 * @Description 현재 경매 시작 카운트 다운 상태 반환 처리
+	 * @Description 현재 경매 카운트 다운 상태 반환 처리
 	 *
-	 * @return String 현재 경매 시작 카운트 다운 상태
+	 * @return String 현재 경매 카운트 다운 상태
 	 */
 	public String getAuctionCountDownStatus() {
 		return mAuctionCountDownStatus;
@@ -461,9 +461,9 @@ public class AuctionState {
 	/**
 	 * 
 	 * @MethodName getAuctionCountDownTime
-	 * @Description 현재 경매 시작 카운트 다운 남은 시간 반환 처리
+	 * @Description 현재 경매 카운트 다운 남은 시간 반환 처리
 	 *
-	 * @return int 현재 경매 시작 카운트 다운 시간
+	 * @return int 현재 경매 카운트 다운 시간
 	 */
 	public int getAuctionCountDownTime() {
 		int remainSecond = mAuctionCountDownTime;
@@ -471,6 +471,17 @@ public class AuctionState {
 		return remainSecond;
 	}
 
+	/**
+	 * 
+	 * @MethodName setAuctionCountDownTime
+	 * @Description 경매 카운트 다운 남은 시간 반환 처리
+	 *
+	 * @return int 현재 경매 카운트 다운 시간
+	 */
+	public void setAuctionCountDownTime(int second) {
+		mAuctionCountDownTime = second;
+	}
+	
 	/**
 	 * 
 	 * @MethodName decreaseAuctionCountDownTime

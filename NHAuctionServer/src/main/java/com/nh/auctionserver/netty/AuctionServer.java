@@ -311,7 +311,8 @@ public class AuctionServer {
 
 		mLogger.info("************************************* Bye Auction World! **************************************");
 
-		System.exit(0);
+		//System.exit(0);
+		Runtime.getRuntime().exit(0);
 	}
 
 //	public void entryAdded(Object event) {
