@@ -139,6 +139,15 @@ public class AuctionDelegate {
     }
 
     /**
+     * 일시 정지
+     * @param pauseAuction
+     * @return
+     */
+    public String onPause(PauseAuction pauseAuction) {
+    	 return sendMessage(pauseAuction);
+    }
+
+    /**
      * @param entrySeq
      * @return
      * @Description 강제유찰 전송

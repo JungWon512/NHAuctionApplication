@@ -223,12 +223,8 @@ public class BaseAuctionController implements NettyControllable {
         		//재경매 목록에 있는 응찰자만 받음. 
         		if(bidder.getAuctionJoinNum().getValue().equals(bidding.getAuctionJoinNum())) {
         			//최저가와 같거나 크고, 응찰된 금액이랑 같지 않을 경우 응찰 내역 저장
-        			
-        			int reBiddingPrice = bidding.getPriceInt() * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE;
-        			
-        			
-        			System.out.println("## " + mCurrentSpEntryInfo.getLowPriceInt()  + " / " + reBiddingPrice);
-        			if((mCurrentBidderMap.get(bidding.getAuctionJoinNum()).getPriceInt() != bidding.getPriceInt()) && (mCurrentSpEntryInfo.getLowPriceInt() <= reBiddingPrice)) {
+
+        			if((mCurrentBidderMap.get(bidding.getAuctionJoinNum()).getPriceInt() != bidding.getPriceInt()) && (mCurrentSpEntryInfo.getLowPriceInt() <= bidding.getPriceInt())) {
         				mLogger.debug("[onBidding] 재경매 응찰 저장 : " + bidding.getPriceInt());
         				setBidding(bidding);
         				isbidding = true;
@@ -332,11 +328,11 @@ public class BaseAuctionController implements NettyControllable {
 
         addLogItem(mResMsg.getString("msg.auction.get.bidding.cancel") + cancelBidding.getEncodedMessage());
 
-        if (mCurrentBidderMap.containsKey(cancelBidding.getUserNo())) {
-            SpBidding currentBidder = mCurrentBidderMap.get(cancelBidding.getUserNo());
+        if (mCurrentBidderMap.containsKey(cancelBidding.getAuctionJoinNum())) {
+            SpBidding currentBidder = mCurrentBidderMap.get(cancelBidding.getAuctionJoinNum());
             currentBidder.setIsCancelBidding(new SimpleBooleanProperty(true));
             mBeForeBidderDataList.add(currentBidder);
-            mCurrentBidderMap.remove(cancelBidding.getUserNo());
+            mCurrentBidderMap.remove(cancelBidding.getAuctionJoinNum());
         }
 
         calculationRanking();
@@ -497,14 +493,14 @@ public class BaseAuctionController implements NettyControllable {
     	// 최저가
         int lowPrice = entryInfo.getLowPriceInt();
         // 응찰가
-        int curPrice = bidder.getPriceInt() * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE;
+        int curPrice = bidder.getPriceInt();
         
         //응찰 금액이 최저가와 같거나 크면 OK
         
         if(curPrice >= lowPrice) {
         	result = true; 
         }
-    	
+
         System.out.println("checkLowPrice : " + result + " / 최저가 : " + lowPrice  + " / 응찰가 : " + curPrice);
         
     	return result;
@@ -525,13 +521,13 @@ public class BaseAuctionController implements NettyControllable {
     	// 최저가
         int lowPrice = entryInfo.getLowPriceInt() + SettingApplication.getInstance().getBaseUnit();
         // 응찰가
-        int curPrice = bidder.getPriceInt()  * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE;
+        int curPrice = bidder.getPriceInt();
 
         if(curPrice <= lowPrice) {
         	result = true; 
         }
     	
-        System.out.println("checkOverPrice : " + result + " / 최저가 : " + lowPrice  + " / 응찰가 : " + curPrice);
+        System.out.println("checkOverPrice : " + result + " / 최저가+상한가 : " + lowPrice  + " / 응찰가 : " + curPrice);
         
     	
     	return result;
@@ -586,7 +582,11 @@ public class BaseAuctionController implements NettyControllable {
 
 	            List<SpBidding> rankBiddingDataList = getCurrentRank(list);
 
-		        runWriteLogFile(rankBiddingDataList, mAuctionStatus, isSuccess, bidder.getAuctionJoinNum().getValue());
+	            if(bidder != null && bidder.getAuctionJoinNum() != null) {
+	            	runWriteLogFile(rankBiddingDataList, mAuctionStatus, isSuccess, bidder.getAuctionJoinNum().getValue());
+	            }else {
+	            	   runWriteLogFile(rankBiddingDataList, mAuctionStatus, isSuccess, "");
+	            }
 
 	            updateAuctionStateInfo(isSuccess, bidder); 
 	         // 낙유찰 결과 전송

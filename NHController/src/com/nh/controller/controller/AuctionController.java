@@ -24,10 +24,10 @@ import com.nh.controller.utils.SharedPreference;
 import com.nh.controller.utils.SoundUtil;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
-import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.PauseAuction;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
 
@@ -49,7 +49,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -209,8 +208,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnEtc_5_Sound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(10));
 		mBtnEtc_6_Sound.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(11));
 	
-		mBtnReStart.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(8));
-		mBtnPause.setOnMouseClicked(event -> mAuctionInfoMessageSound.playSound(8));
+		mBtnReStart.setOnMouseClicked(event -> onPauseAndStart());
+		mBtnPause.setOnMouseClicked(event -> onPauseAndStart());
 	}
 
 	/**
@@ -264,7 +263,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// 테이블 컬럼 - 응찰자
 		mBiddingPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getPrice());
 		mBiddingUserColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionJoinNum());
-
+		setNumberColumnFactory(mBiddingPriceColumn, true);
+		
 		// holder default msg
 		mFinishedTableView.setPlaceholder(new Label(mResMsg.getString("msg.entry.finish.default")));
 		mWaitTableView.setPlaceholder(new Label(mResMsg.getString("msg.entry.wait.default")));
@@ -877,7 +877,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 			//카운트 다운 완료시 강제낙찰/강제유찰/경매완료 버튼 활성/비활성화
 			btnStopAuctionToggle(true);
-			
+			mRemainingTimeCount =  countDown;
 			addLogItem(mResMsg.getString("msg.auction.send.complete") + AuctionDelegate.getInstance().onStopAuction(mCurrentSpEntryInfo.getEntryNum().getValue(),countDown));
 			break;
 		}
@@ -912,6 +912,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			break;
 		}
 	}
+	
+	
 
 	/**
 	 * 강제유찰
@@ -944,6 +946,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 	}
 
+	/**
+	 * 경매 진행 -> 카운트 다운 일시 정지.
+	 * 경매 진행 -> 카운트 다운 시작.
+	 */
+	public void onPauseAndStart() {
+		
+		switch (mAuctionStatus.getState()) {
+		case GlobalDefineCode.AUCTION_STATUS_START:
+		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+			
+			if(isCountDownRunning) {
+				addLogItem("카운트 다운 정지 : " + AuctionDelegate.getInstance().onPause(new PauseAuction(mCurrentSpEntryInfo.getAuctionHouseCode().getValue(), mCurrentSpEntryInfo.getEntryNum().getValue())));
+			}else {
+				onStopAuction(mRemainingTimeCount);
+			}
+		}
+	}
 	/**
 	 * 메세지 전송
 	 *
@@ -1347,8 +1366,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mAuctionStateSuccessLabel.setDisable(true);
 				// 유찰(보류) 라벨 비활성화
 				mAuctionStateFailLabel.setDisable(true);
-				// 출품 대기 테이블 비활성화
+				// 출품 대기 테이블 활성화
 				mWaitTableView.setDisable(false);
+				// 응찰 테이블 활성화
+				mBiddingInfoTableView.setDisable(false);
 				// 경매 재경매 횟수
 				mReAuctionCount = 0;
 				//1순위 회원
@@ -1454,11 +1475,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 낙유찰 화면 딜레이 2초 후 경매 대기 전환
 			PauseTransition pauseTransition = new PauseTransition(Duration.millis(2000));
 			pauseTransition.setOnFinished(event -> {
-				addFinishedTableViewItem(spEntryInfo);
-				// 출품 대기 테이블 활성화
-				mWaitTableView.setDisable(false);
-				mBiddingInfoTableView.setDisable(false);
 				
+				addFinishedTableViewItem(spEntryInfo);
+				setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 				setCurrentEntryInfo();
 				// 다음 출품 번호 이동
 //				selectIndexWaitTable(1, false);
@@ -1532,11 +1551,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			setSoundData(currentEntryInfo);
 			
-			if(!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) && !mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+			if(mAuctionStatus != null &&  mAuctionStatus.getState() != null && !mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) && !mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 				auctionStateLabelToggle("");
 			}
-			
-			
+	
 		});
 	}
 
@@ -1794,7 +1812,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param countDown
 	 */
 	private void sendCountDown(int countDown) {
-//		onStopAuction(countDown);
+		onStopAuction(countDown);
 	}
 
 	/**
@@ -2053,6 +2071,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					mBtnDownPrice.setDisable(false);
 					// 출품 대기 테이블 활성화
 					mWaitTableView.setDisable(false);
+					// 응찰 테이블 활성화
+					mBiddingInfoTableView.setDisable(false);
+					
 					break;
 			}
 		});
