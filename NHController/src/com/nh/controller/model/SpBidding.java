@@ -151,6 +151,15 @@ public class SpBidding implements FromAuctionCommon, Serializable, Comparable<Sp
     	return Integer.toString(CommonUtils.getInstance().getBaseUnitMultipl(getPrice().getValue(), GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE)) ;
     }
     
+    /**
+     * ex) 응찰가 312 -> 3120000
+     * @return String
+     */
+    public String getBaseUnitDivision() {
+    	return Integer.toString(CommonUtils.getInstance().getBaseUnitDivision(getPrice().getValue(), GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE)) ;
+    }
+    
+    
     public String getBiddingInfoForLog() {
         return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, getAuctionHouseCode().getValue(), AuctionShareSetting.DELIMITER,
                 getChannel().getValue(), AuctionShareSetting.DELIMITER, getUserNo().getValue(), AuctionShareSetting.DELIMITER,

@@ -8,6 +8,7 @@ import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionReponseSession;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.models.*;
 import com.nh.share.interfaces.NettySendable;
 
@@ -129,12 +130,6 @@ public class AuctionDelegate {
      * @Description 정지 전송
      */
     public String onStopAuction(String entrySeq,int countDown) {
-    	
-    	//방어코드.. 0일경우 5로
-    	if(countDown <= 0 ) {
-    		countDown = 5;
-    	}
-    	
         return sendMessage(new StopAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq, Integer.toString(countDown)));
     }
 
@@ -147,6 +142,15 @@ public class AuctionDelegate {
     	 return sendMessage(pauseAuction);
     }
 
+    /**
+     * 재경매자 보냄.
+     * @param retryTargetInfo
+     * @return
+     */
+    public String onRetryTargetInfo(RetryTargetInfo retryTargetInfo) {
+   	 return sendMessage(retryTargetInfo);
+   }
+    
     /**
      * @param entrySeq
      * @return

@@ -24,6 +24,7 @@ public class SettingApplication {
 	private String lowerLimitBreedingCattle = null; // 하한가 낮추기- 번식우
 	private String reAuctionCount = null; // 동가 재경매 횟수
 	private String auctionCountdown = null; // 경매 종료 카운트 다운 초
+	private String soundAuctionWaitTime = null; // 음성 경매 대기 시간
 	
 	private boolean useReAuction = false; // 동가 재경매 여부
 	private boolean useOneAuction = false; // 연속경매 - 하나씩 진행 여부
@@ -68,7 +69,7 @@ public class SettingApplication {
 		useReAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_CHECK, false);
 		useOneAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_ONE_AUCTION, false);
 		useSoundAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, false);
-	
+		soundAuctionWaitTime = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, "3");
 	}
 
 	
@@ -191,6 +192,9 @@ public class SettingApplication {
 	}
 	public int getAuctionCountdown() {
 		return reInt(auctionCountdown);
+	}
+	public int getSoundAuctionWaitTime() {
+		return reInt(soundAuctionWaitTime);
 	}
 	public boolean isUseReAuction() {
 		return useReAuction;

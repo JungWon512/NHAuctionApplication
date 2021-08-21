@@ -96,11 +96,15 @@ public class BaseAuctionController implements NettyControllable {
 	
     protected int mReAuctionCount = -1; //동일가 설정 횟수
 
-    protected boolean mIsPass = false;
+    protected boolean mIsPass = false;	//강제 유찰
     
-    protected boolean isAuctionComplete = false;
+    protected boolean isAuctionComplete = false;	//낙찰자 예정 여부
+    
+    protected boolean isReAuction = false;	//재경매 여부
     
     protected boolean isCountDownRunning = false;	//카운트다운 실행 여부
+    
+    protected boolean isAutoPlay = false;
     
     public BaseAuctionController() {
         init();
@@ -192,17 +196,20 @@ public class BaseAuctionController implements NettyControllable {
 
     @Override
     public void onAuctionCountDown(AuctionCountDown auctionCountDown) {
-        mLogger.debug("onAuctionCountDown : " + auctionCountDown.getEncodedMessage());
-
         if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN)) {
-            String msg = String.format(mResMsg.getString("msg.auction.get.count.down"), mCurrentSpEntryInfo.getEntryNum().getValue(), auctionCountDown.getCountDownTime());
-            addLogItem(msg + auctionCountDown.getEncodedMessage());
+//            String msg = String.format(mResMsg.getString("msg.auction.get.count.down"), mCurrentSpEntryInfo.getEntryNum().getValue(), auctionCountDown.getCountDownTime());
+            addLogItem("onAuctionCountDown : " +auctionCountDown.getEncodedMessage());
         }
 
     }
 
     @Override
     public void onBidding(Bidding bidding) {
+    	
+    	if(isAuctionComplete) {
+    		//낙찰 확정시 응찰 안 받음
+    		return;
+    	}
         addLogItem(mResMsg.getString("msg.auction.get.bidding") + bidding.getEncodedMessage());
 
         if (bidding.getAuctionJoinNum() == null || bidding.getPrice() == null
@@ -216,7 +223,7 @@ public class BaseAuctionController implements NettyControllable {
         }
         
         //재경매 상황시 목록에 있는 사람만 정보 받음.
-        if(SettingApplication.getInstance().isUseReAuction() && mReAuctionCount > 0 && !CommonUtils.getInstance().isListEmpty(mReAuctionBidderDataList)) {
+        if(isReAuction) {
         	
         	boolean isbidding = false;
         	for(SpBidding bidder : mReAuctionBidderDataList) {
@@ -327,6 +334,15 @@ public class BaseAuctionController implements NettyControllable {
     public void onCancelBidding(CancelBidding cancelBidding) {
 
         addLogItem(mResMsg.getString("msg.auction.get.bidding.cancel") + cancelBidding.getEncodedMessage());
+        
+        if(SettingApplication.getInstance().isUseReAuction() && mReAuctionCount > 0 && !CommonUtils.getInstance().isListEmpty(mReAuctionBidderDataList)) {
+        	return;
+        }
+        
+        //낙찰 확정시 응찰 안 받음.
+        if(isAuctionComplete || isReAuction) {
+        	return;
+        }
 
         if (mCurrentBidderMap.containsKey(cancelBidding.getAuctionJoinNum())) {
             SpBidding currentBidder = mCurrentBidderMap.get(cancelBidding.getAuctionJoinNum());
@@ -543,6 +559,8 @@ public class BaseAuctionController implements NettyControllable {
     
     protected void sendAuctionResult(boolean isSuccess, SpEntryInfo spEntryInfo, SpBidding bidder,String code) {
 		
+    	addLogItem("sendAuctionResult");
+    	
 		SendAuctionResult auctionResult = new SendAuctionResult();
 		auctionResult.setAuctionHouseCode(spEntryInfo.getAuctionHouseCode().getValue());
 		auctionResult.setEntryNum(spEntryInfo.getEntryNum().getValue());
@@ -559,9 +577,8 @@ public class BaseAuctionController implements NettyControllable {
 	            auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS);
 	            auctionResult.setSuccessBidder(bidder.getUserNo().getValue());
 	            auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
-	            auctionResult.setSuccessBidPrice(bidder.getMultiplPriceString());
-	            int priceUpr = CommonUtils.getInstance().getBaseUnitDivision(bidder.getMultiplPriceString(), SettingApplication.getInstance().getBaseUnit());
-	            auctionResult.setSuccessBidUpr(Integer.toString(priceUpr));
+	            auctionResult.setSuccessBidPrice(bidder.getPrice().getValue());
+	            auctionResult.setSuccessBidUpr(bidder.getBaseUnitDivision());
 	        } else {
 	            // 유찰&보류
 	            auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
@@ -585,7 +602,7 @@ public class BaseAuctionController implements NettyControllable {
 	            if(bidder != null && bidder.getAuctionJoinNum() != null) {
 	            	runWriteLogFile(rankBiddingDataList, mAuctionStatus, isSuccess, bidder.getAuctionJoinNum().getValue());
 	            }else {
-	            	   runWriteLogFile(rankBiddingDataList, mAuctionStatus, isSuccess, "");
+	            	runWriteLogFile(rankBiddingDataList, mAuctionStatus, isSuccess, "");
 	            }
 
 	            updateAuctionStateInfo(isSuccess, bidder); 

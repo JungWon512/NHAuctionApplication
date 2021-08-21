@@ -114,9 +114,10 @@ public class SharedPreference {
 	public static final String PREFERENCE_SETTING_RE_AUCTION_CHECK = "PREFERENCE_SETTING_RE_AUCTION_CHECK";
 	// 동가 재경매 횟수  [END]
 	
-	// --- 연속 ,음성 경매  ---
+	// --- 연속 ,음성 경매,음성경매 대기 시간  ---
 	public static final String PREFERENCE_SETTING_USE_ONE_AUCTION = "PREFERENCE_SETTING_USE_ONE_AUCTION";
 	public static final String PREFERENCE_SETTING_USE_SOUND_AUCTION = "PREFERENCE_SETTING_SOUND_AUCTION";
+	public static final String PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME = "PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME";
 	// 연속 ,음성 경매  [END]
 
 	// --- 메인 -> 음성설정 -> 텍스트 ---

@@ -21,12 +21,13 @@
     <center>
         <GridPane maxHeight="1.7976931348623157E308" prefWidth="1260.0" styleClass="grid-pane" BorderPane.alignment="CENTER">
             <columnConstraints>
-                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="120.0" minWidth="10.0" prefWidth="10.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
                 <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="100.0" prefWidth="250.0" />
-                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="110.0" minWidth="10.0" prefWidth="10.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
                 <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="100.0" prefWidth="260.0" />
-                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="110.0" minWidth="10.0" prefWidth="10.0" />
-                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="150.0" prefWidth="150.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="140.0" prefWidth="140.0" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" />
                 <ColumnConstraints hgrow="ALWAYS" />
                 <ColumnConstraints hgrow="ALWAYS" maxWidth="1.0" minWidth="1.0" prefWidth="1.0" />
             </columnConstraints>
@@ -50,7 +51,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
-            <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
+            <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
             <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
@@ -531,7 +532,7 @@
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="11" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="13" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="25" />
-                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnIndex="7" GridPane.rowIndex="1" GridPane.rowSpan="2147483647" />
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnIndex="8" GridPane.rowIndex="1" GridPane.rowSpan="2147483647" />
                 <Label contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="경매진행 설정" textFill="WHITE" GridPane.columnSpan="7" GridPane.rowIndex="16">
                     <font>
                         <Font name="System Bold" size="18.0" />
@@ -631,7 +632,7 @@
                     </GridPane.margin>
                 </VBox>
                 <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="카운트 설정" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.rowIndex="18" />
-                <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="5" GridPane.rowIndex="18">
+                <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="18">
                     <children>
                         <TextField fx:id="mCountTextField" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
                         <Label alignment="CENTER" styleClass="font-s" text="1 ~ 9 (초)" />
@@ -688,7 +689,7 @@
                   </CheckBox>
                </children>
             </HBox>
-            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="7" GridPane.rowIndex="19" />
+            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="19" />
             <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="음성경부여부" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.rowIndex="20">
                <font>
                   <Font size="12.0" />
@@ -699,6 +700,20 @@
                   <Insets left="10.0" />
                </GridPane.margin>
             </CheckBox>
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="대기시간" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="6" GridPane.rowIndex="20">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="7" GridPane.rowIndex="20">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+               <children>
+                  <TextField fx:id="mSoundAuctionWaitTime" maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" prefHeight="25.0" prefWidth="60.0" />
+                  <Label styleClass="description-label" text="1~50 (초)" />
+               </children>
+            </HBox>
             </children>
             <opaqueInsets>
                 <Insets />

@@ -64,6 +64,10 @@ public class LoginController implements Initializable {
 		mBtnConnection.setOnMouseClicked(event -> onConnectServer(event));
 
 		initSharedConfigration();
+		
+		mIpTextField.setText("192.168.0.34");
+		mPortTextField.setText(Integer.toString(AUCTION_INFO.AUCTION_PORT));
+		mIdTextField.setText(AUCTION_INFO.AUCTION_MEMBER);
 	}
 
 	/**
@@ -74,10 +78,6 @@ public class LoginController implements Initializable {
 	}
 
 	public void onConnectServer(MouseEvent event) {
-
-		mIpTextField.setText(AUCTION_INFO.AUCTION_HOST);
-		mPortTextField.setText(Integer.toString(AUCTION_INFO.AUCTION_PORT));
-		mIdTextField.setText(AUCTION_INFO.AUCTION_MEMBER);
 
 		if (!mIpTextField.getText().isEmpty() && !mPortTextField.getText().isEmpty() && !mIdTextField.getText().isEmpty()) {
 

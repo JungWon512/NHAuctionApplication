@@ -100,6 +100,9 @@ public class SettingController implements Initializable {
     @FXML	//동가 재경매 횟수
     private TextField mReAuctionCountTextField;
     
+    @FXML	//음성 경매 대기 시간
+    private TextField mSoundAuctionWaitTime;
+
     @FXML	//동가 재경매,연속경매,음성경부여부
     private CheckBox mUseReAuction, mUseOneAuction,mUseSoundAuction;
  
@@ -268,12 +271,23 @@ public class SettingController implements Initializable {
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, mLowerLimitBreedingCattleTextField.getText().trim());
         //동가재경매 횟수
         
-        String  reAuctionCount = mReAuctionCountTextField.getText();
+        String  reAuctionCount = mReAuctionCountTextField.getText().trim();
         
-        if(reAuctionCount == null ||  reAuctionCount.equals("0")){
+        if(reAuctionCount == null ||  reAuctionCount.equals("0") || reAuctionCount.isEmpty()){
+        	//default - 임의 정의
         	reAuctionCount = "1";
         }
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, reAuctionCount); 
+        
+        String  soundAuctionWaitTime = mSoundAuctionWaitTime.getText().trim();
+        
+        if(soundAuctionWaitTime == null ||  soundAuctionWaitTime.equals("0") || soundAuctionWaitTime.isEmpty()){
+        	//default - 임의 정의
+        	soundAuctionWaitTime = "3";
+        }
+
+        //음성경매 대기 시간
+        sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, soundAuctionWaitTime); 
         
     }
 
@@ -338,6 +352,8 @@ public class SettingController implements Initializable {
         mLowerLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, ""));
         //동가재경매 횟수
         mReAuctionCountTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, "1"));
+        //음성경매 대기 시간
+        mSoundAuctionWaitTime.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, "3"));
     }
 
     /**
