@@ -104,7 +104,9 @@ public class BaseAuctionController implements NettyControllable {
     
     protected boolean isCountDownRunning = false;	//카운트다운 실행 여부
     
-    protected boolean isAutoPlay = false;
+    protected boolean isPause = false;
+    
+    protected boolean isStartedAuction = false;
     
     public BaseAuctionController() {
         init();
@@ -227,10 +229,10 @@ public class BaseAuctionController implements NettyControllable {
         	
         	boolean isbidding = false;
         	for(SpBidding bidder : mReAuctionBidderDataList) {
+        		
         		//재경매 목록에 있는 응찰자만 받음. 
         		if(bidder.getAuctionJoinNum().getValue().equals(bidding.getAuctionJoinNum())) {
         			//최저가와 같거나 크고, 응찰된 금액이랑 같지 않을 경우 응찰 내역 저장
-
         			if((mCurrentBidderMap.get(bidding.getAuctionJoinNum()).getPriceInt() != bidding.getPriceInt()) && (mCurrentSpEntryInfo.getLowPriceInt() <= bidding.getPriceInt())) {
         				mLogger.debug("[onBidding] 재경매 응찰 저장 : " + bidding.getPriceInt());
         				setBidding(bidding);
@@ -252,7 +254,6 @@ public class BaseAuctionController implements NettyControllable {
         	setBidding(bidding);
         }
 
-        calculationRanking();
     }
 
     @Override
@@ -352,6 +353,11 @@ public class BaseAuctionController implements NettyControllable {
         }
 
         calculationRanking();
+        
+      //음성경매시 응찰 금액 들어오면 타이머 동작 변경.
+        if(SettingApplication.getInstance().isUseSoundAuction()) {
+            soundAuctionTimerTask();
+        }
     }
 
     @Override
@@ -458,13 +464,21 @@ public class BaseAuctionController implements NettyControllable {
 //<!--	OSLP_NO            decimal       not null comment '원표번호',-->
 //<!--	RG_SQNO            decimal       not null comment '등록일련번호',-->
 
-        	int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
+    	int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
 
-            if (resultValue > 0) {
-                addLogItem("응찰 내역 저장 완료 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
-            } else {
-                addLogItem("응찰 내역 저장 실패 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
-            }
+        if (resultValue > 0) {
+            addLogItem("응찰 내역 저장 완료 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
+        } else {
+            addLogItem("응찰 내역 저장 실패 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
+        }
+        
+
+        calculationRanking();
+        
+        //음성경매시 응찰 금액 들어오면 타이머 동작 변경.
+        if(SettingApplication.getInstance().isUseSoundAuction()) {
+            soundAuctionTimerTask();
+        }
         
     }
 
@@ -826,6 +840,13 @@ public class BaseAuctionController implements NettyControllable {
      * @param spBiddingDataList 랭킹 산정된 응찰자 리스트
      */
     protected void updateBidderList(List<SpBidding> spBiddingDataList) {
+    }
+    
+    /**
+     * 음성경매 타이머 동작
+     * @param spBiddingDataList
+     */
+    protected void soundAuctionTimerTask() {
     }
 
     /**
