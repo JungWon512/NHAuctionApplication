@@ -38,8 +38,12 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -51,6 +55,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
@@ -1113,7 +1118,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		System.out.println("예정가 높이기");
 		int upPrice = SettingApplication.getInstance().getCowLowerLimitPrice();
 		setLowPrice(upPrice, true);
-		
 	}
 
 	/**
@@ -1307,7 +1311,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
-				addLogItem("RUN timerTask");
+				addLogItem("Start startAutoAuctionScheduler");
 				onStopAuction(countDown);
 			}
 		};
@@ -1533,12 +1537,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			addLogItem("=== 낙찰 예정자 없음");
 		}
 		
-//		mBiddingInfoTableView.setDisable(true);
-		
-//		CommonUtils.getInstance().addStyleClass(mBiddingInfoTableView, "bg-color-e9e9e9");
-//		mBiddingInfoTableView.getSelectionModel().select(0);
-//		mBiddingInfoTableView.refresh();
-
+		mBiddingInfoTableView.setDisable(true);
 		
 		//음성경매 중이면 자동 실행
 		if(SettingApplication.getInstance().isUseSoundAuction()) {
@@ -1734,6 +1733,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		});
 	}
 
+	/**
+	 * 응찰자 응찰 테이블에 업데이트
+	 */
 	@Override
 	protected void updateBidderList(List<SpBidding> spBiddingDataList) {
 		super.updateBidderList(spBiddingDataList);
@@ -1747,10 +1749,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				bidderDataList = new ArrayList<SpBidding>(spBiddingDataList);
 			}
 			
-			for(SpBidding spBidding : bidderDataList) {
-				addLogItem(">> : " + spBidding.getPriceInt() + " / " + spBidding.getPrice().getValue() + " / " + spBidding.getAuctionJoinNum());
-			}
-
 			mBiddingUserInfoDataList.clear();
 			mBiddingUserInfoDataList.addAll(bidderDataList);
 			mBiddingInfoTableView.getSelectionModel().select(0);

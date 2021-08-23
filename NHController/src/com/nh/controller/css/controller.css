@@ -235,7 +235,6 @@
 	-fx-border-color: #cccccc;
 }
 
-
 /*테이블 응찰자 정보 */
 .base-contents .bidding-user-info{
 	-fx-background-color: transparent;
@@ -262,6 +261,34 @@
 	-fx-text-fill: #111111;
 	-fx-font-size: 20px;
 	-fx-font-weight: bold;
+}
+
+/*테이블 접속자 정보 */
+.base-contents .connection-user .table-view .column-header{
+	-fx-padding:0px;
+	-fx-max-height: 0;
+	-fx-pref-height: 0;
+	-fx-min-height: 0;
+}
+
+.base-contents .bidding-user-info .table-view:disabled{
+	-fx-opacity: 1;
+}
+.base-contents .bidding-user-info .table-view:disabled .table-row-cell{
+	-fx-cell-size: 45px;
+	-fx-background-color: red;
+	-fx-text-fill: #111111;
+	-fx-opacity: 1;
+	-fx-border-color: #cccccc;
+}
+
+.base-contents .bidding-user-info .table-view:disabled .table-row-cell:selected{
+	-fx-cell-size: 54px;
+	-fx-background-color: #ffe135;
+	-fx-text-fill: #111111;
+	-fx-font-size: 20px;
+	-fx-font-weight: bold;
+	-fx-opacity: 1;
 }
 
 /* 경매 진행 상태 라벨 */
