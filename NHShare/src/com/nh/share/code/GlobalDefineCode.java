@@ -104,4 +104,6 @@ public class GlobalDefineCode {
 	public static final String AUCTION_LOGIN_TYPE_MANAGER = "MANAGER"; // 관리자
 	public static final String AUCTION_LOGIN_TYPE_AUCTIONMEMBER = "AUCTIONMEMBER"; // 경매회원
 	public static final String AUCTION_LOGIN_AUTH_TYPE_OTP = "ETCMEMBER"; // 일반(관전)회원
+
+	public static final String BILLBOARD_CHARSET = "EUC-KR"; // 전광판 character set
 }

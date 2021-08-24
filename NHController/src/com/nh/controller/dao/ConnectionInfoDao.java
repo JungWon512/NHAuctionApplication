@@ -21,7 +21,7 @@ public class ConnectionInfoDao {
         return session.selectOne("selectConnectionInfo", connectionInfo);
     }
 
-    public int selectIdSequence(SqlSession session) {
+    public String selectIdSequence(SqlSession session) {
         return session.selectOne("selectSequenceId");
     }
 

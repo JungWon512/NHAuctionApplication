@@ -17,8 +17,10 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.nh.controller.model.*;
 import com.nh.controller.netty.BillboardDelegate;
 import com.nh.controller.utils.GlobalDefine;
+import com.nh.controller.utils.SharedPreference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,7 +139,9 @@ public class BaseAuctionController implements NettyControllable {
      */
     protected void createClient(String host, int port, String userMemNum, String watchMode) {
         AuctionDelegate.getInstance().createClients(host, port, userMemNum, watchMode, this);
-        BillboardDelegate.getInstance().createClients("192.168.0.18", 9881, this); // UDP TEST !!!
+        // UDP 전광판
+        BillboardDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""),
+                SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""), this);
     }
 
     @Override
@@ -145,6 +149,8 @@ public class BaseAuctionController implements NettyControllable {
         mLogger.debug("onActiveChannel");
         // 제어프로그램 접속
         addLogItem(mResMsg.getString("msg.auction.send.connection.info") + AuctionDelegate.getInstance().onSendConnectionInfo());
+        // 전광판 자릿수 셋팅
+        addLogItem(mResMsg.getString("msg.billboard.send.init.info") + BillboardDelegate.getInstance().initBillboard());
     }
 
     @Override
@@ -174,18 +180,38 @@ public class BaseAuctionController implements NettyControllable {
                 break;
             case GlobalDefineCode.AUCTION_STATUS_START:
                 addLogItem(String.format(mResMsg.getString("msg.auction.status.start"), auctionStatus.getEntryNum()));
+                BillboardDelegate.getInstance().startBillboard();
+                // UDP 통신
+                BillboardData data = new BillboardData();
+                data.setbEntryNum(String.valueOf(mCurrentSpEntryInfo.getEntryNum().getValue()));
+                data.setbExhibitor(String.valueOf(mCurrentSpEntryInfo.getExhibitor().getValue()));
+                data.setbWeight(String.valueOf(mCurrentSpEntryInfo.getWeight().getValue()));
+                data.setbGender(String.valueOf(mCurrentSpEntryInfo.getGender().getValue()));
+                data.setbMotherTypeCode(String.valueOf(mCurrentSpEntryInfo.getMotherTypeCode().getValue()));
+                data.setbPasgQcn(String.valueOf(mCurrentSpEntryInfo.getPasgQcn().getValue()));
+                data.setbMatime(String.valueOf(mCurrentSpEntryInfo.getMatime().getValue()));
+                data.setbKpn(String.valueOf(mCurrentSpEntryInfo.getKpn().getValue()));
+                data.setbRegion(String.valueOf(mCurrentSpEntryInfo.getFarmMngNum().getValue()));
+                data.setbNote(String.valueOf(mCurrentSpEntryInfo.getNote().getValue()));
+                data.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
+                data.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));
+                addLogItem(mResMsg.getString("msg.billboard.send.current.entry.data") + data.getEncodedMessage());
+                BillboardDelegate.getInstance().sendBillboardData(data);
                 break;
             case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
                 addLogItem(String.format(mResMsg.getString("msg.auction.status.progress"), auctionStatus.getEntryNum()));
                 break;
             case GlobalDefineCode.AUCTION_STATUS_PASS:
                 addLogItem(String.format(mResMsg.getString("msg.auction.status.pass"), auctionStatus.getEntryNum()));
+                BillboardDelegate.getInstance().completeBillboard();
                 break;
             case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
                 addLogItem(String.format(mResMsg.getString("msg.auction.status.completed"), auctionStatus.getEntryNum()));
+                BillboardDelegate.getInstance().completeBillboard();
                 break;
             case GlobalDefineCode.AUCTION_STATUS_FINISH:
                 addLogItem(mResMsg.getString("msg.auction.status.finish"));
+                BillboardDelegate.getInstance().finishBillboard();
                 break;
         }
 
@@ -198,11 +224,12 @@ public class BaseAuctionController implements NettyControllable {
 
     @Override
     public void onAuctionCountDown(AuctionCountDown auctionCountDown) {
+        mLogger.debug("onAuctionCountDown : " + auctionCountDown.getEncodedMessage());
+
         if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN)) {
 //            String msg = String.format(mResMsg.getString("msg.auction.get.count.down"), mCurrentSpEntryInfo.getEntryNum().getValue(), auctionCountDown.getCountDownTime());
             addLogItem("onAuctionCountDown : " +auctionCountDown.getEncodedMessage());
         }
-
     }
 
     @Override
@@ -593,6 +620,25 @@ public class BaseAuctionController implements NettyControllable {
 	            auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
 	            auctionResult.setSuccessBidPrice(bidder.getPrice().getValue());
 	            auctionResult.setSuccessBidUpr(bidder.getBaseUnitDivision());
+
+                    // 전광판 전송
+                    BillboardData data = new BillboardData();
+                    data.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
+                    data.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
+                    data.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
+                    data.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
+                    data.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
+                    data.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
+                    data.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
+                    data.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
+                    data.setbRegion(String.valueOf(spEntryInfo.getFarmMngNum().getValue()));
+                    data.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
+                    data.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
+                    data.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
+                    data.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+                    data.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
+                    addLogItem(mResMsg.getString("log.billboard.auction.result.success") + data.getEncodedMessage());
+                    BillboardDelegate.getInstance().sendBillboardData(data);
 	        } else {
 	            // 유찰&보류
 	            auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);

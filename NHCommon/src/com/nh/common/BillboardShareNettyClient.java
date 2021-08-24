@@ -1,13 +1,17 @@
 package com.nh.common;
 
+import com.nh.common.handlers.BillboardClientInboundHandler;
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
-import com.nh.share.interfaces.NettySendable;
+import com.nh.share.code.GlobalDefineCode;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.handler.codec.DatagramPacketEncoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
@@ -16,10 +20,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
+import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 
 public class BillboardShareNettyClient {
 
-    private Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private int port;
     private EventLoopGroup group;
@@ -36,13 +43,13 @@ public class BillboardShareNettyClient {
             Bootstrap b = new Bootstrap();
             b.group(group)
                     .channel(NioDatagramChannel.class)
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                    .option(ChannelOption.SO_BROADCAST, true)
                     .handler(new ChannelInitializer<NioDatagramChannel>() {
                         @Override
                         public void initChannel(NioDatagramChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
-                            //encoder
-                            pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
+                            pipeline.addLast(new BillboardClientInboundHandler(controller));
+                            pipeline.addLast(new DatagramPacketEncoder<>(new StringEncoder(CharsetUtil.UTF_8)));
                         }
                     });
             channel = b.connect(host, port).sync().channel();
@@ -54,21 +61,26 @@ public class BillboardShareNettyClient {
     }
 
     /**
-     * 객체를 송신할 때 사용한다.
-     *
-     * @param object 보낼 객체
-     */
-    public void sendMessage(NettySendable object) {
-        sendMessage(object.getEncodedMessage());
-    }
-
-    /**
      * 문자열을 송신할 때 사용한다.
      *
      * @param message 보낼 문자열
      */
     public void sendMessage(String message) {
-        channel.writeAndFlush(message + "\r\n");
+        channel.writeAndFlush(datagramPacket(message, (InetSocketAddress) getChannel().remoteAddress()));
+    }
+
+    /**
+     * String -> DatagramPacket 변환
+     *
+     * @param message
+     * @param inetSocketAddress
+     * @return DatagramPacket
+     */
+    public DatagramPacket datagramPacket(String message, InetSocketAddress inetSocketAddress) {
+        ByteBuf dataBuf = Unpooled.copiedBuffer(
+                message,
+                Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET));
+        return new DatagramPacket(dataBuf, inetSocketAddress);
     }
 
     public void stopClient() {
@@ -82,12 +94,9 @@ public class BillboardShareNettyClient {
      */
     public void stopClient(NettyClientShutDownListener listener) {
         Future<?> future = group.shutdownGracefully();
-        future.addListener(new GenericFutureListener() {
-            @Override
-            public void operationComplete(Future future) throws Exception {
-                if (listener != null) {
-                    listener.onShutDown(getPort());
-                }
+        future.addListener((GenericFutureListener) future1 -> {
+            if (listener != null) {
+                listener.onShutDown(getPort());
             }
         });
     }
@@ -125,9 +134,9 @@ public class BillboardShareNettyClient {
         private final int port;
         private NettyControllable controller;
 
-        public Builder(String host, int port) {
+        public Builder(String host, String port) {
             this.host = host;
-            this.port = port;
+            this.port = Integer.parseInt(port);
         }
 
         public Builder setController(NettyControllable controller) {

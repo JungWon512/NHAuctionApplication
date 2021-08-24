@@ -15,6 +15,7 @@ import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.netty.AuctionDelegate;
+import com.nh.controller.netty.BillboardDelegate;
 import com.nh.controller.service.AuctionRoundMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.setting.SettingApplication;
@@ -1928,7 +1929,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 										||mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 							sendAuctionResult(false, mCurrentSpEntryInfo, null,GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
 							mBiddingInfoTableView.setDisable(false);
-							
+							BillboardDelegate.getInstance().completeBillboard();
+
 						}else {
 							//경매 진행중 아니면.. 프로그램 종료
 							onCloseApplication();

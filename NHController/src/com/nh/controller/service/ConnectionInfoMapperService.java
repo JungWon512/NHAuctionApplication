@@ -71,7 +71,8 @@ public class ConnectionInfoMapperService extends BaseMapperService<ConnectionInf
     @Override
     public int selectSequenceId() {
         try (SqlSession session = DBSessionFactory.getSession()) {
-            return getDao().selectIdSequence(session);
+            String num = getDao().selectIdSequence(session);
+            return num == null ? 1 : Integer.parseInt(num);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,7 +103,12 @@ public class ConnectionInfoMapperService extends BaseMapperService<ConnectionInf
      */
     public ArrayList<UserInfo> convertConnectionInfo(ConnectionInfo info) {
         ArrayList<UserInfo> userList = new ArrayList<>();
-        userNum = String.valueOf(selectSequenceId() + 1);
+        if (selectSequenceId() == 1) {
+            userNum = String.valueOf(selectSequenceId());
+        } else {
+            userNum = String.valueOf(selectSequenceId() + 1);
+        }
+
         Timestamp timeStamp = Timestamp.valueOf(LocalDateTime.now());
 
         for (int i = 1; i < 4; i++) {

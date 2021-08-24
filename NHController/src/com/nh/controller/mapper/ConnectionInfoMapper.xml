@@ -30,7 +30,7 @@
     </select>
 
     <!--   시퀀스 아이디 생성  -->
-    <select id="selectSequenceId" resultType="int">
+    <select id="selectSequenceId" resultType="String">
         select max(cast(lvst_auc_ptc_mn_no as unsigned))
         from auction.tb_la_is_mh_auc_entr;
     </select>
