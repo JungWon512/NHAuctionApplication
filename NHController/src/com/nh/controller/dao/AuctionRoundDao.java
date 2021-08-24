@@ -16,4 +16,8 @@ public class AuctionRoundDao {
     public List<AuctionRound> selectAllAuctionRound(String date, SqlSession session) {
         return session.selectList("selectAllAuctionRound", date);
     }
+    
+    public AuctionRound obtainAuctionRound(AuctionRound auctionRound, SqlSession session) {
+        return session.selectOne("obtainAuctionRound", auctionRound);
+    }
 }

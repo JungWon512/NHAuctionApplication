@@ -49,7 +49,8 @@ public class SharedPreference {
 	public static final String PREFERENCE_SETTING_COUNTDOWN = "PREFERENCE_SETTING_COUNTDOWN"; // 카운트다운 설정
 	public static final String PREFERENCE_SETTING_BOARD_TOGGLE_TYPE = "PREFERENCE_SETTING_BOARD_TOGGLE_TYPE"; // 전광판 toggle button
 	public static final String PREFERENCE_SETTING_PDP_TOGGLE_TYPE = "PREFERENCE_SETTING_PDP_TOGGLE_TYPE"; // pdp toggle button
-
+	public static final String PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE = "PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE"; // 경매타입 toggle button
+	
 	// --- 전광판 설정 IP, PORT ---
 	public static final String PREFERENCE_SETTING_IP_BOARD_TEXT1 = "PREFERENCE_SETTING_IP_BOARD_TEXT1";
 	public static final String PREFERENCE_SETTING_PORT_BOARD_TEXT1 = "PREFERENCE_SETTING_PORT_BOARD_TEXT1";

@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.nh.controller.ControllerApplication;
 import com.nh.controller.controller.AuctionController;
 import com.nh.controller.controller.AuctionMessageController;
+import com.nh.controller.controller.ChooseAuctionController;
 import com.nh.controller.controller.EntryListController;
 import com.nh.controller.controller.LoginController;
 import com.nh.controller.controller.SettingController;
@@ -14,6 +15,7 @@ import com.nh.controller.controller.SettingSoundController;
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.StringListener;
+import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpEntryInfo;
 
 import javafx.collections.ObservableList;
@@ -85,18 +87,42 @@ public class MoveStageUtil {
 	}
 
 	/**
+	 * 경매 구분 ,경매일 선택
+	 * @param stage
+	 */
+	public synchronized void moveChooseAuctionStage(Stage loginStage) {
+		
+		try {
+			loginStage.close();
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("ChooseAuctionView.fxml"), getResourceBundle());
+			Parent parent = fxmlLoader.load();
+			Stage stage = new Stage();
+			ChooseAuctionController controller = fxmlLoader.getController();
+			controller.setStage(stage);
+			setRemoveTitlebar(stage);
+			Scene scene = new Scene(parent);
+			stage.setScene(scene);
+			stage.show();
+			centerOnScreen(stage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
 	 * 로그인 -> 경매 서버 접속 -> 경매 화면 이동
 	 * 
 	 * @param stage
 	 */
-	public synchronized void onConnectServer(Stage loginStage, String ip, int port, String id) {
+	public synchronized void onConnectServer(Stage chooseAuctionStage, String ip, int port, String id,AuctionRound auctionRound) {
 
 		try {
 
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("AuctionControllerView.fxml"), getResourceBundle());
 			fxmlLoader.load();
 			AuctionController controller = fxmlLoader.getController();
-			controller.onConnectServer(loginStage, fxmlLoader, ip, port, id);
+			controller.onConnectServer(chooseAuctionStage, fxmlLoader, ip, port, id,auctionRound);
 
 		} catch (Exception e) {
 			e.printStackTrace();

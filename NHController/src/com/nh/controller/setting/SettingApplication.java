@@ -1,7 +1,12 @@
 package com.nh.controller.setting;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.SharedPreference;
@@ -14,6 +19,8 @@ import com.nh.controller.utils.SharedPreference;
  */
 public class SettingApplication {
 
+	private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+	
 	private static SettingApplication instance = null;
 
 	private String upperLimitCalf = null; // 응찰 상한가 - 송아지
@@ -30,7 +37,7 @@ public class SettingApplication {
 	private boolean useOneAuction = false; // 연속경매 - 하나씩 진행 여부
 	private boolean useSoundAuction = false; // 음성경매 - 음성경부 여부
 	
-	private int aucObjDsc = 0;		//경매 구분
+	private int aucObjDsc = 0;				//경매 구분
 	
 	public static synchronized SettingApplication getInstance() {
 
@@ -53,6 +60,61 @@ public class SettingApplication {
 		this.aucObjDsc = aucObjDsc;
 	}
 
+	/**
+	 * 앱 첫 실행 기본 저장값
+	 */
+	public void initDefaultConfigration(ResourceBundle resMsg) {
+		
+		boolean isFirstApplication = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, true);
+
+		if (isFirstApplication) {
+			mLogger.debug("설치 후 첫 실행");
+			
+			// [S] 메인 경매 정보 음성 노출 여부 기본 설정
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER,true);
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR,true);
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_GENDER,true);
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MOTHER, true);
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MATIME, true);
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_PASGQCN, true);
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_WEIGHT, true);
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE,true);
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_BRAND,true);
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_KPN, true);
+			// [E] 메인 경매 정보 음성 노출 여부 기본 설정
+			
+			// [S] 경매 음성 메세지 기본 설정
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, resMsg.getString("default.msg.setting.sound.intro"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, resMsg.getString("default.msg.setting.sound.buyer"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, resMsg.getString("default.msg.setting.sound.guide"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE, resMsg.getString("default.msg.setting.sound.practice"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER, resMsg.getString("default.msg.setting.sound.gender"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_USE, resMsg.getString("default.msg.setting.sound.use"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, resMsg.getString("default.msg.setting.sound.etc1"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, resMsg.getString("default.msg.setting.sound.etc2"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, resMsg.getString("default.msg.setting.sound.etc3"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, resMsg.getString("default.msg.setting.sound.etc4"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, resMsg.getString("default.msg.setting.sound.etc5"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, resMsg.getString("default.msg.setting.sound.etc6"));
+			// [E] 경매 음성 메세지 기본 설정
+			
+			//상한가
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, "10000");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, "10000");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, "10000");
+
+			//가격 낮추기
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, "10000");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, "10000");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, "10000");
+			
+			// 첫실행 후 false
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, false);
+		} else {
+			mLogger.debug("설치 후 첫 실행 아님.");
+		}
+		
+	}
 	/**
 	 * 저장된 설정 데이터 가져옴.
 	 */

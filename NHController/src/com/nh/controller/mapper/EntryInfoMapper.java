@@ -14,6 +14,8 @@ import com.nh.share.controller.models.SendAuctionResult;
  */
 public interface EntryInfoMapper {
 
+	int getAllEntryDataCount(AuctionRound auctionRound);
+	
     List<EntryInfo> getAllEntryData(AuctionRound auctionRound);
     
 

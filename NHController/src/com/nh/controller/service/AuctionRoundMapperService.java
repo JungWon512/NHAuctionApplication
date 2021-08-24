@@ -34,4 +34,11 @@ public class AuctionRoundMapperService extends BaseMapperService<AuctionRoundDao
             return getDao().selectAllAuctionRound(date, session);
         }
     }
+
+	@Override
+	public AuctionRound obtainAuctionRoundData(AuctionRound auctionRound) {
+		try (SqlSession session = DBSessionFactory.getSession()) {
+            return getDao().obtainAuctionRound(auctionRound, session);
+        }
+	}
 }

@@ -5,11 +5,21 @@
 
 <mapper namespace="com.nh.controller.mapper.AuctionRoundMapper">
 
-    <!-- 경매 회차 정보 조회 -->
-    <select id="selectAllAuctionRound" resultType="AuctionRound">
-        SELECT *
-        FROM auction.tb_la_is_mh_auc_qcn as A
-        WHERE A.AUC_DT = #{date}
-          AND A.DDL_YN = '0';
-    </select>
+	<!-- 경매 회차 정보 조회 -->
+	<select id="selectAllAuctionRound" resultType="AuctionRound">
+		SELECT *
+		FROM auction.tb_la_is_mh_auc_qcn as A
+		WHERE A.AUC_DT = #{date}
+		AND A.DDL_YN = '0';
+	</select>
+	
+	<!-- 경매 회차 단일 정보 조회 -->
+	<select id="obtainAuctionRound" resultType="AuctionRound">
+		SELECT *
+		FROM auction.tb_la_is_mh_auc_qcn as A
+		WHERE A.AUC_DT = #{aucDt}
+		AND A.AUC_OBJ_DSC = #{aucObjDsc}
+		AND A.DDL_YN = '0';
+	</select>
+	
 </mapper>

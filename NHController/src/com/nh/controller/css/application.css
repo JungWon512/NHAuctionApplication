@@ -114,7 +114,7 @@
 	-fx-border-width: 1.0;
 	-fx-border-color: #0082e5;
 	-fx-background-color : #0082e5;
-	-fx-font-size: 12px;
+	-fx-font-size: 16px;
 	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
 	-fx-text-fill: #ffffff;
 }
@@ -126,6 +126,23 @@
 	-fx-text-fill: #ffffff;
 }
 
+.close-button{
+	-fx-border-width: 1.0;
+	-fx-border-color: #ea0030;
+	-fx-background-color : #ea0030;
+	-fx-font-size: 16px;
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
+	-fx-text-fill: #ffffff;
+}
+
+.close-button:hover{
+	-fx-border-width: 2px;
+	-fx-border-color: #ea0030;
+	-fx-background-color:  #0A1931;
+	-fx-text-fill: #ffffff;
+}
+
+
 .text-field {
 	-fx-background-color: #ffffff ;
 	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
@@ -135,4 +152,22 @@
 .text-field:focused {
 	-fx-background-color:  #ffffff ;
 	-fx-text-fill: #111111;
+}
+
+.date-picker > .text-field {
+    -fx-background-color:
+        linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
+        linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
+    -fx-background-insets: 1 0 1 1;
+    -fx-background-radius: 2 0 0 2;
+}
+
+.date-picker:focused > .text-field,
+.date-picker > .text-field:focused {
+    -fx-background-color:
+        -fx-control-inner-background,
+        -fx-faint-focus-color,
+        linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
+    -fx-background-insets: 1 0 1 1, 1 0 1 1, 3 2 3 3;
+    -fx-background-radius: 2 0 0 2, 1 0 0 1, 0;
 }

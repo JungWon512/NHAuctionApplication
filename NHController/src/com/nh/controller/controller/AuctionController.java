@@ -39,12 +39,8 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -56,8 +52,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -65,7 +59,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.Duration;
 
 public class AuctionController extends BaseAuctionController implements Initializable {
@@ -139,7 +132,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	// 사운드 클래스
 	private SoundUtil mAuctionInfoMessageSound = new SoundUtil();
 	
-	private Timer mAutoStopScheduler = null;
+	private Timer mAutoStopScheduler = null;	//음성 경매 정지 타이머
 	
 	
 	/**
@@ -149,6 +142,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void setStage(Stage stage) {
 		mStage = stage;
+		//경매 데이터 set
+		requestAuctionInfo();
 	}
 
 	/**
@@ -336,6 +331,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// 메세지 버튼 값 가져옴.
 		initParsingSoundDataList();
 	}
+	
+
+	/**
+	 * 경매 데이터 가져옴.
+	 */
+	private void requestAuctionInfo() {
+		// MakeData
+		requestEntryData();
+		// 경매 정보
+		setAuctionInfo();
+	}
 
 	/**
 	 * 내부 저장된 음성 메세지 가져옴.
@@ -369,10 +375,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param loginStage
 	 * @param fxmlLoader
 	 */
-	public void onConnectServer(Stage loginStage, FXMLLoader fxmlLoader, String ip, int port, String id) {
+	public void onConnectServer(Stage chooseAuctionStage, FXMLLoader fxmlLoader, String ip, int port, String id , AuctionRound auctionRound) {
 
-		mStage = loginStage;
+		mStage = chooseAuctionStage;
 		mFxmlLoader = fxmlLoader;
+		this.auctionRound = auctionRound;
 
 		// connection server
 		Thread thread = new Thread("server") {
@@ -1088,18 +1095,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 경매 출품 데이터
 	 */
 	private void requestEntryData() {
-		// [경매회차조회] TEST!! 일단 경매정보 하나만 가져옴!!
-		// TODO: 경매정보 리스트 뿌리기
-		// List<AuctionRound> list =
-		// AuctionRoundMapperService.getInstance().getAllAuctionRoundData(CommonUtils.getInstance().getCurrentTime("yyyyMMdd"));
-		// // 실제사용
-		List<AuctionRound> list = AuctionRoundMapperService.getInstance().getAllAuctionRoundData("20210813"); // 테스트
-		this.auctionRound = list.get(0); // 테스트
-		preference.setString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, this.auctionRound.getNaBzplc()); // Setting Controller 에서 필요..
-//        for (AuctionRound t : list) {
-//            qcn = t.getQcn();
-//        }
-
 		// 경매 출품 데이터 가져오기
 		List<EntryInfo> entryInfoDataList = EntryInfoMapperService.getInstance().getAllEntryData(this.auctionRound); // 테스트
 		mWaitEntryInfoDataList.clear();
@@ -1107,7 +1102,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		initFinishedEntryDataList();
 		initWaitEntryDataList(mWaitEntryInfoDataList);
-
 	}
 
 	/**

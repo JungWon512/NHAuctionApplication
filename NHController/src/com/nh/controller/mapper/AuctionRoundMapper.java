@@ -14,4 +14,6 @@ import java.util.List;
 public interface AuctionRoundMapper {
 
     List<AuctionRound> getAllAuctionRoundData(@Param("date") String date);
+    
+    AuctionRound obtainAuctionRoundData(AuctionRound auctionRound);
 }

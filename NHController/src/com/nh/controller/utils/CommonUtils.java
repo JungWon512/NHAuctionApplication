@@ -1039,4 +1039,23 @@ public class CommonUtils {
 
         return integerFormat.format(value);
     }
+    
+
+    /**
+     * 문자열 Null, Empty, Length 유효성 확인 함수
+     *
+     * @param str 확인 문자열
+     * @return boolean true : 유효 문자, false : 무효 문자
+     */
+    public synchronized boolean isValidString(String str) {
+        if (str == null || str.equals("") || str.isEmpty()) {
+            return false;
+        }
+
+        if (str.trim().length() <= 0) {
+            return false;
+        }
+
+        return true;
+    }
 }

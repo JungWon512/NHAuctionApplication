@@ -17,6 +17,10 @@ import java.util.Map;
  * @author dhKim
  */
 public class EntryInfoDao {
+	
+	public int selectAllEntryInfoCount(AuctionRound auctionRound, SqlSession session) {
+		return session.selectOne("selectAllEntryCount", auctionRound);
+	}
 
     public List<EntryInfo> selectAllEntryInfo(AuctionRound auctionRound, SqlSession session) {
         return session.selectList("selectAllEntry", auctionRound);

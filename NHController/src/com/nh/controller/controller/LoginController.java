@@ -1,30 +1,36 @@
 package com.nh.controller.controller;
 
-import com.nh.controller.model.SpBidding;
-import com.nh.controller.model.SpEntryInfo;
-import com.nh.controller.utils.CommonUtils;
-import com.nh.controller.utils.GlobalDefine;
-import com.nh.controller.utils.GlobalDefine.AUCTION_INFO;
-import com.nh.share.code.GlobalDefineCode;
-import com.nh.controller.utils.MoveStageUtil;
-import com.nh.controller.utils.SharedPreference;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.nh.controller.model.AdminData;
+import com.nh.controller.setting.SettingApplication;
+import com.nh.controller.utils.ApiUtils;
+import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.GlobalDefine;
+import com.nh.controller.utils.GlobalDefine.AUCTION_INFO;
+import com.nh.controller.utils.MoveStageUtil;
+import com.nh.controller.utils.SharedPreference;
+import com.nh.share.api.ActionResultListener;
+import com.nh.share.api.request.body.RequestLoginBody;
+import com.nh.share.api.response.ResponseAuctionLogin;
+import com.nh.share.code.GlobalDefineCode;
+
+import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 
 /**
  * 로그인
@@ -33,18 +39,26 @@ import java.util.ResourceBundle;
  */
 public class LoginController implements Initializable {
 
-	private Stage mStage;
-	private ResourceBundle mResMsg;
 	private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@FXML
-	private TextField mIpTextField, // ip
-			mPortTextField, // port
-			mIdTextField; // id
+	private Stage mStage = null;
+
+	private ResourceBundle mResMsg = null;
 
 	@FXML
-	private Button mBtnConnection;
+	private TextField	mIdTextField, // 아이디 
+						mPwTextField; // 비밀번호
 
+	@FXML
+	private Button mBtnLogin;
+
+	@FXML // 경매 거점 타입
+	private ToggleGroup auctionHouseTypeToggleGroup;
+	
+	@FXML	//경매 거점, 하동,화순,무진장
+	private ToggleButton mAuctionHouseHwadongToggleButton,mAuctionHouseHwaSunToggleButton,mAuctionHouseJangsuToggleButton;
+
+	 
 	/**
 	 * setStage
 	 *
@@ -54,6 +68,14 @@ public class LoginController implements Initializable {
 		mStage = stage;
 	}
 
+	/**
+	 * 구성 설정
+	 */
+	public void initConfiguration() {
+		CommonUtils.getInstance().canMoveStage(mStage, null);
+		initKeyConfig();
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
@@ -61,83 +83,113 @@ public class LoginController implements Initializable {
 		if (resources != null) {
 			mResMsg = resources;
 		}
-		mBtnConnection.setOnMouseClicked(event -> onConnectServer(event));
 
-		initSharedConfigration();
+		// 앱 첫 실행시 기본 값들 저장
+		SettingApplication.getInstance().initDefaultConfigration(mResMsg);
+
+		//경매 거점 타입
+		initAuctionHouseToggleTypes();
+
+		mBtnLogin.setOnMouseClicked(event -> onLogin());
 		
-		mIpTextField.setText("192.168.0.34");
-		mPortTextField.setText(Integer.toString(AUCTION_INFO.AUCTION_PORT));
+		testValues();
+	}
+	
+	/**
+	 * 테스트값. 지울것.
+	 */
+	private void testValues() {
 		mIdTextField.setText(AUCTION_INFO.AUCTION_MEMBER);
+		mPwTextField.setText("1111");
 	}
 
 	/**
-	 * 구성 설정
+	 * 경매 거점 Toggle
 	 */
-	public void initConfiguration() {
-		CommonUtils.getInstance().canMoveStage(mStage, null);
+	private void initAuctionHouseToggleTypes() {
+
+		//listener
+		auctionHouseTypeToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, newValue.getUserData().toString().trim()));
+		
+		String auctionHouseToggle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, "");
+
+		switch (auctionHouseToggle.toUpperCase()) {
+			case GlobalDefineCode.AUCTION_HOUSE_HWADONG -> mAuctionHouseHwadongToggleButton.setSelected(true);
+			case GlobalDefineCode.AUCTION_HOUSE_HWASUN -> mAuctionHouseHwaSunToggleButton.setSelected(true);
+			case GlobalDefineCode.AUCTION_HOUSE_JANGSU -> mAuctionHouseJangsuToggleButton.setSelected(true);
+			default -> mAuctionHouseHwadongToggleButton.setSelected(true);
+		}
 	}
+	
+	/**
+	 * 로그인 요청
+	 */
+	public void onLogin() {
 
-	public void onConnectServer(MouseEvent event) {
-
-		if (!mIpTextField.getText().isEmpty() && !mPortTextField.getText().isEmpty() && !mIdTextField.getText().isEmpty()) {
-
-			CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
-
-			String ip = mIpTextField.getText().toString().trim();
-			int port = Integer.parseInt(mPortTextField.getText().toString().trim());
-			String id = mIdTextField.getText().toString().trim();
-
-			MoveStageUtil.getInstance().onConnectServer(mStage, ip, port, id);
-
-		} else {
-			CommonUtils.getInstance().showAlertPopupOneButton(mStage, "접속 정보를 입력해주세요.", mResMsg.getString("popup.btn.close"));
+		if (!CommonUtils.getInstance().isValidString(mIdTextField.getText()) && !CommonUtils.getInstance().isValidString(mPwTextField.getText())) {
+			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.login.empty.user.info"), mResMsg.getString("popup.btn.close"));
+			return;
 		}
 
+		RequestLoginBody requestLoginBody = new RequestLoginBody(mIdTextField.getText().toString().trim(), mPwTextField.getText().toString().trim());
+
+		//거점코드
+		String nabzplc = auctionHouseTypeToggleGroup.getSelectedToggle().getUserData().toString();
+
+		CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.login.request"));
+		//로그읜
+		ApiUtils.getInstance().requestLogin(nabzplc, requestLoginBody, new ActionResultListener<ResponseAuctionLogin>() {
+
+			@Override
+			public void onResponseResult(ResponseAuctionLogin result) {
+				
+				Platform.runLater(() ->{
+					
+					CommonUtils.getInstance().dismissLoadingDialog(); //dismiss loading
+					
+					mLogger.debug("[로그인 요청 결과]=> " + result.getSuccess() + "" + result.getAccessToken() + " / " + result.toString());
+
+					if(result.getSuccess()) {
+						//정보저장
+						GlobalDefine.ADMIN_INFO.adminData = new AdminData();
+						GlobalDefine.ADMIN_INFO.adminData.setUserId(mIdTextField.getText().toString().trim());
+						GlobalDefine.ADMIN_INFO.adminData.setNabzplc(nabzplc);
+						MoveStageUtil.getInstance().moveChooseAuctionStage(mStage);
+				
+					}else {
+						CommonUtils.getInstance().showAlertPopupOneButton(mStage, result.getMessage(), mResMsg.getString("popup.btn.close"));
+					}
+					
+				});
+			}
+			
+			@Override
+			public void onResponseError(String message) {
+				Platform.runLater(() ->{
+					CommonUtils.getInstance().dismissLoadingDialog();//dismiss loading
+					CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, mResMsg.getString("popup.btn.close"));
+				});
+			}
+		});
 	}
 
 	/**
-	 * 첫 실행- 내부 저장
+	 * 키 설정
 	 */
-	private void initSharedConfigration() {
+	private void initKeyConfig() {
 
-		boolean isFirstApplication = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, true);
+		Platform.runLater(() -> {
+			mStage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 
-		if (isFirstApplication) {
-			mLogger.debug("설치 후 첫 실행");
-			
-			// [S] 메인 경매 정보 음성 노출 여부 기본 설정
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER,true);
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR,true);
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_GENDER,true);
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MOTHER, true);
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MATIME, true);
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_PASGQCN, true);
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_WEIGHT, true);
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE,true);
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_BRAND,true);
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_KPN, true);
-			// [E] 메인 경매 정보 음성 노출 여부 기본 설정
-			
-			// [S] 경매 음성 메세지 기본 설정
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, mResMsg.getString("default.msg.setting.sound.intro"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, mResMsg.getString("default.msg.setting.sound.buyer"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, mResMsg.getString("default.msg.setting.sound.guide"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE, mResMsg.getString("default.msg.setting.sound.practice"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER, mResMsg.getString("default.msg.setting.sound.gender"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_USE, mResMsg.getString("default.msg.setting.sound.use"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, mResMsg.getString("default.msg.setting.sound.etc1"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, mResMsg.getString("default.msg.setting.sound.etc2"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, mResMsg.getString("default.msg.setting.sound.etc3"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, mResMsg.getString("default.msg.setting.sound.etc4"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, mResMsg.getString("default.msg.setting.sound.etc5"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, mResMsg.getString("default.msg.setting.sound.etc6"));
-			// [E] 경매 음성 메세지 기본 설정
-			
-			// 첫실행 후 false
-			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, false);
-		} else {
-			mLogger.debug("설치 후 첫 실행 아님.");
-		}
+				public void handle(KeyEvent ke) {
+
+					if (ke.getCode() == KeyCode.ENTER) {
+						onLogin();
+						ke.consume();
+					}
+
+				}
+			});
+		});
 	}
-
 }

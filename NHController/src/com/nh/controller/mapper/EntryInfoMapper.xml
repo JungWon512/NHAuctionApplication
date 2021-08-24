@@ -115,6 +115,49 @@
 		${alias}.QCN
 	</sql>
 
+
+
+<!-- 출품 데이터 추출 -->
+    <select id="selectAllEntryCount" resultType="int">
+    SELECT
+			count(*)
+ 		tb_la_is_mh_auc_qcn
+        FROM tb_la_is_mm_indv as A
+                 JOIN
+             tb_la_is_mh_sog_cow AS B
+             ON
+                 A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO
+                 LEFT JOIN
+             tb_la_is_mm_fhs AS C
+             ON
+                     B.NA_BZPLC = C.NA_BZPLC AND
+                     B.FHS_ID_NO = C.FHS_ID_NO AND
+                     B.FARM_AMNNO = C.FARM_AMNNO
+                 JOIN
+			tb_la_is_mh_auc_qcn as D
+			 ON
+				B.NA_BZPLC = D.NA_BZPLC AND
+				B.AUC_DT = D.AUC_DT
+		WHERE B.AUC_DT = #{aucDt}
+		AND B.NA_BZPLC = #{naBzplc}
+		AND B.AUC_OBJ_DSC = #{aucObjDsc}
+		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('S')">
+			AND B.SEL_STS_DSC = '22'
+		</if>
+
+		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('P')">
+			AND B.SEL_STS_DSC = '23'
+		</if>
+
+		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('SP')">
+			AND B.SEL_STS_DSC >= '22'
+		</if>
+
+		ORDER BY B.AUC_PRG_SQ ASC;
+    
+    </select>
+
+
     <!-- 출품 데이터 추출 -->
     <select id="selectAllEntry" resultMap="entryInfoMap" resultType="linkedHashMap">
 		SELECT
@@ -122,7 +165,7 @@
 			<include refid="sogCowColumn"><property name="alias" value="B"/></include>,
 			<include refid="fhsColumn"><property name="alias" value="C"/></include>,
 			<include refid="qcnColumn"><property name="alias" value="D"/></include>
-# 		tb_la_is_mh_auc_qcn
+ 		tb_la_is_mh_auc_qcn
         FROM tb_la_is_mm_indv as A
                  JOIN
              tb_la_is_mh_sog_cow AS B

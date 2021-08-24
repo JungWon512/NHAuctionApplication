@@ -32,7 +32,7 @@
                 <ColumnConstraints hgrow="ALWAYS" maxWidth="1.0" minWidth="1.0" prefWidth="1.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="80.0" vgrow="NEVER" />
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
@@ -40,23 +40,25 @@
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-                <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="95.0" vgrow="ALWAYS" />
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-                <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="95.0" vgrow="ALWAYS" />
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
             <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
             <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-                <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="95.0" vgrow="ALWAYS" />
+            <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="NEVER" />
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
             </rowConstraints>
             <children>
@@ -531,7 +533,7 @@
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="11" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="13" />
-                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="25" />
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="27" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnIndex="8" GridPane.rowIndex="1" GridPane.rowSpan="2147483647" />
                 <Label contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="경매진행 설정" textFill="WHITE" GridPane.columnSpan="7" GridPane.rowIndex="16">
                     <font>
@@ -714,6 +716,25 @@
                   <Label styleClass="description-label" text="1~50 (초)" />
                </children>
             </HBox>
+            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="25" />
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="26">
+               <children>
+                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="12.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <RadioButton fx:id="mAuctionTypeSingleToggleButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="단일 경매" toggleGroup="$auctionTypeToggleGroup" userData="Single">
+                          <toggleGroup>
+                                <ToggleGroup fx:id="auctionTypeToggleGroup" />
+                            </toggleGroup>
+                          </RadioButton>
+                        <RadioButton fx:id="mAuctionTypeMultiToggleButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="일괄 경매" toggleGroup="$auctionTypeToggleGroup" userData="Multi" />
+                     </children>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </HBox>
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="경매 타입" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="26" />
             </children>
             <opaqueInsets>
                 <Insets />

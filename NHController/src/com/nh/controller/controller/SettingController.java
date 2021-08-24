@@ -29,6 +29,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -106,6 +107,13 @@ public class SettingController implements Initializable {
 
     @FXML	//동가 재경매,연속경매,음성경부여부
     private CheckBox mUseReAuction, mUseOneAuction,mUseSoundAuction;
+    
+    @FXML	//경매 타입
+    private ToggleGroup auctionTypeToggleGroup;
+    
+    @FXML	//경매 타입 (단일 ,일괄)
+    private ToggleButton mAuctionTypeSingleToggleButton,mAuctionTypeMultiToggleButton;
+    
  
 
     private final static String[] SHARED_MOBILE_ARRAY = new String[]{
@@ -119,6 +127,7 @@ public class SettingController implements Initializable {
     private ArrayList<CheckBox> mobileCheckBoxList = null;
     private String boardToggleType = "None";
     private String pdpToggleType = "BoardType";
+    private String auctionToggleType = "Single";
     private BooleanListener mBooleanListener = null;
 
     public enum MobileCheckBoxType {
@@ -161,6 +170,10 @@ public class SettingController implements Initializable {
 
     public enum PdpToggle {
         BOARDTYPE, AUCTIONTYPE
+    }
+    
+    public enum AuctionToggle {
+        SINGLE, MULTI
     }
 
     /**
@@ -466,6 +479,8 @@ public class SettingController implements Initializable {
 
         pdpToggleGroup.selectedToggleProperty().
                 addListener((observableValue, oldValue, newValue) -> pdpToggleType = newValue.getUserData().toString().trim());
+        
+        auctionTypeToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> auctionToggleType = newValue.getUserData().toString().trim());
     }
 
     /**
@@ -476,6 +491,7 @@ public class SettingController implements Initializable {
     private void setToggleTypes() {
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_BOARD_TOGGLE_TYPE, boardToggleType);
         sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PDP_TOGGLE_TYPE, pdpToggleType);
+        sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, auctionToggleType);
     }
 
     /**
@@ -486,6 +502,7 @@ public class SettingController implements Initializable {
     private void getToggleTypes() {
         String boardToggle = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_BOARD_TOGGLE_TYPE, "None");
         String pdpToggle = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PDP_TOGGLE_TYPE, "BoardType");
+        String auctionToggle = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, "Single");
 
         switch (BoardToggle.valueOf(boardToggle.toUpperCase())) {
             case NONE -> mBoardNoneToggleButton.setSelected(true);
@@ -497,6 +514,12 @@ public class SettingController implements Initializable {
             case BOARDTYPE -> mPdpViewBoardTypeToggleButton.setSelected(true);
             case AUCTIONTYPE -> mPdpViewAuctionTypeToggleButton.setSelected(true);
         }
+        
+        switch (AuctionToggle.valueOf(auctionToggle.toUpperCase())) {
+	        case SINGLE -> mAuctionTypeSingleToggleButton.setSelected(true);
+	        case MULTI -> mAuctionTypeMultiToggleButton.setSelected(true);
+        }
+        
     }
 
     /**

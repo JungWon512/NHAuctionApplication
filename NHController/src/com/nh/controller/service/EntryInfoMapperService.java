@@ -35,6 +35,18 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
         this.setDao(new EntryInfoDao());
     }
 
+	@Override
+	public int getAllEntryDataCount(AuctionRound auctionRound) {
+		
+		int recordCount = 0;
+		
+		 try (SqlSession session = DBSessionFactory.getSession()) {
+			 recordCount = getDao().selectAllEntryInfoCount(auctionRound, session);
+		 }
+		 
+		return recordCount;
+	}
+
     @Override
     public List<EntryInfo> getAllEntryData(AuctionRound auctionRound) {
 
@@ -163,7 +175,6 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 		return resultValue;
 	}
-	
-	
+
 
 }
