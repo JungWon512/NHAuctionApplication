@@ -168,10 +168,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 		// Views
 		initViewConfiguration();
-		// MakeData
-		requestEntryData();
-		// 경매 정보
-		setAuctionInfo();
 	}
 
 	/**
