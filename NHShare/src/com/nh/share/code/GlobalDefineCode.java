@@ -8,11 +8,12 @@ package com.nh.share.code;
  * @since 2021.06.15
  */
 public class GlobalDefineCode {
+	
 	// 경매장 거점 코드
 	public enum AUCTION_HOUSE {
 		AUCTION_HOUSE_HWADONG("8808990656656"),
-		AUCTION_HOUSE_HWASUN("2100"),
-		AUCTION_HOUSE_JANGSU("3100");
+		AUCTION_HOUSE_HWASUN("8808990661315"),
+		AUCTION_HOUSE_JANGSU("8808990657202");
 	    
 	    private final String value;
 	    
