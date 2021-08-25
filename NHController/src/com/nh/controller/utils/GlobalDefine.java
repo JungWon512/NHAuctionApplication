@@ -56,14 +56,14 @@ public class GlobalDefine {
 		public static AdminData adminData = null;
 		
 	}
-	
+
 	/**
 	 * 경매 관련 정보
 	 */
 	public static final class AUCTION_INFO {
 
-		// public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
-		public static final String AUCTION_HOST = "192.168.0.13"; // Server Host 도히꺼
+		 public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
+//		public static final String AUCTION_HOST = "192.168.0.13"; // Server Host 도히꺼
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
 //		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민
@@ -91,7 +91,8 @@ public class GlobalDefine {
 		public static final int AUCTION_OBJ_DSC_2 = 2; // 경매 구분 - 비육우
 		public static final int AUCTION_OBJ_DSC_3 = 3; // 경매 구분 - 번육우
 		
-		public static final int MULTIPLICATION_BIDDER_PRICE = 10000; // 응찰 기본 단위
+		public static final int MULTIPLICATION_BIDDER_PRICE_1000 = 1000;	// 응찰 기본 단위 -비육우
+		public static final int MULTIPLICATION_BIDDER_PRICE_10000 = 10000;	// 응찰 기본 단위 -송아지,번식우
 	}
 
 	/**

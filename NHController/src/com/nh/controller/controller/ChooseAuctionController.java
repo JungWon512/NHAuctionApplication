@@ -16,6 +16,7 @@ import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
+import com.sun.jdi.IntegerType;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -23,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
@@ -57,7 +59,12 @@ public class ChooseAuctionController implements Initializable {
 	
 	//경매 회차 정보
 	private AuctionRound mAuctionRound = null;
+	
+	@FXML
+	private TextField mTestIp, mTestPort;
 
+	private boolean isTest = true; //TEST 지울것
+	
 	/**
 	 * setStage
 	 *
@@ -84,7 +91,14 @@ public class ChooseAuctionController implements Initializable {
 
 		mBtnConnect.setOnMouseClicked(event -> onConnection());
 		mBtnClose.setOnMouseClicked(event -> onCloseApplication());
-
+		
+		test();
+	}
+	
+	
+	private void test() {
+		mTestIp.setText(GlobalDefine.AUCTION_INFO.AUCTION_HOST);
+		mTestPort.setText(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_PORT));
 	}
 
 	/**
@@ -102,7 +116,7 @@ public class ChooseAuctionController implements Initializable {
 
 		mAuctionDatePicker.setConverter(new StringConverter<LocalDate>() {
 			
-			String pattern = "yyyyMMdd";
+			String pattern = "yyyy-MM-dd";
 			 
 			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
 
@@ -113,7 +127,7 @@ public class ChooseAuctionController implements Initializable {
 			@Override
 			public String toString(LocalDate date) {
 				if (date != null) {
-					 String dateString = date.toString().replace("-", "");
+					 String dateString = date.toString();
 					 
 					return dateString.toString();
 				} else {
@@ -130,6 +144,8 @@ public class ChooseAuctionController implements Initializable {
 				}
 			}
 		});
+		
+		mAuctionDatePicker.setValue(LocalDate.now());
 	}
 	
 	/**
@@ -137,6 +153,8 @@ public class ChooseAuctionController implements Initializable {
 	 */
 	public void onConnection() {
 		
+		Platform.runLater(() ->{
+			
 		//선택된 경매일
 		if(mAuctionDatePicker.getValue() == null) {
 			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"), mResMsg.getString("popup.btn.ok"));
@@ -146,12 +164,23 @@ public class ChooseAuctionController implements Initializable {
 		boolean isAuctionData = requestAuctionRound();
 		
 		if(isAuctionData) {
-			MoveStageUtil.getInstance().onConnectServer(mStage, GlobalDefine.AUCTION_INFO.AUCTION_HOST, GlobalDefine.AUCTION_INFO.AUCTION_PORT, GlobalDefine.ADMIN_INFO.adminData.getUserId(),mAuctionRound);
+			CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
+			
+			if(!isTest) {
+				MoveStageUtil.getInstance().onConnectServer(mStage, GlobalDefine.AUCTION_INFO.AUCTION_HOST, GlobalDefine.AUCTION_INFO.AUCTION_PORT, GlobalDefine.ADMIN_INFO.adminData.getUserId(),mAuctionRound);
+			}else {
+				
+				if(CommonUtils.getInstance().isValidString(mTestIp.getText()) && CommonUtils.getInstance().isValidString(mTestPort.getText())) {
+					MoveStageUtil.getInstance().onConnectServer(mStage,mTestIp.getText().toString(), Integer.parseInt(mTestPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId(),mAuctionRound);
+				}
+				
+			}
+		
 		}else {
 			//경매 데이터 없습니다. 팝업
 			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"), mResMsg.getString("popup.btn.ok"));
 		}
-		
+		});
 	}
 
 	/**

@@ -993,11 +993,12 @@ public class CommonUtils {
     }
 
     /**
-     * 기준 금액 적용
-     * param (str : 4,500,000 , baseUnit : 10,000)
+     * 기준 금액 적용 만단위,천단위
+     * param (str : 4,500,000 , baseUnit : 10,000 or 1000)
      *
      * @param str
-     * @return 4, 500, 000 / 10,000 = 450
+     * @return 4,500,000 / 10,000 = 450
+     * 			 4500000 / 1000 = 4500 
      */
     public int getBaseUnitDivision(String str, int baseUnit) {
 

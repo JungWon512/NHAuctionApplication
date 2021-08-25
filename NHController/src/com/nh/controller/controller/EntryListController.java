@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.nh.controller.interfaces.IntegerListener;
+import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
@@ -56,7 +57,7 @@ public class EntryListController implements Initializable {
 	private ObservableList<SpEntryInfo> mEntryDataList = FXCollections.observableArrayList(); // 출품 목록
 	private IntegerListener mIntegerListener = null; // listener
 	private EntryDialogType mCurPageType= null; // pageType
-	
+	private AuctionRound auctionRound = null;
 
 	/**
 	 *
@@ -64,10 +65,11 @@ public class EntryListController implements Initializable {
 	 * @param type 페이지 타입 (전체/보류/낙찰결과)
 	 * @param listener (전체/보류 row 선택시 콜백)
 	 */
-	public void setConfig(ObservableList<SpEntryInfo> dataList,EntryDialogType type,IntegerListener listener) {
+	public void setConfig(ObservableList<SpEntryInfo> dataList,EntryDialogType type,AuctionRound auctionRound, IntegerListener listener) {
 		
 		this.mEntryDataList.clear();
 		this.mEntryDataList.addAll(dataList);
+		this.auctionRound = auctionRound;
 		this.mIntegerListener = listener;
 		
 		setPageType(type);
@@ -159,7 +161,7 @@ public class EntryListController implements Initializable {
 	 */
 	public void onDownPrice(MouseEvent event) {
 		System.out.println("예정가 낮추기");
-		int lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice() * -1;
+		int lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(auctionRound.getAucObjDsc()) * -1;
 	}
 	
 	/**

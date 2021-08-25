@@ -90,10 +90,10 @@ public class MoveStageUtil {
 	 * 경매 구분 ,경매일 선택
 	 * @param stage
 	 */
-	public synchronized void moveChooseAuctionStage(Stage loginStage) {
+	public synchronized void moveChooseAuctionStage(Stage previousStage) {
 		
 		try {
-			loginStage.close();
+			previousStage.close();
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("ChooseAuctionView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
 			Stage stage = new Stage();
@@ -192,7 +192,7 @@ public class MoveStageUtil {
 	 * @param stage
 	 */
 	
-	public synchronized void openEntryListDialog(EntryDialogType type,Stage stage, ObservableList<SpEntryInfo> dataList, IntegerListener listener) {
+	public synchronized void openEntryListDialog(EntryDialogType type,Stage stage, ObservableList<SpEntryInfo> dataList,AuctionRound auctionRound, IntegerListener listener) {
 		
 		if(mDialog != null && mDialog.isShowing()) {
 			return;
@@ -203,7 +203,7 @@ public class MoveStageUtil {
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
 			EntryListController controller = fxmlLoader.getController();
-			controller.setConfig(dataList,type,listener);
+			controller.setConfig(dataList,type,auctionRound,listener);
 			openDialog(stage, parent);
 			setStageDisable(stage);
 

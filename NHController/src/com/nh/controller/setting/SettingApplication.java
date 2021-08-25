@@ -183,11 +183,11 @@ public class SettingApplication {
 	}
 
 	
-	/**
+	/**getBaseUnit
 	 * 경매 기본 상한가
 	 * @return 1.송아지 , 2.비육우 ,3.번식우
 	 */
-	public int getBaseUnit() {
+	public int getCowUpperLimitPrice(int aucObjDsc) {
 		
 		int baseUnit = 1;
 		
@@ -210,7 +210,7 @@ public class SettingApplication {
 	 * 하한가 낮추기
 	 * @return 1.송아지 , 2.비육우 ,3.번식우
 	 */
-	public int getCowLowerLimitPrice() {
+	public int getCowLowerLimitPrice(int aucObjDsc) {
 		
 	int lowerLimitPrice = 1;
 		

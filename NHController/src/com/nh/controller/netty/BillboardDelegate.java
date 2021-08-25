@@ -180,6 +180,20 @@ public class BillboardDelegate {
             return true;
         }
     }
+    
+    /**
+     * 연결 상태 확인
+     *
+     * @return
+     */
+    public boolean isActive() {
+
+        if (!isEmptyClient() && !mClient.isEmptyChannel()) {
+            return mClient.getChannel().isActive();
+        }
+
+        return false;
+    }
 
     /**
      * @Description 네티 접속 해제

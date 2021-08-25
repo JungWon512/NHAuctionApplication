@@ -314,7 +314,7 @@ public class BillboardData implements NettySendable {
             return "";
         }
         int price = Integer.parseInt(str);
-        int resultPrice = price / GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE;
+        int resultPrice = price / GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000;
         return String.valueOf(resultPrice);
     }
 
