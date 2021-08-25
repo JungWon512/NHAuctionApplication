@@ -9,12 +9,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import com.nh.controller.netty.BillboardDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.netty.AuctionDelegate;
+import com.nh.controller.netty.BillboardDelegate;
+import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
@@ -29,7 +30,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -697,8 +697,13 @@ public class SettingController implements Initializable {
                     sharedPreference.getString(SHARED_MOBILE_ARRAY[11], "N"),
                     sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
             mLogger.debug(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
+
             // 전광판 셋팅
             BillboardDelegate.getInstance().initBillboard();
+            
+            // PDP 셋팅
+            PdpDelegate.getInstance().initPdp();
+            
             showAlertSuccess();
         } else {
             mLogger.debug("validation failed!");

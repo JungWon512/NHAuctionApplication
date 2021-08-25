@@ -56,6 +56,7 @@ public class BillboardDelegate {
      */
     public String sendMessage(String object) {
         if (!isEmptyClient()) {
+        	mLogger.debug("BillboardData Send : " + object);
             mClient.sendMessage(object);
         }
         return object;
@@ -77,7 +78,7 @@ public class BillboardDelegate {
         clearBillboard();
         sendMessage(String.format("%c%c%c", GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.FINISH_CODE, GlobalDefine.BILLBOARD.ETX));
     }
-
+   
     /**
      * @Description 경매 완료
      */
@@ -94,6 +95,14 @@ public class BillboardDelegate {
         sendMessage(sendable);
     }
 
+    /**
+     * @Description 전광판 시간 전송
+     */
+    public void sendBillboardTime() {
+    	mLogger.debug("sendBillboardTime");
+        sendMessage(String.format("%c%c%c", GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.TIME_CODE, GlobalDefine.BILLBOARD.ETX));
+    }
+    
     /**
      * @Description 전광판 카운트다운
      */
@@ -119,6 +128,7 @@ public class BillboardDelegate {
      */
     public String initBillboard() {
         finishBillboard();
+        sendBillboardTime();
         String[] arr = getBillboardPref();
         StringBuilder sb = new StringBuilder();
         sb.append(GlobalDefine.BILLBOARD.STX);

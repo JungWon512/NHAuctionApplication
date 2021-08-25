@@ -44,8 +44,20 @@ public class GlobalDefine {
 		public static final char TIME_CODE = 'T'; // UDP 전광판 시간 전송
 		public static final char DATA_CODE = '1'; // UDP 전광판 데이터 전송
 		public static final String NOTE_CODE = "B42"; // UDP 전광판 비고(흐름타입) 전송
-		public static final char COUNTDOWN_CODE = 'M'; // UDP 통신 카운드다운
+		public static final char COUNTDOWN_CODE = 'N'; // UDP 통신 카운드다운
+	}
+	
+	public static final class PDP {
+		public static final char STX = '\u0002'; // UDP 통신 TCC start
+		public static final char ETX = '\u0003'; // UDP 통신 TCC en
+		public static final String DELIMITER = "|"; // UDP 전광판
 
+		public static final char START_CODE = 'S'; // UDP 전광판 시작
+		public static final char INIT_CODE = 'L'; // UDP 전광판 초기화
+		public static final char FINISH_CODE = 'E'; // UDP 전광판 종료
+		public static final char DATA_CODE = '1'; // UDP 전광판 데이터 전송
+		public static final char CLEAR_CODE = 'C'; // UDP 통신 클리어
+		public static final char COUNTDOWN_CODE = 'N'; // UDP 통신 카운드다운
 	}
 
 	/**
@@ -56,7 +68,7 @@ public class GlobalDefine {
 		public static AdminData adminData = null;
 		
 	}
-
+	
 	/**
 	 * 경매 관련 정보
 	 */

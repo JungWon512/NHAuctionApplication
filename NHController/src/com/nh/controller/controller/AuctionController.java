@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.controller.interfaces.BooleanListener;
-import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AuctionRound;
@@ -19,7 +18,7 @@ import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.netty.BillboardDelegate;
-import com.nh.controller.service.AuctionRoundMapperService;
+import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
@@ -51,13 +50,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -1408,7 +1407,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			});
 
 			mRemainingTimeCount = Integer.parseInt(auctionCountDown.getCountDownTime());
-
+			
+			// 전광판 카운트다운 전송
+			BillboardDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
+			
+			// PDP 카운트다운 전송
+			PdpDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
 		}
 
 		if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN_COMPLETED)) {
@@ -1972,6 +1976,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							sendAuctionResult(false, mCurrentSpEntryInfo, null, GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
 							mBiddingInfoTableView.setDisable(false);
 							BillboardDelegate.getInstance().completeBillboard();
+							PdpDelegate.getInstance().completePdp();
 
 						} else {
 							// 경매 진행중 아니면.. 프로그램 종료

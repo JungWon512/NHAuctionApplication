@@ -8,17 +8,15 @@ import org.slf4j.LoggerFactory;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.common.models.ConnectionInfo;
-import com.nh.share.controller.models.PassAuction;
+import com.nh.share.controller.models.PauseAuction;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelId;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 
 @Sharable
-public final class AuctionServerDecodedPauseAuctionHandler extends SimpleChannelInboundHandler<PassAuction> {
+public final class AuctionServerDecodedPauseAuctionHandler extends SimpleChannelInboundHandler<PauseAuction> {
 	private final Logger mLogger = LoggerFactory.getLogger(AuctionServerDecodedPauseAuctionHandler.class);
 
 	private final AuctionServer mAuctionServer;
@@ -33,9 +31,9 @@ public final class AuctionServerDecodedPauseAuctionHandler extends SimpleChannel
 	private Map<String, Object> mConnectionChannelInfoMap;
 
 	public AuctionServerDecodedPauseAuctionHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
-			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
-			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
+			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap,
+			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
+			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
 		mAuctionServer = auctionServer;
 		mConnectionInfoMap = connectionInfoMap;
@@ -49,14 +47,14 @@ public final class AuctionServerDecodedPauseAuctionHandler extends SimpleChannel
 	}
 
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, PassAuction passAuction) throws Exception {
-		mLogger.info("경매 유찰 : " + (passAuction.getEntryNum()));
+	protected void channelRead0(ChannelHandlerContext ctx, PauseAuction pauseAuction) throws Exception {
+		mLogger.info("경매 일시 정지 : " + (pauseAuction.getEntryNum()));
 
-		if (mControllerChannelsMap.get(passAuction.getAuctionHouseCode()).contains(ctx.channel()) == true) {
-			mLogger.info("정상 채널에서 경매 유찰을 요청하였습니다.");
-			mAuctionServer.itemAdded(passAuction.getEncodedMessage());
+		if (mControllerChannelsMap.get(pauseAuction.getAuctionHouseCode()).contains(ctx.channel()) == true) {
+			mLogger.info("정상 채널에서 경매 일시 정지를 요청하였습니다.");
+			mAuctionServer.itemAdded(pauseAuction.getEncodedMessage());
 		} else {
-			mLogger.info("비정상 채널에서 경매 유찰을 요청하였으나, 요청이 거부되었습니다.");
+			mLogger.info("비정상 채널에서 경매 일시 정지를 요청하였으나, 요청이 거부되었습니다.");
 		}
 	}
 }

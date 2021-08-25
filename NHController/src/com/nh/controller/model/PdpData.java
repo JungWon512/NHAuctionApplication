@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class BillboardData implements NettySendable {
+public class PdpData implements NettySendable {
 
     // 혈통
     private enum BBLineage {
@@ -63,6 +63,7 @@ public class BillboardData implements NettySendable {
         }
     }
 
+    private String bEntryType; // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
     private String bEntryNum; // 출품번호(경매번호)
     private String bExhibitor; // 출하주
     private String bWeight; // 우출하중량
@@ -79,14 +80,15 @@ public class BillboardData implements NettySendable {
     private String bAuctionSucBidderName; // 낙찰자이름
     private String bDnaYn; // 친자검사결과여부
 
-    public BillboardData() {
+    public PdpData() {
     }
 
-    public BillboardData(
-            String bEntryNum, String bExhibitor, String bWeight, String bGender, String bMotherTypeCode,
+    public PdpData(
+    		String bEntryType, String bEntryNum, String bExhibitor, String bWeight, String bGender, String bMotherTypeCode,
             String bPasgQcn, String bMatime, String bKpn, String bRegion, String bNote, String bLowPrice,
             String bAuctionBidPrice, String bAuctionSucBidder, String bAuctionSucBidderName, String bDnaYn
     ) {
+    	this.bEntryType = bEntryType;
         this.bEntryNum = bEntryNum;
         this.bExhibitor = bExhibitor;
         this.bWeight = bWeight;
@@ -104,7 +106,15 @@ public class BillboardData implements NettySendable {
         this.bDnaYn = bDnaYn;
     }
 
-    public String getbEntryNum() {
+    public String getbEntryType() {
+		return bEntryType;
+	}
+
+	public void setbEntryType(String bEntryType) {
+		this.bEntryType = bEntryType;
+	}
+
+	public String getbEntryNum() {
         return bEntryNum;
     }
 
@@ -237,29 +247,39 @@ public class BillboardData implements NettySendable {
         return "";
     }
 
-    private String makeBoardMessages() {
+    private String makePdpMessages() {
         SharedPreference shared = SharedPreference.getInstance();
         StringBuffer sb = new StringBuffer();
-        sb.append(makeBoardNumberMessage(getbEntryNum(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_ENTRYNUM, "")));
-        sb.append(makeBoardKoreanMessage(getbExhibitor(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_EXHIBITOR, "")));
-        sb.append(makeBoardNumberMessage(getbWeight(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_WEIGHT, "")));
-        sb.append(makeBoardKoreanMessage(BBGender.which(getbGender()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_GENDER, "")));
-        sb.append(makeBoardKoreanMessage(BBLineage.which(getbMotherTypeCode()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_MOTHER, "")));
-        sb.append(makeBoardNumberMessage(getbPasgQcn(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_PASSAGE, "")));
-        sb.append(makeBoardNumberMessage(getbMatime(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_MATIME, "")));
-        sb.append(makeBoardNumberMessage(getKPN(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_KPN, "")));
-        sb.append(makeBoardKoreanMessage(getbRegion(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_REGION, "")));
-        sb.append(makeNoteMessage(getbNote(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_NOTE, "")));
-        sb.append(makeBoardNumberMessage(getBaseUnitDivision(getbLowPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_LOWPRICE, "0")));
-        sb.append(makeBoardNumberMessage(getBaseUnitDivision(getbAuctionBidPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_SUCPRICE, "")));
+        sb.append(makePdpNumberMessage(getbEntryNum(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_ENTRYNUM, "")));
+        sb.append(makePdpKoreanMessage(getbExhibitor(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_EXHIBITOR, "")));
+        sb.append(makePdpNumberMessage(getbWeight(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_WEIGHT, "")));
+        sb.append(makePdpKoreanMessage(BBGender.which(getbGender()), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_GENDER, "")));
+        sb.append(makePdpKoreanMessage(BBLineage.which(getbMotherTypeCode()), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_MOTHER, "")));
+        sb.append(makePdpNumberMessage(getbPasgQcn(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_PASSAGE, "")));
+        sb.append(makePdpNumberMessage(getbMatime(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_MATIME, "")));
+        sb.append(makePdpNumberMessage(getKPN(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_KPN, "")));
+        sb.append(makePdpKoreanMessage(getbRegion(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_REGION, "")));
+        sb.append(makeNoteMessage(getbNote(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_NOTE, "")));
         
-        sb.append(makeBoardKoreanMessage(getbAuctionSucBidder(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_SUCBIDDER, "")));
-        
-        sb.append("    ");
-        if(Integer.valueOf(shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_DNA, "")) >= 1) {
-            sb.append(makeBoardNumberMessage(getbDnaYn(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_DNA, "")));
+        // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
+        // 0 : 원단위 경매 / 1 : 만원단위 경매 
+        if(getbEntryType().equals("1")) {
+        	sb.append(makePdpNumberMessage("2", "1"));
+        } else if(getbEntryType().equals("2")) {
+        	sb.append(makePdpNumberMessage("0", "1"));
+        } else if(getbEntryType().equals("3")) {
+        	sb.append(makePdpNumberMessage("2", "1"));
         }
         
+        sb.append(makePdpNumberMessage(getBaseUnitDivision(getbLowPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_LOWPRICE, "0")));
+        sb.append(makePdpNumberMessage(getBaseUnitDivision(getbAuctionBidPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_SUCPRICE, "")));
+        sb.append(makePdpKoreanMessage(getbAuctionSucBidder(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_SUCBIDDER, "")));
+        
+        sb.append("    ");
+        if(Integer.valueOf(shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_DNA, "")) >= 1) {
+            sb.append(makePdpNumberMessage(getbDnaYn(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_DNA, "")));
+        }
+
         return sb.toString();
     }
 
@@ -294,7 +314,7 @@ public class BillboardData implements NettySendable {
     /**
      * @Description 한글이 들어가는 전광판
      */
-    private String makeBoardKoreanMessage(String s, String sharedPreference) {
+    private String makePdpKoreanMessage(String s, String sharedPreference) {
         int count = Integer.parseInt(sharedPreference);
         int stringToByteSize = s.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
         int doubleCount = count / 2; // byte[]와 비교하기위한 length
@@ -309,7 +329,7 @@ public class BillboardData implements NettySendable {
     /**
      * @Description 숫자만 들어가는 전광판
      */
-    private String makeBoardNumberMessage(String s, String sharedPreference) {
+    private String makePdpNumberMessage(String s, String sharedPreference) {
         int count = Integer.parseInt(sharedPreference);
 
         if (s.length() < count) {
@@ -331,7 +351,7 @@ public class BillboardData implements NettySendable {
     @Override
     public String getEncodedMessage() {
         return String.format("%c%c" + "%s" + "%c",
-                GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.DATA_CODE,
-                makeBoardMessages(), GlobalDefine.BILLBOARD.ETX);
+                GlobalDefine.BILLBOARD.STX, GlobalDefine.PDP.DATA_CODE,
+                makePdpMessages(), GlobalDefine.PDP.ETX);
     }
 }

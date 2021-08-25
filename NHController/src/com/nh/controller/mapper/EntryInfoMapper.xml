@@ -103,7 +103,9 @@
 		${alias}.SEL_STS_DSC,
 		${alias}.LWPR_CHG_NT,
 		${alias}.LVST_AUC_PTC_MN_NO,
-		${alias}.SRA_SBID_AM
+		${alias}.SRA_SBID_AM,
+		${alias}.DNA_YN,
+		${alias}.SRA_PD_RGNNM
 	</sql>
 
 	<!-- tb_la_is_mm_fhs -->

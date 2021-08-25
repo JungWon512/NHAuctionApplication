@@ -197,6 +197,15 @@ public class Auctioneer {
 		if (mStartCountDownJobMap.containsKey(auctionHouseCode)) {
 			mStartCountDownJobMap.get(auctionHouseCode).cancel(true);
 		}
+		
+		mAuctionStateMap.get(auctionHouseCode).onAuctionCountDownCompleted();
+
+		mAuctionServer.itemAdded(new AuctionCountDown(auctionHouseCode,
+				mAuctionStateMap.get(auctionHouseCode).getAuctionCountDownStatus(), "-1")
+						.getEncodedMessage());
+		
+		mAuctionStateMap.get(auctionHouseCode).onAuctionCountDownReady(
+				Integer.valueOf(mAuctionEditSettingMap.get(auctionHouseCode).getCountDown()));
 	}
 
 	public synchronized void broadcastToastMessage(ToastMessageRequest requestToastMessage) {

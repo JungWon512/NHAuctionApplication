@@ -11,7 +11,6 @@ import com.nh.controller.service.EntryInfoMapperService;
  * @author jhlee
  */
 public class SharedPreference {
-
 	private static SharedPreference mSharedPreference = null;
 
 	public static SharedPreference getInstance() {

@@ -18,7 +18,38 @@ import com.nh.controller.utils.SharedPreference;
  *
  */
 public class SettingApplication {
-
+	// 전광판 노출 자리수 설정 기본값
+	public static final String DEFAULT_BORAD_ENTRYNUM = "3";
+	public static final String DEFAULT_BORAD_EXHIBITOR = "6";
+	public static final String DEFAULT_BORAD_GENDER = "2";
+	public static final String DEFAULT_BORAD_WEIGHT = "3";
+	public static final String DEFAULT_BORAD_MOTHER = "4";
+	public static final String DEFAULT_BORAD_PASSAGE = "2";
+	public static final String DEFAULT_BORAD_MATIME = "2";
+	public static final String DEFAULT_BORAD_KPN = "4";
+	public static final String DEFAULT_BORAD_REGION = "4";
+	public static final String DEFAULT_BORAD_NOTE = "12";
+	public static final String DEFAULT_BORAD_LOWPRICE = "3";
+	public static final String DEFAULT_BORAD_SUCPRICE = "3";
+	public static final String DEFAULT_BORAD_SUCBIDDER = "3";
+	public static final String DEFAULT_BORAD_DNA = "1";
+	
+	// PDP 노출 자리수 설정 기본값
+	public static final String DEFAULT_PDP_ENTRYNUM = "3";
+	public static final String DEFAULT_PDP_EXHIBITOR = "6";
+	public static final String DEFAULT_PDP_GENDER = "2";
+	public static final String DEFAULT_PDP_WEIGHT = "3";
+	public static final String DEFAULT_PDP_MOTHER = "4";
+	public static final String DEFAULT_PDP_PASSAGE = "2";
+	public static final String DEFAULT_PDP_MATIME = "2";
+	public static final String DEFAULT_PDP_KPN = "4";
+	public static final String DEFAULT_PDP_REGION = "8";
+	public static final String DEFAULT_PDP_NOTE = "12";
+	public static final String DEFAULT_PDP_LOWPRICE = "3";
+	public static final String DEFAULT_PDP_SUCPRICE = "3";
+	public static final String DEFAULT_PDP_SUCBIDDER = "6";
+	public static final String DEFAULT_PDP_DNA = "1";
+	
 	private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	
 	private static SettingApplication instance = null;
@@ -110,6 +141,38 @@ public class SettingApplication {
 			
 			// 첫실행 후 false
 			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, false);
+			
+	        // 전광판 표출 설정
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_ENTRYNUM, DEFAULT_BORAD_ENTRYNUM);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_KPN, DEFAULT_BORAD_KPN);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_EXHIBITOR, DEFAULT_BORAD_EXHIBITOR);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_REGION, DEFAULT_BORAD_REGION);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_GENDER, DEFAULT_BORAD_GENDER);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_NOTE, DEFAULT_BORAD_NOTE);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_WEIGHT, DEFAULT_BORAD_WEIGHT);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_LOWPRICE, DEFAULT_BORAD_LOWPRICE);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_MOTHER, DEFAULT_BORAD_MOTHER);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_SUCPRICE, DEFAULT_BORAD_SUCPRICE);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_PASSAGE, DEFAULT_BORAD_PASSAGE);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_SUCBIDDER, DEFAULT_BORAD_SUCBIDDER);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_MATIME, DEFAULT_BORAD_MATIME);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_DNA, DEFAULT_BORAD_DNA);
+	        
+	        // PDP 표출 설정
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_ENTRYNUM, DEFAULT_PDP_ENTRYNUM);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_KPN, DEFAULT_PDP_KPN);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_EXHIBITOR, DEFAULT_PDP_EXHIBITOR);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_REGION, DEFAULT_PDP_REGION);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_GENDER, DEFAULT_PDP_GENDER);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_NOTE, DEFAULT_PDP_NOTE);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_WEIGHT, DEFAULT_PDP_WEIGHT);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_LOWPRICE, DEFAULT_PDP_LOWPRICE);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_MOTHER, DEFAULT_PDP_MOTHER);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_SUCPRICE, DEFAULT_PDP_SUCPRICE);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_PASSAGE, DEFAULT_PDP_PASSAGE);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_SUCBIDDER, DEFAULT_PDP_SUCBIDDER);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_MATIME, DEFAULT_PDP_MATIME);
+	        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_DNA, DEFAULT_PDP_DNA);
 		} else {
 			mLogger.debug("설치 후 첫 실행 아님.");
 		}
