@@ -9,7 +9,7 @@ import com.nh.share.controller.models.EntryInfo;
  * @author dhKim
  *
  */
-public class AuctionRound extends SearchParamData{
+public class AuctionRound extends SearchParamData implements Cloneable{
 
 	private String naBzplc; // 경제통합사업장코드
 	private int aucObjDsc; // 경매대상구분코드
@@ -200,5 +200,15 @@ public class AuctionRound extends SearchParamData{
 				+ ", tmsYn=" + tmsYn + ", delYn=" + delYn + ", maleKg=" + maleKg + ", femaleKg=" + femaleKg + ", ttScr="
 				+ ttScr + ", fsrgDtm=" + fsrgDtm + ", fsgmnEno=" + fsgmnEno + ", lschgDtm=" + lschgDtm + ", lsCmeno="
 				+ lsCmeno + "]";
+	}
+	
+	public AuctionRound clone() {
+		AuctionRound vo = null;
+		try {
+			vo = (AuctionRound) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return vo;		
 	}
 }

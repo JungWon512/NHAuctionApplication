@@ -13,6 +13,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,6 +41,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 import java.util.Base64.Encoder;
+import java.util.function.UnaryOperator;
 
 /**
  * 공통 유틸리티 관리 클래스
@@ -1059,4 +1061,25 @@ public class CommonUtils {
 
         return true;
     }
+    
+    
+    /**
+	 *  텍스트 필드 숫자만 입력
+	 */
+	public void setNumberTextField(TextField textField) {
+
+		UnaryOperator<Change> filter = change -> {
+			String text = change.getText();
+
+			if (text.matches("[0-9]*")) {
+				return change;
+			}
+
+			return null;
+		};
+
+		TextFormatter<String> textFormatter = new TextFormatter<>(filter);
+		textField.setTextFormatter(textFormatter);
+	}
+	
 }

@@ -37,7 +37,17 @@ public class EntryInfoDao {
     }
     
     /**
-     * 가격 정보 업데이트
+     * 가격 정보 다중 업데이트
+     * @param entryInfo
+     * @param session
+     * @return
+     */
+    public int updateEntryPriceList(List<EntryInfo> entryInfoList,SqlSession session) {
+        return session.update("updateEntryPriceList", entryInfoList);
+    }
+    
+    /**
+     * 경매 상태 업데이트
      * @param entryInfo
      * @param session
      * @return

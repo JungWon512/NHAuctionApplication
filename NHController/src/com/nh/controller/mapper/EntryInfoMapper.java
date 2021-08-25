@@ -34,6 +34,13 @@ public interface EntryInfoMapper {
     int updateEntryPrice(EntryInfo entryInfo); 
     
     /**
+     * 가격 정보 다중 업데이트
+     * @param entryInfo
+     * @return
+     */
+    int updateEntryPriceList(List<EntryInfo> entryInfoList); 
+    
+    /**
      * 경매 상태 정보 업데이트
      * @param entryInfo
      * @return

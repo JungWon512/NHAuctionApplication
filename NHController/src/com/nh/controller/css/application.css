@@ -114,12 +114,29 @@
 	-fx-border-width: 1.0;
 	-fx-border-color: #0082e5;
 	-fx-background-color : #0082e5;
-	-fx-font-size: 16px;
+	-fx-font-size: 14px;
 	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
 	-fx-text-fill: #ffffff;
 }
 
 .button:hover{
+	-fx-border-width: 2px;
+	-fx-border-color: #0082e5;
+	-fx-background-color:  #0A1931;
+	-fx-text-fill: #ffffff;
+}
+
+
+.button-12{
+	-fx-border-width: 1.0;
+	-fx-border-color: #0082e5;
+	-fx-background-color : #0082e5;
+	-fx-font-size: 12px;
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
+	-fx-text-fill: #ffffff;
+}
+
+.button-12:hover{
 	-fx-border-width: 2px;
 	-fx-border-color: #0082e5;
 	-fx-background-color:  #0A1931;

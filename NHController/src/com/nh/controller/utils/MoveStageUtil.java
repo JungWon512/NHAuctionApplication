@@ -14,9 +14,11 @@ import com.nh.controller.controller.SettingController;
 import com.nh.controller.controller.SettingSoundController;
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.IntegerListener;
+import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpEntryInfo;
+import com.nh.controller.utils.MoveStageUtil.EntryDialogType;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -192,7 +194,7 @@ public class MoveStageUtil {
 	 * @param stage
 	 */
 	
-	public synchronized void openEntryListDialog(EntryDialogType type,Stage stage, ObservableList<SpEntryInfo> dataList,AuctionRound auctionRound, IntegerListener listener) {
+	public synchronized void openEntryListDialog(EntryDialogType type,Stage stage,AuctionRound auctionRound, SelectEntryListener listener) {
 		
 		if(mDialog != null && mDialog.isShowing()) {
 			return;
@@ -203,9 +205,17 @@ public class MoveStageUtil {
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
 			EntryListController controller = fxmlLoader.getController();
-			controller.setConfig(dataList,type,auctionRound,listener);
+			controller.setConfig(type,auctionRound,listener);
 			openDialog(stage, parent);
-			setStageDisable(stage);
+
+			stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
+			stage.getScene().getRoot().setDisable(true);
+
+			Window window = mDialog.getDialogPane().getScene().getWindow();
+			window.setOnCloseRequest(e -> {
+				listener.callBack(type,-1,null);
+				setBackStageDisableFalse(stage);
+			});
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -320,7 +330,7 @@ public class MoveStageUtil {
 
 		Window window = mDialog.getDialogPane().getScene().getWindow();
 		window.setOnCloseRequest(e -> {
-			System.out.println("setStageDisable");
+			System.out.println("1 setStageDisable");
 			setBackStageDisableFalse(backStage);
 		});
 
@@ -339,7 +349,7 @@ public class MoveStageUtil {
 
 		Window window = mDialog.getDialogPane().getScene().getWindow();
 		window.setOnCloseRequest(e -> {
-			System.out.println("setStageDisable");
+			System.out.println("1 setStageDisable");
 			listener.callBack(true);
 			setBackStageDisableFalse(backStage);
 		});

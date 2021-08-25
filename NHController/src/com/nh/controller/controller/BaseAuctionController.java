@@ -109,6 +109,8 @@ public class BaseAuctionController implements NettyControllable {
 	protected boolean isPause = false;
 
 	protected boolean isStartedAuction = false;
+	
+	protected boolean isApplicationClosePopup = false;
 
 	public BaseAuctionController() {
 		init();
@@ -430,6 +432,10 @@ public class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onChannelInactive(int port) {
 		mLogger.debug("onChannelInactive : " + port);
+		//ESC 눌러서 임의로 접속 종료시 접속 해제 팝업 노출 X
+		if(isApplicationClosePopup) {
+			return;
+		}
 		addLogItem(mResMsg.getString("msg.disconnection"));
 		Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("msg.disconnection")));
 	}
@@ -601,7 +607,7 @@ public class BaseAuctionController implements NettyControllable {
 		auctionResult.setEntryNum(spEntryInfo.getEntryNum().getValue());
 		auctionResult.setEntryType(spEntryInfo.getEntryType().getValue());
 		auctionResult.setAucDt(spEntryInfo.getAucDt().getValue());
-		auctionResult.setLsCmeNo(GlobalDefineCode.AUCTION_LOGIN_TYPE_MANAGER);
+		auctionResult.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
 
 		switch (code) {
 		case GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS:

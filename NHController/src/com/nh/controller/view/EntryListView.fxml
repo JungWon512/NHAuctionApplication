@@ -21,22 +21,10 @@
                   <HBox alignment="CENTER_RIGHT" spacing="10.0">
                      <children>
                         <Label fx:id="mDownPriceLabel" text="최저가 낮춤" textFill="WHITE" visible="false" />
-                        <TextField fx:id="mDownPriceTextField" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="120.0" text="10000" visible="false" />
-                        <Button fx:id="mBtnDownPrice" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" prefWidth="80.0" text="최저가낮춤" visible="false">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="mBtnSelect" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" prefWidth="80.0" text="[ENT]선택" visible="false">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="mBtnClose" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" prefWidth="80.0" text="[ESC]종료">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Button>
+                        <TextField fx:id="mDownPriceTextField" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="120.0" text="0" visible="false" />
+                        <Button fx:id="mBtnDownPrice" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" prefWidth="80.0" styleClass="button-12" text="최저가낮춤" visible="false" />
+                        <Button fx:id="mBtnSelect" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" prefWidth="80.0" styleClass="button-12" text="[ENT]선택" visible="false" />
+                        <Button fx:id="mBtnClose" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" prefWidth="80.0" styleClass="button-12" text="[ESC]종료" />
                      </children>
                   </HBox>
                   <VBox spacing="5.0" styleClass="bg-color-1e1e2f" VBox.vgrow="ALWAYS">

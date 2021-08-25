@@ -3,6 +3,7 @@ package com.nh.controller.controller;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.IntegerListener;
+import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpBidding;
@@ -49,11 +51,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -362,6 +366,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mAuctionInfoRoundLabel.setText(String.valueOf(this.auctionRound.getQcn()));
 		mAuctionInfoGubunLabel.setText("큰소경매");
 		mAuctionInfoNameLabel.setText("89두");
+
+		int BaselowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(auctionRound.getAucObjDsc());
+		setBaseDownPrice(Integer.toString(BaselowPrice));
+	}
+
+	/**
+	 * 예정가 낮추기 금액
+	 * 
+	 * @param downPrice
+	 */
+	private void setBaseDownPrice(String downPrice) {
+		Platform.runLater(() -> mDeprePriceLabel.setText(downPrice));
 	}
 
 	/**
@@ -375,9 +391,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mStage = chooseAuctionStage;
 		mFxmlLoader = fxmlLoader;
 		this.auctionRound = auctionRound;
-		//경매 구분
+		// 경매 구분
 		SettingApplication.getInstance().setAuctionObjDsc(this.auctionRound.getAucObjDsc());
-		
+
 		// connection server
 		Thread thread = new Thread("server") {
 			@Override
@@ -452,9 +468,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
 	 */
-	private void refreshWaitEntryDataList() {
+	private void refreshWaitEntryDataList(boolean isRefresh) {
 
-		List<EntryInfo> entryInfoDataList = EntryInfoMapperService.getInstance().getAllEntryData(this.auctionRound); // 테스트
+		List<EntryInfo> entryInfoDataList = EntryInfoMapperService.getInstance().getAllEntryData(this.auctionRound);
 
 		ObservableList<SpEntryInfo> newEntryDataList = getParsingEntryDataList(entryInfoDataList);
 
@@ -503,20 +519,21 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		}
 
-		// 추가된 데이터 있는지 확인
-		ObservableList<SpEntryInfo> newDataList = newEntryDataList.stream().filter(e -> !mWaitEntryInfoDataList.contains(e)).collect(Collectors.toCollection(FXCollections::observableArrayList));
+		if (isRefresh) {
+			// 추가된 데이터 있는지 확인
+			ObservableList<SpEntryInfo> newDataList = newEntryDataList.stream().filter(e -> !mWaitEntryInfoDataList.contains(e)).collect(Collectors.toCollection(FXCollections::observableArrayList));
 
-		// 추가된 데이터 항목이 있으면 add
-		if (!CommonUtils.getInstance().isListEmpty(newDataList)) {
-			mWaitEntryInfoDataList.addAll(mRecordCount, newDataList);
-			mRecordCount += newDataList.size();
-		} else {
-			addLogItem("추기된 데이터 없음.");
+			// 추가된 데이터 항목이 있으면 add
+			if (!CommonUtils.getInstance().isListEmpty(newDataList)) {
+				mWaitEntryInfoDataList.addAll(mRecordCount, newDataList);
+				mRecordCount += newDataList.size();
+			} else {
+				addLogItem("추기된 데이터 없음.");
+			}
+
+			mWaitTableView.setItems(mWaitEntryInfoDataList);
+			mWaitTableView.refresh();
 		}
-
-		mWaitTableView.setItems(mWaitEntryInfoDataList);
-		mWaitTableView.refresh();
-
 	}
 
 	/**
@@ -570,11 +587,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.msg.send.data"));
 
+			// 보내기 전 한번 더 갱신
+			refreshWaitEntryDataList(true);
+
 			Thread thread = new Thread("onSendEntryData") {
 				@Override
 				public void run() {
 
 					int count = 0;
+
 					for (SpEntryInfo entryInfo : mWaitEntryInfoDataList) {
 						if (!isEmptyProperty(entryInfo.getEntryNum())) {
 							if (entryInfo.getIsLastEntry().getValue().equals("Y")) {
@@ -628,7 +649,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				entryInfo.setEntryType(entryType);
 				entryInfo.setAucDt(aucDt);
 				entryInfo.setAuctionResult(state);
-				entryInfo.setLsCmeNo(GlobalDefineCode.AUCTION_LOGIN_TYPE_MANAGER);
+				entryInfo.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
 
 				final int resultValue = EntryInfoMapperService.getInstance().updateEntryState(entryInfo);
 
@@ -663,11 +684,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		refreshWaitEntryDataList();
-
-		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoDataList();
-
-		openEntryDialog(EntryDialogType.ENTRY_LIST, dataList);
+		openEntryDialog(EntryDialogType.ENTRY_LIST);
 
 	}
 
@@ -683,7 +700,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		openEntryDialog(EntryDialogType.ENTRY_FINISH_LIST, dataList);
+		openEntryDialog(EntryDialogType.ENTRY_FINISH_LIST);
 
 	}
 
@@ -712,9 +729,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		ObservableList<SpEntryInfo> dataList = getWaitEntryInfoPendingDataList();
-
-		openEntryDialog(EntryDialogType.ENTRY_PENDING_LIST, dataList);
+		openEntryDialog(EntryDialogType.ENTRY_PENDING_LIST);
 	}
 
 	/**
@@ -723,29 +738,37 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param type
 	 * @param dataList
 	 */
-	private void openEntryDialog(EntryDialogType type, ObservableList<SpEntryInfo> dataList) {
+	private void openEntryDialog(EntryDialogType type) {
 
-		MoveStageUtil.getInstance().openEntryListDialog(type, mStage, dataList,auctionRound, new IntegerListener() {
+		MoveStageUtil.getInstance().openEntryListDialog(type, mStage, auctionRound, new SelectEntryListener() {
 			@Override
-			public void callBack(int value) {
+			public void callBack(EntryDialogType type, int index, ObservableList<SpEntryInfo> dataList) {
 
 				dismissShowingDialog();
 
-				addLogItem("Dialog callBack Value : " + value);
-				if (value < 0) {
+				addLogItem("Dialog callBack Value : " + type);
+
+				if (type.equals(EntryDialogType.ENTRY_LIST) || type.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
+					refreshWaitEntryDataList(false);
+				}
+
+				if (index < 0) {
 					return;
 				}
+
 				if (CommonUtils.getInstance().isListEmpty(dataList)) {
 					return;
 				}
+
+				// 낙찰 결과보기는 이동,갱신 안 함
 				if (type.equals(EntryDialogType.ENTRY_FINISH_LIST)) {
 					return;
 				}
 
 				setWaitEntryDataList(dataList);
 
-				if (value > -1) {
-					selectIndexWaitTable(value, true);
+				if (index > -1) {
+					selectIndexWaitTable(index, true);
 				}
 			}
 		});
@@ -770,6 +793,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mLogger.debug("openSettingSoundDialog ");
 
 				initParsingSoundDataList();
+
+				int BaselowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(auctionRound.getAucObjDsc());
+				setBaseDownPrice(Integer.toString(BaselowPrice));
+
 			}
 		});
 	}
@@ -787,6 +814,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			@Override
 			public void callBack(Boolean isClose) {
+
 				dismissShowingDialog();
 				// 환경설정 저장 후 값들 재설정
 				SettingApplication.getInstance().initSharedData();
@@ -807,14 +835,28 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 프로그램 종료
 	 */
 	public void onCloseApplication() {
-		AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
-			@Override
-			public void onShutDown(int port) {
-				Platform.runLater(() -> {
-					MoveStageUtil.getInstance().moveChooseAuctionStage(mStage);
+		Platform.runLater(() -> {
+			
+			Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, mResMsg.getString("str.ask.application.close"), mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.cancel"));
+
+			if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+				
+				CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.app.closeing"));
+				
+				isApplicationClosePopup = true;
+				
+				AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+					@Override
+					public void onShutDown(int port) {
+						Platform.runLater(() -> {
+							CommonUtils.getInstance().dismissLoadingDialog();
+							MoveStageUtil.getInstance().moveChooseAuctionStage(mStage);
+						});
+					}
 				});
 			}
 		});
+		
 	}
 
 	/**
@@ -845,7 +887,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 		case GlobalDefineCode.AUCTION_STATUS_PASS:
 			// 갱신 후 변경점 있으면 서버 전달.
-			refreshWaitEntryDataList();
+			refreshWaitEntryDataList(true);
 			// 경매 뷰 초기화
 			setAuctionVariableState(mAuctionStatus.getState());
 			// 시작
@@ -892,7 +934,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 		case GlobalDefineCode.AUCTION_STATUS_PASS:
 			// 갱신 후 변경점 있으면 서버 전달.
-			refreshWaitEntryDataList();
+			refreshWaitEntryDataList(true);
 			// 경매 뷰 초기화
 			setAuctionVariableState(mAuctionStatus.getState());
 			// 시작
@@ -1149,7 +1191,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		entryInfo.setEntryType(targetEntryType);
 		entryInfo.setAucDt(targetAucDt);
 		entryInfo.setLowPrice(updatePrice);
-		entryInfo.setLsCmeNo(GlobalDefineCode.AUCTION_LOGIN_TYPE_MANAGER);
+		entryInfo.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
 		entryInfo.setLwprChgNt(Integer.toString(lowPriceCnt));
 
 		if (updatePrice == null || updatePrice.isEmpty() || Integer.parseInt(updatePrice) < 0) {
@@ -1780,13 +1822,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			int price = 0;
 			int bidPrice = 0;
-					
+
 			switch (auctionRound.getAucObjDsc()) {
-			case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2://비육우 천단위
+			case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:// 비육우 천단위
 				price = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getLowPrice().getValue(), GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_1000);
 				bidPrice = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getAuctionBidPrice().getValue(), GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_1000);
 				break;
-			default: //송아지,번식우 만단위
+			default: // 송아지,번식우 만단위
 				price = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getLowPrice().getValue(), GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000);
 				bidPrice = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getAuctionBidPrice().getValue(), GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000);
 				break;
@@ -2225,10 +2267,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					if (isPrice) {
 
 						switch (auctionRound.getAucObjDsc()) {
-						case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2://비육우
+						case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:// 비육우
 							reValue = CommonUtils.getInstance().getBaseUnitDivision(value, GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_1000);
 							break;
-						default: //송아지,번식우
+						default: // 송아지,번식우
 							reValue = CommonUtils.getInstance().getBaseUnitDivision(value, GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000);
 							break;
 						}

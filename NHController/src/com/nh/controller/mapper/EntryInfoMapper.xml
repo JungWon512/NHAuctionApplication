@@ -117,7 +117,7 @@
 
 
 
-<!-- 출품 데이터 추출 -->
+	<!-- 출품 데이터 추출 -->
     <select id="selectAllEntryCount" resultType="int">
     SELECT
 			count(*)
@@ -141,18 +141,9 @@
 		WHERE B.AUC_DT = #{aucDt}
 		AND B.NA_BZPLC = #{naBzplc}
 		AND B.AUC_OBJ_DSC = #{aucObjDsc}
-		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('S')">
-			AND B.SEL_STS_DSC = '22'
+		<if test="mAuctionResult !=null and !mAuctionResult.equals('')">
+			AND B.SEL_STS_DSC = #{mAuctionResult}
 		</if>
-
-		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('P')">
-			AND B.SEL_STS_DSC = '23'
-		</if>
-
-		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('SP')">
-			AND B.SEL_STS_DSC >= '22'
-		</if>
-
 		ORDER BY B.AUC_PRG_SQ ASC;
     
     </select>
@@ -185,22 +176,14 @@
 		WHERE B.AUC_DT = #{aucDt}
 		AND B.NA_BZPLC = #{naBzplc}
 		AND B.AUC_OBJ_DSC = #{aucObjDsc}
-		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('S')">
-			AND B.SEL_STS_DSC = '22'
-		</if>
-
-		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('P')">
-			AND B.SEL_STS_DSC = '23'
-		</if>
-
-		<if test="auctionResultParam !=null and !auctionResultParam.equals('') and auctionResultParam.equals('SP')">
-			AND B.SEL_STS_DSC >= '22'
+		<if test="mAuctionResult !=null and !mAuctionResult.equals('')">
+			AND B.SEL_STS_DSC = #{mAuctionResult}
 		</if>
 
 		ORDER BY B.AUC_PRG_SQ ASC;
     </select>
 
-      <!-- 가격 정보 업데이트-->
+	<!-- 가격 정보 업데이트-->
 	<update id="updateEntryPrice" parameterType="EntryInfo">
 		UPDATE	TB_LA_IS_MH_SOG_COW
 		   SET	LOWS_SBID_LMT_AM = #{mLowPrice},
@@ -212,6 +195,22 @@
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
 		   AND	AUC_DT		= #{mAucDt}
     </update>
+    
+	<!-- 가격 정보 다중 업데이트-->
+    <update id="updateEntryPriceList" parameterType="java.util.List">
+    	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			UPDATE	TB_LA_IS_MH_SOG_COW
+			   SET	LOWS_SBID_LMT_AM = #{item.mLowPrice},
+			   		LWPR_CHG_NT = #{item.mLwprChgNt},
+			   		LSCHG_DTM = NOW(),
+			   		LS_CMENO	= #{item.mLsCmeNo}
+			 WHERE	AUC_PRG_SQ	= #{item.mEntryNum}
+			   AND	NA_BZPLC	= #{item.mAuctionHouseCode}
+			   AND	AUC_OBJ_DSC	= #{item.mEntryType}
+			   AND	AUC_DT		= #{item.mAucDt}
+		   </foreach>
+    </update>
+    
 
   	<!-- 경매 상태 업데이트-->
     <update id="updateEntryState" parameterType="EntryInfo">

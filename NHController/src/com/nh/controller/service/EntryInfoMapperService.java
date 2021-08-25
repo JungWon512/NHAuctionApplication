@@ -107,6 +107,33 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 		return resultValue;
 	}
+	
+
+	@Override
+	public int updateEntryPriceList(List<EntryInfo> entryInfoList) {
+		
+		int resultValue = 0;
+		
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultValue = getDao().updateEntryPriceList(entryInfoList,session);
+			
+			if(resultValue > 0) {
+				session.commit();
+			}else {
+				session.rollback();
+			}
+			
+		}catch (Exception e) {
+			//exception에 대한 처리 시 사용
+			resultValue = -1;
+		}
+
+		return resultValue;
+	}
+	
+	
+	
 
 	@Override
 	public int updateEntryState(EntryInfo entryInfo) {
