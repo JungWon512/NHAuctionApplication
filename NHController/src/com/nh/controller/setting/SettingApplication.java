@@ -206,6 +206,7 @@ public class SettingApplication {
 		return baseUnit;
 	}
 	
+	
 	/**
 	 * 하한가 낮추기
 	 * @return 1.송아지 , 2.비육우 ,3.번식우
@@ -225,12 +226,10 @@ public class SettingApplication {
 			lowerLimitPrice = getLowerLimitBreedingCattle();
 			break;
 		}
-		
 		return lowerLimitPrice;
 	}
-	
-	
 
+	
 	public int getUpperLimitCalf() {
 		return reInt(upperLimitCalf);
 	}
