@@ -139,6 +139,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	private Timer mAutoStopScheduler = null; // 음성 경매 정지 타이머
 
+	
 	/**
 	 * setStage
 	 *
