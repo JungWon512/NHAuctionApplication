@@ -99,6 +99,7 @@ public class ChooseAuctionController implements Initializable {
 	private void test() {
 		mTestIp.setText(GlobalDefine.AUCTION_INFO.AUCTION_HOST);
 		mTestPort.setText(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_PORT));
+		mBreedingCattleToggleButton.setSelected(true);
 	}
 
 	/**
@@ -145,7 +146,8 @@ public class ChooseAuctionController implements Initializable {
 			}
 		});
 		
-		mAuctionDatePicker.setValue(LocalDate.now());
+//		mAuctionDatePicker.setValue(LocalDate.now());
+		mAuctionDatePicker.setValue(LocalDate.of(2021, 8, 13));
 	}
 	
 	/**

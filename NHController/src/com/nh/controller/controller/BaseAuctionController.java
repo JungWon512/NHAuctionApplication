@@ -144,7 +144,9 @@ public class BaseAuctionController implements NettyControllable {
      * 소켓 서버 접속
      */
     protected void createClient(String host, int port, String userMemNum, String watchMode) {
+    	//경매 서버 접속
         AuctionDelegate.getInstance().createClients(host, port, userMemNum, watchMode, this);
+        
         // UDP 전광판
         BillboardDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""),
                 SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""), this);
