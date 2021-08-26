@@ -1,20 +1,10 @@
 package com.nh.controller.controller;
 
-import java.lang.invoke.MethodHandles;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.controller.utils.SoundUtil;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -23,6 +13,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * 제어 메인 -> 음성설정
@@ -31,199 +29,197 @@ import javafx.stage.Stage;
  */
 public class SettingSoundController implements Initializable {
 
-	private Stage mStage;
-	private ResourceBundle mResMsg;
-	private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private Stage mStage;
+    private ResourceBundle mResMsg;
+    private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@FXML
-	private BorderPane mRoot;
+    @FXML
+    private BorderPane mRoot;
 
-	@FXML // 음성 시작
-	private Button mBtnPlaySound_1, mBtnPlaySound_2, mBtnPlaySound_3, mBtnPlaySound_4, mBtnPlaySound_5, mBtnPlaySound_6, mBtnPlaySound_7, mBtnPlaySound_8, mBtnPlaySound_9, mBtnPlaySound_10, mBtnPlaySound_11, mBtnPlaySound_12;
+    @FXML // 음성 시작
+    private Button mBtnPlaySound_1, mBtnPlaySound_2, mBtnPlaySound_3, mBtnPlaySound_4, mBtnPlaySound_5, mBtnPlaySound_6, mBtnPlaySound_7, mBtnPlaySound_8, mBtnPlaySound_9, mBtnPlaySound_10, mBtnPlaySound_11, mBtnPlaySound_12;
 
-	@FXML // 음성 정지
-	private Button mBtnStopSound_1, mBtnStopSound_2, mBtnStopSound_3, mBtnStopSound_4, mBtnStopSound_5, mBtnStopSound_6, mBtnStopSound_7, mBtnStopSound_8, mBtnStopSound_9, mBtnStopSound_10, mBtnStopSound_11, mBtnStopSound_12;
+    @FXML // 음성 정지
+    private Button mBtnStopSound_1, mBtnStopSound_2, mBtnStopSound_3, mBtnStopSound_4, mBtnStopSound_5, mBtnStopSound_6, mBtnStopSound_7, mBtnStopSound_8, mBtnStopSound_9, mBtnStopSound_10, mBtnStopSound_11, mBtnStopSound_12;
 
-	@FXML // 상단
-	private Button mBtnRePlaySound, mBtnStopSound, mBtnSave, mBtnClose;
+    @FXML // 상단
+    private Button mBtnRePlaySound, mBtnStopSound, mBtnSave, mBtnClose;
 
-	@FXML // 메세지
-	private TextArea mMsgTextArea_1, mMsgTextArea_2, mMsgTextArea_3, mMsgTextArea_4, mMsgTextArea_5, mMsgTextArea_6, mMsgTextArea_7, mMsgTextArea_8, mMsgTextArea_9, mMsgTextArea_10, mMsgTextArea_11, mMsgTextArea_12;
+    @FXML // 메세지
+    private TextArea mMsgTextArea_1, mMsgTextArea_2, mMsgTextArea_3, mMsgTextArea_4, mMsgTextArea_5, mMsgTextArea_6, mMsgTextArea_7, mMsgTextArea_8, mMsgTextArea_9, mMsgTextArea_10, mMsgTextArea_11, mMsgTextArea_12;
 
-	// 사운드 클래스
-	private SoundUtil mSoundUtil = new SoundUtil();
-	
-	private BooleanListener mBooleanListener = null;
+    private BooleanListener mBooleanListener = null;
 
-	/**
-	 * setStage
-	 *
-	 * @param stage
-	 */
-	public void setStage(Stage stage) {
-		mStage = stage;
-	}
-	
-	/**
-	 * 콜백 리스너
-	 * @param listener
-	 */
-	public void setListener(BooleanListener listener) {
-		mBooleanListener = listener;
-	}
+    /**
+     * setStage
+     *
+     * @param stage
+     */
+    public void setStage(Stage stage) {
+        mStage = stage;
+    }
 
-	/**
-	 * 구성 설정
-	 */
-	public void initConfiguration() {
+    /**
+     * 콜백 리스너
+     *
+     * @param listener
+     */
+    public void setListener(BooleanListener listener) {
+        mBooleanListener = listener;
+    }
+
+    /**
+     * 구성 설정
+     */
+    public void initConfiguration() {
 //		CommonUtils.getInstance().canMoveStage(mStage, null);
-	}
+    }
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// get ResMsg
-		if (resources != null) {
-			mResMsg = resources;
-		}
-		
-		initUI();
-	}
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // get ResMsg
+        if (resources != null) {
+            mResMsg = resources;
+        }
 
-	private void initUI() {
-		initKeyConfig();
+        initUI();
+    }
 
-		mBtnPlaySound_1.setOnMouseClicked(event -> mSoundUtil.playSound(0));
-		mBtnPlaySound_2.setOnMouseClicked(event -> mSoundUtil.playSound(1));
-		mBtnPlaySound_3.setOnMouseClicked(event -> mSoundUtil.playSound(2));
-		mBtnPlaySound_4.setOnMouseClicked(event -> mSoundUtil.playSound(3));
-		mBtnPlaySound_5.setOnMouseClicked(event -> mSoundUtil.playSound(4));
-		mBtnPlaySound_6.setOnMouseClicked(event -> mSoundUtil.playSound(5));
-		mBtnPlaySound_7.setOnMouseClicked(event -> mSoundUtil.playSound(6));
-		mBtnPlaySound_8.setOnMouseClicked(event -> mSoundUtil.playSound(7));
-		mBtnPlaySound_9.setOnMouseClicked(event -> mSoundUtil.playSound(8));
-		mBtnPlaySound_10.setOnMouseClicked(event -> mSoundUtil.playSound(9));
-		mBtnPlaySound_11.setOnMouseClicked(event -> mSoundUtil.playSound(10));
-		mBtnPlaySound_12.setOnMouseClicked(event -> mSoundUtil.playSound(11));
+    private void initUI() {
+        initKeyConfig();
 
-		mBtnStopSound_1.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_2.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_3.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_4.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_5.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_6.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_7.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_8.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_9.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_10.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_11.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnStopSound_12.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
+        mBtnPlaySound_1.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_1.getText()));
+        mBtnPlaySound_2.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_2.getText()));
+        mBtnPlaySound_3.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_3.getText()));
+        mBtnPlaySound_4.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_4.getText()));
+        mBtnPlaySound_5.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_5.getText()));
+        mBtnPlaySound_6.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_6.getText()));
+        mBtnPlaySound_7.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_7.getText()));
+        mBtnPlaySound_8.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_8.getText()));
+        mBtnPlaySound_9.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_9.getText()));
+        mBtnPlaySound_10.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_10.getText()));
+        mBtnPlaySound_11.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_11.getText()));
+        mBtnPlaySound_12.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_12.getText()));
 
-		mBtnRePlaySound.setOnMouseClicked(event -> mSoundUtil.playSound(mSoundUtil.getCurrentIndex()));
-		mBtnStopSound.setOnMouseClicked(event -> mSoundUtil.stopSound(0));
-		mBtnSave.setOnMouseClicked(event -> saveMsg());
-		mBtnClose.setOnMouseClicked(event -> close());
+        mBtnStopSound_1.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_2.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_3.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_4.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_5.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_6.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_7.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_8.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_9.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_10.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_11.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnStopSound_12.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 
-		List<String> soundDataList = initParsingSoundDataList();
+        mBtnRePlaySound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SoundUtil.getInstance().getDefinePrevMsg()));
+        mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        mBtnSave.setOnMouseClicked(event -> saveMsg());
+        mBtnClose.setOnMouseClicked(event -> close());
 
-		mMsgTextArea_1.setText(soundDataList.get(0));
-		mMsgTextArea_2.setText(soundDataList.get(1));
-		mMsgTextArea_3.setText(soundDataList.get(2));
-		mMsgTextArea_4.setText(soundDataList.get(3));
-		mMsgTextArea_5.setText(soundDataList.get(4));
-		mMsgTextArea_6.setText(soundDataList.get(5));
-		mMsgTextArea_7.setText(soundDataList.get(6));
-		mMsgTextArea_8.setText(soundDataList.get(7));
-		mMsgTextArea_9.setText(soundDataList.get(8));
-		mMsgTextArea_10.setText(soundDataList.get(9));
-		mMsgTextArea_11.setText(soundDataList.get(10));
-		mMsgTextArea_12.setText(soundDataList.get(11));	
-	}
+        List<String> soundDataList = initParsingSoundDataList();
 
-	private void initKeyConfig() {
+        mMsgTextArea_1.setText(soundDataList.get(0));
+        mMsgTextArea_2.setText(soundDataList.get(1));
+        mMsgTextArea_3.setText(soundDataList.get(2));
+        mMsgTextArea_4.setText(soundDataList.get(3));
+        mMsgTextArea_5.setText(soundDataList.get(4));
+        mMsgTextArea_6.setText(soundDataList.get(5));
+        mMsgTextArea_7.setText(soundDataList.get(6));
+        mMsgTextArea_8.setText(soundDataList.get(7));
+        mMsgTextArea_9.setText(soundDataList.get(8));
+        mMsgTextArea_10.setText(soundDataList.get(9));
+        mMsgTextArea_11.setText(soundDataList.get(10));
+        mMsgTextArea_12.setText(soundDataList.get(11));
+    }
 
-		mRoot.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-			if (event.getCode() == KeyCode.F5) {
-				System.out.println("F5");
-				saveMsg();
-				event.consume();
-			}
+    private void initKeyConfig() {
 
-			if (event.getCode() == KeyCode.ESCAPE) {
-				System.out.println("ESCAPE");
-				close();
-				event.consume();
-			}
+        mRoot.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.F5) {
+                System.out.println("F5");
+                saveMsg();
+                event.consume();
+            }
 
-		});
+            if (event.getCode() == KeyCode.ESCAPE) {
+                System.out.println("ESCAPE");
+                close();
+                event.consume();
+            }
 
-	}
+        });
 
-	/**
-	 * 내부 저장된 메세지 가져옴.
-	 */
-	private List<String> initParsingSoundDataList() {
+    }
 
-		// 사운드 텍스트 저장 리스트.
-		List<String> soundDataList = new ArrayList<String>();
+    /**
+     * 내부 저장된 메세지 가져옴.
+     */
+    private List<String> initParsingSoundDataList() {
 
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_USE, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, ""));
-		soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, ""));
+        // 사운드 텍스트 저장 리스트.
+        List<String> soundDataList = new ArrayList<String>();
 
-		mSoundUtil.setSoundDataList(soundDataList);
-		
-		return soundDataList;
-	}
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_USE, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, ""));
+        soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, ""));
 
-	/**
-	 * 메세지 저장
-	 */
-	private void setSaveSharedMessage() {
-		
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, mMsgTextArea_1.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, mMsgTextArea_2.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, mMsgTextArea_3.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE, mMsgTextArea_4.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER, mMsgTextArea_5.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_USE, mMsgTextArea_6.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, mMsgTextArea_7.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, mMsgTextArea_8.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, mMsgTextArea_9.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, mMsgTextArea_10.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, mMsgTextArea_11.getText());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, mMsgTextArea_12.getText());
+        SoundUtil.getInstance().setDefineMessageList(soundDataList);
 
-		showAlertPopup(mResMsg.getString("str.setting.sound.save"), mResMsg.getString("popup.btn.ok"));
-		
-		initParsingSoundDataList();
-	}
+        return soundDataList;
+    }
 
-	/**
-	 * 메세지 내부 저장
-	 */
-	private void saveMsg() {
-		setSaveSharedMessage();
-	}
-	
-	/**
-	 * 창 닫기
-	 */
-	private void close() {
-		MoveStageUtil.getInstance().dismissDialog();
-		mBooleanListener.callBack(true);
-		MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
-	}
+    /**
+     * 메세지 저장
+     */
+    private void setSaveSharedMessage() {
 
-	private void showAlertPopup(String msg, String btnMsg) {
-		CommonUtils.getInstance().showAlertPopupOneButton(MoveStageUtil.getInstance().getDialog(), msg, btnMsg);
-	}
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, mMsgTextArea_1.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, mMsgTextArea_2.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, mMsgTextArea_3.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE, mMsgTextArea_4.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER, mMsgTextArea_5.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_USE, mMsgTextArea_6.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, mMsgTextArea_7.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, mMsgTextArea_8.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, mMsgTextArea_9.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, mMsgTextArea_10.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, mMsgTextArea_11.getText());
+        SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, mMsgTextArea_12.getText());
+
+        showAlertPopup(mResMsg.getString("str.setting.sound.save"), mResMsg.getString("popup.btn.ok"));
+
+        initParsingSoundDataList();
+    }
+
+    /**
+     * 메세지 내부 저장
+     */
+    private void saveMsg() {
+        setSaveSharedMessage();
+    }
+
+    /**
+     * 창 닫기
+     */
+    private void close() {
+        MoveStageUtil.getInstance().dismissDialog();
+        mBooleanListener.callBack(true);
+        MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
+    }
+
+    private void showAlertPopup(String msg, String btnMsg) {
+        CommonUtils.getInstance().showAlertPopupOneButton(MoveStageUtil.getInstance().getDialog(), msg, btnMsg);
+    }
 }
