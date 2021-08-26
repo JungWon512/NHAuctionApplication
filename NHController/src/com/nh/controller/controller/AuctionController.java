@@ -1297,6 +1297,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
             case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
                 if (SettingApplication.getInstance().isUseSoundAuction()) {
+                	//타이머 초기화
+                	stopAutoAuctionScheduler();
                     // 음성 경매시 종료 타이머 시작.
                     soundAuctionTimerTask();
                 }
@@ -1703,7 +1705,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
             switch (code) {
 
                 case GlobalDefineCode.AUCTION_STATUS_READY:
-
+                	
                     //카운트다운 라벨 초기화
                     setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
 
@@ -1857,6 +1859,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
                             start.setOnFinished(new EventHandler<ActionEvent>() {
                                 @Override
                                 public void handle(ActionEvent event) {
+                                	//타이머 초기화
+                                	stopAutoAuctionScheduler();
                                     onStartSoundAuction();
                                 }
                             });
@@ -2073,7 +2077,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
                         // 경매 진행중인 경우 취소처리
                         if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
-                            sendAuctionResult(false, mCurrentSpEntryInfo, null, GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
+                            onPause();
+                        	sendAuctionResult(false, mCurrentSpEntryInfo, null, GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
                             mBiddingInfoTableView.setDisable(false);
                             BillboardDelegate.getInstance().completeBillboard();
                             PdpDelegate.getInstance().completePdp();
