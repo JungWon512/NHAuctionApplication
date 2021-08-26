@@ -208,8 +208,8 @@ public class MoveStageUtil {
 			controller.setConfig(type,auctionRound,listener);
 			openDialog(stage, parent);
 
-//			stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
-			stage.getScene().getRoot().setDisable(false);
+			stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
+			stage.getScene().getRoot().setDisable(true);
 
 			Window window = mDialog.getDialogPane().getScene().getWindow();
 			window.setOnCloseRequest(e -> {
@@ -223,6 +223,8 @@ public class MoveStageUtil {
 		
 	}
 	
+	
+
 	/**
 	 * Open Dialog 전체보기,보류보기,환경설정
 	 * 

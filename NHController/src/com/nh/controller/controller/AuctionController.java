@@ -125,8 +125,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@FXML // 재경매중 라벨,카운트다운
 	private Label mReAuctionLabel, mReAuctionCountLabel, mCountDownLabel;
 
-	private List<Label> cntList = new ArrayList<Label>(); // 남은 시간 Bar list
-
 	private int mRemainingTimeCount = 5; // 카운트다운
 
 	private final SharedPreference preference = new SharedPreference();
@@ -182,11 +180,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		initParsingSharedData();
 		initTableConfiguration();
 
-		cntList.add(cnt_1);
-		cntList.add(cnt_2);
-		cntList.add(cnt_3);
-		cntList.add(cnt_4);
-		cntList.add(cnt_5);
+		setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(),true);
 
 		mBtnEsc.setOnMouseClicked(event -> onCloseApplication());
 		mBtnF1.setOnMouseClicked(event -> onSendEntryData());
@@ -816,16 +810,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			public void callBack(Boolean isClose) {
 
 				dismissShowingDialog();
-				// 환경설정 저장 후 값들 재설정
-				SettingApplication.getInstance().initSharedData();
-
-				// 단일 경매, 음성 경매 버튼
-				if (!SettingApplication.getInstance().isUseSoundAuction()) {
-					mBtnEnter.setDisable(false);
-					mBtnSpace.setDisable(true);
-				} else {
-					mBtnEnter.setDisable(true);
-					mBtnSpace.setDisable(false);
+				
+				if(isClose) {
+					//환경 설정 후 변경 값들 재설정 
+					setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
+					// 단일 경매, 음성 경매 버튼
+					if (!SettingApplication.getInstance().isUseSoundAuction()) {
+						mBtnEnter.setDisable(false);
+						mBtnSpace.setDisable(true);
+					} else {
+						mBtnEnter.setDisable(true);
+						mBtnSpace.setDisable(false);
+					}
 				}
 			}
 		});
@@ -1008,6 +1004,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //			btnStopAuctionToggle(true);
 			isCountDownRunning = true;
 			mRemainingTimeCount = countDown;
+			setCountDownLabelState(countDown,true);
 			addLogItem(mResMsg.getString("msg.auction.send.complete") + AuctionDelegate.getInstance().onStopAuction(mCurrentSpEntryInfo.getEntryNum().getValue(), countDown));
 			break;
 		}
@@ -1394,9 +1391,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN)) {
 
 			isCountDownRunning = true;
-			if (Integer.parseInt(auctionCountDown.getCountDownTime()) <= 4) {
-//				cntList.get(mRemainingTimeCount).setDisable(true);
-			}
+
 
 			Platform.runLater(() -> {
 				if (!mCountDownLabel.isVisible()) {
@@ -1407,6 +1402,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			});
 
 			mRemainingTimeCount = Integer.parseInt(auctionCountDown.getCountDownTime());
+
+			setCountDownLabelState(mRemainingTimeCount,false);
 			
 			// 전광판 카운트다운 전송
 			BillboardDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
@@ -1416,7 +1413,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 		if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN_COMPLETED)) {
-
+	
+			setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(),false);
+			
 			if (mCountDownLabel.isVisible()) {
 				mCountDownLabel.setVisible(false);
 			}
@@ -1444,6 +1443,116 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 카운트 다운 완료시 강제낙찰/강제유찰/경매완료 버튼 활성화
 //			btnStopAuctionToggle(false);
 		}
+	}
+	
+	/**
+	 * 카운트다운 라벨 
+	 * @param countDown
+	 */
+	private void setCountDownLabelState(int countDown, boolean isInit) {
+		
+		if(isInit) {
+			
+			switch (countDown) {
+			case 5:
+				cnt_5.setDisable(false);
+				cnt_4.setDisable(false);
+				cnt_3.setDisable(false);
+				cnt_2.setDisable(false);
+				cnt_1.setDisable(false);
+				break;
+			case 4:
+				cnt_5.setDisable(true);
+				cnt_4.setDisable(false);
+				cnt_3.setDisable(false);
+				cnt_2.setDisable(false);
+				cnt_1.setDisable(false);
+				break;
+			case 3:
+				cnt_5.setDisable(true);
+				cnt_4.setDisable(true);
+				cnt_3.setDisable(false);
+				cnt_2.setDisable(false);
+				cnt_1.setDisable(false);
+				break;
+			case 2:
+				cnt_5.setDisable(true);
+				cnt_4.setDisable(true);
+				cnt_3.setDisable(true);
+				cnt_2.setDisable(false);
+				cnt_1.setDisable(false);
+				break;
+			case 1:
+				cnt_5.setDisable(true);
+				cnt_4.setDisable(true);
+				cnt_3.setDisable(true);
+				cnt_2.setDisable(true);
+				cnt_1.setDisable(false);
+				break;
+			case 0:
+				cnt_5.setDisable(true);
+				cnt_4.setDisable(true);
+				cnt_3.setDisable(true);
+				cnt_2.setDisable(true);
+				cnt_1.setDisable(true);
+				break;
+				default:
+					cnt_5.setDisable(false);
+					cnt_4.setDisable(false);
+					cnt_3.setDisable(false);
+					cnt_2.setDisable(false);
+					cnt_1.setDisable(false);
+					break;
+			}
+			
+			
+		}else {
+			switch (countDown) {
+			case 4:
+				cnt_5.setDisable(true);
+				cnt_4.setDisable(false);
+				cnt_3.setDisable(false);
+				cnt_2.setDisable(false);
+				cnt_1.setDisable(false);
+				break;
+			case 3:
+				cnt_5.setDisable(true);
+				cnt_4.setDisable(true);
+				cnt_3.setDisable(false);
+				cnt_2.setDisable(false);
+				cnt_1.setDisable(false);
+				break;
+			case 2:
+				cnt_5.setDisable(true);
+				cnt_4.setDisable(true);
+				cnt_3.setDisable(true);
+				cnt_2.setDisable(false);
+				cnt_1.setDisable(false);
+				break;
+			case 1:
+				cnt_5.setDisable(true);
+				cnt_4.setDisable(true);
+				cnt_3.setDisable(true);
+				cnt_2.setDisable(true);
+				cnt_1.setDisable(false);
+				break;
+			case 0:
+				cnt_5.setDisable(true);
+				cnt_4.setDisable(true);
+				cnt_3.setDisable(true);
+				cnt_2.setDisable(true);
+				cnt_1.setDisable(true);
+				break;
+				default:
+				cnt_5.setDisable(false);
+				cnt_4.setDisable(false);
+				cnt_3.setDisable(false);
+				cnt_2.setDisable(false);
+				cnt_1.setDisable(false);
+					break;
+			}
+		}
+		
 	}
 
 	/**
@@ -1598,10 +1707,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			case GlobalDefineCode.AUCTION_STATUS_READY:
 
-				// 남은 시간 Bar 초기화
-				for (int i = 0; cntList.size() > i; i++) {
-					cntList.get(i).setDisable(false);
-				}
+				//카운트다운 라벨 초기화
+				setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(),true);
+				
 				// 카운트 시간 초기화
 				mRemainingTimeCount = SettingApplication.getInstance().getAuctionCountdown();
 				// 현재 응찰 내역 초기화

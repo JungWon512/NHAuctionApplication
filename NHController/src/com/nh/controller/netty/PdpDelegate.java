@@ -56,7 +56,7 @@ public class PdpDelegate {
 	 * @param object 보낼 객체
 	 */
 	public String sendMessage(String object) {
-		if (!isEmptyClient()) {
+		if (!isEmptyClient() && isActive()) {
 			mLogger.debug("PdpData Send : " + object);
 			mClient.sendMessage(object);
 		}
@@ -84,26 +84,32 @@ public class PdpDelegate {
 	 * @Description 경매 완료
 	 */
 	public void completePdp() {
+		if(!isEmptyClient() && isActive()) {
 		mLogger.debug("completeBillboard");
 		sendMessage(String.format("%c%c%c", GlobalDefine.PDP.STX, GlobalDefine.PDP.FINISH_CODE, GlobalDefine.PDP.ETX));
+		}
 	}
 
 	/**
 	 * @Description 경매 정보 전송
 	 */
 	public void sendPdpData(NettySendable sendable) {
-		//clearPdp();
-		sendMessage(sendable);
+		if(!isEmptyClient() && isActive()) {
+			//clearPdp();
+			sendMessage(sendable);	
+		}
 	}
 
 	/**
 	 * @Description PDP 카운트다운
 	 */
 	public void onCountDown(String number) {
+		if(!isEmptyClient() && isActive()) {
 		mLogger.debug("onCountDown " + number);
 		String num = (number.equals("0")) ? " " : number;
 		sendMessage(String.format("%c%c%s%c", GlobalDefine.PDP.STX, GlobalDefine.PDP.COUNTDOWN_CODE, num,
 				GlobalDefine.PDP.ETX));
+		}
 	}
 
 	/**
@@ -178,6 +184,20 @@ public class PdpDelegate {
 			return true;
 		}
 	}
+	
+	  /**
+     * 접속 상태 확인
+     *
+     * @return
+     */
+    public boolean isActive() {
+
+        if (!isEmptyClient() && !mClient.isEmptyChannel()) {
+            return mClient.getChannel().isActive();
+        }
+
+        return false;
+    }
 
 	/**
 	 * @Description 네티 접속 해제

@@ -16,6 +16,7 @@ import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.netty.BillboardDelegate;
 import com.nh.controller.netty.PdpDelegate;
+import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
@@ -221,6 +222,9 @@ public class SettingController implements Initializable {
             if (ke.getCode() == KeyCode.F5) {
                 saveSettings();
             }
+            if (ke.getCode() == KeyCode.ESCAPE) {
+            	mBooleanListener.callBack(false);
+            }
         }));
     }
 
@@ -367,6 +371,8 @@ public class SettingController implements Initializable {
         mLowerLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, ""));
         //동가재경매 횟수
         mReAuctionCountTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, "1"));
+        //대기시간
+        mSoundAuctionWaitTime.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, "1"));
     }
 
     /**
@@ -704,10 +710,13 @@ public class SettingController implements Initializable {
             // PDP 셋팅
             PdpDelegate.getInstance().initPdp();
             
+			// 환경설정 저장 후 값들 재설정
+			SettingApplication.getInstance().initSharedData();
+
             showAlertSuccess();
         } else {
             mLogger.debug("validation failed!");
-            showAlertFailure();
+//            showAlertFailure();
         }
     }
 
@@ -774,7 +783,7 @@ public class SettingController implements Initializable {
 
     private void showAlertFailure() {
         CommonUtils.getInstance().showAlertPopupOneButton(
-                this.mStage, mResMsg.getString("dialog.setting.validation.failure"), mResMsg.getString("popup.btn.close")
+        		MoveStageUtil.getInstance().getDialog(), mResMsg.getString("dialog.setting.validation.failure"), mResMsg.getString("popup.btn.close")
         );
     }
 }

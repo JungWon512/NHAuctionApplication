@@ -83,33 +83,42 @@ public class BillboardDelegate {
      * @Description 경매 완료
      */
     public void completeBillboard() {
+    if(!isEmptyClient() && isActive()) {
         mLogger.debug("completeBillboard");
         sendMessage(String.format("%c%c%c", GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.FINISH_CODE, GlobalDefine.BILLBOARD.ETX));
+    	}
     }
 
     /**
      * @Description 경매 정보 전송
      */
     public void sendBillboardData(NettySendable sendable) {
-        clearBillboard();
-        sendMessage(sendable);
+    	if(!isEmptyClient() && isActive()) {
+            clearBillboard();
+            sendMessage(sendable);
+    	}
     }
 
     /**
      * @Description 전광판 시간 전송
      */
     public void sendBillboardTime() {
+    	if(!isEmptyClient() && isActive()) {
     	mLogger.debug("sendBillboardTime");
         sendMessage(String.format("%c%c%c", GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.TIME_CODE, GlobalDefine.BILLBOARD.ETX));
-    }
+    
+    	}
+    	}
     
     /**
      * @Description 전광판 카운트다운
      */
     public void onCountDown(String number) {
+    	if(!isEmptyClient() && isActive()) {
         mLogger.debug("onCountDown " + number);
         String num = (number.equals("0")) ? " " : number;
         sendMessage(String.format("%c%c%s%c", GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.COUNTDOWN_CODE, num, GlobalDefine.BILLBOARD.ETX));
+    	}
     }
 
     /**
