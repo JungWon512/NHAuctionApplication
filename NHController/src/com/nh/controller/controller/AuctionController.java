@@ -1312,7 +1312,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
         int stopTime = SettingApplication.getInstance().getSoundAuctionWaitTime() * 1000;
 
-        stopAutoAuctionScheduler();
+//        stopAutoAuctionScheduler();
+        
+        if(mAutoStopScheduler != null) {
+        	return;
+        }
 
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -1343,14 +1347,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
      */
     @Override
     protected void soundAuctionTimerTask() {
-
+    
         if (mCurrentBidderMap.size() > 0) {
-            // 응찰 가격 조건 체크
-            if (!isBidderPriceValid()) {
+        	   SpBidding rank_1_user = mBiddingUserInfoDataList.get(0);
+        	   // 응찰 가격 조건 체크
+               if (!checkOverPrice(rank_1_user)) {
                 addLogItem("soundAuctionTimerTask ==== 사운드 경매 자동 종료");
+                
+                if (mCountDownLabel.isVisible()) {
+                    mCountDownLabel.setVisible(false);
+                }
+                
                 // 타이머 멈춤.
                 onPause();
-                return;
+                return;   
             } else {
                 startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
             }
@@ -1369,7 +1379,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
             isCountDownRunning = true;
 
-
             Platform.runLater(() -> {
                 if (!mCountDownLabel.isVisible()) {
                     mCountDownLabel.setVisible(true);
@@ -1380,6 +1389,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
             mRemainingTimeCount = Integer.parseInt(auctionCountDown.getCountDownTime());
 
+            //카운트다운 라벨 상태
             setCountDownLabelState(mRemainingTimeCount, false);
 
             // 전광판 카운트다운 전송
@@ -1391,17 +1401,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
         if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN_COMPLETED)) {
 
-            setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), false);
-
-            if (mCountDownLabel.isVisible()) {
-                mCountDownLabel.setVisible(false);
-            }
-
             isCountDownRunning = false;
 
             addLogItem("==== 카운트 다운 완료 ====");
+            
+            
+            if(mRemainingTimeCount == 0) {
+
+//        	   setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), false);
+
+               if (mCountDownLabel.isVisible()) {
+                   mCountDownLabel.setVisible(false);
+               }
+            }
 
             if (!SettingApplication.getInstance().isUseSoundAuction()) {
+            	
                 if (mCurrentBidderMap.size() > 0) {
                     if (!isAuctionComplete) {
                         auctionResult(false);
@@ -1409,14 +1424,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
                         onStartAndStopAuction(0);
                     }
                 }
+                
             } else {
-
                 if (mRemainingTimeCount <= 0) {
                     addLogItem("==== 음성경매 카운트 다운 완료 ==== : " + mRemainingTimeCount);
                     auctionResult(false);
+                }else {
+//                	if (mCountDownLabel.isVisible()) {
+//                        mCountDownLabel.setVisible(false);
+//                    }
                 }
             }
-
+      
             // 카운트 다운 완료시 강제낙찰/강제유찰/경매완료 버튼 활성화
 //			btnStopAuctionToggle(false);
         }
