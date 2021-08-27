@@ -273,9 +273,8 @@ public class PdpData implements NettySendable {
         
         sb.append(makePdpNumberMessage(getBaseUnitDivision(getbLowPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_LOWPRICE, "0")));
         sb.append(makePdpNumberMessage(getBaseUnitDivision(getbAuctionBidPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_SUCPRICE, "")));
-        sb.append(makePdpKoreanMessage(getbAuctionSucBidder(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_SUCBIDDER, "")));
+        sb.append(makePdpNumberMessage(getbAuctionSucBidder(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_SUCBIDDER, "")));
         
-        sb.append("    ");
         if(Integer.valueOf(shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_DNA, "")) >= 1) {
             sb.append(makePdpNumberMessage(getbDnaYn(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_DNA, "")));
         }

@@ -1,16 +1,16 @@
 package com.nh.controller.netty;
 
-import com.nh.common.BillboardShareNettyClient;
-import com.nh.common.interfaces.NettyClientShutDownListener;
-import com.nh.common.interfaces.NettyControllable;
-import com.nh.controller.utils.GlobalDefine;
-import com.nh.controller.utils.SharedPreference;
-import com.nh.share.interfaces.NettySendable;
+import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
+import com.nh.common.BillboardShareNettyClient;
+import com.nh.common.interfaces.NettyClientShutDownListener;
+import com.nh.controller.utils.GlobalDefine;
+import com.nh.controller.utils.SharedPreference;
+import com.nh.share.interfaces.NettySendable;
 
 public class BillboardDelegate {
 
@@ -33,8 +33,8 @@ public class BillboardDelegate {
      * @param controllable
      * @Description 전광판 서버 접속
      */
-    public void createClients(String host_, String port_, NettyControllable controllable) {
-        this.mClient = new BillboardShareNettyClient.Builder(host_, port_).setController(controllable).buildAndRun();
+    public void createClients(String host_, String port_) {
+        this.mClient = new BillboardShareNettyClient.Builder(host_, port_).buildAndRun();
     }
 
     /**

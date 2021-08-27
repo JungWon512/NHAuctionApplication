@@ -26,6 +26,7 @@ public class PdpDelegate {
 			instance = new PdpDelegate();
 		}
 		return instance;
+		
 	}
 
 	/**
@@ -34,8 +35,8 @@ public class PdpDelegate {
 	 * @param controllable
 	 * @Description PDP 서버 접속
 	 */
-	public void createClients(String host_, String port_, NettyControllable controllable) {
-		this.mClient = new PdpShareNettyClient.Builder(host_, port_).setController(controllable).buildAndRun();
+	public void createClients(String host_, String port_) {
+		this.mClient = new PdpShareNettyClient.Builder(host_, port_).buildAndRun();
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class PdpDelegate {
 	 * @param object 보낼 객체
 	 */
 	public String sendMessage(String object) {
-		if (!isEmptyClient() && isActive()) {
+		if (!isEmptyClient()) {
 			mLogger.debug("PdpData Send : " + object);
 			mClient.sendMessage(object);
 		}
@@ -84,32 +85,26 @@ public class PdpDelegate {
 	 * @Description 경매 완료
 	 */
 	public void completePdp() {
-		if(!isEmptyClient() && isActive()) {
 		mLogger.debug("completeBillboard");
 		sendMessage(String.format("%c%c%c", GlobalDefine.PDP.STX, GlobalDefine.PDP.FINISH_CODE, GlobalDefine.PDP.ETX));
-		}
 	}
 
 	/**
 	 * @Description 경매 정보 전송
 	 */
 	public void sendPdpData(NettySendable sendable) {
-		if(!isEmptyClient() && isActive()) {
-			//clearPdp();
-			sendMessage(sendable);	
-		}
+		clearPdp();
+		sendMessage(sendable);
 	}
 
 	/**
 	 * @Description PDP 카운트다운
 	 */
 	public void onCountDown(String number) {
-		if(!isEmptyClient() && isActive()) {
 		mLogger.debug("onCountDown " + number);
 		String num = (number.equals("0")) ? " " : number;
 		sendMessage(String.format("%c%c%s%c", GlobalDefine.PDP.STX, GlobalDefine.PDP.COUNTDOWN_CODE, num,
 				GlobalDefine.PDP.ETX));
-		}
 	}
 
 	/**
@@ -184,9 +179,9 @@ public class PdpDelegate {
 			return true;
 		}
 	}
-	
-	  /**
-     * 접속 상태 확인
+
+    /**
+     * 연결 상태 확인
      *
      * @return
      */
@@ -198,7 +193,7 @@ public class PdpDelegate {
 
         return false;
     }
-
+    
 	/**
 	 * @Description 네티 접속 해제
 	 */

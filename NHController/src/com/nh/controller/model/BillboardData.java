@@ -175,6 +175,7 @@ public class BillboardData implements NettySendable {
     public void setbRegion(String bRegion) {
     	String[] region = bRegion.trim().split(" ");
     	
+    	// 주소 체계에서 Split 후 3번째 정보만으로 가공 처리
     	if(region.length > 2) {
     		this.bRegion = region[2];
     	} else {
@@ -253,9 +254,8 @@ public class BillboardData implements NettySendable {
         sb.append(makeBoardNumberMessage(getBaseUnitDivision(getbLowPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_LOWPRICE, "0")));
         sb.append(makeBoardNumberMessage(getBaseUnitDivision(getbAuctionBidPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_SUCPRICE, "")));
         
-        sb.append(makeBoardKoreanMessage(getbAuctionSucBidder(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_SUCBIDDER, "")));
+        sb.append(makeBoardNumberMessage(getbAuctionSucBidder(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_SUCBIDDER, "")));
         
-        sb.append("    ");
         if(Integer.valueOf(shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_DNA, "")) >= 1) {
             sb.append(makeBoardNumberMessage(getbDnaYn(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_DNA, "")));
         }

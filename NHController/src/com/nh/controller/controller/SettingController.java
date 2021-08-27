@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.netty.BillboardDelegate;
@@ -704,11 +705,63 @@ public class SettingController implements Initializable {
                     sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
             mLogger.debug(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
 
-            // 전광판 셋팅
-            BillboardDelegate.getInstance().initBillboard();
-            
-            // PDP 셋팅
-            PdpDelegate.getInstance().initPdp();
+         // UDP 전광판
+			if (SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, "") != null
+					&& !SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, "")
+							.isEmpty()) {
+
+				if (BillboardDelegate.getInstance().isActive()) {
+					BillboardDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+
+						@Override
+						public void onShutDown(int port) {
+							BillboardDelegate.getInstance().createClients(
+									SharedPreference.getInstance()
+											.getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""),
+									SharedPreference.getInstance()
+											.getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""));
+						}
+					});
+				} else {
+					BillboardDelegate.getInstance().createClients(
+							SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1,
+									""),
+							SharedPreference.getInstance()
+									.getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""));
+				}
+			}
+
+			// UDP PDP
+			if (SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, "") != null
+					&& !SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, "")
+							.isEmpty()) {
+
+				if (PdpDelegate.getInstance().isActive()) {
+					PdpDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+
+						@Override
+						public void onShutDown(int port) {
+							PdpDelegate.getInstance().createClients(
+									SharedPreference.getInstance()
+											.getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, ""),
+									SharedPreference.getInstance()
+											.getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, ""));
+						}
+					});
+				} else {
+					PdpDelegate.getInstance().createClients(
+							SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1,
+									""),
+							SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1,
+									""));
+				}
+			}
+
+			// 전광판 셋팅
+			BillboardDelegate.getInstance().initBillboard();
+
+			// PDP 셋팅
+			PdpDelegate.getInstance().initPdp();
             
 			// 환경설정 저장 후 값들 재설정
 			SettingApplication.getInstance().initSharedData();
