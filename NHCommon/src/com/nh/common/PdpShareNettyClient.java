@@ -59,7 +59,7 @@ public class PdpShareNettyClient {
                     });
             channel = b.connect(host, port).sync().channel();
         } catch (Exception e) {
-            controller.onConnectionException(port);
+//            controller.onConnectionException(port);
             e.printStackTrace();
             stopClient();
         }
