@@ -24,6 +24,7 @@ import com.nh.auctionserver.netty.handlers.AuctionServerDecodedPassAuctionHandle
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedPauseAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedReadyEntryInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRequestLogoutHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRetryTargetInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedStartAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedStopAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedToastMessageRequestHandler;
@@ -217,6 +218,9 @@ public class AuctionServer {
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedBiddingHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedRetryTargetInfoHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedEditSettingHandler(AuctionServer.this, mAuctioneer,

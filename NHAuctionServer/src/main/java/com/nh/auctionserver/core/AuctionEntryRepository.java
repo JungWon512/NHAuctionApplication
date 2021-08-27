@@ -52,7 +52,7 @@ public class AuctionEntryRepository {
 					if (mEntryList.get(i).getEntryNum().equals(entryNum)) {
 						entryInfo = mEntryList.get(i);
 						//mEntryList.remove(i);
-						mTotalCount--;
+						//mTotalCount--;
 					}
 				}
 			}
