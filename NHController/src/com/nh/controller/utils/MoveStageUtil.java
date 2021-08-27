@@ -208,8 +208,8 @@ public class MoveStageUtil {
 			controller.setConfig(type,auctionRound,listener);
 			openDialog(stage, parent);
 
-			stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
-			stage.getScene().getRoot().setDisable(true);
+//			stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
+//			stage.getScene().getRoot().setDisable(true);
 
 			Window window = mDialog.getDialogPane().getScene().getWindow();
 			window.setOnCloseRequest(e -> {

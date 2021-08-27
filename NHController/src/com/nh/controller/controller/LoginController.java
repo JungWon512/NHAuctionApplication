@@ -131,7 +131,7 @@ public class LoginController implements Initializable {
 			return;
 		}
 
-		RequestLoginBody requestLoginBody = new RequestLoginBody(mIdTextField.getText().toString().trim(), mPwTextField.getText().toString().trim());
+		final RequestLoginBody requestLoginBody = new RequestLoginBody(mIdTextField.getText().toString().trim(), mPwTextField.getText().toString().trim());
 
 		//거점코드
 		String nabzplc = auctionHouseTypeToggleGroup.getSelectedToggle().getUserData().toString();
@@ -147,17 +147,23 @@ public class LoginController implements Initializable {
 					
 					CommonUtils.getInstance().dismissLoadingDialog(); //dismiss loading
 					
-					mLogger.debug("[로그인 요청 결과]=> " + result.getSuccess() + "" + result.getAccessToken() + " / " + result.toString());
-
 					if(result.getSuccess()) {
 						//정보저장
 						GlobalDefine.ADMIN_INFO.adminData = new AdminData();
 						GlobalDefine.ADMIN_INFO.adminData.setUserId(mIdTextField.getText().toString().trim());
 						GlobalDefine.ADMIN_INFO.adminData.setNabzplc(nabzplc);
+						GlobalDefine.ADMIN_INFO.adminData.setAccessToken(result.getAccessToken());
 						MoveStageUtil.getInstance().moveChooseAuctionStage(mStage);
 				
 					}else {
-						CommonUtils.getInstance().showAlertPopupOneButton(mStage, result.getMessage(), mResMsg.getString("popup.btn.close"));
+						
+						if(CommonUtils.getInstance().isValidString(result.getMessage())) {
+							CommonUtils.getInstance().showAlertPopupOneButton(mStage, result.getMessage(), mResMsg.getString("popup.btn.close"));
+						}else {
+							CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("msg.login.fail"), mResMsg.getString("popup.btn.close"));
+						}
+						
+						
 					}
 					
 				});

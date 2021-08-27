@@ -38,8 +38,12 @@ import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.service.ConnectionInfoMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.setting.SettingApplication;
+import com.nh.controller.utils.ApiUtils;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
+import com.nh.share.api.ActionResultListener;
+import com.nh.share.api.request.body.RequestAuctionResultBody;
+import com.nh.share.api.response.BaseResponse;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
@@ -509,20 +513,21 @@ public class BaseAuctionController implements NettyControllable {
 			mCurrentBidderMap.put(spBidding.getAuctionJoinNum().getValue(), spBidding);
 		}
 
+		SpEntryInfo entryInfo = mCurrentSpEntryInfo;
+		
 		// 응찰 로그 저장
-		// TODO: OSLP_NO, RG_SQNO 확인 및 수정
+		// TODO: RG_SQNO 확인 및 수정
 		AucEntrData aucEntrData = new AucEntrData();
 		aucEntrData.setNaBzplc(this.auctionRound.getNaBzplc());
 		aucEntrData.setAucObjDsc(this.auctionRound.getAucObjDsc());
 		aucEntrData.setAucDt(this.auctionRound.getAucDt());
-		aucEntrData.setOslpNo(bidding.getUserNo());
-		aucEntrData.setRgSqno("121212");
-		aucEntrData.setTrmnAmnno(bidding.getUserNo());
+		aucEntrData.setOslpNo(entryInfo.getOslpNo().getValue());
+		//aucEntrData.setRgSqno("");
+		aucEntrData.setTrmnAmnno(entryInfo.getTrmnAmnNo().getValue());
 		aucEntrData.setLvstAucPtcMnNo(bidding.getAuctionJoinNum());
 		aucEntrData.setAtdrAm(bidding.getPrice());
 		aucEntrData.setAtdrDtm(LocalDateTime.parse(bidding.getBiddingTime(), DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
 		aucEntrData.setAucPrgSq(bidding.getEntryNum());
-//<!--	OSLP_NO            decimal       not null comment '원표번호',-->
 //<!--	RG_SQNO            decimal       not null comment '등록일련번호',-->
 
 		int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
@@ -671,8 +676,7 @@ public class BaseAuctionController implements NettyControllable {
 
 				auctionResult.setSuccessBidUpr(Integer.toString(bidUpr));
 
-				// 전광판 전송
-// 전광판 전송
+					// 전광판 전송
                     BillboardData billboardData = new BillboardData();
                     billboardData.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
                     billboardData.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
@@ -721,6 +725,7 @@ public class BaseAuctionController implements NettyControllable {
 				auctionResult.setSuccessBidUpr("0");
 			}
 
+			//경매 결과 DB 저장
 			final int resultValue = EntryInfoMapperService.getInstance().updateAuctionResult(auctionResult);
 
 			if (resultValue > 0) {
@@ -732,19 +737,44 @@ public class BaseAuctionController implements NettyControllable {
 
 				List<SpBidding> rankBiddingDataList = getCurrentRank(list);
 
+				//로그 생성
 				if (bidder != null && bidder.getAuctionJoinNum() != null) {
 					runWriteLogFile(rankBiddingDataList, mAuctionStatus, isSuccess, bidder.getAuctionJoinNum().getValue());
 				} else {
 					runWriteLogFile(rankBiddingDataList, mAuctionStatus, isSuccess, "");
 				}
 
+				//낙유찰 정보 표시
 				updateAuctionStateInfo(isSuccess, bidder);
-				// 낙유찰 결과 전송
+				
+				// 낙유찰 결과 전송 - server
 				addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+				
+				
+				// 낙유찰 결과 전송 Api - webserver
+				RequestAuctionResultBody body = new RequestAuctionResultBody(auctionRound.getNaBzplc(), Integer.toString(auctionRound.getAucObjDsc()) ,
+						auctionRound.getAucDt(), spEntryInfo.getOslpNo().getValue(), spEntryInfo.getLedSqno().getValue(), spEntryInfo.getTrmnAmnNo().getValue(),
+						auctionResult.getSuccessBidder(), auctionResult.getSuccessBidPrice(),auctionResult.getSuccessBidUpr(), auctionResult.getResultCode(), null, GlobalDefine.ADMIN_INFO.adminData.getUserId());
+
+				ApiUtils.getInstance().requestAuctionResult(body,new ActionResultListener<BaseResponse>() {
+					
+					@Override
+					public void onResponseResult(BaseResponse result) {
+						if(result.getSuccess()) {
+							addLogItem("[Api Call경매결과전송 성공]=> " + result.getMessage());
+						}else {
+							addLogItem("[Api Call경매결과전송 실패]=> " + result.getMessage());
+						}
+					}
+					@Override
+					public void onResponseError(String message) {
+						addLogItem("[Api Call경매결과전송 실패]=> " + message);
+					}
+				});
 			}
 
 			break;
-		case GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL:
+		case GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL: //해당 출품 취소 처리
 			auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
 			auctionResult.setSuccessBidder(null);
 			auctionResult.setSuccessAuctionJoinNum(null);

@@ -8,7 +8,11 @@ import org.slf4j.LoggerFactory;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.ActionRuler;
 import com.nh.share.api.request.ActionRequestAuctionLogin;
+import com.nh.share.api.request.ActionRequestAuctionResult;
+import com.nh.share.api.request.body.RequestAuctionResultBody;
 import com.nh.share.api.request.body.RequestLoginBody;
+import com.nh.share.api.response.BaseResponse;
+import com.nh.share.api.response.ResponseAuctionLogin;
 
 /**
  * API Class
@@ -37,8 +41,18 @@ public class ApiUtils {
 	 * @param body
 	 * @param listener_
 	 */
-	public void requestLogin(String naBzplc,RequestLoginBody body, ActionResultListener listener_) {
+	public void requestLogin(String naBzplc,RequestLoginBody body, ActionResultListener<ResponseAuctionLogin> listener_) {
 		ActionRuler.getInstance().addAction(new ActionRequestAuctionLogin(naBzplc,body, listener_));
+		ActionRuler.getInstance().runNext();
+	}
+	
+	/**
+	 * 경매 결과 업데이트
+	 * @param body
+	 * @param listener_
+	 */
+	public void requestAuctionResult(RequestAuctionResultBody body, ActionResultListener<BaseResponse> listener_) {
+		ActionRuler.getInstance().addAction(new ActionRequestAuctionResult(body, listener_));
 		ActionRuler.getInstance().runNext();
 	}
 

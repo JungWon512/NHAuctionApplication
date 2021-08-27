@@ -8,10 +8,11 @@ package com.nh.controller.model;
 public class AdminData {
 	
 	private String userId;		//아이디
+
+	private String accessToken;	//토큰
 	
 	private String nabzplc;		//속한 거점
 	
-	private String authToken;	//로그인 토큰
 
 	public String getUserId() {
 		return userId;
@@ -20,15 +21,15 @@ public class AdminData {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-
-	public String getAuthToken() {
-		return authToken;
+	
+	public String getAccessToken() {
+		return accessToken;
 	}
 
-	public void setAuthToken(String authToken) {
-		this.authToken = authToken;
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
-
+	
 	public String getNabzplc() {
 		return nabzplc;
 	}

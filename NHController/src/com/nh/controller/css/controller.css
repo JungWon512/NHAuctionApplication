@@ -4,7 +4,6 @@
 	-fx-background-radius: 5;
 	-fx-padding: 10;
 }
-
 .contents-auction-info-column-style-1{
 	-fx-font-size: 16px;
 	-fx-background-color : #0082e5;
@@ -271,6 +270,7 @@
 	-fx-min-height: 0;
 }
 
+/*
 .base-contents .bidding-user-info .table-view:disabled{
 	-fx-opacity: 1;
 }
@@ -289,7 +289,7 @@
 	-fx-font-size: 20px;
 	-fx-font-weight: bold;
 	-fx-opacity: 1;
-}
+} */
 
 /* 경매 진행 상태 라벨 */
 .label-status{

@@ -64,6 +64,9 @@
         <result property="mAuctionResult" column="SEL_STS_DSC"/>
         <result property="mAuctionSucBidder" column="LVST_AUC_PTC_MN_NO"/>
         <result property="mAuctionBidPrice" column="SRA_SBID_AM"/>
+        <result property="mOslpNo" column="OSLP_NO"/>
+        <result property="mTrmnAmnNo" column="TRMN_AMNNO"/>
+        <result property="mLedSqno" column="LED_SQNO"/>
 
     </resultMap>
 
@@ -105,7 +108,10 @@
 		${alias}.LVST_AUC_PTC_MN_NO,
 		${alias}.SRA_SBID_AM,
 		${alias}.DNA_YN,
-		${alias}.SRA_PD_RGNNM
+		${alias}.SRA_PD_RGNNM,
+		${alias}.OSLP_NO,
+		${alias}.TRMN_AMNNO,
+		${alias}.LED_SQNO
 	</sql>
 
 	<!-- tb_la_is_mm_fhs -->

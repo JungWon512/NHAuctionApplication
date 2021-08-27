@@ -4,6 +4,7 @@ import com.nh.common.AuctionShareNettyClient;
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
 import com.nh.controller.model.SpEntryInfo;
+import com.nh.controller.utils.GlobalDefine;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionReponseSession;
 import com.nh.share.common.models.ConnectionInfo;
@@ -48,11 +49,11 @@ public class AuctionDelegate {
      * @Description 접속자 정보 전송: 제어프로그램 정보
      */
     public String onSendConnectionInfo() {
-
+    	
         NettySendable nettySendable = new ConnectionInfo(
                 GlobalDefineCode.AUCTION_HOUSE_HWADONG,
-                "admin",
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWN0aW9uSG91c2VDb2RlIjoiODgwODk5MDY1NjY1NiIsInVzZXJSb2xlIjoiQURNSU4iLCJ1c2VyTWVtTnVtIjoiYWRtaW4iLCJleHAiOjE2MjY5NjU5OTl9.r8nvpk98OfPiAKN4tFfmzYSouYGntwkSbkwJg8JT0qXRrP6mGi88cac3oAyvVK5nJVeVSFBgrXUx5PnIFygiwg",
+                GlobalDefine.ADMIN_INFO.adminData.getUserId(),
+                GlobalDefine.ADMIN_INFO.adminData.getAccessToken(),
                 GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER,
                 GlobalDefineCode.USE_CHANNEL_MANAGE);
         return sendMessage(nettySendable);

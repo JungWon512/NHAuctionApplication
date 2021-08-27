@@ -23,7 +23,7 @@ public class SpEntryInfo implements FromAuctionController {
     public static final char TYPE = 'I';
 
     private StringProperty mAuctionHouseCode; // 조합구분코드
-    private StringProperty mEntryNum; // 출품 번호
+    private StringProperty mEntryNum; // 출품 번호 (원표번호)
     private StringProperty mEntryType; // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
     private StringProperty mAuctionQcn; // 경매회차
     private StringProperty mIndNum; // 축산개체관리번호
@@ -51,6 +51,10 @@ public class SpEntryInfo implements FromAuctionController {
     private StringProperty mLowPrice; // 최저낙찰한도금액
     private StringProperty mNote; // 비고내용
     private StringProperty mAucDt; // 경매일자
+    private StringProperty mOslpNo; // 원표 번호
+    private StringProperty mTrmnAmnNo; // 거래인 관리 번호
+    private StringProperty mLedSqno; // 원장 일련번호
+    
 
     private StringProperty mAuctionResult; // 낙유찰결과(01:낙찰/02:유찰)
     private StringProperty mAuctionSucBidder; // 낙찰자
@@ -105,6 +109,9 @@ public class SpEntryInfo implements FromAuctionController {
         this.mLsChgDtm = new SimpleStringProperty(entryInfo.getLsChgDtm());
         this.mLsCmeNo = new SimpleStringProperty(entryInfo.getLsCmeNo());
         this.mLwprChgNt = new SimpleStringProperty(Integer.toString((int) Double.parseDouble(entryInfo.getLwprChgNt())));
+        this.mOslpNo = new SimpleStringProperty(entryInfo.getOslpNo());
+        this.mTrmnAmnNo = new SimpleStringProperty(entryInfo.getTrmnAmnNo());
+        this.mLedSqno = new SimpleStringProperty(entryInfo.getLedSqno());
     }
 
     public StringProperty getAuctionHouseCode() {
@@ -413,8 +420,31 @@ public class SpEntryInfo implements FromAuctionController {
     public void setAuctionQcn(StringProperty mAuctionQcn) {
         this.mAuctionQcn = mAuctionQcn;
     }
+    public StringProperty getOslpNo() {
+		return returnValue(mOslpNo);
+	}
 
-    public StringProperty getBiddingResult() {
+	public void setOslpNo(StringProperty mOslpNo) {
+		this.mOslpNo = mOslpNo;
+	}
+
+	public StringProperty getTrmnAmnNo() {
+		return returnValue(mTrmnAmnNo);
+	}
+
+	public void setTrmnAmnNo(StringProperty mTrmnAmnNo) {
+		this.mTrmnAmnNo = mTrmnAmnNo;
+	}
+	
+	public StringProperty getLedSqno() {
+		return returnValue(mLedSqno);
+	}
+
+	public void setLedSqno(StringProperty mLedSqno) {
+		this.mLedSqno = mLedSqno;
+	}
+
+	public StringProperty getBiddingResult() {
 
         SimpleStringProperty resultStr = new SimpleStringProperty();
 

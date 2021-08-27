@@ -810,6 +810,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
      * 프로그램 종료
      */
     public void onCloseApplication() {
+    	
         Platform.runLater(() -> {
 
             Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, mResMsg.getString("str.ask.application.close"), mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.cancel"));
@@ -1688,6 +1689,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
         // 음성경매 중이면 자동 실행
         if (SettingApplication.getInstance().isUseSoundAuction()) {
+        	//경매 결과 전송
             sendAuctionResultInfo();
         }
     }
@@ -1875,7 +1877,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
                 }
             });
             pauseTransition.play();
-
         });
     }
 
@@ -2073,8 +2074,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
                     // 종료
                     if (ke.getCode() == KeyCode.ESCAPE) {
-//						CommonUtils.getInstance().showAlertPopupTwoButton(mStage, null, null, null);
-
+  
                         // 경매 진행중인 경우 취소처리
                         if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
                             onPause();
@@ -2084,6 +2084,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
                             PdpDelegate.getInstance().completePdp();
 
                         } else {
+                        	
                             // 경매 진행중 아니면.. 프로그램 종료
                             onCloseApplication();
                         }
