@@ -88,18 +88,18 @@ public class SettingSoundController implements Initializable {
     private void initUI() {
         initKeyConfig();
 
-        mBtnPlaySound_1.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_1.getText()));
-        mBtnPlaySound_2.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_2.getText()));
-        mBtnPlaySound_3.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_3.getText()));
-        mBtnPlaySound_4.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_4.getText()));
-        mBtnPlaySound_5.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_5.getText()));
-        mBtnPlaySound_6.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_6.getText()));
-        mBtnPlaySound_7.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_7.getText()));
-        mBtnPlaySound_8.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_8.getText()));
-        mBtnPlaySound_9.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_9.getText()));
-        mBtnPlaySound_10.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_10.getText()));
-        mBtnPlaySound_11.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_11.getText()));
-        mBtnPlaySound_12.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(mMsgTextArea_12.getText()));
+        mBtnPlaySound_1.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
+        mBtnPlaySound_2.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER));
+        mBtnPlaySound_3.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE));
+        mBtnPlaySound_4.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE));
+        mBtnPlaySound_5.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER));
+        mBtnPlaySound_6.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_USE));
+        mBtnPlaySound_7.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1));
+        mBtnPlaySound_8.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2));
+        mBtnPlaySound_9.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3));
+        mBtnPlaySound_10.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4));
+        mBtnPlaySound_11.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5));
+        mBtnPlaySound_12.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6));
 
         mBtnStopSound_1.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
         mBtnStopSound_2.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
@@ -114,7 +114,7 @@ public class SettingSoundController implements Initializable {
         mBtnStopSound_11.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
         mBtnStopSound_12.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 
-        mBtnRePlaySound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SoundUtil.getInstance().getDefinePrevMsg()));
+        mBtnRePlaySound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SoundUtil.getInstance().getDefinePrevKey()));
         mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
         mBtnSave.setOnMouseClicked(event -> saveMsg());
         mBtnClose.setOnMouseClicked(event -> close());
@@ -175,8 +175,6 @@ public class SettingSoundController implements Initializable {
         soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, ""));
         soundDataList.add(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, ""));
 
-        SoundUtil.getInstance().setDefineMessageList(soundDataList);
-
         return soundDataList;
     }
 
@@ -200,7 +198,7 @@ public class SettingSoundController implements Initializable {
 
         showAlertPopup(mResMsg.getString("str.setting.sound.save"), mResMsg.getString("popup.btn.ok"));
 
-        initParsingSoundDataList();
+        SoundUtil.getInstance().soundSettingDataChanged();
     }
 
     /**

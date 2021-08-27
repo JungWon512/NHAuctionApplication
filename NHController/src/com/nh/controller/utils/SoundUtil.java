@@ -3,7 +3,7 @@ package com.nh.controller.utils;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.texttospeech.v1.*;
-import com.nh.controller.setting.SettingApplication;
+import com.nh.controller.model.SettingSound;
 import javazoom.jl.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,7 +35,7 @@ public class SoundUtil {
     private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private String mCurrentEntryMessage = "";
-    private String mDefinePrevMsg = "";
+    private String mDefinePrevKey = "";
     private TTSNowRunnable mTTSNowRunnable;
     private TTSDefineRunnable mTTSDefineRunnable;
 
@@ -52,6 +50,7 @@ public class SoundUtil {
                     .setAudioEncoding(AudioEncoding.MP3)
                     .build();
 
+            // GOOGLE_APPLICATION_CREDENTIALS=C:\workStudio\AuctionApplications\NHController\google_tts_service.json
             TextToSpeechClient client = TextToSpeechClient.create(
                     TextToSpeechSettings.newBuilder()
                             .setCredentialsProvider(FixedCredentialsProvider
@@ -62,37 +61,38 @@ public class SoundUtil {
 
             mTTSNowRunnable = new TTSNowRunnable(params, config, client);
             mTTSDefineRunnable = new TTSDefineRunnable(params, config, client);
-
-            // 고정된 멘트들 Player 처리
-            setDefineMessageList(SettingApplication.getInstance().getParsingSoundDataList());
         } catch (Exception ex) {
+            mLogger.error("Init Error " + ex.getMessage());
             ex.printStackTrace();
         }
     }
 
-    public void handleDiffChangeMessage(final String oldMsg, final String newMsg) {
-        mTTSDefineRunnable.handleDiffChangeMessage(oldMsg, newMsg);
+    /**
+     * 고정된 안내 메시지 초기화 함수
+     */
+    public void initSoundSetting() {
+        mTTSDefineRunnable.initSoundSetting();
     }
 
     /**
-     * 고정 안내 메시지 Set 처리 함수
+     * 고정된 안내 메시지 갱신 처리 함수
      *
-     * @param dataList 고정 안내 메시지 리스트
+     * @author hmju
      */
-    public void setDefineMessageList(List<String> dataList) {
-        mTTSDefineRunnable.setDefinePlayerList(dataList);
+    public void soundSettingDataChanged() {
+        mTTSDefineRunnable.notifyDataChanged();
     }
 
     /**
      * 고정 문구 메시지 재생 처리 함수
      *
-     * @param msg 문구
+     * @param key SharedPreference Key 값
      */
-    public void playDefineSound(String msg) {
-        if (CommonUtils.getInstance().isValidString(msg)) {
+    public void playDefineSound(String key) {
+        if (CommonUtils.getInstance().isValidString(key)) {
             stopSound();
-            mDefinePrevMsg = msg;
-            mTTSDefineRunnable.play(msg);
+            mDefinePrevKey = key;
+            mTTSDefineRunnable.play(key);
         } else {
             mLogger.debug("playDefineSound IS NULL !!");
         }
@@ -133,13 +133,12 @@ public class SoundUtil {
      * 음성 정지
      */
     public void stopSound() {
-        mLogger.debug("stopSound");
         mTTSNowRunnable.stop();
         mTTSDefineRunnable.stop();
     }
 
-    public String getDefinePrevMsg() {
-        return mDefinePrevMsg;
+    public String getDefinePrevKey() {
+        return mDefinePrevKey;
     }
 
     /**
@@ -152,8 +151,7 @@ public class SoundUtil {
         private final VoiceSelectionParams mParams;
         private final AudioConfig mAudioConfig;
         private final TextToSpeechClient mClient;
-        private final ArrayList<String> mTempMessageList = new ArrayList<>();
-        private final HashMap<String, InputStream> mPlayerMap = new HashMap<>();
+        private final HashMap<String, SettingSound> mSoundSettingMap = new HashMap<>();
         private Player mCurrentPlayer = null;
 
         TTSDefineRunnable(VoiceSelectionParams params, AudioConfig config, TextToSpeechClient client) {
@@ -163,37 +161,60 @@ public class SoundUtil {
             mThreadService.execute(this);
         }
 
-        public void handleDiffChangeMessage(final String oldMsg, final String newMsg) {
-            try {
-                mPlayerMap.remove(oldMsg);
-                mThreadService.submit(() -> {
-                    try {
-                        mPlayerMap.put(newMsg, getTextToSpeechStream(newMsg));
-                    } catch (Exception ex) {
-                        mLogger.error(ex.getMessage());
-                    }
-                });
-            } catch (Exception ex) {
-                mLogger.error(ex.getMessage());
-            }
+        /**
+         * 사운드 초기화 처리 함수
+         */
+        public void initSoundSetting() {
+
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_USE,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_USE, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, ""))
+            );
+            mSoundSettingMap.put(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6,
+                    new SettingSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, ""))
+            );
+
+            // Api 호출해서 가져오기
+            mThreadService.submit(this);
         }
 
-        public void setDefinePlayerList(List<String> msgList) {
-            boolean isDataChanged = false;
-            for (String value : msgList) {
-                // 한개라도 다른게 있는 경우
-                if (!mPlayerMap.containsKey(value)) {
-                    isDataChanged = true;
-                    break;
-                }
-            }
-
-            // 데이터 초기화 처리
-            if (isDataChanged) {
-                mPlayerMap.clear();
-                mTempMessageList.addAll(msgList);
-                mThreadService.submit(this);
-            }
+        /**
+         * 데이터 갱신 처리 함수
+         */
+        public void notifyDataChanged() {
+            mSoundSettingMap.forEach((key, data) -> {
+                data.setMessage(SharedPreference.getInstance().getString(key, ""));
+            });
+            mThreadService.submit(this);
         }
 
         /**
@@ -202,12 +223,11 @@ public class SoundUtil {
          * @param msg Target Message
          * @author hmju
          */
-        public void play(String msg) {
+        public void play(final String msg) {
             Executors.newSingleThreadExecutor().submit(() -> {
                 try {
                     long prevTime = System.currentTimeMillis();
-                    mPlayerMap.get(msg).reset();
-                    mCurrentPlayer = new Player(mPlayerMap.get(msg));
+                    mCurrentPlayer = new Player(mSoundSettingMap.get(msg).getStream());
                     mLogger.debug("Diff Time " + (System.currentTimeMillis() - prevTime));
                     mCurrentPlayer.play();
                 } catch (Exception ex) {
@@ -236,10 +256,12 @@ public class SoundUtil {
 
         @Override
         public void run() {
-            mTempMessageList.forEach(msg -> {
+            mSoundSettingMap.forEach((key, data) -> {
                 try {
-                    mLogger.debug("Define Thread " + Thread.currentThread());
-                    mPlayerMap.put(msg, getTextToSpeechStream(msg));
+                    // 메시지가 변경이 된 경우에만 TTS 가져오기
+                    if (data.isChanged()) {
+                        data.setStream(getTextToSpeechStream(data.getMessage()));
+                    }
                 } catch (Exception ex) {
                     mLogger.error(ex.getMessage());
                 }

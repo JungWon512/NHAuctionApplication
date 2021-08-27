@@ -149,6 +149,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
         }
         // Views
         initViewConfiguration();
+        SoundUtil.getInstance().initSoundSetting();
     }
 
     /**
@@ -182,31 +183,31 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
         mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
         mBtnIntroSound.setOnMouseClicked(event ->
-                SoundUtil.getInstance().playDefineSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, ""))
+                SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO)
         );
         mBtnBuyerSound.setOnMouseClicked(event ->
-                SoundUtil.getInstance().playDefineSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, ""))
+                SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER)
         );
         mBtnGuideSound.setOnMouseClicked(event ->
-                SoundUtil.getInstance().playDefineSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, ""))
+                SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE)
         );
         mBtnEtc_1_Sound.setOnMouseClicked(event ->
-                SoundUtil.getInstance().playDefineSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, ""))
+                SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1)
         );
         mBtnEtc_2_Sound.setOnMouseClicked(event ->
-                SoundUtil.getInstance().playDefineSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, ""))
+                SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2)
         );
         mBtnEtc_3_Sound.setOnMouseClicked(event ->
-                SoundUtil.getInstance().playDefineSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, ""))
+                SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3)
         );
         mBtnEtc_4_Sound.setOnMouseClicked(event ->
-                SoundUtil.getInstance().playDefineSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, ""))
+                SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4)
         );
         mBtnEtc_5_Sound.setOnMouseClicked(event ->
-                SoundUtil.getInstance().playDefineSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, ""))
+                SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5)
         );
         mBtnEtc_6_Sound.setOnMouseClicked(event ->
-                SoundUtil.getInstance().playDefineSound(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, ""))
+                SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6)
         );
 
         mBtnReStart.setOnMouseClicked(event -> onReStart());
