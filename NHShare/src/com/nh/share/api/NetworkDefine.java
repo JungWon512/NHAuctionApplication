@@ -17,6 +17,8 @@ public class NetworkDefine {
 
 	public static final String API_VERSION =  "v1"; // API Version
 	
-	public static final String API_REQUEST_AUCTION_LOGIN =  "/api/{version}/auth/{naBzplc}/login"; // 경매 사용자 인증 처리
+	public static final String API_REQUEST_AUCTION_LOGIN =  "/api/{version}/auth/{naBzplc}/login"; // 경매 로그인
+	
+	public static final String API_REQUEST_AUCTION_RESULT =  "/api/{version}/auction/result"; // 경매 경매 결과 업데이트
 
 }

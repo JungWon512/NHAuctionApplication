@@ -46,7 +46,10 @@ public class EntryInfo implements FromAuctionController {
 	private String mLowPrice; // 최저낙찰한도금액
 	private String mNote; // 비고내용
 	private String mAucDt; // 경매일
-
+	private String mOslpNo; // 원표 번호
+	private String mTrmnAmnNo; // 거래인 관리 번호
+	private String mLedSqno; // 원장 일련번호
+	
 	private String mAuctionResult; // 낙유찰결과 (11 대기 ,22 낙찰 ,23 보류)
 	private String mAuctionSucBidder; // 낙찰자
 	private String mAuctionBidPrice; // 응찰금액/낙찰금액
@@ -437,6 +440,27 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setLwprChgNt(String mLwprChgNt) {
 		this.mLwprChgNt = mLwprChgNt;
+	}
+	
+	public String getOslpNo() {
+		return mOslpNo;
+	}
+	public void setOslpNo(String mOslpNo) {
+		this.mOslpNo = mOslpNo;
+	}
+	public String getTrmnAmnNo() {
+		return mTrmnAmnNo;
+	}
+	public void setTrmnAmnNo(String mTrmnAmnNo) {
+		this.mTrmnAmnNo = mTrmnAmnNo;
+	}
+	
+	public String getLedSqno() {
+		return mLedSqno;
+	}
+
+	public void setLedSqno(String mLedSqno) {
+		this.mLedSqno = mLedSqno;
 	}
 
 	@Override

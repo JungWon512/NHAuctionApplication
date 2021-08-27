@@ -5,6 +5,7 @@ import java.util.HashMap;
 /**
  * 로그인 Body
  * @author jhlee
+ * @see {ActionRequestAuctionLogin}
  *
  */
 public class RequestLoginBody extends HashMap<String, String> {
