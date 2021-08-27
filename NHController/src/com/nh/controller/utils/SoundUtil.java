@@ -1,5 +1,7 @@
 package com.nh.controller.utils;
 
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.texttospeech.v1.*;
 import com.nh.controller.setting.SettingApplication;
 import javazoom.jl.player.Player;
@@ -7,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -49,12 +52,14 @@ public class SoundUtil {
                     .setAudioEncoding(AudioEncoding.MP3)
                     .build();
 
-            /*
-             * Google Cloud Service 사용하려면 Environment variables에 환경변수 처리 해야함
-             * ${KEY}${VALUE}
-             * GOOGLE_APPLICATION_CREDENTIALS=C:\workStudio\AuctionApplications\NHController\google_tts_service.json
-             */
-            TextToSpeechClient client = TextToSpeechClient.create();
+            TextToSpeechClient client = TextToSpeechClient.create(
+                    TextToSpeechSettings.newBuilder()
+                            .setCredentialsProvider(FixedCredentialsProvider
+                                    .create(GoogleCredentials
+                                            .fromStream(new FileInputStream("google_tts_service.json"))
+                                    ))
+                            .build());
+
             mTTSNowRunnable = new TTSNowRunnable(params, config, client);
             mTTSDefineRunnable = new TTSDefineRunnable(params, config, client);
 
@@ -163,7 +168,7 @@ public class SoundUtil {
                 mPlayerMap.remove(oldMsg);
                 mThreadService.submit(() -> {
                     try {
-                        mPlayerMap.put(newMsg, getTTSStream(newMsg));
+                        mPlayerMap.put(newMsg, getTextToSpeechStream(newMsg));
                     } catch (Exception ex) {
                         mLogger.error(ex.getMessage());
                     }
@@ -200,8 +205,10 @@ public class SoundUtil {
         public void play(String msg) {
             Executors.newSingleThreadExecutor().submit(() -> {
                 try {
+                    long prevTime = System.currentTimeMillis();
                     mPlayerMap.get(msg).reset();
                     mCurrentPlayer = new Player(mPlayerMap.get(msg));
+                    mLogger.debug("Diff Time " + (System.currentTimeMillis() - prevTime));
                     mCurrentPlayer.play();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -217,7 +224,7 @@ public class SoundUtil {
          */
         public void stop() {
             try {
-                if(mCurrentPlayer != null) {
+                if (mCurrentPlayer != null) {
                     mCurrentPlayer.close();
                     mCurrentPlayer = null;
                 }
@@ -232,7 +239,7 @@ public class SoundUtil {
             mTempMessageList.forEach(msg -> {
                 try {
                     mLogger.debug("Define Thread " + Thread.currentThread());
-                    mPlayerMap.put(msg, getTTSStream(msg));
+                    mPlayerMap.put(msg, getTextToSpeechStream(msg));
                 } catch (Exception ex) {
                     mLogger.error(ex.getMessage());
                 }
@@ -246,7 +253,7 @@ public class SoundUtil {
          * @return TTS ByteArray
          * @author hmju
          */
-        private InputStream getTTSStream(String msg) {
+        private InputStream getTextToSpeechStream(String msg) {
             SynthesisInput input = SynthesisInput.newBuilder().setText(msg).build();
             SynthesizeSpeechResponse response = mClient.synthesizeSpeech(input, mParams, mAudioConfig);
             return new ByteArrayInputStream(response.getAudioContent().toByteArray());
@@ -300,7 +307,9 @@ public class SoundUtil {
                         mPlayer = null;
                     }
                 }
-                mPlayer = new Player(getTTSStream(mMessage));
+                long prevTime = System.currentTimeMillis();
+                mPlayer = new Player(getTextToSpeechStream(mMessage));
+                mLogger.debug("Diff Time " + (System.currentTimeMillis() - prevTime));
                 mPlayer.play();
             } catch (Exception ex) {
                 mLogger.error("Run " + ex);
@@ -325,7 +334,7 @@ public class SoundUtil {
          * @return TTS ByteArray
          * @author hmju
          */
-        private InputStream getTTSStream(String msg) {
+        private InputStream getTextToSpeechStream(String msg) {
             SynthesisInput input = SynthesisInput.newBuilder().setText(msg).build();
             SynthesizeSpeechResponse response = mClient.synthesizeSpeech(input, mParams, mAudioConfig);
             return new ByteArrayInputStream(response.getAudioContent().toByteArray());
