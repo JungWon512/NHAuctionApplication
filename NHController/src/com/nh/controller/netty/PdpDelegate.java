@@ -45,7 +45,7 @@ public class PdpDelegate {
 	 * @param object 보낼 객체
 	 */
 	public String sendMessage(NettySendable object) {
-		if (!isEmptyClient()) {
+		if (!isEmptyClient() && isActive()) {
 			mClient.sendMessage(object.getEncodedMessage());
 		}
 		return object.getEncodedMessage();
@@ -57,7 +57,7 @@ public class PdpDelegate {
 	 * @param object 보낼 객체
 	 */
 	public String sendMessage(String object) {
-		if (!isEmptyClient()) {
+		if (!isEmptyClient() && isActive()) {
 			mLogger.debug("PdpData Send : " + object);
 			mClient.sendMessage(object);
 		}

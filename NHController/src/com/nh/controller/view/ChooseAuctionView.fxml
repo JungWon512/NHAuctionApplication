@@ -78,8 +78,8 @@
                   </HBox>
                   <HBox maxHeight="30.0" prefHeight="30.0" prefWidth="20.0" spacing="1.0" style="-fx-background-color: #000000;">
                      <children>
-                        <TextField fx:id="mTestIp" maxHeight="1.7976931348623157E308" styleClass="text-field" HBox.hgrow="ALWAYS" />
-                        <TextField fx:id="mTestPort" maxHeight="1.7976931348623157E308" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="mTestIp" maxHeight="1.7976931348623157E308" promptText="IP를 입력해주세요." styleClass="text-field" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="mTestPort" maxHeight="1.7976931348623157E308" promptText="PORT를 입력해주세요." styleClass="text-field" HBox.hgrow="ALWAYS" />
                      </children>
                      <padding>
                         <Insets top="1.0" />

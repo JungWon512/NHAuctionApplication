@@ -541,7 +541,7 @@ public class SettingController implements Initializable {
         );
         mobileCheckBoxList.forEach((checkBox -> checkBox.setOnAction(e -> {
                     handleMobileCheckBox(checkBox);
-                    if (mobileCheckBoxSelectedList.size() > 8) {
+                    if (mobileCheckBoxSelectedList.size() > 10) {
                         mobileCheckBoxSelectedList.remove(checkBox);
                         checkBox.setSelected(false);
                         showAlertMobileSettingLimit();

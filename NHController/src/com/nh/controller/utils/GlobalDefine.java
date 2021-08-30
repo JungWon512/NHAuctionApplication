@@ -1,5 +1,7 @@
 package com.nh.controller.utils;
 
+import java.util.Arrays;
+
 import com.nh.controller.model.AdminData;
 
 /**
@@ -46,7 +48,7 @@ public class GlobalDefine {
 		public static final String NOTE_CODE = "B42"; // UDP 전광판 비고(흐름타입) 전송
 		public static final char COUNTDOWN_CODE = 'N'; // UDP 통신 카운드다운
 	}
-	
+
 	public static final class PDP {
 		public static final char STX = '\u0002'; // UDP 통신 TCC start
 		public static final char ETX = '\u0003'; // UDP 통신 TCC en
@@ -64,17 +66,17 @@ public class GlobalDefine {
 	 * 관리자 정보
 	 */
 	public static final class ADMIN_INFO {
-		
+
 		public static AdminData adminData = null;
-		
+
 	}
-	
+
 	/**
 	 * 경매 관련 정보
 	 */
 	public static final class AUCTION_INFO {
-		 public static final String AUCTION_HOST = "192.168.0."; // Server Host default
-//		 public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
+//		 public static final String AUCTION_HOST = "192.168.0."; // Server Host default
+		public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
 //		public static final String AUCTION_HOST = "192.168.0.13"; // Server Host 도히꺼
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
@@ -98,13 +100,14 @@ public class GlobalDefine {
 		public static final String AUCTION_STATUS_STOP = "8008"; // 경매 정지 상태
 		public static final String AUCTION_STATUS_COMPLETED = "8009"; // 경매 출품 건 완료 상태
 		public static final String AUCTION_STATUS_FINISH = "8010"; // 경매 종료 상태
-		
+
 		public static final int AUCTION_OBJ_DSC_1 = 1; // 경매 구분 - 송아지
 		public static final int AUCTION_OBJ_DSC_2 = 2; // 경매 구분 - 비육우
 		public static final int AUCTION_OBJ_DSC_3 = 3; // 경매 구분 - 번육우
-		
-		public static final int MULTIPLICATION_BIDDER_PRICE_1000 = 1000;	// 응찰 기본 단위 -비육우
-		public static final int MULTIPLICATION_BIDDER_PRICE_10000 = 10000;	// 응찰 기본 단위 -송아지,번식우
+
+		public static final int MULTIPLICATION_BIDDER_PRICE_1000 = 1000; // 응찰 기본 단위 -비육우
+		public static final int MULTIPLICATION_BIDDER_PRICE_10000 = 10000; // 응찰 기본 단위 -송아지,번식우
+
 	}
 
 	/**
@@ -115,6 +118,12 @@ public class GlobalDefine {
 	public static final class FILE_INFO {
 		public static final String AUCTION_LOG_FILE_PATH = "c:/NHAuction/LogFile/";
 		public static final String AUCTION_LOG_FILE_EXTENSION = ".txt";
+		public static final String RESOURCES_SOUND_PATH = "/com/nh/controller/resource/sounds/"; // 사운드 경로
+
+		public static final String LOCAL_SOUND_DING = RESOURCES_SOUND_PATH + "ding.wav"; // 경매 진행 카운트다운 사운드 경로
+		public static final String LOCAL_SOUND_START = RESOURCES_SOUND_PATH + "edasstart.wav"; // 경매 시작 사운드 경로
+		public static final String LOCAL_SOUND_END = RESOURCES_SOUND_PATH + "edasend.wav"; // 경매 종료 사운드 경로
+
 	}
 
 	public static final class ETC_INFO {

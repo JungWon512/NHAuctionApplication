@@ -116,10 +116,10 @@ public class SettingApplication {
 	public final String DEFAULT_SETTING_MOBILE_MATIME= "Y";
 	public final String DEFAULT_SETTING_MOBILE_KPN= "Y";
 	public final String DEFAULT_SETTING_MOBILE_REGION= "Y";
-	public final String DEFAULT_SETTING_MOBILE_NOTE= "Y";
-	public final String DEFAULT_SETTING_MOBILE_LOWPRICE= "Y";
-	public final String DEFAULT_SETTING_MOBILE_PASSAGE= "Y";
-	public final String DEFAULT_SETTING_MOBILE_DNA="Y";
+	public final String DEFAULT_SETTING_MOBILE_NOTE= "N";
+	public final String DEFAULT_SETTING_MOBILE_LOWPRICE= "N";
+	public final String DEFAULT_SETTING_MOBILE_PASSAGE= "N";
+	public final String DEFAULT_SETTING_MOBILE_DNA="N";
 
 	//경매 타입
 	public final String DEFAULT_SETTING_AUCTION_TOGGLE_TYPE =  AuctionToggle.SINGLE.toString();

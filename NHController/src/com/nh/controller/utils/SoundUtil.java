@@ -1,13 +1,5 @@
 package com.nh.controller.utils;
 
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.texttospeech.v1.*;
-import com.nh.controller.model.SettingSound;
-import javazoom.jl.player.Player;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -15,6 +7,30 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.texttospeech.v1.AudioConfig;
+import com.google.cloud.texttospeech.v1.AudioEncoding;
+import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
+import com.google.cloud.texttospeech.v1.SynthesisInput;
+import com.google.cloud.texttospeech.v1.SynthesizeSpeechResponse;
+import com.google.cloud.texttospeech.v1.TextToSpeechClient;
+import com.google.cloud.texttospeech.v1.TextToSpeechSettings;
+import com.google.cloud.texttospeech.v1.VoiceSelectionParams;
+import com.nh.controller.model.SettingSound;
+
+import javazoom.jl.player.Player;
+import javazoom.jl.player.advanced.AdvancedPlayer;
+import javazoom.jl.player.advanced.PlaybackListener;
 
 /**
  * 음성 실행 클래스
@@ -38,6 +54,7 @@ public class SoundUtil {
     private String mDefinePrevKey = "";
     private TTSNowRunnable mTTSNowRunnable;
     private TTSDefineRunnable mTTSDefineRunnable;
+    public LocalSoundDefineRunnable mLocalSoundDefineRunnable;
 
     public SoundUtil() {
         try {
@@ -59,8 +76,11 @@ public class SoundUtil {
                                     ))
                             .build());
 
+           
             mTTSNowRunnable = new TTSNowRunnable(params, config, client);
             mTTSDefineRunnable = new TTSDefineRunnable(params, config, client);
+            mLocalSoundDefineRunnable = new LocalSoundDefineRunnable();
+   
         } catch (Exception ex) {
             mLogger.error("Init Error " + ex.getMessage());
             ex.printStackTrace();
@@ -116,17 +136,28 @@ public class SoundUtil {
             mTTSNowRunnable.play(mCurrentEntryMessage);
         }
     }
-
+  
     /**
      * 일반 메시지 재생 처리 함수
      *
      * @param msg Message
      */
-    public void playSound(String msg) {
+    public void playSound(String msg,PlaybackListener listener) {
         if (CommonUtils.getInstance().isValidString(msg)) {
             stopSound();
-            mTTSNowRunnable.play(msg);
+            mTTSNowRunnable.play(msg,listener);
         }
+    }
+    
+    
+    /**
+     * 경매 시작,카운트다운,정지 재생 처리 함수
+     * @param type
+     * @param lineListener
+     */
+    public void playLocalSound(LocalSoundDefineRunnable.LocalSoundType type , LineListener lineListener) {
+    	stopSound();
+    	mLocalSoundDefineRunnable.play(type, lineListener);
     }
 
     /**
@@ -293,8 +324,9 @@ public class SoundUtil {
         private final AudioConfig mAudioConfig;
         private final TextToSpeechClient mClient;
         private String mMessage = null;
-        private Player mPlayer = null;
-
+        private AdvancedPlayer mPlayer = null;
+        private PlaybackListener mPlayBackListener = null;
+  
         TTSNowRunnable(VoiceSelectionParams params, AudioConfig config, TextToSpeechClient client) {
             mParams = params;
             mAudioConfig = config;
@@ -304,9 +336,11 @@ public class SoundUtil {
 
         public void stop() {
             if (mPlayer != null) {
-                mLogger.debug("Player Complete " + mPlayer.isComplete() + " HashCode " + mPlayer.hashCode());
+                mLogger.debug("Player Complete " +  " HashCode " + mPlayer.hashCode());
+            	mPlayer.setPlayBackListener(null);
                 mPlayer.close();
                 mPlayer = null;
+                mPlayBackListener = null;
             }
         }
 
@@ -320,6 +354,17 @@ public class SoundUtil {
             }
         }
 
+        public void play(String text,PlaybackListener listener) {
+            try {
+                mLogger.debug("TTS Play Message " + text + " Thread " + Thread.currentThread());
+                mMessage = text;
+                mPlayBackListener = listener;
+                mThreadService.submit(this);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        
         @Override
         public void run() {
             try {
@@ -327,11 +372,14 @@ public class SoundUtil {
                     if (mPlayer != null) {
                         mPlayer.close();
                         mPlayer = null;
+                        mLogger.debug(" ");
+                        mPlayBackListener = null;
                     }
                 }
                 long prevTime = System.currentTimeMillis();
-                mPlayer = new Player(getTextToSpeechStream(mMessage));
+                mPlayer = new AdvancedPlayer(getTextToSpeechStream(mMessage));
                 mLogger.debug("Diff Time " + (System.currentTimeMillis() - prevTime));
+                mPlayer.setPlayBackListener(mPlayBackListener);
                 mPlayer.play();
             } catch (Exception ex) {
                 mLogger.error("Run " + ex);
@@ -361,5 +409,70 @@ public class SoundUtil {
             SynthesizeSpeechResponse response = mClient.synthesizeSpeech(input, mParams, mAudioConfig);
             return new ByteArrayInputStream(response.getAudioContent().toByteArray());
         }
+    }
+    
+    
+    /**
+     * wav 파일 재생.
+     * @author jhlee
+     *
+     */
+    public class LocalSoundDefineRunnable {
+    	
+    	private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+        private Clip mClip;
+ 
+        public enum LocalSoundType{
+        	START,
+        	END,
+        	DING
+        }
+
+	    public void play(LocalSoundType type, LineListener listener) {
+	    	   try {
+	    		   
+	    		    mClip = AudioSystem.getClip();
+	                
+	                AudioInputStream mEdasstart = AudioSystem.getAudioInputStream(this.getClass().getResource(GlobalDefine.FILE_INFO.LOCAL_SOUND_START));
+	                AudioInputStream mEdasend = AudioSystem.getAudioInputStream(this.getClass().getResource(GlobalDefine.FILE_INFO.LOCAL_SOUND_END));
+	                AudioInputStream mDing = AudioSystem.getAudioInputStream(this.getClass().getResource(GlobalDefine.FILE_INFO.LOCAL_SOUND_DING));
+		            
+	                if(type.equals(LocalSoundType.START)) {
+	   		        	mClip.open(mEdasstart);
+	   		        } else if(type.equals(LocalSoundType.END)) {
+	   		        	mClip.open(mEdasend);
+	   		        } else if(type.equals(LocalSoundType.DING)) {
+	   		        	mClip.open(mDing);
+	   		        }
+
+	   		        if(listener != null) {
+	   		        	mClip.addLineListener(listener);
+	   		        }
+	   		        
+	   		        mClip.start(); 
+	                
+	            } catch (Exception ex) {
+	                mLogger.error("Run " + ex);
+	            }
+	    	   
+	    }
+	    
+	    /**
+         * 재생중인 Audio Clip Close 처리 함수
+         *
+         * @author jhlee
+         */
+        public void stop() {
+            try {
+                if (mClip != null) {
+                	mClip.close();
+                	mClip = null;
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                mLogger.error("Stop Error " + ex.getMessage());
+            }
+        }
+        
     }
 }

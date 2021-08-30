@@ -193,6 +193,12 @@ public class LoginController implements Initializable {
 						onLogin();
 						ke.consume();
 					}
+					
+					if (ke.getCode() == KeyCode.ESCAPE) {
+						Platform.exit();
+						System.exit(0);
+						ke.consume();
+					}
 
 				}
 			});
