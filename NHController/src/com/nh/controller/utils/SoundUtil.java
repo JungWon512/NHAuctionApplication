@@ -1,9 +1,14 @@
 package com.nh.controller.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,6 +18,18 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineListener;
 
+import com.google.api.client.json.GenericJson;
+import com.google.api.client.json.Json;
+import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.util.PemReader;
+import com.google.api.client.util.SecurityUtils;
+import com.google.auth.http.HttpTransportFactory;
+import com.google.auth.oauth2.OAuth2Credentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +67,22 @@ public class SoundUtil {
 
     private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    private final String mGoogleServiceJson =
+            """
+            {
+              "type": "service_account",
+              "project_id": "smartauction-324007",
+              "private_key_id": "4963440ae917fd44bef4e822136709f479e841d3",
+              "private_key": "-----BEGIN PRIVATE KEY-----\\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDbqnWpwmKM8Gjk\\ncIoXAgDLE37b3egJX/vGa66QNVtCIcNRkXoUn2Nn9kKZHdsmuHBmrMGdz82E3TMZ\\n7PjDSM+dMmdaHuk6Ezn/LqToLVGXeZ2XlfErsIXQRM4SA5o/f3HoMQ1/lnfufChS\\nTi+HoinihWWTjDXOawGn7WHNKce0bkOzXGQ5DcnH0qj/aK0vcDaXjo5Y0yd595wN\\nbVNByAGmUFGi8l0D8SnTgvhxjYI+3GScLVDJ44C/3NgSb1fyGIXiH9yAwmWEBG3Q\\nGJR+vLpnGXT86B/nZNs8UTjXvdTcemLp4sy1UUR0MlJWSGr7bbM0/41A82eh96pA\\nvTbMMWZfAgMBAAECggEAGitHBDfPpMm5PUm48b+/13GVodzgWUmRhZRrgeuRWSIL\\nkkqZ+B366jY4veQEKSs83MaE9Gd+rO7rORH1mtIwRaJtFJvtHgmPVbq5U52ehESt\\nRRNMXW+UqXig8h1ywVDOAaLiYEpNNGCfLxr4Z5imk8FflgHUoSg3VMmfZqEtFO37\\na0GIhRiZ5yYpU4uSApijvipDVXHIhtMDij8sD2y/9zDqBfY/DEdSAV3DKr1qgBr2\\ntVzkyaNp71p67SQgPkyEcxYc8fJrHql2DzoJ3FUvvykEA4BokX6e5ejQux1sItUK\\nVuaQC1sj32lF8ml7vCLaFa5c/Mf5KC8QBVNSmdMHPQKBgQDtTYu25akyhE9h98RJ\\naVrwiNhHCeqAJ2ElTrlH5g8gw/6fdjORRLNxIAm/KqIhhhg2C9uHpeRh4vsDz/vE\\nzQo9XmYU5Bd67q/fVKYI2gIgAxQ0ZoBIo46P6qzQ7bFqxoUfcanDG4bLefP9NXvK\\nfjvPJnL0vBgq8BkuC+pzULX+8wKBgQDs+Suf6StGmDiVv9qjJj+PchQvrU3wkdYc\\nmXbmNId4E3UVrVGGubQ+jlTLSUs+s9UwZ9aPTL8ll5oPr4W1/EpgmDuwTAtDu+My\\nolT7vKFrJZTpWhOSJiP1XJIBtpj4+MlWStzJmWyXF67m2kn1PqFyuHrVw5lysW+F\\nQoBeB0YN5QKBgDEdJ5mHFum5sKRaH2oCQCwgZoLtbndvrw+Fp5tV5jOl3QEr+ahL\\nS8hSFTJXpI7DrichdSIyF36a99DmLvmgZkolS4NvYdyzofrbDjIuzNnLSVc/D7X5\\nA/yNWY80Ys/ynoLPh482F0Ptza3Ob/yM+9v33TsB4w6f+tYo6TFMtx45AoGBAJSh\\nX8RHidYYSX1bPPWRWtJMue6BY14dCk8bziBrGACvK4OyFm1K8os92F88lE46mt9m\\ncYOlnkokwQNPkqznFXtqYB2eRH5yTPkIKgdOc2vxwWlvDtFezLTrH8SlU2LtH9LY\\n14w2h45o01GF3ldMthRvMtP6f7cZJRpO8JaJN14lAoGBAKbElmAYPs2hex0SSjEd\\n6NErxsiPtmPdHJYcTStrWV8/NtD/vE6jKSxldlkOajX93Dwoguu4sUi19Z5278+x\\nZrlGEWDiTlyJTqPiY8d2tKdsqqX528vsv8JnCaHquL2K1GBdmXyGgAt6bCeZKNg5\\nFfW4V515N/1di3/wwZhDDHPO\\n-----END PRIVATE KEY-----\\n",
+              "client_email": "smartauction@smartauction-324007.iam.gserviceaccount.com",
+              "client_id": "101192593998124018794",
+              "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+              "token_uri": "https://oauth2.googleapis.com/token",
+              "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+              "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/smartauction%40smartauction-324007.iam.gserviceaccount.com"
+            }
+            """;
+
     private String mCurrentEntryMessage = "";
     private String mDefinePrevKey = "";
     private TTSNowRunnable mTTSNowRunnable;
@@ -67,16 +100,24 @@ public class SoundUtil {
                     .setAudioEncoding(AudioEncoding.MP3)
                     .build();
 
+            JsonObject json = new JsonParser().parse(mGoogleServiceJson).getAsJsonObject();
+
             // GOOGLE_APPLICATION_CREDENTIALS=C:\workStudio\AuctionApplications\NHController\google_tts_service.json
             TextToSpeechClient client = TextToSpeechClient.create(
                     TextToSpeechSettings.newBuilder()
                             .setCredentialsProvider(FixedCredentialsProvider
-                                    .create(GoogleCredentials
-                                            .fromStream(new FileInputStream("google_tts_service.json"))
+                                    .create(
+                                            ServiceAccountCredentials.newBuilder()
+                                                    .setClientId(json.get("client_id").getAsString())
+                                                    .setClientEmail(json.get("client_email").getAsString())
+                                                    .setPrivateKey(privateKeyFromPkcs8(json.get("private_key").getAsString()))
+                                                    .setPrivateKeyId(json.get("private_key_id").getAsString())
+                                                    .setTokenServerUri(new URI(json.get("token_uri").getAsString()))
+                                                    .setProjectId(json.get("project_id").getAsString())
+                                                    .build()
                                     ))
                             .build());
 
-           
             mTTSNowRunnable = new TTSNowRunnable(params, config, client);
             mTTSDefineRunnable = new TTSDefineRunnable(params, config, client);
             mLocalSoundDefineRunnable = new LocalSoundDefineRunnable();
@@ -84,6 +125,24 @@ public class SoundUtil {
         } catch (Exception ex) {
             mLogger.error("Init Error " + ex.getMessage());
             ex.printStackTrace();
+        }
+    }
+
+    public PrivateKey privateKeyFromPkcs8(String privateKeyPkcs8) throws IOException {
+        Reader reader = new StringReader(privateKeyPkcs8);
+        PemReader.Section section = PemReader.readFirstSectionAndClose(reader, "PRIVATE KEY");
+        if (section == null) {
+            throw new IOException("Invalid PKCS#8 data.");
+        } else {
+            byte[] bytes = section.getBase64DecodedBytes();
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(bytes);
+
+            try {
+                KeyFactory keyFactory = SecurityUtils.getRsaKeyFactory();
+                return keyFactory.generatePrivate(keySpec);
+            } catch (InvalidKeySpecException | NoSuchAlgorithmException var7) {
+                throw new IOException("Unexpected exception reading PKCS#8 data", var7);
+            }
         }
     }
 
@@ -417,7 +476,7 @@ public class SoundUtil {
      * @author jhlee
      *
      */
-    public class LocalSoundDefineRunnable {
+    public static class LocalSoundDefineRunnable {
     	
     	private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
         private Clip mClip;
