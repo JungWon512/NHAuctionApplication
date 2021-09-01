@@ -171,9 +171,10 @@ public class ChooseAuctionController implements Initializable {
 			if(!isTest) {
 				MoveStageUtil.getInstance().onConnectServer(mStage, GlobalDefine.AUCTION_INFO.AUCTION_HOST, GlobalDefine.AUCTION_INFO.AUCTION_PORT, GlobalDefine.ADMIN_INFO.adminData.getUserId(),mAuctionRound);
 			}else {
-				
 				if(CommonUtils.getInstance().isValidString(mTestIp.getText()) && CommonUtils.getInstance().isValidString(mTestPort.getText())) {
 					MoveStageUtil.getInstance().onConnectServer(mStage,mTestIp.getText().toString(), Integer.parseInt(mTestPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId(),mAuctionRound);
+				}else {
+					CommonUtils.getInstance().dismissLoadingDialog();
 				}
 				
 			}
