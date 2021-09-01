@@ -15,7 +15,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -42,11 +43,12 @@ public class ActionRequestAuctionLogin extends Action {
 
 	public interface RetrofitAPIService {
 
+		@FormUrlEncoded
 		@POST(NetworkDefine.API_REQUEST_AUCTION_LOGIN)
 		Call<ResponseAuctionLogin> requestAuctionLogin(
 				@Path("version") String apiVer,
 				@Path("naBzplc") String naBzplc,
-				@Body HashMap<String, String> paramBody);
+				@FieldMap HashMap<String, String> paramBody);
 	}
 
 	private final Callback<ResponseAuctionLogin> mCallBack = new Callback<ResponseAuctionLogin>() {
