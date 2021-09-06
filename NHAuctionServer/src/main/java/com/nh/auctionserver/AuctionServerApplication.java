@@ -11,7 +11,6 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import com.corundumstudio.socketio.SocketIOChannelInitializer;
 import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.auctionserver.socketio.SocketIOServer;
 import com.nh.share.setting.AuctionShareSetting;
@@ -30,8 +29,8 @@ public class AuctionServerApplication implements CommandLineRunner, ApplicationL
 
 	private final SocketIOServer mSocketIOServer;
 	private final SslContext mSSLContext;
-	
-	//private final SocketIOHandler mSocketIOHandler; 
+
+	// private final SocketIOHandler mSocketIOHandler;
 
 	public static void main(String[] args) {
 		SpringApplication.run(AuctionServerApplication.class, args);
@@ -70,7 +69,7 @@ public class AuctionServerApplication implements CommandLineRunner, ApplicationL
 	public void onApplicationEvent(ApplicationStartedEvent event) {
 		runServer(new String[] { "start", "5001" });
 		mSocketIOServer.start();
-		
+
 		mServer.setSocketIOHandler(mSocketIOServer.getSocketIOHandler(), mSSLContext);
 	}
 

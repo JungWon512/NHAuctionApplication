@@ -252,6 +252,19 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 								}
 							}
 						}
+						
+						// 접속자 정보 최초 전송
+						for (Object key : mConnectionInfoMap.keySet()) {
+							if (mConnectionInfoMap.get(key).getAuctionHouseCode().equals(connectionInfo.getAuctionHouseCode())
+									&& mConnectionInfoMap.get(key).getChannel()
+											.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+								ctx.channel()
+										.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(key).getAuctionHouseCode(),
+												mConnectionInfoMap.get(key).getAuctionJoinNum(),
+												mConnectionInfoMap.get(key).getChannel(), mConnectionInfoMap.get(key).getOS(),
+												"N", "0").getEncodedMessage() + "\r\n");
+							}
+						}
 					}
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
 					// 접속 처리 결과 응답 처리

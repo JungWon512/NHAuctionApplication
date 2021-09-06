@@ -21,6 +21,7 @@ import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
+import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
@@ -144,13 +145,15 @@ public class SocketIOHandler {
 		config.setPingTimeout(pingTimeout);
 		config.setPingInterval(pingInterval);
 
-		config.setKeyStorePassword("ishift7150!");
-		ClassPathResource jksPath = new ClassPathResource(mJksName);
-		try {
-			config.setKeyStore(jksPath.getInputStream());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (AuctionServerSetting.FLAG_SSL) {
+			config.setKeyStorePassword("ishift7150!");
+			ClassPathResource jksPath = new ClassPathResource(mJksName);
+			try {
+				config.setKeyStore(jksPath.getInputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		mSocketIOServer = new SocketIOServer(config, this);
@@ -223,10 +226,11 @@ public class SocketIOHandler {
 
 				if (mBidderChannelClientMap.get(connectionInfo.getAuctionHouseCode()) != null) {
 					if (mBidderChannelClientMap.get(connectionInfo.getAuctionHouseCode())
-							.containsKey(client.getSessionId())) {
+							.containsKey(client.getSessionId()) || mConnectorInfoMap.containsValue(connectionInfo)) {
 						client.sendEvent("ResponseConnectionInfo",
 								new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 										GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage());
+						
 						client.disconnect();
 
 						return;
@@ -240,7 +244,8 @@ public class SocketIOHandler {
 							.writeAndFlush(connectionInfo.getEncodedMessage() + "\r\n");
 
 					// Connector에 채널 아이디 등록 처리
-					if (!mConnectorInfoMap.containsKey(client.getSessionId())) {
+					if (!mConnectorInfoMap.containsKey(client.getSessionId())
+							&& !mConnectorInfoMap.containsValue(connectionInfo)) {
 						mConnectorInfoMap.put(client.getSessionId(), connectionInfo);
 
 						// Connector Channel Map 등록
@@ -539,10 +544,14 @@ public class SocketIOHandler {
 			try {
 				closeMember = JwtCertTokenUtils.getInstance()
 						.getUserMemNum(mConnectorInfoMap.get(client.getSessionId()).getAuthToken());
-				mAuctionServer.logoutMember(
-						new RequestLogout(mConnectorInfoMap.get(client.getSessionId()).getAuctionHouseCode(),
-								closeMember, mConnectorInfoMap.get(client.getSessionId()).getChannel()));
-
+				
+				// 사용자 접속 해제 상테 전송
+				if(mConnectorInfoMap.get(client.getSessionId()).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+					mAuctionServer.itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(client.getSessionId()).getAuctionHouseCode(), mConnectorInfoMap.get(client.getSessionId()).getAuctionJoinNum(),
+							mConnectorInfoMap.get(client.getSessionId()).getChannel(), mConnectorInfoMap.get(client.getSessionId()).getOS(), "L", "0")
+									.getEncodedMessage());
+				}
+				
 				mConnectorInfoMap.remove(client.getSessionId());
 				mConnectorChannelInfoMap.remove(closeMember);
 
@@ -783,6 +792,7 @@ public class SocketIOHandler {
 					client.sendEvent("ResponseConnectionInfo",
 							new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 									GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage());
+					
 					client.disconnect();
 				}
 			} else {
@@ -1133,8 +1143,8 @@ public class SocketIOHandler {
 
 			if (mConnectorChannelClientMap.containsKey(((RetryTargetInfo) parseObject).getAuctionHouseCode())) {
 				if (mConnectorChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).size() > 0) {
-					for (UUID uuid : mConnectorChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode())
-							.keySet()) {
+					for (UUID uuid : mConnectorChannelClientMap
+							.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).keySet()) {
 						mConnectorChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).get(uuid)
 								.sendEvent("RetryTargetInfo", message);
 					}

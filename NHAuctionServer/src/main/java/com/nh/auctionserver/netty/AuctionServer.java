@@ -23,6 +23,7 @@ import com.nh.auctionserver.netty.handlers.AuctionServerDecodedInitEntryInfoAuct
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedPassAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedPauseAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedReadyEntryInfoHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRefreshConnectorHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRequestLogoutHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRetryTargetInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedStartAuctionHandler;
@@ -259,6 +260,9 @@ public class AuctionServer {
 								mBidderChannelsMap, mWatcherChannelsMap, mAuctionResultMonitorChannelsMap,
 								mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedRequestLogoutHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedRefreshConnectorHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 					}
@@ -826,6 +830,14 @@ public class AuctionServer {
 				}
 
 				// Netty Broadcast
+				if (mControllerChannelsMap != null) {
+					for (String key : mControllerChannelsMap.keySet()) {
+						if (mControllerChannelsMap.get(key).size() > 0) {
+							mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+				
 				if (mConnectionMonitorChannelsMap != null) {
 					for (String key : mConnectionMonitorChannelsMap.keySet()) {
 						if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
