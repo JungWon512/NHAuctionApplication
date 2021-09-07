@@ -1,5 +1,6 @@
 package com.nh.controller.utils;
 
+import com.google.api.client.util.Data;
 import com.nh.controller.interfaces.BooleanListener;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -36,6 +37,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -217,6 +219,20 @@ public class CommonUtils {
         return result;
     }
 
+    
+    public synchronized String getTodayYYYYMMDD() {
+    	
+    	String today  = "";
+    
+    	LocalDate now = LocalDate.now();
+    
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    
+    	today = now.format(formatter);
+       
+    	return today;
+    }
+    
     /**
      * @param format yyyyMMdd
      * @return String

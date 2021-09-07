@@ -119,7 +119,27 @@ public class AuctionUtil {
         }
     }
     
-    public String getEntryInfoMessage(LinkedHashMap<Boolean, String> entryInfoMap) {
-    	return "";
+    // 경매 대상 구분명
+    public enum AucObjDsc {
+   		CALF("1", "송아지"),
+   		FATTENINGCATTLE("2", "비육우"),
+   		BREEDINGCATTLE("3", "번식우");
+    	
+        private final String code;
+        private final String description;
+
+        AucObjDsc(String code, String description) {
+            this.code = code;
+            this.description = description;
+        }
+
+        public static String which(String code) {
+            return Arrays.stream(AucObjDsc.values())
+                    .filter(objDsc -> (objDsc.code.equals(code)))
+                    .map(objDsc -> objDsc.description)
+                    .findAny()
+                    .orElse(CALF.description);
+        }
     }
+    
 }

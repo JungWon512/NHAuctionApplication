@@ -49,9 +49,9 @@ public class AuctionDelegate {
      * @Description 접속자 정보 전송: 제어프로그램 정보
      */
     public String onSendConnectionInfo() {
-    	
+ 
         NettySendable nettySendable = new ConnectionInfo(
-                GlobalDefineCode.AUCTION_HOUSE_HWADONG,
+        		GlobalDefine.ADMIN_INFO.adminData.getNabzplc(),
                 GlobalDefine.ADMIN_INFO.adminData.getUserId(),
                 GlobalDefine.ADMIN_INFO.adminData.getAccessToken(),
                 GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER,
@@ -178,6 +178,16 @@ public class AuctionDelegate {
     public String onToastMessageRequest(String msg) {
         return sendMessage(new ToastMessageRequest(GlobalDefineCode.AUCTION_HOUSE_HWADONG, msg));
     }
+
+    /**
+     * @param InitEntryInfo
+     * @return
+     * @Description 출품 데이터	 초기화
+     */
+    public String onInitEntryInfo(InitEntryInfo initEntryInfo) {
+        return sendMessage(initEntryInfo);
+    }
+    
 
     /**
      * 객체를 송신할 때 사용한다.

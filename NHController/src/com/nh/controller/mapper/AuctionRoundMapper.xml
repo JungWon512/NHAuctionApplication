@@ -8,18 +8,42 @@
 	<!-- 경매 회차 정보 조회 -->
 	<select id="selectAllAuctionRound" resultType="AuctionRound">
 		SELECT *
-		FROM auction.tb_la_is_mh_auc_qcn as A
-		WHERE A.AUC_DT = #{date}
-		AND A.DDL_YN = '0';
-	</select>
-	
+		FROM TB_LA_IS_MH_AUC_QCN AS A
+		WHERE A.NA_BZPLC = #{naBzplc}
+		AND A.AUC_DT = #{aucDt}
+	</select> 	<!--AND A.DDL_YN = '0'; 마감 여부 -->
+
 	<!-- 경매 회차 단일 정보 조회 -->
 	<select id="obtainAuctionRound" resultType="AuctionRound">
 		SELECT *
-		FROM auction.tb_la_is_mh_auc_qcn as A
+		FROM tb_la_is_mh_auc_qcn as A
 		WHERE A.AUC_DT = #{aucDt}
+		AND A.NA_BZPLC = #{naBzplc}
 		AND A.AUC_OBJ_DSC = #{aucObjDsc}
-		AND A.DDL_YN = '0';
-	</select>
+	</select><!--AND A.DDL_YN = '0'; 마감 여부 -->
 	
+	<!-- 일괄경매 대상목록 조회-->
+	<select id="selectAuctionStnData" resultType="AuctionStnData">
+		SELECT	A.NA_BZPLC,
+				A.AUC_OBJ_DSC,
+				A.AUC_DT,
+				A.RG_SQNO,
+				A.ST_AUC_NO,
+				A.ED_AUC_NO,
+				A.SEL_STS_DSC,
+				A.DEL_YN, A.DDL_QCN,
+				A.FSRG_DTM,
+				A.FSRGMN_ENO,
+				A.LSCHG_DTM,
+				A.LS_CMENO
+		FROM tb_la_is_mh_auc_stn as A
+		WHERE A.NA_BZPLC = #{naBzplc}
+		AND A.AUC_OBJ_DSC = CASE WHEN #{aucObjDsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{aucObjDsc} END AND A.AUC_DT = #{aucDt}
+		<if test="rgSqno !=null and !rgSqno.equals('')">
+			AND A.rg_sqno = #{rgSqno}
+		</if>
+		
+		ORDER BY A.ST_AUC_NO
+	</select>
+
 </mapper>

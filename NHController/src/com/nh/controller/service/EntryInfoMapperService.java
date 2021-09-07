@@ -10,6 +10,8 @@ import com.nh.controller.database.DBSessionFactory;
 import com.nh.controller.mapper.EntryInfoMapper;
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
+import com.nh.controller.model.AuctionStnData;
+import com.nh.controller.model.SelStsCountData;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
@@ -22,136 +24,132 @@ import com.nh.share.controller.models.SendAuctionResult;
 public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> implements EntryInfoMapper {
 
 	private static EntryInfoMapperService entryInfoMapperService = null;
-	
+
 	public static EntryInfoMapperService getInstance() {
-		
+
 		if (entryInfoMapperService == null) {
 			entryInfoMapperService = new EntryInfoMapperService();
 		}
 		return entryInfoMapperService;
 	}
-	
-    public EntryInfoMapperService() {
-        this.setDao(new EntryInfoDao());
-    }
+
+	public EntryInfoMapperService() {
+		this.setDao(new EntryInfoDao());
+	}
 
 	@Override
 	public int getAllEntryDataCount(AuctionRound auctionRound) {
-		
+
 		int recordCount = 0;
-		
-		 try (SqlSession session = DBSessionFactory.getSession()) {
-			 recordCount = getDao().selectAllEntryInfoCount(auctionRound, session);
-		 }
-		 
+
+		try (SqlSession session = DBSessionFactory.getSession()) {
+			recordCount = getDao().selectAllEntryInfoCount(auctionRound, session);
+		}
+
 		return recordCount;
 	}
 
-    @Override
-    public List<EntryInfo> getAllEntryData(AuctionRound auctionRound) {
+	@Override
+	public List<EntryInfo> getAllEntryData(AuctionRound auctionRound) {
 
-        List<EntryInfo> list;
-        try (SqlSession session = DBSessionFactory.getSession()) {
-            list = getDao().selectAllEntryInfo(auctionRound, session);
-        }
+		List<EntryInfo> list;
+		try (SqlSession session = DBSessionFactory.getSession()) {
+			list = getDao().selectAllEntryInfo(auctionRound, session);
+		}
 
-        if (!list.isEmpty()) {
-            // 마지막 출품정보 표기 (Y/N)
-            for (int i = 0; i < list.size(); i++) {
-                String flag = (i == list.size() - 1) ? "Y" : "N";
-                list.get(i).setIsLastEntry(flag);
-            }
-        }
-        return list;
-    }
+		if (!list.isEmpty()) {
+			// 마지막 출품정보 표기 (Y/N)
+			for (int i = 0; i < list.size(); i++) {
+				String flag = (i == list.size() - 1) ? "Y" : "N";
+				list.get(i).setIsLastEntry(flag);
+			}
+		}
+		return list;
+	}
 
 	@Override
 	public List<EntryInfo> getFinishedEntryData(AuctionRound auctionRound) {
-		
+
 		List<EntryInfo> list = null;
-		
+
 		try (SqlSession session = DBSessionFactory.getSession()) {
-			
+
 			auctionRound.setAuctionResultParam(GlobalDefine.ETC_INFO.AUCTION_SEARCH_PARAM_SP);
 
-			list = getDao().selectAllEntryInfo(auctionRound,session);
-			
+			list = getDao().selectAllEntryInfo(auctionRound, session);
+
 			auctionRound.setAuctionResultParam(null);
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			return new ArrayList<EntryInfo>();
 		}
-		
+
 		return list;
 	}
-	
+
 	@Override
 	public int updateEntryPrice(EntryInfo entryInfo) {
-		
+
 		int resultValue = 0;
-		
+
 		try (SqlSession session = DBSessionFactory.getSession()) {
 
-			resultValue = getDao().updateEntryPrice(entryInfo,session);
-			
-			if(resultValue > 0) {
+			resultValue = getDao().updateEntryPrice(entryInfo, session);
+
+			if (resultValue > 0) {
 				session.commit();
-			}else {
+			} else {
 				session.rollback();
 			}
-			
-		}catch (Exception e) {
-			//exception에 대한 처리 시 사용
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
 			resultValue = -1;
 		}
 
 		return resultValue;
 	}
-	
 
 	@Override
 	public int updateEntryPriceList(List<EntryInfo> entryInfoList) {
-		
+
 		int resultValue = 0;
-		
+
 		try (SqlSession session = DBSessionFactory.getSession()) {
 
-			resultValue = getDao().updateEntryPriceList(entryInfoList,session);
-			
-			if(resultValue > 0) {
+			resultValue = getDao().updateEntryPriceList(entryInfoList, session);
+
+			if (resultValue > 0) {
 				session.commit();
-			}else {
+			} else {
 				session.rollback();
 			}
-			
-		}catch (Exception e) {
-			//exception에 대한 처리 시 사용
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
 			resultValue = -1;
 		}
 
 		return resultValue;
 	}
-	
-	
-	
 
 	@Override
 	public int updateEntryState(EntryInfo entryInfo) {
-		
+
 		int resultValue = 0;
-		
+
 		try (SqlSession session = DBSessionFactory.getSession()) {
 
-			resultValue = getDao().updateEntryState(entryInfo,session);
-			
-			if(resultValue > 0) {
+			resultValue = getDao().updateEntryState(entryInfo, session);
+
+			if (resultValue > 0) {
 				session.commit();
-			}else {
+			} else {
 				session.rollback();
 			}
-			
-		}catch (Exception e) {
-			//exception에 대한 처리 시 사용
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
 			resultValue = -1;
 		}
 
@@ -162,19 +160,19 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 	public int updateAuctionResult(SendAuctionResult auctionResult) {
 
 		int resultValue = 0;
-		
+
 		try (SqlSession session = DBSessionFactory.getSession()) {
 
-			resultValue = getDao().updateAuctionResult(auctionResult,session);
-			
-			if(resultValue > 0) {
+			resultValue = getDao().updateAuctionResult(auctionResult, session);
+
+			if (resultValue > 0) {
 				session.commit();
-			}else {
+			} else {
 				session.rollback();
 			}
-			
-		}catch (Exception e) {
-			//exception에 대한 처리 시 사용
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
 			resultValue = -1;
 		}
 
@@ -183,25 +181,56 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 	@Override
 	public int insertBiddingHistory(AucEntrData aucEntrData) {
-	int resultValue = 0;
-		
+		int resultValue = 0;
+
 		try (SqlSession session = DBSessionFactory.getSession()) {
 
-			resultValue = getDao().insertBiddingHistory(aucEntrData,session);
-			
-			if(resultValue > 0) {
+			resultValue = getDao().insertBiddingHistory(aucEntrData, session);
+
+			if (resultValue > 0) {
 				session.commit();
-			}else {
+			} else {
 				session.rollback();
 			}
-			
-		}catch (Exception e) {
-			//exception에 대한 처리 시 사용
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
 			resultValue = -1;
 		}
 
 		return resultValue;
 	}
 
+	@Override
+	public List<EntryInfo> getStnEntryData(AuctionStnData auctionStnData) {
+
+		List<EntryInfo> list = null;
+
+		try (SqlSession session = DBSessionFactory.getSession()) {
+			list = getDao().selectStnEntryInfo(auctionStnData, session);
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
+			return new ArrayList<EntryInfo>();
+		}
+
+		return list;
+	}
+
+	@Override
+	public SelStsCountData getSelStsCount(AuctionStnData auctionStnData) {
+		
+		SelStsCountData countData;
+
+		try (SqlSession session = DBSessionFactory.getSession()) {
+			countData =  getDao().selectSelStsCount(auctionStnData, session);
+		}catch (Exception e) {
+			return new SelStsCountData();
+		}
+
+		return countData;
+	}
+	
+	
 
 }

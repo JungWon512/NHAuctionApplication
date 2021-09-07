@@ -140,6 +140,7 @@ public class SettingApplication {
 	private boolean useReAuction = false; // 동가 재경매 여부
 	private boolean useOneAuction = false; // 연속경매 - 하나씩 진행 여부
 	private boolean useSoundAuction = false; // 음성경매 - 음성경부 여부
+	private boolean isSingleAuction = true;
 
 	private int aucObjDsc = 0; // 경매 구분
 
@@ -319,18 +320,25 @@ public class SettingApplication {
 	 */
 	public void initSharedData() {
 
-		upperLimitCalf = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, "1");
-		upperLimitFatteningCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, "1");
-		upperLimitBreedingCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, "1");
-		lowerLimitCalf = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, "1");
-		lowerLimitFatteningCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, "1");
-		lowerLimitBreedingCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, "1");
-		auctionCountdown = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5");
-		reAuctionCount = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, "1");
-		useReAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_CHECK, false);
-		useOneAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_ONE_AUCTION, false);
-		useSoundAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, false);
-		soundAuctionWaitTime = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, "3");
+		upperLimitCalf = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, DEFAULT_SETTING_UPPER_CALF_TEXT);
+		upperLimitFatteningCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, DEFAULT_SETTING_UPPER_FATTENING_TEXT);
+		upperLimitBreedingCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, DEFAULT_SETTING_UPPER_BREEDING_TEXT);
+		lowerLimitCalf = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, DEFAULT_SETTING_LOWER_CALF_TEXT);
+		lowerLimitFatteningCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, DEFAULT_SETTING_LOWER_FATTENING_TEXT);
+		lowerLimitBreedingCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, DEFAULT_SETTING_LOWER_BREEDING_TEXT);
+		auctionCountdown = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, DEFAULT_SETTING_COUNTDOWN);
+		reAuctionCount = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, DEFAULT_SETTING_RE_AUCTION_COUNT);
+		useReAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_CHECK, DEFAULT_SETTING_RE_AUCTION_CHECK);
+		useOneAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_ONE_AUCTION, DEFAULT_SETTING_USE_ONE_AUCTION);
+		useSoundAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, DEFAULT_SETTING_USE_SOUND_AUCTION);
+		soundAuctionWaitTime = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME);
+		String aucType = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, DEFAULT_SETTING_AUCTION_TOGGLE_TYPE);
+		
+		if(aucType.equals(AuctionToggle.SINGLE.toString())) {
+			isSingleAuction =  true;
+		}else {
+			isSingleAuction =  false;
+		}
 	}
 
 	/**
@@ -472,6 +480,14 @@ public class SettingApplication {
 
 	public boolean isUseSoundAuction() {
 		return useSoundAuction;
+	}
+
+	public boolean isSingleAuction() {
+		return isSingleAuction;
+	}
+
+	public void setSingleAuction(boolean isSingleAuction) {
+		this.isSingleAuction = isSingleAuction;
 	}
 
 	private int reInt(String value) {

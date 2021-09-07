@@ -1,5 +1,6 @@
 package com.nh.controller.mapper;
 
+import com.nh.controller.model.AuctionStnData;
 import com.nh.controller.model.AuctionRound;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,7 +14,9 @@ import java.util.List;
  */
 public interface AuctionRoundMapper {
 
-    List<AuctionRound> getAllAuctionRoundData(@Param("date") String date);
+    List<AuctionRound> getAllAuctionRoundData(AuctionRound auctionRound);
     
     AuctionRound obtainAuctionRoundData(AuctionRound auctionRound);
+    
+    List<AuctionStnData> searchAuctionStnData(AuctionStnData auctionStnData);
 }

@@ -5,28 +5,6 @@
 
 <mapper namespace="com.nh.controller.mapper.EntryInfoMapper">
 
-    <!-- private StringProperty auctionHouseCode; // 거점코드
-    private StringProperty entryNum; // 출품 번호
-    private StringProperty entryType; // 출품 유형(큰소/송아지/육우)
-    private StringProperty indNum; // 개체번호
-    private StringProperty exhibitor; // 출하주
-    private StringProperty birthday; // 생년월일
-    private StringProperty gender; // 성별
-    private StringProperty weight; // 중량
-    private StringProperty kpn; // KPN
-    private StringProperty cavingNum; // 산차
-    private StringProperty mother; // 어미 혈통
-    private StringProperty note; // 특이사항
-    private StringProperty auctDateTime; // 경매일시
-    private StringProperty entryStatus; // 출품상태
-    private StringProperty startPrice; // 시작가
-    private StringProperty isLastEntry; // 마지막 출품 여부
-
-    private StringProperty successfulBidder;	// 낙찰자
-    private StringProperty BiddingResult; 		// 낙찰결과
-    private BooleanProperty isPending; 			// 보류 -->
-
-
     <!--TODO 경매 결과 관련 추가 해야함 -->
     <resultMap type="EntryInfo" id="entryInfoMap">
         <result property="mAuctionHouseCode" column="NA_BZPLC"/>
@@ -42,8 +20,10 @@
         <result property="mBirthday" column="BIRTH"/>
         <result property="mKpn" column="KPN_NO"/>
         <result property="mGender" column="INDV_SEX_C"/>
+        <result property="mGenderName" column="INDV_SEX_C_NAME"/>
         <result property="mMotherTypeCode" column="MCOW_DSC"/>
         <result property="mMotherObjNum" column="MCOW_SRA_INDV_AMNNO"/>
+        <result property="mMotherCowName" column="MCOW_DSC"/>
         <result property="mMaTime" column="MATIME"/>
         <result property="mMaMonth" column="PRNY_MTCN"/>
         <result property="mPasgQcn" column="SRA_INDV_PASG_QCN"/>
@@ -78,7 +58,6 @@
 		${alias}.FHS_ID_NO,
 		${alias}.FARM_AMNNO,
 		${alias}.BIRTH,
-		${alias}.MCOW_DSC,
 		${alias}.KPN_NO,
 		${alias}.INDV_SEX_C,
 		${alias}.MCOW_SRA_INDV_AMNNO,
@@ -87,11 +66,16 @@
 		${alias}.INDV_ID_NO,
 		${alias}.SRA_INDV_BRDSRA_RG_NO,
 		${alias}.RG_DSC,
-		${alias}.ANW_YN
+		${alias}.ANW_YN,
+		CASE WHEN ${alias}.INDV_SEX_C = '0' THEN '없음'	WHEN ${alias}.INDV_SEX_C = '1' THEN '암'
+		WHEN ${alias}.INDV_SEX_C = '2' THEN '수'			WHEN ${alias}.INDV_SEX_C = '3' THEN '거세'
+		WHEN ${alias}.INDV_SEX_C = '4' THEN '미경산'		WHEN ${alias}.INDV_SEX_C = '5' THEN '비거세'
+		WHEN ${alias}.INDV_SEX_C = '6' THEN '프리마틴'		WHEN ${alias}.INDV_SEX_C = '9' THEN '공통' END INDV_SEX_C_NAME
 	</sql>
 
 	<!-- tb_la_is_mh_sog_cow -->
 	<sql id="sogCowColumn">
+		${alias}.NA_BZPLC,
 		${alias}.AUC_PRG_SQ,
 		${alias}.COW_SOG_WT,
 		${alias}.AUC_OBJ_DSC,
@@ -101,7 +85,7 @@
 		${alias}.BRANDNM,
 		${alias}.PRNY_MTCN,
 		${alias}.AUC_DT,
-		DATE_FORMAT(${alias}.LSCHG_DTM,'%Y%m%d%H%i%S') as LSCHG_DTM,
+		REPLACE(REPLACE(REPLACE(CONVERT(varchar,A.LSCHG_DTM,20),'-',''),' ',''),':','') as LSCHG_DTM,
 		${alias}.LS_CMENO,
 		${alias}.SEL_STS_DSC,
 		${alias}.LWPR_CHG_NT,
@@ -119,88 +103,112 @@
 		${alias}.FTSNM
 	</sql>
 
-	<sql id="qcnColumn">
-		${alias}.QCN
+	<sql id="aplColumn">
+		${alias}.SIMP_CNM AS MCOW_DSC
 	</sql>
 
 
+	<!-- 출품 데이터 추출 -->
+	<select id="selectAllEntryCount" resultType="int">
+	SELECT	count(*)
+	FROM TB_LA_IS_MH_SOG_COW A LEFT OUTER JOIN TB_LA_IS_MM_FHS B ON A.NA_BZPLC = B.NA_BZPLC
+								 AND A.FHS_ID_NO		= B.FHS_ID_NO
+								 AND A.FARM_AMNNO		= B.FARM_AMNNO
+								 LEFT OUTER JOIN TB_LA_IS_MM_INDV C ON A.NA_BZPLC = C.NA_BZPLC
+								 AND A.SRA_INDV_AMNNO	= C.SRA_INDV_AMNNO
+								 AND A.SRA_SRS_DSC		= C.SRA_SRS_DSC
+								 LEFT OUTER JOIN ( SELECT SIMP_C, SIMP_CNM
+													 FROM TB_LA_IS_MH_COMN_APL
+													 WHERE SIMP_TPC = 'SRA_INDV_BRDSRA_RG_DSC') D ON C.RG_DSC = D.SIMP_C 
+								 LEFT OUTER JOIN ( SELECT SIMP_C, SIMP_CNM
+													 FROM TB_LA_IS_MH_COMN_APL
+													 WHERE SIMP_TPC = 'SRA_INDV_BRDSRA_RG_DSC') E ON C.MCOW_DSC = E.SIMP_C
+	WHERE A.NA_BZPLC	= #{naBzplc}
+	AND A.AUC_DT		= #{aucDt}
+	AND A.AUC_OBJ_DSC	= CASE WHEN #{aucObjDsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{aucObjDsc} END
+	</select>
 
 	<!-- 출품 데이터 추출 -->
-    <select id="selectAllEntryCount" resultType="int">
-    SELECT
-			count(*)
- 		tb_la_is_mh_auc_qcn
-        FROM tb_la_is_mm_indv as A
-                 JOIN
-             tb_la_is_mh_sog_cow AS B
-             ON
-                 A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO
-                 LEFT JOIN
-             tb_la_is_mm_fhs AS C
-             ON
-                     B.NA_BZPLC = C.NA_BZPLC AND
-                     B.FHS_ID_NO = C.FHS_ID_NO AND
-                     B.FARM_AMNNO = C.FARM_AMNNO
-                 JOIN
-			tb_la_is_mh_auc_qcn as D
-			 ON
-				B.NA_BZPLC = D.NA_BZPLC AND
-				B.AUC_DT = D.AUC_DT
-		WHERE B.AUC_DT = #{aucDt}
-		AND B.NA_BZPLC = #{naBzplc}
-		AND B.AUC_OBJ_DSC = #{aucObjDsc}
-		<if test="mAuctionResult !=null and !mAuctionResult.equals('')">
-			AND B.SEL_STS_DSC = #{mAuctionResult}
-		</if>
-		ORDER BY B.AUC_PRG_SQ ASC;
-    
-    </select>
-
-
-    <!-- 출품 데이터 추출 -->
-    <select id="selectAllEntry" resultMap="entryInfoMap" resultType="linkedHashMap">
+	<select id="selectAllEntry" resultMap="entryInfoMap" resultType="linkedHashMap">
 		SELECT
-			<include refid="indvColumn"><property name="alias" value="A"/></include>,
-			<include refid="sogCowColumn"><property name="alias" value="B"/></include>,
-			<include refid="fhsColumn"><property name="alias" value="C"/></include>,
-			<include refid="qcnColumn"><property name="alias" value="D"/></include>
- 		tb_la_is_mh_auc_qcn
-        FROM tb_la_is_mm_indv as A
-                 JOIN
-             tb_la_is_mh_sog_cow AS B
-             ON
-                 A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO
-                 LEFT JOIN
-             tb_la_is_mm_fhs AS C
-             ON
-                     B.NA_BZPLC = C.NA_BZPLC AND
-                     B.FHS_ID_NO = C.FHS_ID_NO AND
-                     B.FARM_AMNNO = C.FARM_AMNNO
-                 JOIN
-			tb_la_is_mh_auc_qcn as D
-			 ON
-				B.NA_BZPLC = D.NA_BZPLC AND
-				B.AUC_DT = D.AUC_DT
-		WHERE B.AUC_DT = #{aucDt}
-		AND B.NA_BZPLC = #{naBzplc}
-		AND B.AUC_OBJ_DSC = #{aucObjDsc}
-		<if test="mAuctionResult !=null and !mAuctionResult.equals('')">
-			AND B.SEL_STS_DSC = #{mAuctionResult}
-		</if>
+				<include refid="sogCowColumn"><property name="alias" value="A"/></include>,
+				<include refid="fhsColumn"><property name="alias" value="B"/></include>,
+				<include refid="indvColumn"><property name="alias" value="C"/></include>,
+				<include refid="aplColumn"><property name="alias" value="E"/></include>
+		FROM TB_LA_IS_MH_SOG_COW A LEFT OUTER JOIN TB_LA_IS_MM_FHS B ON A.NA_BZPLC = B.NA_BZPLC
+									 AND A.FHS_ID_NO		= B.FHS_ID_NO
+									 AND A.FARM_AMNNO		= B.FARM_AMNNO
+									 LEFT OUTER JOIN TB_LA_IS_MM_INDV C ON A.NA_BZPLC = C.NA_BZPLC
+									 AND A.SRA_INDV_AMNNO	= C.SRA_INDV_AMNNO
+									 AND A.SRA_SRS_DSC		= C.SRA_SRS_DSC
+									 LEFT OUTER JOIN ( SELECT SIMP_C, SIMP_CNM
+														 FROM TB_LA_IS_MH_COMN_APL
+														 WHERE SIMP_TPC = 'SRA_INDV_BRDSRA_RG_DSC') D ON C.RG_DSC = D.SIMP_C 
+									 LEFT OUTER JOIN ( SELECT SIMP_C, SIMP_CNM
+														 FROM TB_LA_IS_MH_COMN_APL
+														 WHERE SIMP_TPC = 'SRA_INDV_BRDSRA_RG_DSC') E ON C.MCOW_DSC = E.SIMP_C
+		WHERE A.NA_BZPLC	= #{naBzplc}
+		AND A.AUC_DT		= #{aucDt}
+		AND A.AUC_OBJ_DSC	= CASE WHEN #{aucObjDsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{aucObjDsc} END
+		ORDER BY AUC_PRG_SQ
+	</select>
 
-		ORDER BY B.AUC_PRG_SQ ASC;
-    </select>
-
+	<!-- 일괄경매 출품 데이터 추출 -->
+	<select id="selectStnEntry" resultMap="entryInfoMap" >
+	
+		SELECT 
+				<include refid="sogCowColumn"><property name="alias" value="A"/></include>,
+				<include refid="indvColumn"><property name="alias" value="C"/></include>,
+				<include refid="fhsColumn"><property name="alias" value="B"/></include>
+		FROM TB_LA_IS_MH_SOG_COW A LEFT OUTER JOIN TB_LA_IS_MM_FHS B ON A.NA_BZPLC = B.NA_BZPLC
+				 AND A.FHS_ID_NO      = B.FHS_ID_NO
+				 AND A.FARM_AMNNO     = B.FARM_AMNNO
+				 LEFT OUTER JOIN TB_LA_IS_MM_INDV C ON A.NA_BZPLC    = C.NA_BZPLC
+				 AND A.SRA_INDV_AMNNO = C.SRA_INDV_AMNNO                 
+				 AND A.SRA_SRS_DSC    = C.SRA_SRS_DSC                    
+				 LEFT OUTER JOIN ( SELECT SIMP_C, SIMP_CNM                                                    
+										 FROM TB_LA_IS_MH_COMN_APL                                                
+										 WHERE SIMP_TPC = 'SRA_INDV_BRDSRA_RG_DSC') D ON C.RG_DSC = D.SIMP_C 
+				 LEFT OUTER JOIN ( SELECT SIMP_C, SIMP_CNM                                                    
+										 FROM TB_LA_IS_MH_COMN_APL                                                
+										 WHERE SIMP_TPC = 'SRA_INDV_BRDSRA_RG_DSC') E ON C.MCOW_DSC = E.SIMP_C
+		<!--  -->WHERE A.NA_BZPLC  = #{naBzplc} 
+		AND A.AUC_DT      = #{aucDt}
+		AND A.AUC_OBJ_DSC = CASE WHEN #{aucObjDsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{aucObjDsc} END 
+		AND A.AUC_YN = '1'
+		AND A.SEL_STS_DSC <![CDATA[<>]]> #{selStsDsc} 
+		AND A.AUC_PRG_SQ <![CDATA[>=]]> 1 AND A.AUC_PRG_SQ <![CDATA[<=]]> 1000
+		ORDER BY AUC_PRG_SQ
+		
+	</select>
+	
+	 <!-- 경매 대기/진행/종료/보류 조회 -->
+	<select id="selectSelStsCount" resultType="SelStsCountData" >
+	
+		SELECT	count(case when sel_sts_dsc = '11' then '11' end) as selStsReady,
+				count(case when sel_sts_dsc = '21' then '21' end) as selStsAuction,
+				count(case when sel_sts_dsc = '22' then '22' end) as selStsFinish,
+				count(case when sel_sts_dsc = '23' then '23' end) as selStsPending,
+				count(case when AUC_YN = '1' then '1' end) as selStsProgress,
+				count(*) as totalCount
+		from tb_la_is_mh_sog_cow
+		WHERE na_bzplc = #{naBzplc}
+		AND AUC_DT = #{aucDt}
+		AND AUC_OBJ_DSC = #{aucObjDsc}
+	
+	</select>
+	
 	<!-- 가격 정보 업데이트-->
 	<update id="updateEntryPrice" parameterType="EntryInfo">
 		UPDATE	TB_LA_IS_MH_SOG_COW
 		   SET	LOWS_SBID_LMT_AM = #{mLowPrice},
 		   		LWPR_CHG_NT = #{mLwprChgNt},
-		   		LSCHG_DTM = NOW(),
+		   		LSCHG_DTM	= GETDATE(),
 		   		LS_CMENO	= #{mLsCmeNo}
-		 WHERE	AUC_PRG_SQ	= #{mEntryNum}
-		   AND	NA_BZPLC	= #{mAuctionHouseCode}
+		 WHERE	NA_BZPLC	= #{mAuctionHouseCode}
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
+		   AND	OSLP_NO		= #{mOslpNo}
+		   AND	LED_SQNO     = #{mLedSqno}
 		   AND	AUC_DT		= #{mAucDt}
     </update>
     
@@ -210,11 +218,12 @@
 			UPDATE	TB_LA_IS_MH_SOG_COW
 			   SET	LOWS_SBID_LMT_AM = #{item.mLowPrice},
 			   		LWPR_CHG_NT = #{item.mLwprChgNt},
-			   		LSCHG_DTM = NOW(),
+			   		LSCHG_DTM = GETDATE(),
 			   		LS_CMENO	= #{item.mLsCmeNo}
-			 WHERE	AUC_PRG_SQ	= #{item.mEntryNum}
-			   AND	NA_BZPLC	= #{item.mAuctionHouseCode}
+			 WHERE	NA_BZPLC	= #{item.mAuctionHouseCode}
 			   AND	AUC_OBJ_DSC	= #{item.mEntryType}
+			   AND	OSLP_NO		= #{item.mOslpNo}
+			   AND	LED_SQNO     = #{item.mLedSqno}
 			   AND	AUC_DT		= #{item.mAucDt}
 		   </foreach>
     </update>
@@ -224,7 +233,7 @@
     <update id="updateEntryState" parameterType="EntryInfo">
 		UPDATE	TB_LA_IS_MH_SOG_COW
 		   SET	SEL_STS_DSC = #{mAuctionResult},
-		   		LSCHG_DTM = NOW(),
+		   		LSCHG_DTM = GETDATE(),
 		   		LS_CMENO	= #{mLsCmeNo}
 		 WHERE	AUC_PRG_SQ	= #{mEntryNum}
 		   AND	NA_BZPLC	= #{mAuctionHouseCode}
@@ -239,7 +248,7 @@
 		  		LVST_AUC_PTC_MN_NO = #{mSuccessAuctionJoinNum},
 		  		SRA_SBID_AM = #{mSuccessBidPrice},
 		  		SRA_SBID_UPR = #{mSuccessBidUpr},
-		   		LSCHG_DTM = NOW(),
+		   		LSCHG_DTM = GETDATE(),
 		   		LS_CMENO	= #{mLsCmeNo}
 		 WHERE	AUC_PRG_SQ	= #{mEntryNum}
 		   AND	NA_BZPLC	= #{mAuctionHouseCode}

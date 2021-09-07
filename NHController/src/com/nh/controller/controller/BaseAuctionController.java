@@ -772,8 +772,7 @@ public class BaseAuctionController implements NettyControllable {
 
 				updateAuctionStateInfo(isSuccess, bidder);
 				// 낙유찰 결과 전송
-				addLogItem(mResMsg.getString("msg.auction.send.result")
-						+ AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+				addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
 			}
 
 			break;

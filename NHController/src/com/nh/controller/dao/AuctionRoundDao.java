@@ -1,5 +1,6 @@
 package com.nh.controller.dao;
 
+import com.nh.controller.model.AuctionStnData;
 import com.nh.controller.model.AuctionRound;
 import org.apache.ibatis.session.SqlSession;
 
@@ -13,8 +14,12 @@ import java.util.List;
  */
 public class AuctionRoundDao {
 
-    public List<AuctionRound> selectAllAuctionRound(String date, SqlSession session) {
-        return session.selectList("selectAllAuctionRound", date);
+    public List<AuctionRound> selectAllAuctionRound(AuctionRound auctionRound, SqlSession session) {
+        return session.selectList("selectAllAuctionRound", auctionRound);
+    }
+    
+    public List<AuctionStnData> selectAuctionStnData(AuctionStnData auctionStnData, SqlSession session) {
+        return session.selectList("selectAuctionStnData", auctionStnData);
     }
     
     public AuctionRound obtainAuctionRound(AuctionRound auctionRound, SqlSession session) {

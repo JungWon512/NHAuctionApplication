@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
+import com.nh.controller.model.AuctionStnData;
+import com.nh.controller.model.SelStsCountData;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
 
@@ -18,7 +20,11 @@ public interface EntryInfoMapper {
 	
     List<EntryInfo> getAllEntryData(AuctionRound auctionRound);
     
-
+    List<EntryInfo> getStnEntryData(AuctionStnData auctionStnData);
+    
+    SelStsCountData getSelStsCount(AuctionStnData auctionStnData);
+    
+    
     /**
      * 낙찰/보류 목록 조회
      * @param auctionRound

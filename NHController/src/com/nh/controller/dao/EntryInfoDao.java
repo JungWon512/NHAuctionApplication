@@ -2,6 +2,8 @@ package com.nh.controller.dao;
 
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
+import com.nh.controller.model.AuctionStnData;
+import com.nh.controller.model.SelStsCountData;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
 
@@ -24,6 +26,14 @@ public class EntryInfoDao {
 
     public List<EntryInfo> selectAllEntryInfo(AuctionRound auctionRound, SqlSession session) {
         return session.selectList("selectAllEntry", auctionRound);
+    }
+    
+    public List<EntryInfo> selectStnEntryInfo(AuctionStnData auctionStnData, SqlSession session) {
+        return session.selectList("selectStnEntry", auctionStnData);
+    }
+    
+    public SelStsCountData selectSelStsCount(AuctionStnData auctionStnData, SqlSession session) {
+        return session.selectOne("selectSelStsCount", auctionStnData);
     }
     
     /**

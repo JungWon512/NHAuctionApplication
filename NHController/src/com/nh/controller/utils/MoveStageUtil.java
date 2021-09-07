@@ -10,6 +10,7 @@ import com.nh.controller.controller.AuctionMessageController;
 import com.nh.controller.controller.ChooseAuctionController;
 import com.nh.controller.controller.EntryListController;
 import com.nh.controller.controller.LoginController;
+import com.nh.controller.controller.MultipleAuctionController;
 import com.nh.controller.controller.SettingController;
 import com.nh.controller.controller.SettingSoundController;
 import com.nh.controller.interfaces.BooleanListener;
@@ -18,6 +19,7 @@ import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpEntryInfo;
+import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.MoveStageUtil.EntryDialogType;
 
 import javafx.collections.ObservableList;
@@ -87,6 +89,22 @@ public class MoveStageUtil {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	/**
+	 * 단일경매 타입 => moveChooseAuctionStage 이동
+	 * 일괄경매 타입 => moveMultipleAuctionStage 이동
+	 * @param previousStage 이전 스테이지
+	 */
+	public synchronized void moveAuctionType(Stage previousStage) {
+		
+		if(SettingApplication.getInstance().isSingleAuction()) {
+			moveChooseAuctionStage(previousStage);
+		}else {
+			moveChooseAuctionStage(previousStage);
+//			moveMultipleAuctionStage(previousStage);
+		}
+	}
 
 	/**
 	 * 경매 구분 ,경매일 선택
@@ -106,6 +124,32 @@ public class MoveStageUtil {
 			stage.setScene(scene);
 			stage.show();
 			centerOnScreen(stage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * 일괄 경매 이동
+	 * @param previousStage
+	 */
+	public synchronized void moveMultipleAuctionStage(Stage previousStage) {
+		
+		try {
+			previousStage.close();
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("MultipleAuctionControllerView.fxml"), getResourceBundle());
+			Parent parent = fxmlLoader.load();
+			Stage stage = new Stage();
+			MultipleAuctionController controller = fxmlLoader.getController();
+			controller.setStage(stage);
+			setRemoveTitlebar(stage);
+			Scene scene = new Scene(parent);
+			stage.setScene(scene);
+			stage.show();
+			centerOnScreen(stage);
+			// show 후에 ..
+			controller.initConfiguration();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -97,9 +97,9 @@ public class ChooseAuctionController implements Initializable {
 	
 	
 	private void test() {
-		mTestIp.setText("");
+		mTestIp.setText(GlobalDefine.AUCTION_INFO.AUCTION_HOST);
 		mTestPort.setText(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_PORT));
-		mBreedingCattleToggleButton.setSelected(true);
+		mCalfToggleButton.setSelected(true);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class ChooseAuctionController implements Initializable {
 		});
 		
 //		mAuctionDatePicker.setValue(LocalDate.now());
-		mAuctionDatePicker.setValue(LocalDate.of(2021, 8, 13));
+		mAuctionDatePicker.setValue(LocalDate.of(2021, 7, 16));
 	}
 	
 	/**
@@ -197,6 +197,7 @@ public class ChooseAuctionController implements Initializable {
 		AuctionRound auctionRound = new AuctionRound();
 		auctionRound.setAucDt(aucDate);
 		auctionRound.setAucObjDsc(Integer.parseInt(aucObjDsc));
+		auctionRound.setNaBzplc(GlobalDefine.ADMIN_INFO.adminData.getNabzplc());
 
 		mAuctionRound = null;
 		mAuctionRound = AuctionRoundMapperService.getInstance().obtainAuctionRoundData(auctionRound);

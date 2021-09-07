@@ -244,12 +244,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
     private void initTableConfiguration() {
 
     	
-    	
         // 테이블 컬럼 - 완료
         mFinishedEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
         mFinishedExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
-        mFinishedGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGender());
-        mFinishedMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherTypeCode());
+        mFinishedGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGenderName());
+        mFinishedMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherCowName());
         mFinishedMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
         mFinishedPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
         mFinishedWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
@@ -259,8 +258,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
         mFinishedResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
         mFinishedNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
 
-        setGenderColumnFactory(mFinishedGenderColumn);
-        setMotherColumnFactory(mFinishedMotherColumn);
+//        setGenderColumnFactory(mFinishedGenderColumn);
         setNumberColumnFactory(mFinishedWeightColumn, false);
         setNumberColumnFactory(mFinishedLowPriceColumn, true);
         setNumberColumnFactory(mFinishedSuccessPriceColumn, true);
@@ -268,8 +266,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
         // 테이블 컬럼 - 대기
         mWaitEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
         mWaitExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
-        mWaitGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGender());
-        mWaitMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherTypeCode());
+        mWaitGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGenderName());
+        mWaitMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherCowName());
         mWaitMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
         mWaitPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
         mWaitWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
@@ -279,8 +277,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
         mWaitResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
         mWaitNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
 
-        setGenderColumnFactory(mWaitGenderColumn);
-        setMotherColumnFactory(mWaitMotherColumn);
         setNumberColumnFactory(mWaitWeightColumn, false);
         setNumberColumnFactory(mWaitLowPriceColumn, true);
         setNumberColumnFactory(mWaitSuccessPriceColumn, true);
@@ -864,15 +860,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
                 isApplicationClosePopup = true;
 
-                AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
-                    @Override
-                    public void onShutDown(int port) {
-                        Platform.runLater(() -> {
-                            CommonUtils.getInstance().dismissLoadingDialog();
-                            MoveStageUtil.getInstance().moveChooseAuctionStage(mStage);
-                        });
-                    }
-                });
+                if(AuctionDelegate.getInstance().isActive()) {
+                	   AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+                           @Override
+                           public void onShutDown(int port) {
+                               Platform.runLater(() -> {
+                                   CommonUtils.getInstance().dismissLoadingDialog();
+                                   MoveStageUtil.getInstance().moveAuctionType(mStage);
+                               });
+                           }
+                       });
+                }else {
+                	  Platform.runLater(() -> {
+                          CommonUtils.getInstance().dismissLoadingDialog();
+                          MoveStageUtil.getInstance().moveAuctionType(mStage);
+                      });
+                }
             }
         });
 
@@ -1220,6 +1223,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
         String targetEntryType = spEntryInfo.getEntryType().getValue();
         String targetAucDt = spEntryInfo.getAucDt().getValue();
         String updatePrice = Integer.toString(spEntryInfo.getLowPriceInt() + price);
+        String oslpNo = spEntryInfo.getOslpNo().getValue();
+        String ledSqNo = spEntryInfo.getLedSqno().getValue();
         int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
 
         if (isUp) {
@@ -1234,6 +1239,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
         entryInfo.setEntryType(targetEntryType);
         entryInfo.setAucDt(targetAucDt);
         entryInfo.setLowPrice(updatePrice);
+        entryInfo.setOslpNo(oslpNo);
+        entryInfo.setLedSqno(ledSqNo);
         entryInfo.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
         entryInfo.setLwprChgNt(Integer.toString(lowPriceCnt));
 
@@ -2057,8 +2064,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
             mCurrentSpEntryInfo = currentEntryInfo;
             mCurEntryNumLabel.setText(mCurrentSpEntryInfo.getEntryNum().getValue());
             mCurExhibitorLabel.setText(mCurrentSpEntryInfo.getExhibitor().getValue());
-            mCurGenterLabel.setText(AuctionUtil.getInstance().getGenderName(auctionRound.getAucObjDsc(), mCurrentSpEntryInfo.getGender().getValue()));
-            mCurMotherLabel.setText(AuctionUtil.Lineage.which(mCurrentSpEntryInfo.getMotherTypeCode().getValue()));
+            mCurGenterLabel.setText(mCurrentSpEntryInfo.getGenderName().getValue());
+            mCurMotherLabel.setText(mCurrentSpEntryInfo.getMotherCowName().getValue());
             mCurMatimeLabel.setText(mCurrentSpEntryInfo.getMatime().getValue());
             mCurPasgQcnLabel.setText(mCurrentSpEntryInfo.getPasgQcn().getValue());
             mCurSuccessfulBidderLabel.setText(mCurrentSpEntryInfo.getAuctionSucBidder().getValue());

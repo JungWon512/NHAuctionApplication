@@ -148,8 +148,8 @@ public class EntryListController implements Initializable {
 		// 테이블 컬럼 - 대기
 		mEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
 		mExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
-		mGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGender());
-		mMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherObjNum());
+		mGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGenderName());
+		mMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherCowName());
 		mMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
 		mPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
 		mWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
@@ -228,6 +228,8 @@ public class EntryListController implements Initializable {
 				String targetEntryType = spEntryInfo.getEntryType().getValue();
 				String targetAucDt = spEntryInfo.getAucDt().getValue();
 				String updatePrice = Integer.toString(spEntryInfo.getLowPriceInt() + lowPrice);
+				String oslpNo = spEntryInfo.getOslpNo().getValue();
+		        String ledSqNo = spEntryInfo.getLedSqno().getValue();
 
 				int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
 
@@ -239,6 +241,8 @@ public class EntryListController implements Initializable {
 				entryInfo.setEntryType(targetEntryType);
 				entryInfo.setAucDt(targetAucDt);
 				entryInfo.setLowPrice(updatePrice);
+				entryInfo.setOslpNo(oslpNo);
+				entryInfo.setLedSqno(ledSqNo);
 				entryInfo.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
 				entryInfo.setLwprChgNt(Integer.toString(lowPriceCnt));
 				entryInfoDataList.add(entryInfo);
