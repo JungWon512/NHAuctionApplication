@@ -30,8 +30,10 @@ public class EntryInfo implements FromAuctionController {
 	private String mBirthday; // 생년월일
 	private String mKpn; // KPN
 	private String mGender; // 개체성별코드
+	private String mGenderName; // 개체성별코드 명
 	private String mMotherTypeCode; // 어미구분코드
 	private String mMotherObjNum; // 어미축산개체관리번호
+	private String mMotherCowName; // 혈통명
 	private String mMaTime; // 산차
 	private String mMaMonth; // 임신개월수
 	private String mPasgQcn; // 계대
@@ -461,6 +463,21 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setLedSqno(String mLedSqno) {
 		this.mLedSqno = mLedSqno;
+	}
+	public String getGenderName() {
+		return mGenderName;
+	}
+
+	public void setGenderName(String mGenderName) {
+		this.mGenderName = mGenderName;
+	}
+
+	public String getMotherCowName() {
+		return mMotherCowName;
+	}
+
+	public void setMotherCowName(String mMotherCowName) {
+		this.mMotherCowName = mMotherCowName;
 	}
 
 	@Override

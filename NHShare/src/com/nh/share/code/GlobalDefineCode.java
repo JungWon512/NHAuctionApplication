@@ -66,6 +66,12 @@ public class GlobalDefineCode {
 	public static final String AUCTION_STATUS_COMPLETED = "8006"; // 경매 완료 상태
 	public static final String AUCTION_STATUS_FINISH = "8007"; // 경매 종료 상태
 
+	//일괄 경매  진행 상태 코드
+	public static final String STN_AUCTION_STATUS_NONE = "11";		//대기,송장등록
+	public static final String STN_AUCTION_STATUS_PROGRESS = "21";	//경매
+	public static final String STN_AUCTION_STATUS_FINISH = "22";	//종료
+	public static final String STN_AUCTION_STATUS_PENDING = "23";	//보류
+
 	// 경매 시작 카운트 다운 상태
 	public static final String AUCTION_COUNT_DOWN_READY = "R"; // 경매 시작 카운트 다운 준비 상태
 	public static final String AUCTION_COUNT_DOWN = "C"; // 경매 시작 카운트 다운 상태
