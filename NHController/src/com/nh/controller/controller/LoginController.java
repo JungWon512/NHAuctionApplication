@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.controller.controller.SettingController.AuctionToggle;
 import com.nh.controller.model.AdminData;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.ApiUtils;
@@ -137,51 +138,45 @@ public class LoginController implements Initializable {
 		String nabzplc = auctionHouseTypeToggleGroup.getSelectedToggle().getUserData().toString();
 
 		CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.login.request"));
-		GlobalDefine.ADMIN_INFO.adminData = new AdminData();
-		GlobalDefine.ADMIN_INFO.adminData.setUserId(mIdTextField.getText().toString().trim());
-		GlobalDefine.ADMIN_INFO.adminData.setNabzplc(nabzplc);
-		GlobalDefine.ADMIN_INFO.adminData.setAccessToken("adfasdfadsfadsfasdfasd");
-		MoveStageUtil.getInstance().moveChooseAuctionStage(mStage);
 		//로그읜
-//		ApiUtils.getInstance().requestLogin(nabzplc, requestLoginBody, new ActionResultListener<ResponseAuctionLogin>() {
-//
-//			@Override
-//			public void onResponseResult(ResponseAuctionLogin result) {
-//				
-//				Platform.runLater(() ->{
-//					
-//					CommonUtils.getInstance().dismissLoadingDialog(); //dismiss loading
-//					
-//					if(result.getSuccess()) {
-//						//정보저장
-//						GlobalDefine.ADMIN_INFO.adminData = new AdminData();
-//						GlobalDefine.ADMIN_INFO.adminData.setUserId(mIdTextField.getText().toString().trim());
-//						GlobalDefine.ADMIN_INFO.adminData.setNabzplc(nabzplc);
-//						GlobalDefine.ADMIN_INFO.adminData.setAccessToken(result.getAccessToken());
-//						MoveStageUtil.getInstance().moveChooseAuctionStage(mStage);
-//				
-//					}else {
-//						
-//						if(CommonUtils.getInstance().isValidString(result.getMessage())) {
-//							CommonUtils.getInstance().showAlertPopupOneButton(mStage, result.getMessage(), mResMsg.getString("popup.btn.close"));
-//						}else {
-//							CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("msg.login.fail"), mResMsg.getString("popup.btn.close"));
-//						}
-//						
-//						
-//					}
-//					
-//				});
-//			}
-//			
-//			@Override
-//			public void onResponseError(String message) {
-//				Platform.runLater(() ->{
-//					CommonUtils.getInstance().dismissLoadingDialog();//dismiss loading
-//					CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, mResMsg.getString("popup.btn.close"));
-//				});
-//			}
-//		});
+		ApiUtils.getInstance().requestLogin(nabzplc, requestLoginBody, new ActionResultListener<ResponseAuctionLogin>() {
+
+			@Override
+			public void onResponseResult(ResponseAuctionLogin result) {
+				
+				Platform.runLater(() ->{
+					
+					CommonUtils.getInstance().dismissLoadingDialog(); //dismiss loading
+					
+					if(result.getSuccess()) {
+						//정보저장
+						GlobalDefine.ADMIN_INFO.adminData = new AdminData();
+						GlobalDefine.ADMIN_INFO.adminData.setUserId(mIdTextField.getText().toString().trim());
+						GlobalDefine.ADMIN_INFO.adminData.setNabzplc(nabzplc);
+						GlobalDefine.ADMIN_INFO.adminData.setAccessToken(result.getAccessToken());
+						MoveStageUtil.getInstance().moveAuctionType(mStage);
+				
+					}else {
+						
+						if(CommonUtils.getInstance().isValidString(result.getMessage())) {
+							CommonUtils.getInstance().showAlertPopupOneButton(mStage, result.getMessage(), mResMsg.getString("popup.btn.close"));
+						}else {
+							CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("msg.login.fail"), mResMsg.getString("popup.btn.close"));
+						}
+						
+					}
+					
+				});
+			}
+			
+			@Override
+			public void onResponseError(String message) {
+				Platform.runLater(() ->{
+					CommonUtils.getInstance().dismissLoadingDialog();//dismiss loading
+					CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, mResMsg.getString("popup.btn.close"));
+				});
+			}
+		});
 	}
 
 	/**
