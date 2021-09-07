@@ -35,8 +35,10 @@ public class SpEntryInfo implements FromAuctionController {
     private StringProperty mBirthday; // 생년월일
     private StringProperty mKpn; // KPN
     private StringProperty mGender; // 개체성별코드
+    private StringProperty mGenderName; // 개체성별코드 명
     private StringProperty mMotherTypeCode; // 어미구분코드
     private StringProperty mMotherObjNum; // 어미축산개체관리번호
+    private StringProperty mMotherCowName; // 혈통 명
     private StringProperty mMatime; // 산차
     private StringProperty mMaMonth; // 임신개월수
     private StringProperty mPasgQcn; // 계대
@@ -85,8 +87,10 @@ public class SpEntryInfo implements FromAuctionController {
         this.mBirthday = new SimpleStringProperty(entryInfo.getBirthday());
         this.mKpn = new SimpleStringProperty(entryInfo.getKpn());
         this.mGender = new SimpleStringProperty(entryInfo.getGender());
+        this.mGenderName = new SimpleStringProperty(entryInfo.getGenderName());
         this.mMotherTypeCode = new SimpleStringProperty(entryInfo.getMotherTypeCode());
         this.mMotherObjNum = new SimpleStringProperty(entryInfo.getMotherObjNum());
+        this.mMotherCowName = new SimpleStringProperty(entryInfo.getMotherCowName());
         this.mMatime = new SimpleStringProperty(entryInfo.getMaTime());
         this.mMaMonth = new SimpleStringProperty(entryInfo.getMaMonth());
         this.mPasgQcn = new SimpleStringProperty(entryInfo.getPasgQcn());
@@ -442,6 +446,22 @@ public class SpEntryInfo implements FromAuctionController {
 
 	public void setLedSqno(StringProperty mLedSqno) {
 		this.mLedSqno = mLedSqno;
+	}
+	
+	public StringProperty getGenderName() {
+		return mGenderName;
+	}
+
+	public void setGenderName(StringProperty mGenderName) {
+		this.mGenderName = mGenderName;
+	}
+	
+	public StringProperty getMotherCowName() {
+		return mMotherCowName;
+	}
+
+	public void setMotherCowName(StringProperty mMotherCowName) {
+		this.mMotherCowName = mMotherCowName;
 	}
 
 	public StringProperty getBiddingResult() {

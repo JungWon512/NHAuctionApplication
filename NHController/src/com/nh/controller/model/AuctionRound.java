@@ -17,10 +17,10 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 	private int qcn; // 차수
 	private int baseLmtAm; // 기초한도금액
 	private int cutAm; // 절사금액
-	private Boolean sgnoPrcDsc; // 단수처리구분코드
-	private Boolean ddlYn; // 마감여부
-	private Boolean tmsYn; // 전송여부
-	private Boolean delYn; // 삭제여부
+	private String sgnoPrcDsc; // 단수처리구분코드
+	private String ddlYn; // 마감여부
+	private String tmsYn; // 전송여부
+	private String delYn; // 삭제여부
 	private int maleKg; // 수컷kg
 	private int femaleKg; // 암컷kg
 	private float ttScr; //
@@ -35,7 +35,7 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 	}
 
 	public AuctionRound(String naBzplc, int aucObjDsc, String aucDt, int qcn, int baseLmtAm, int cutAm,
-			Boolean sgnoPrcDsc, Boolean ddlYn, Boolean tmsYn, Boolean delYn, int maleKg, int femaleKg, float ttScr,
+			String sgnoPrcDsc, String ddlYn, String tmsYn, String delYn, int maleKg, int femaleKg, float ttScr,
 			LocalDateTime fsrgDtm, String fsgmnEno, LocalDateTime lschgDtm, String lsCmeno) {
 		super();
 		this.naBzplc = naBzplc;
@@ -105,35 +105,35 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 		this.cutAm = cutAm;
 	}
 
-	public Boolean getSgnoPrcDsc() {
+	public String getSgnoPrcDsc() {
 		return sgnoPrcDsc;
 	}
 
-	public void setSgnoPrcDsc(Boolean sgnoPrcDsc) {
+	public void setSgnoPrcDsc(String sgnoPrcDsc) {
 		this.sgnoPrcDsc = sgnoPrcDsc;
 	}
 
-	public Boolean getDdlYn() {
+	public String getDdlYn() {
 		return ddlYn;
 	}
 
-	public void setDdlYn(Boolean ddlYn) {
+	public void setDdlYn(String ddlYn) {
 		this.ddlYn = ddlYn;
 	}
 
-	public Boolean getTmsYn() {
+	public String getTmsYn() {
 		return tmsYn;
 	}
 
-	public void setTmsYn(Boolean tmsYn) {
+	public void setTmsYn(String tmsYn) {
 		this.tmsYn = tmsYn;
 	}
 
-	public Boolean getDelYn() {
+	public String getDelYn() {
 		return delYn;
 	}
 
-	public void setDelYn(Boolean delYn) {
+	public void setDelYn(String delYn) {
 		this.delYn = delYn;
 	}
 
