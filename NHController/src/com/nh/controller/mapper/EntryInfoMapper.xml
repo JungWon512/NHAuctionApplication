@@ -245,14 +245,16 @@
 		UPDATE	TB_LA_IS_MH_SOG_COW
 		   SET	SEL_STS_DSC = #{mResultCode},
 		  		LVST_AUC_PTC_MN_NO = #{mSuccessAuctionJoinNum},
+		  		TRMN_AMNNO = #{mSuccessBidder},
 		  		SRA_SBID_AM = #{mSuccessBidPrice},
 		  		SRA_SBID_UPR = #{mSuccessBidUpr},
 		   		LSCHG_DTM = GETDATE(),
 		   		LS_CMENO	= #{mLsCmeNo}
-		 WHERE	AUC_PRG_SQ	= #{mEntryNum}
-		   AND	NA_BZPLC	= #{mAuctionHouseCode}
-		   AND	AUC_OBJ_DSC	= #{mEntryType}
+		 WHERE	NA_BZPLC	= #{mAuctionHouseCode}
 		   AND	AUC_DT		= #{mAucDt}
+		   AND	AUC_OBJ_DSC	= #{mEntryType}
+		   AND OSLP_NO		= #{mOslpNo}
+		   AND LED_SQNO		= #{mLedSqno}
     </update>
 
 

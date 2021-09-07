@@ -17,10 +17,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.nh.controller.model.*;
-import com.nh.controller.netty.BillboardDelegate;
-import com.nh.controller.utils.GlobalDefine;
-import com.nh.controller.utils.SharedPreference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +27,6 @@ import com.nh.controller.model.BillboardData;
 import com.nh.controller.model.PdpData;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
-import com.nh.controller.model.UserInfo;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.netty.BillboardDelegate;
 import com.nh.controller.netty.PdpDelegate;
@@ -39,7 +34,9 @@ import com.nh.controller.service.ConnectionInfoMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
+import com.nh.controller.utils.SharedPreference;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
@@ -671,11 +668,14 @@ public class BaseAuctionController implements NettyControllable {
 		addLogItem("sendAuctionResult");
 
 		SendAuctionResult auctionResult = new SendAuctionResult();
+		
 		auctionResult.setAuctionHouseCode(spEntryInfo.getAuctionHouseCode().getValue());
 		auctionResult.setEntryNum(spEntryInfo.getEntryNum().getValue());
 		auctionResult.setEntryType(spEntryInfo.getEntryType().getValue());
 		auctionResult.setAucDt(spEntryInfo.getAucDt().getValue());
 		auctionResult.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
+		auctionResult.setOslpNo(spEntryInfo.getOslpNo().getValue());
+		auctionResult.setLedSqno(spEntryInfo.getLedSqno().getValue());
 
 		switch (code) {
 		case GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS:
