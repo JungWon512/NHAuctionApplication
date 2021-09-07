@@ -27,16 +27,13 @@ import retrofit2.http.Path;
 public class ActionRequestAuctionLogin extends Action {
 	
 	private RequestLoginBody loginBody = null;
-	
-	private String mNaBzplc = null;
 
 	/**
 	 * @param mNaBzplc      거점 코드
 	 * @param RequestLoginBody ( userId ,userPassword) 아이디,비밀번호
 	 * @param resultListener
 	 */
-	public ActionRequestAuctionLogin(String naBzplc,RequestLoginBody body, ActionResultListener<ResponseAuctionLogin> resultListener) {
-		this.mNaBzplc = naBzplc;
+	public ActionRequestAuctionLogin(RequestLoginBody body, ActionResultListener<ResponseAuctionLogin> resultListener) {
 		this.loginBody = body;
 		this.mResultListenerBase = resultListener;
 	}
@@ -47,7 +44,6 @@ public class ActionRequestAuctionLogin extends Action {
 		@POST(NetworkDefine.API_REQUEST_AUCTION_LOGIN)
 		Call<ResponseAuctionLogin> requestAuctionLogin(
 				@Path("version") String apiVer,
-				@Path("naBzplc") String naBzplc,
 				@FieldMap HashMap<String, String> paramBody);
 	}
 
@@ -144,6 +140,6 @@ public class ActionRequestAuctionLogin extends Action {
 	public void run() {
 		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.NH_AUCTION_API_HOST).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
 		RetrofitAPIService mRetrofitAPIService = mRetrofit.create(RetrofitAPIService.class);
-		mRetrofitAPIService.requestAuctionLogin(NetworkDefine.API_VERSION,mNaBzplc,loginBody).enqueue(mCallBack);
+		mRetrofitAPIService.requestAuctionLogin(NetworkDefine.API_VERSION,loginBody).enqueue(mCallBack);
 	}
 }

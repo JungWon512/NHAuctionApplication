@@ -9,6 +9,7 @@ package com.nh.share.api.response;
 public class ResponseAuctionLogin extends BaseResponse {
 
 	private String accessToken;
+	private String naBzplc;
 
 	public String getAccessToken() {
 		return accessToken;
@@ -17,7 +18,13 @@ public class ResponseAuctionLogin extends BaseResponse {
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
-	
-	
+
+	public String getNaBzplc() {
+		return naBzplc;
+	}
+
+	public void setNaBzplc(String naBzplc) {
+		this.naBzplc = naBzplc;
+	}
 
 }
