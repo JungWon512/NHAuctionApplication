@@ -41,8 +41,8 @@ public class ApiUtils {
 	 * @param body
 	 * @param listener_
 	 */
-	public void requestLogin(String naBzplc,RequestLoginBody body, ActionResultListener<ResponseAuctionLogin> listener_) {
-		ActionRuler.getInstance().addAction(new ActionRequestAuctionLogin(naBzplc,body, listener_));
+	public void requestLogin(RequestLoginBody body, ActionResultListener<ResponseAuctionLogin> listener_) {
+		ActionRuler.getInstance().addAction(new ActionRequestAuctionLogin(body, listener_));
 		ActionRuler.getInstance().runNext();
 	}
 	

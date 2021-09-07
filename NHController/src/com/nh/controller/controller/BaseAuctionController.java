@@ -362,25 +362,26 @@ public class BaseAuctionController implements NettyControllable {
 		String auctionHouseCode = connectionInfo.getAuctionHouseCode();
 		String userMemNum = connectionInfo.getUserMemNum();
 		String userNum;
+		
 		// 접속자 정보
 		ConnectionInfoMapperService service = new ConnectionInfoMapperService();
-		userNum = service.selectConnectionInfo(auctionHouseCode, CommonUtils.getInstance().getCurrentTime("yyyyMMdd"),
-				String.valueOf(auctionRound.getAucObjDsc()), userMemNum); // 실세사용
-//        userNum = service.selectConnectionInfo(auctionHouseCode, "20210702", "3", userMemNum); // 테스트
+		
+		userNum = service.selectConnectionInfo(auctionHouseCode, CommonUtils.getInstance().getCurrentTime("yyyyMMdd"), String.valueOf(auctionRound.getAucObjDsc()), userMemNum); // 실세사용
+		
 		mLogger.debug("onConnectionInfo - userNum :\t" + userNum);
 
+		String resultCode = "";
+		
 		if (userNum == null || userNum.isEmpty()) {
-//          no user selected => insert DB
-			mLogger.debug("no user selected.");
-
-			List<UserInfo> userInfo = service.convertConnectionInfo(connectionInfo);
-			service.insertConnectionInfo(userInfo);
-			userNum = service.getUserNum();
+			//실패
+			resultCode = GlobalDefineCode.CONNECT_FAIL;
+		}else {
+			// 성공
+			resultCode = GlobalDefineCode.CONNECT_SUCCESS;
 		}
 
-		// 서버 전송
-		mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(
-				new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_SUCCESS, userMemNum, userNum)));
+		// 성공or실패 서버 전송
+		mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, resultCode, userMemNum, userNum)));
 	}
 
 	@Override

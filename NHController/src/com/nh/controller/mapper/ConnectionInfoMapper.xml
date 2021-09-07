@@ -17,16 +17,13 @@
     </select>
 
     <!--  유저 유무 체크  -->
-    <select id="selectConnectionInfo" parameterType="String"
-            resultType="String">
+    <select id="selectConnectionInfo" parameterType="String" resultType="String">
         SELECT A.LVST_AUC_PTC_MN_NO
-        FROM AUCTION.tb_la_is_mh_auc_entr as A
+        FROM TB_LA_IS_MH_AUC_ENTR as A
         WHERE A.NA_BZPLC = #{auctionHouseCode}
           AND A.AUC_DT = #{auctionDate}
           AND A.AUC_OBJ_DSC = #{entryType}
           And A.TRMN_AMNNO = #{userMemNum}
-        ORDER BY A.LVST_AUC_PTC_MN_NO
-                DESC LIMIT 1;
     </select>
 
     <!--   시퀀스 아이디 생성  -->
