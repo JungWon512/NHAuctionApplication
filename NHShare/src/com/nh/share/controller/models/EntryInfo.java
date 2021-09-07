@@ -49,8 +49,8 @@ public class EntryInfo implements FromAuctionController {
 	private String mNote; // 비고내용
 	private String mAucDt; // 경매일
 	private String mOslpNo; // 원표 번호
-	private String mTrmnAmnNo; // 거래인 관리 번호
 	private String mLedSqno; // 원장 일련번호
+	private String mTrmnAmnNo; // 거래인 관리 번호
 	
 	private String mAuctionResult; // 낙유찰결과 (11 대기 ,22 낙찰 ,23 보류)
 	private String mAuctionSucBidder; // 낙찰자

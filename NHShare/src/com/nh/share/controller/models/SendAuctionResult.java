@@ -21,9 +21,12 @@ public class SendAuctionResult implements FromAuctionController {
     private String mSuccessBidPrice;	//금액 원단위
     private String mSuccessBidUpr;		//금액 만단위
     
+    
     private String mEntryType;	// 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
     private String mAucDt;		// 경매일
     private String mLsCmeNo;
+	private String mOslpNo; // 원표 번호
+	private String mLedSqno; // 원장 일련번호
     
 
     public SendAuctionResult() {
@@ -131,6 +134,22 @@ public class SendAuctionResult implements FromAuctionController {
 
 	public void setSuccessBidUpr(String mSuccessBidUpr) {
 		this.mSuccessBidUpr = mSuccessBidUpr;
+	}
+
+	public String getOslpNo() {
+		return mOslpNo;
+	}
+
+	public void setOslpNo(String mOslpNo) {
+		this.mOslpNo = mOslpNo;
+	}
+
+	public String getLedSqno() {
+		return mLedSqno;
+	}
+
+	public void setLedSqno(String mLedSqno) {
+		this.mLedSqno = mLedSqno;
 	}
 
 	@Override
