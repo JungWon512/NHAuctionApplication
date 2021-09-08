@@ -2060,7 +2060,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //                setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 
 				if (spEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
-
+				
+					if((mWaitTableView.getSelectionModel().getSelectedIndex() + 1) == mRecordCount) {
+						System.out.println("마지막. 뷰 초기화");
+						setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+						return;
+					}
 					// 다음 번호 이동
 					selectIndexWaitTable(1, false);
 
