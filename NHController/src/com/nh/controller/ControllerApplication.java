@@ -1,15 +1,17 @@
 package com.nh.controller;
 
-import com.nh.common.interfaces.NettyClientShutDownListener;
-import com.nh.controller.netty.AuctionDelegate;
-import com.nh.controller.utils.MoveStageUtil;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.stage.Stage;
+import java.lang.invoke.MethodHandles;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandles;
+import com.nh.common.interfaces.NettyClientShutDownListener;
+import com.nh.controller.netty.AuctionDelegate;
+import com.nh.controller.utils.MoveStageUtil;
+
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 
 
 public class ControllerApplication extends Application {
@@ -19,7 +21,7 @@ public class ControllerApplication extends Application {
 	@Override
 	public void start(Stage arg0) throws Exception {
 		Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(this));
-//		MoveStageUtil.getInstance().moveSampleStage(arg0);
+//		MoveStageUtil.getInstance().moveSampleStage(arg0);	
 		MoveStageUtil.getInstance().moveLoginStage(arg0);
 	}
 

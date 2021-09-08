@@ -22,9 +22,9 @@
                      <children>
                         <Label fx:id="mDownPriceLabel" text="최저가 낮춤" textFill="WHITE" visible="false" />
                         <TextField fx:id="mDownPriceTextField" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="120.0" text="0" visible="false" />
-                        <Button fx:id="mBtnDownPrice" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" prefWidth="80.0" styleClass="button-12" text="최저가낮춤" visible="false" />
-                        <Button fx:id="mBtnSelect" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" prefWidth="80.0" styleClass="button-12" text="[ENT]선택" visible="false" />
-                        <Button fx:id="mBtnClose" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" prefWidth="80.0" styleClass="button-12" text="[ESC]종료" />
+                        <Button fx:id="mBtnDownPrice" maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="button-12" text="최저가낮춤" visible="false" />
+                        <Button fx:id="mBtnSelect" maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="button-12" text="[ENT]선택" visible="false" />
+                        <Button fx:id="mBtnClose" maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="button-12" text="[ESC]종료" />
                      </children>
                   </HBox>
                   <VBox spacing="5.0" styleClass="bg-color-1e1e2f" VBox.vgrow="ALWAYS">
@@ -66,12 +66,12 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="mCurLowPriceLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="current-auction-row" text="최저가" HBox.hgrow="ALWAYS">
+                              <Label fx:id="mCurLowPriceLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" styleClass="current-auction-row" text="최저가" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="mCurSuccessPriceLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="current-auction-row" text="경락가" HBox.hgrow="ALWAYS">
+                              <Label fx:id="mCurSuccessPriceLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" styleClass="current-auction-row" text="경락가" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -86,7 +86,7 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="mCurNoteLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="130.0" prefWidth="130.0" styleClass="current-auction-row" text="비고" HBox.hgrow="ALWAYS">
+                              <Label fx:id="mCurNoteLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="110.0" prefWidth="110.0" styleClass="current-auction-row" text="비고" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -108,11 +108,11 @@
                               <TableColumn fx:id="mMatimeColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="산차" />
                               <TableColumn fx:id="mPasgQcnColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="계대" />
                               <TableColumn fx:id="mWeightColumn" maxWidth="80.0" minWidth="80.0" text="중량(kg)" />
-                              <TableColumn fx:id="mLowPriceColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="최저가" />
-                              <TableColumn fx:id="mSuccessPriceColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="경락가" />
+                              <TableColumn fx:id="mLowPriceColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="최저가" />
+                              <TableColumn fx:id="mSuccessPriceColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="경락가" />
                               <TableColumn fx:id="mSuccessfulBidderColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="낙찰" />
                               <TableColumn fx:id="mResultColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="결과" />
-                              <TableColumn fx:id="mNoteColumn" minWidth="130.0" prefWidth="130.0" text="비고" />
+                              <TableColumn fx:id="mNoteColumn" minWidth="90.0" prefWidth="90.0" text="비고" />
                            </columns>
                         </TableView>
                      </children>

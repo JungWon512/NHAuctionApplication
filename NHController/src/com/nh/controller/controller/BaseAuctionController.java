@@ -107,7 +107,7 @@ public class BaseAuctionController implements NettyControllable {
 
 	protected boolean isCountDownRunning = false; // 카운트다운 실행 여부
 
-	protected boolean isPause = false;
+	protected boolean isCancel = false;
 
 	protected boolean isStartedAuction = false;
 
@@ -782,8 +782,7 @@ public class BaseAuctionController implements NettyControllable {
 			auctionResult.setSuccessAuctionJoinNum(null);
 			auctionResult.setSuccessBidPrice("0");
 			auctionResult.setSuccessBidUpr("0");
-			addLogItem(mResMsg.getString("msg.auction.send.result")
-					+ AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+			addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
 			break;
 		}
 

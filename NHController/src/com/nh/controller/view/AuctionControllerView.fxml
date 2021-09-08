@@ -72,27 +72,27 @@
                         <GridPane maxHeight="60.0" minHeight="60.0" prefHeight="60.0" VBox.vgrow="ALWAYS">
                            <columnConstraints>
                               <ColumnConstraints />
-                              <ColumnConstraints hgrow="ALWAYS" percentWidth="65.0" />
-                              <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
-                              <ColumnConstraints percentWidth="30.0" />
+                              <ColumnConstraints hgrow="ALWAYS" />
+                              <ColumnConstraints hgrow="ALWAYS" percentWidth="1.0" />
+                              <ColumnConstraints />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                               <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                            </rowConstraints>
                            <children>
-                              <HBox prefHeight="100.0" spacing="14.0" GridPane.columnIndex="1" GridPane.columnSpan="3">
+                              <HBox maxWidth="1.7976931348623157E308" prefHeight="100.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS">
                                  <children>
-                                    <CheckBox fx:id="mEntryNumCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="순번" userData="2" />
-                                    <CheckBox fx:id="mExhibitorCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="출하주" userData="2" />
-                                    <CheckBox fx:id="mGenderCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="성별" userData="2" />
-                                    <CheckBox fx:id="mMotherObjNumCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="혈통" userData="2" />
-                                    <CheckBox fx:id="mMaTimeCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="산차" userData="2" />
-                                    <CheckBox fx:id="mPasgQcnCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="계대" userData="2" />
-                                    <CheckBox fx:id="mWeightCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="중량" userData="2" />
-                                    <CheckBox fx:id="mLowPriceCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="최저가" userData="2" />
-                                    <CheckBox fx:id="mBrandNameCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="브랜드" userData="2" />
-                                    <CheckBox fx:id="mKpnCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="KPN" userData="2" />
+                                    <CheckBox fx:id="mEntryNumCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="순번" userData="2" HBox.hgrow="ALWAYS" />
+                                    <CheckBox fx:id="mExhibitorCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="출하주" userData="2" HBox.hgrow="ALWAYS" />
+                                    <CheckBox fx:id="mGenderCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="성별" userData="2" HBox.hgrow="ALWAYS" />
+                                    <CheckBox fx:id="mMotherObjNumCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="혈통" userData="2" HBox.hgrow="ALWAYS" />
+                                    <CheckBox fx:id="mMaTimeCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="산차" userData="2" HBox.hgrow="ALWAYS" />
+                                    <CheckBox fx:id="mPasgQcnCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="계대" userData="2" HBox.hgrow="ALWAYS" />
+                                    <CheckBox fx:id="mWeightCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="중량" userData="2" HBox.hgrow="ALWAYS" />
+                                    <CheckBox fx:id="mLowPriceCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="최저가" userData="2" HBox.hgrow="ALWAYS" />
+                                    <CheckBox fx:id="mBrandNameCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="브랜드" userData="2" HBox.hgrow="ALWAYS" />
+                                    <CheckBox fx:id="mKpnCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="KPN" userData="2" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -108,12 +108,11 @@
                                     <Button fx:id="mBtnEtc_6_Sound" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="예비6" />
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="3" GridPane.rowSpan="2">
+                              <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="4.0" GridPane.columnIndex="3" GridPane.rowSpan="2">
                                  <children>
-                                    <Button fx:id="mBtnSave" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="저장" visible="false" HBox.hgrow="ALWAYS" />
-                                    <Button fx:id="mBtnSettingSound" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="음성설정" HBox.hgrow="ALWAYS" />
-                                    <Button fx:id="mBtnStopSound" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="음성중지" HBox.hgrow="ALWAYS" />
-                                    <Button fx:id="mBtnEntrySuccessList" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="64.0" mnemonicParsing="false" text="낙찰결과" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="mBtnSettingSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="음성설정" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="mBtnStopSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="음성중지" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="mBtnEntrySuccessList" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="낙찰결과" HBox.hgrow="ALWAYS" />
                                  </children>
                                  <GridPane.margin>
                                     <Insets />
@@ -250,7 +249,7 @@
                                     </Label>
                                     <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" styleClass="bg-color-cccccc" text="완료" VBox.vgrow="ALWAYS">
                                        <font>
-                                          <Font name="System Bold" size="14.0" />
+                                          <Font name="System Bold" size="17.0" />
                                        </font>
                                     </Label>
                                  </children>
@@ -340,13 +339,16 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="mCurNoteLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="130.0" prefWidth="130.0" styleClass="current-auction-row" HBox.hgrow="ALWAYS">
+                              <Label fx:id="mCurNoteLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="130.0" prefWidth="130.0" styleClass="current-auction-row" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
+                           <padding>
+                              <Insets left="6.0" />
+                           </padding>
                               </Label>
                            </children>
                         </HBox>
@@ -356,7 +358,7 @@
                            <children>
                               <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" styleClass="bg-color-e9e9e9" text="대기">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="17.0" />
                                  </font>
                               </Label>
                               <TableView fx:id="mWaitTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">

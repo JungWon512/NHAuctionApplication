@@ -31,6 +31,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -73,6 +74,12 @@ public class MoveStageUtil {
 
 		try {
 
+			String fontFamily = "";
+			fontFamily = Font.loadFont(getApplicationClass().getResource("resource/fonts/Roboto-Regular.ttf").toString(), 16).getFamily();
+			 
+			System.out.println(fontFamily);
+			
+			
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("LoginView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
 			LoginController controller = fxmlLoader.getController();

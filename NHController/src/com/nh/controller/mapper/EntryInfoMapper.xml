@@ -58,7 +58,7 @@
 		${alias}.FHS_ID_NO,
 		${alias}.FARM_AMNNO,
 		${alias}.BIRTH,
-		${alias}.KPN_NO,
+		ltrim(rtrim(${alias}.KPN_NO)) as KPN_NO,
 		${alias}.INDV_SEX_C,
 		${alias}.MCOW_SRA_INDV_AMNNO,
 		${alias}.MATIME,

@@ -97,7 +97,7 @@ public class ChooseAuctionController implements Initializable {
 	
 	
 	private void test() {
-		mTestIp.setText(GlobalDefine.AUCTION_INFO.AUCTION_HOST);
+		mTestIp.setText("");
 		mTestPort.setText(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_PORT));
 		mCalfToggleButton.setSelected(true);
 	}
@@ -174,6 +174,7 @@ public class ChooseAuctionController implements Initializable {
 				if(CommonUtils.getInstance().isValidString(mTestIp.getText()) && CommonUtils.getInstance().isValidString(mTestPort.getText())) {
 					MoveStageUtil.getInstance().onConnectServer(mStage,mTestIp.getText().toString(), Integer.parseInt(mTestPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId(),mAuctionRound);
 				}else {
+					CommonUtils.getInstance().showAlertPopupOneButton(mStage, "IP 또는 PORT 정보를 입력해주세요.", mResMsg.getString("popup.btn.ok"));
 					CommonUtils.getInstance().dismissLoadingDialog();
 				}
 				

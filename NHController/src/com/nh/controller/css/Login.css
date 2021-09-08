@@ -3,7 +3,7 @@
 	-fx-border-width: 1.0;
 	-fx-border-color: #0082e5;
 	-fx-background-color : #0082e5;
-	-fx-font-size: 12px;
+	-fx-font-size: 22px;
 	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
 	-fx-text-fill: #ffffff;
 }
@@ -19,9 +19,11 @@
 	-fx-background-color: #27293d ;
 	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
 	-fx-background-radius: 0.0 ;
+	-fx-font-size: 16px;
 	-fx-text-fill: #f7f7f7;
 }
 .text-field:focused {
 	-fx-background-color:  #27293d ;
+	-fx-font-size: 16px;
 	-fx-text-fill: #f7f7f7;
 }
