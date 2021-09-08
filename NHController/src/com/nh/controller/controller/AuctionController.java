@@ -1,6 +1,8 @@
 package com.nh.controller.controller;
 
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +18,7 @@ import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.StringListener;
+import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
@@ -34,6 +37,7 @@ import com.nh.controller.utils.SoundUtil;
 import com.nh.controller.utils.SoundUtil.LocalSoundDefineRunnable;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.models.EditSetting;
@@ -1004,6 +1008,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
                 String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), mCurrentSpEntryInfo.getEntryNum().getValue());
                 // 시작
                 addLogItem(msgStart + AuctionDelegate.getInstance().onStartAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
+                
+//                new Bidding(this.auctionRound.getNaBzplc(), null,"0" , "0", "0", ", msgStart, msgStart)
+//                insertBiddingHistory();
+                
 
                 isStartedAuction = true;
 
@@ -1025,6 +1033,27 @@ public class AuctionController extends BaseAuctionController implements Initiali
         		
                 break;
         }
+    }
+    
+    private void insertBiddingHistory(Bidding bidding) {
+
+		// 응찰 로그 저장
+		// TODO: OSLP_NO, RG_SQNO 확인 및 수정
+		AucEntrData aucEntrData = new AucEntrData();
+		aucEntrData.setNaBzplc(this.auctionRound.getNaBzplc());
+		aucEntrData.setAucObjDsc(this.auctionRound.getAucObjDsc());
+		aucEntrData.setAucDt(this.auctionRound.getAucDt());
+		aucEntrData.setOslpNo(bidding.getUserNo());
+		aucEntrData.setRgSqno("121212");
+		aucEntrData.setTrmnAmnno(bidding.getUserNo());
+		aucEntrData.setLvstAucPtcMnNo(bidding.getAuctionJoinNum());
+		aucEntrData.setAtdrAm(bidding.getPrice());
+		aucEntrData.setAtdrDtm(LocalDateTime.parse(bidding.getBiddingTime(), DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+		aucEntrData.setAucPrgSq(bidding.getEntryNum());
+//<!--	OSLP_NO            decimal       not null comment '원표번호',-->
+//<!--	RG_SQNO            decimal       not null comment '등록일련번호',-->
+
+		int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
     }
 
     /**

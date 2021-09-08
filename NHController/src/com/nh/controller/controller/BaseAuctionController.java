@@ -363,7 +363,7 @@ public class BaseAuctionController implements NettyControllable {
 		// 접속자 정보
 		ConnectionInfoMapperService service = new ConnectionInfoMapperService();
 		
-		userNum = service.selectConnectionInfo(auctionHouseCode, CommonUtils.getInstance().getCurrentTime("yyyyMMdd"), String.valueOf(auctionRound.getAucObjDsc()), userMemNum); // 실세사용
+		userNum = service.selectConnectionInfo(auctionHouseCode, auctionRound.getAucDt(), String.valueOf(auctionRound.getAucObjDsc()), userMemNum); // 실세사용
 		
 		mLogger.debug("onConnectionInfo - userNum :\t" + userNum);
 
@@ -378,7 +378,7 @@ public class BaseAuctionController implements NettyControllable {
 		}
 
 		// 성공or실패 서버 전송
-		mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, resultCode, userMemNum, userNum)));
+		mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, resultCode,userMemNum, userNum)));
 	}
 
 	@Override
@@ -545,19 +545,18 @@ public class BaseAuctionController implements NettyControllable {
 		aucEntrData.setTrmnAmnno(bidding.getUserNo());
 		aucEntrData.setLvstAucPtcMnNo(bidding.getAuctionJoinNum());
 		aucEntrData.setAtdrAm(bidding.getPrice());
-		aucEntrData.setAtdrDtm(
-				LocalDateTime.parse(bidding.getBiddingTime(), DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+		aucEntrData.setAtdrDtm(LocalDateTime.parse(bidding.getBiddingTime(), DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
 		aucEntrData.setAucPrgSq(bidding.getEntryNum());
 //<!--	OSLP_NO            decimal       not null comment '원표번호',-->
 //<!--	RG_SQNO            decimal       not null comment '등록일련번호',-->
 
-		int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
-
-		if (resultValue > 0) {
-			addLogItem("응찰 내역 저장 완료 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
-		} else {
-			addLogItem("응찰 내역 저장 실패 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
-		}
+//		int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
+//
+//		if (resultValue > 0) {
+//			addLogItem("응찰 내역 저장 완료 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
+//		} else {
+//			addLogItem("응찰 내역 저장 실패 출품 번호 : " + bidding.getEntryNum() + " 응찰금액 : " + bidding.getPrice());
+//		}
 
 		calculationRanking();
 

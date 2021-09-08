@@ -241,26 +241,30 @@
     </update>
 
 	<!-- 경매 결과 업데이트-->
-     <update id="updateAuctionResult" parameterType="AuctionResult">
+	<update id="updateAuctionResult" parameterType="AuctionResult">
 		UPDATE	TB_LA_IS_MH_SOG_COW
-		   SET	SEL_STS_DSC = #{mResultCode},
+		   SET	SRA_SBID_AM		= #{mSuccessBidPrice},
+		  		SRA_SBID_UPR	= #{mSuccessBidUpr},
 		  		LVST_AUC_PTC_MN_NO = #{mSuccessAuctionJoinNum},
-		  		TRMN_AMNNO = #{mSuccessBidder},
-		  		SRA_SBID_AM = #{mSuccessBidPrice},
-		  		SRA_SBID_UPR = #{mSuccessBidUpr},
-		   		LSCHG_DTM = GETDATE(),
+		  		TRMN_AMNNO	= #{mSuccessBidder},
+		   		SEL_STS_DSC	= #{mResultCode},
+		   		LSCHG_DTM	= GETDATE(),
 		   		LS_CMENO	= #{mLsCmeNo}
 		 WHERE	NA_BZPLC	= #{mAuctionHouseCode}
 		   AND	AUC_DT		= #{mAucDt}
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
-		   AND OSLP_NO		= #{mOslpNo}
-		   AND LED_SQNO		= #{mLedSqno}
+		   AND	OSLP_NO		= #{mOslpNo}
+		   AND	LED_SQNO	= #{mLedSqno}
     </update>
 
-
+	<select id="selectBiddingHistory" parameterType="EntryData">
+	
+	
+	</select>
+	
 	<!-- 응찰 내역 업데이트-->
 	<insert id="insertBiddingHistory" parameterType="EntryData">
-		INSERT INTO AUCTION.tb_la_is_mh_atdr_log(
+		INSERT INTO TB_LA_IS_MH_ATDR_LOG(
 			NA_BZPLC,
 			AUC_OBJ_DSC,
 			AUC_DT,
@@ -277,13 +281,42 @@
 			#{aucObjDsc},
 			#{aucDt},
 			#{oslpNo},
-            #{rgSqno},
-            #{trmnAmnno},
+			#{rgSqno},
+			#{trmnAmnno},
 			#{lvstAucPtcMnNo},
 			#{atdrAm},
 			#{atdrDtm},
 			#{aucPrgSq}
 		)
 	</insert>
+
+	<!--  수수료 부과내역 삭제  -->
+	<delete id="deleteFee" parameterType="AuctionResult">
+		DELETE FROM TB_LA_IS_MH_FEE_IMPS
+		WHERE		NA_BZPLC		= #{mAuctionHouseCode}
+			AND		AUC_DT			= #{mAucDt}
+			AND		AUC_OBJ_DSC		= #{mEntryType}
+			AND		OSLP_NO			= #{mOslpNo}
+			AND		LED_SQNO		= #{mLedSqno}
+	</delete>
+
+	<!-- 다시 계산 하여 수수료 부과내역 저장  일단 주석..
+	<insert id="insertFee" parameterType="AuctionResult">
+	
+		INSERT INTO TB_LA_IS_MH_ATDR_LOG VALUES (
+			#{naBzplc},
+			#{aucObjDsc},
+			#{aucDt},
+			#{oslpNo},
+			#{mLedSqno},
+			#{rgSqno},
+			#{trmnAmnno},
+			#{lvstAucPtcMnNo},
+			#{atdrAm},
+			#{atdrDtm},
+			#{aucPrgSq}
+		)
+	
+	</insert>-->
 
 </mapper>
