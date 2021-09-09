@@ -108,8 +108,7 @@ public class MoveStageUtil {
 		if(SettingApplication.getInstance().isSingleAuction()) {
 			moveChooseAuctionStage(previousStage);
 		}else {
-			moveChooseAuctionStage(previousStage);
-//			moveMultipleAuctionStage(previousStage);
+			moveMultipleAuctionStage(previousStage);
 		}
 	}
 
@@ -256,17 +255,12 @@ public class MoveStageUtil {
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
 			EntryListController controller = fxmlLoader.getController();
-			controller.setConfig(type,auctionRound,listener);
+			controller.setConfig(stage,type,auctionRound,listener);
 			openDialog(stage, parent);
-
+			controller.setOnCloseRequest();
 //			stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
 //			stage.getScene().getRoot().setDisable(true);
 
-			Window window = mDialog.getDialogPane().getScene().getWindow();
-			window.setOnCloseRequest(e -> {
-				listener.callBack(type,-1,null);
-				setBackStageDisableFalse(stage);
-			});
 
 		} catch (IOException e) {
 			e.printStackTrace();

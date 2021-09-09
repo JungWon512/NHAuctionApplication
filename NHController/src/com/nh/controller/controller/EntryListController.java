@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import org.apache.http.ConnectionClosedException;
+
 import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpEntryInfo;
@@ -33,6 +35,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /**
@@ -66,6 +69,7 @@ public class EntryListController implements Initializable {
 	private SelectEntryListener mSelectEntryListener = null; // listener
 	private EntryDialogType mCurPageType = null; // pageType
 	private AuctionRound auctionRound = null;
+	private Stage mStage;
 
 	/**
 	 *
@@ -73,15 +77,26 @@ public class EntryListController implements Initializable {
 	 * @param type     페이지 타입 (전체/보류/낙찰결과)
 	 * @param listener (전체/보류 row 선택시 콜백)
 	 */
-	public void setConfig(EntryDialogType type, AuctionRound auctionRound, SelectEntryListener listener) {
-
+	public void setConfig(Stage stage,EntryDialogType type, AuctionRound auctionRound, SelectEntryListener listener) {
+		this.mStage = stage;
 		this.mEntryDataList.clear();
 //		this.mEntryDataList.addAll(dataList);
 		this.auctionRound = auctionRound;
 		this.mSelectEntryListener = listener;
 		setPageType(type);
+	
 	}
 
+	public void setOnCloseRequest() {
+
+		if(mStage != null) {
+			Window window = MoveStageUtil.getInstance().getDialog().getDialogPane().getScene().getWindow();
+			window.setOnCloseRequest(e -> {
+				onClose();
+				MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
+			});
+		}
+	}
 	/**
 	 * 페이지 타입
 	 * 
@@ -343,16 +358,24 @@ public class EntryListController implements Initializable {
 	 */
 	private void onCallBack() {
 		int index = mEntryTableView.getSelectionModel().getSelectedIndex();
-		if (index > -1) {
-			mSelectEntryListener.callBack(mCurPageType, mEntryTableView.getSelectionModel().getSelectedIndex(), mEntryDataList);
+		
+		if (index < 0) {
+			index = 0;
 		}
+		
+		mSelectEntryListener.callBack(mCurPageType, index, mEntryDataList);
 	}
 
 	/**
 	 * ESC 닫기 -> 경매 메인 이동
 	 */
 	private void onClose() {
-		mSelectEntryListener.callBack(mCurPageType, -1, null);
+	
+		if(mCurPageType.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
+			onCallBack();
+		}else {
+			mSelectEntryListener.callBack(mCurPageType, -1, null);
+		}
 	}
 
 	private void setAlignCenterCol(TableColumn<SpEntryInfo, String> col) {

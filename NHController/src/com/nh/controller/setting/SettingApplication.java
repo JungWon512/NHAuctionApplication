@@ -332,7 +332,7 @@ public class SettingApplication {
 		useOneAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_ONE_AUCTION, DEFAULT_SETTING_USE_ONE_AUCTION);
 		useSoundAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, DEFAULT_SETTING_USE_SOUND_AUCTION);
 		soundAuctionWaitTime = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME);
-		String aucType = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, DEFAULT_SETTING_AUCTION_TOGGLE_TYPE);
+		String aucType = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, DEFAULT_SETTING_AUCTION_TOGGLE_TYPE).toUpperCase();
 		
 		if(aucType.equals(AuctionToggle.SINGLE.toString())) {
 			isSingleAuction =  true;

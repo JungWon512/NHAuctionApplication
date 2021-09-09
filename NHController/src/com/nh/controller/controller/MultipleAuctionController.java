@@ -11,7 +11,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
+import com.nh.controller.controller.SettingController.AuctionToggle;
+import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.AuctionStnData;
 import com.nh.controller.model.SelStsCountData;
@@ -21,6 +24,7 @@ import com.nh.controller.netty.BillboardDelegate;
 import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.service.AuctionRoundMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
+import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.AuctionUtil;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
@@ -59,6 +63,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -86,7 +91,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private TableColumn<SpAuctionStnData, String> mSelStsDscColumn, mTotalCountColumn, mSendColumn, mProgressCountColumn, mObjDscColumn, mRgSqNoColumn, mStAucNoColumn, mEdAucNoColumn, mDdlQcnColumn;
 
 	@FXML
-	private Button mBtnSend;
+	private Button mBtnEsc,mBtnF1,mBtnF8;
 
 	@FXML
 	private Label mCntCalfLabel, mCntFatteningCattleLabel, mCntBreedingCattleLabel;
@@ -94,6 +99,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private ObservableList<SpAuctionStnData> mAuctionInfoDataList = FXCollections.observableArrayList(); // 경매 대상 목록
 	
 	private List<AuctionRound> mAucRoundDataList;
+	
+	private boolean isApplicationClosePopup = false;
 
 	/**
 	 * setStage
@@ -137,8 +144,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		initTableConfiguration();
 		
 		
-		mBtnSend.setOnMouseClicked(event -> onSendEntryInfo());
-
+		mBtnF1.setOnMouseClicked(event -> onSendEntryInfo());
+		mBtnF8.setOnMouseClicked(event -> openSettingDialog());
 	}
 
 	/**
@@ -676,6 +683,84 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 */
 	private Optional<ButtonType> showAlertPopupOneButton(String message) {
 		return CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, mResMsg.getString("popup.btn.close"));
+	}
+	
+	/**
+	 * 환경 설정
+	 */
+	public void openSettingDialog() {
+
+		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+			return;
+		}
+
+		MoveStageUtil.getInstance().openSettingDialog(mStage, new BooleanListener() {
+
+			@Override
+			public void callBack(Boolean isClose) {
+
+				dismissShowingDialog();
+
+				if (isClose) {
+				
+					if(SettingApplication.getInstance().isSingleAuction()){
+						//단일경매로 변경된 경우 현재창 종료 후 일괄경매 이동
+						onCloseApplication();
+						return;
+					}
+				}
+			}
+		});
+	}
+	
+	/**
+	 * 프로그램 종료
+	 */
+	public void onCloseApplication() {
+
+		Platform.runLater(() -> {
+
+			Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, mResMsg.getString("str.ask.application.close"), mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.cancel"));
+
+			if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+
+				CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.app.closeing"));
+
+				isApplicationClosePopup = true;
+
+				if (AuctionDelegate.getInstance().isActive()) {
+					AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+						@Override
+						public void onShutDown(int port) {
+							Platform.runLater(() -> {
+								CommonUtils.getInstance().dismissLoadingDialog();
+								MoveStageUtil.getInstance().moveAuctionType(mStage);
+							});
+						}
+					});
+				} else {
+					Platform.runLater(() -> {
+						CommonUtils.getInstance().dismissLoadingDialog();
+						MoveStageUtil.getInstance().moveAuctionType(mStage);
+					});
+				}
+			}else {
+				
+				if(SettingApplication.getInstance().isSingleAuction()){
+					//환경설정 -> 일괄경매 변경 -> 팝업 -> 취소시 다시 단일로 설정
+					SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, AuctionToggle.MULTI.toString());
+					SettingApplication.getInstance().initSharedData();
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Showing dialog Close
+	 */
+	private void dismissShowingDialog() {
+		MoveStageUtil.getInstance().dismissDialog();
+		MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
 	}
 
 }

@@ -92,9 +92,9 @@
    <bottom>
       <HBox alignment="CENTER_LEFT" maxHeight="80.0" prefHeight="80.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: #00000f;" BorderPane.alignment="CENTER">
          <children>
-            <Button minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[ESC]종료" />
-            <Button fx:id="mBtnSend" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F1]출품전송" />
-            <Button minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F8]환경설정" />
+            <Button fx:id="mBtnEsc" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[ESC]종료" />
+            <Button fx:id="mBtnF1" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F1]출품전송" />
+            <Button fx:id="mBtnF8" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F8]환경설정" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
