@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.stream.IntStream;
 
+import javafx.scene.text.Font;
+
 public class AuctionUtil {
 
 	private static AuctionUtil instance = null;
@@ -140,6 +142,20 @@ public class AuctionUtil {
                     .findAny()
                     .orElse(CALF.description);
         }
+    }
+    
+    /**
+     * 폰트 확인.
+     * @param <T>
+     * @param className
+     */
+    public <T> void checkFont(Class<T> className) {
+
+		String fontFamily = "";
+		fontFamily = Font.loadFont(className.getResource("resource/fonts/NotoSansKR-Regular.otf").toString(), 16).getFamily();
+		 
+		System.out.println(fontFamily);
+		
     }
     
 }

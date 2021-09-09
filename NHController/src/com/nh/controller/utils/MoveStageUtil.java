@@ -14,13 +14,10 @@ import com.nh.controller.controller.MultipleAuctionController;
 import com.nh.controller.controller.SettingController;
 import com.nh.controller.controller.SettingSoundController;
 import com.nh.controller.interfaces.BooleanListener;
-import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AuctionRound;
-import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.setting.SettingApplication;
-import com.nh.controller.utils.MoveStageUtil.EntryDialogType;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -31,7 +28,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -74,11 +70,6 @@ public class MoveStageUtil {
 
 		try {
 
-			String fontFamily = "";
-			fontFamily = Font.loadFont(getApplicationClass().getResource("resource/fonts/Roboto-Regular.ttf").toString(), 16).getFamily();
-			 
-			System.out.println(fontFamily);
-			
 			
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("LoginView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
