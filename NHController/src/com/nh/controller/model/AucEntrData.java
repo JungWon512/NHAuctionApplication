@@ -18,7 +18,7 @@ public class AucEntrData {
     private String lvstAucPtcMnNo;          //가축경매참여자번호
     private String atdrAm;                  //응찰금액
     private String rmkCntn;                 //비고내용
-    private LocalDateTime atdrDtm;          //응찰일시
+    private String atdrDtm;          		//응찰일시
     private String mmoInpYn;                //수기입력여부
     private String aucPrgSq;                //경매진행순번
     private String tmsYnC;                  //전송여부
@@ -95,11 +95,11 @@ public class AucEntrData {
         this.rmkCntn = rmkCntn;
     }
 
-    public LocalDateTime getAtdrDtm() {
+    public String getAtdrDtm() {
         return atdrDtm;
     }
 
-    public void setAtdrDtm(LocalDateTime atdrDtm) { this.atdrDtm = atdrDtm; }
+    public void setAtdrDtm(String atdrDtm) { this.atdrDtm = atdrDtm; }
 
     public String getMmoInpYn() {
         return mmoInpYn;

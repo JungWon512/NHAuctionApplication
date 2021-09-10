@@ -41,6 +41,7 @@ import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
+import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
@@ -761,6 +762,12 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private void dismissShowingDialog() {
 		MoveStageUtil.getInstance().dismissDialog();
 		MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
+	}
+
+	@Override
+	public void onBidderConnectInfo(BidderConnectInfo bidderConnectInfo) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

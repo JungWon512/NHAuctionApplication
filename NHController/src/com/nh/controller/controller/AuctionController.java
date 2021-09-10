@@ -1,8 +1,6 @@
 package com.nh.controller.controller;
 
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
+import org.checkerframework.common.returnsreceiver.qual.This;
+
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.controller.controller.SettingController.AuctionToggle;
 import com.nh.controller.interfaces.BooleanListener;
@@ -21,6 +21,8 @@ import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
+import com.nh.controller.model.SpAuctionStnData;
+import com.nh.controller.model.SpBidderConnectInfo;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.netty.AuctionDelegate;
@@ -38,17 +40,18 @@ import com.nh.controller.utils.SoundUtil;
 import com.nh.controller.utils.SoundUtil.LocalSoundDefineRunnable;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
-import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.PauseAuction;
 import com.nh.share.server.models.AuctionCountDown;
+import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -73,6 +76,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
@@ -82,8 +86,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@FXML // root pane
 	public BorderPane mRootPane;
 
-	@FXML // 완료,대기,응찰현황,접속현황 테이블
-	private TableView<SpEntryInfo> mFinishedTableView, mConnectionUserTableView, mWaitTableView;
+	@FXML // 완료,대기,응찰현황 테이블
+	private TableView<SpEntryInfo> mFinishedTableView, mWaitTableView;
+
+	@FXML // 접속현황 테이블
+	private TableView<SpBidderConnectInfo> mConnectionUserTableView;
 
 	@FXML // 완료,대기,응찰현황,접속현황 테이블
 	private TableView<SpBidding> mBiddingInfoTableView;
@@ -99,13 +106,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private Label mCurEntryNumLabel, mCurExhibitorLabel, mCurGenterLabel, mCurMotherLabel, mCurMatimeLabel, mCurPasgQcnLabel, mCurWeightLabel, mCurLowPriceLabel, mCurSuccessPriceLabel, mCurSuccessfulBidderLabel, mCurResultLabel, mCurNoteLabel;
 
 	@FXML // 사용자 접속 현황
-	private TableColumn<SpEntryInfo, String> mConnectionUserColumn_1, mConnectionUserColumn_2, mConnectionUserColumn_3, mConnectionUserColumn_4, mConnectionUserColumn_5;
+	private TableColumn<SpBidderConnectInfo, String> mConnectionUserColumn_1, mConnectionUserColumn_2, mConnectionUserColumn_3, mConnectionUserColumn_4, mConnectionUserColumn_5;
 
 	@FXML // 응찰자 정보
 	private TableColumn<SpBidding, String> mBiddingPriceColumn, mBiddingUserColumn;
 
 	@FXML // 하단 버튼
 	private Button mBtnEsc, mBtnF1, mBtnF3, mBtnF4, mBtnF5, mBtnF6, mBtnF7, mBtnF8, mBtnEnter, mBtnSpace, mBtnUpPrice, mBtnDownPrice;
+
+	@FXML // TEST
+	private ImageView mBtnTest;
 
 	@FXML // 경매 정보
 	private Label mAuctionInfoDateLabel, mAuctionInfoRoundLabel, mAuctionInfoGubunLabel, mAuctionInfoNameLabel;
@@ -152,29 +162,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void setStage(Stage stage) {
 		mStage = stage;
-		
-		Thread thread = new Thread("requestAuctionInfo") {
-			@Override
-			public void run() {
-				// 경매 데이터 set
-				requestAuctionInfo();
-			}
-		};
-		thread.setDaemon(true);
-		thread.start();
-	
-		
-		if(mStage != null) {
+
+		Platform.runLater(() -> {
+			// 경매 데이터 set
+			requestAuctionInfo();
+		});
+
+		if (mStage != null) {
 			stage.setOnCloseRequest(e -> {
-				
+
 				isApplicationClosePopup = true;
-				
+
 				if (AuctionDelegate.getInstance().isActive()) {
 					AuctionDelegate.getInstance().onDisconnect(null);
 				}
-			});	
+			});
 		}
-	
+
 	}
 
 	/**
@@ -244,6 +248,33 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		mBtnReStart.setOnMouseClicked(event -> onReStart());
 		mBtnPause.setOnMouseClicked(event -> onPause());
+
+		mBtnTest.setOnMouseClicked(event -> test());
+	}
+	
+	int tsetin = 1;
+
+	private void test() {
+
+//		BidderConnectInfo bidding = new BidderConnectInfo("TEST", Integer.toString(tsetin), "1", "1", "99", "1");
+//
+//		for (int i = 0; mConnectionUserDataList.size() > i; i++) {
+//
+//			int len = mConnectionUserDataList.get(i).getUserNo().length;
+//
+//			for (int j = 0; len > j; j++) {
+//				if (mConnectionUserDataList.get(i).getUserNo()[j].getValue().equals(bidding.getUserNo())) {
+//					
+//					mConnectionUserDataList.get(i).getStatus()[j] = new SimpleStringProperty(bidding.getStatus());
+//					System.out.println("!!!!!!!!!!!!!!!!!!! " + mConnectionUserDataList.get(i).getStatus()[j]);
+//					break;
+//				}
+//			}
+//		}
+//			mConnectionUserTableView.refresh();
+//			
+//			tsetin +=5;
+
 	}
 
 	/**
@@ -251,6 +282,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void initTableConfiguration() {
 
+		// [s] 정렬 css
+		// 완료된 출품
 		setAlignCenterCol(mFinishedEntryNumColumn);
 		setAlignCenterCol(mFinishedExhibitorColumn);
 		setAlignCenterCol(mFinishedGenderColumn);
@@ -263,10 +296,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		setAlignCenterCol(mFinishedSuccessfulBidderColumn);
 		setAlignCenterCol(mFinishedResultColumn);
 		setAlignLeftCol(mFinishedNoteColumn);
-		
-		setRobotoRegularFont(mFinishedWeightColumn);
-		setRobotoRegularFont(mFinishedLowPriceColumn);
-
+		// 대기중 출품
 		setAlignCenterCol(mWaitEntryNumColumn);
 		setAlignCenterCol(mWaitExhibitorColumn);
 		setAlignCenterCol(mWaitGenderColumn);
@@ -279,10 +309,28 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		setAlignCenterCol(mWaitSuccessfulBidderColumn);
 		setAlignCenterCol(mWaitResultColumn);
 		setAlignLeftCol(mWaitNoteColumn);
-		
+		// 응찰 현황
 		setAlignCenterCol(mBiddingPriceColumn);
 		setAlignCenterCol(mBiddingUserColumn);
+		// 접속 현황
+		setAlignCenterCol(mConnectionUserColumn_1);
+		setAlignCenterCol(mConnectionUserColumn_2);
+		setAlignCenterCol(mConnectionUserColumn_3);
+		setAlignCenterCol(mConnectionUserColumn_4);
+		setAlignCenterCol(mConnectionUserColumn_5);
+		// [e] 정렬 css
 
+		// [s] fmt - number
+		setNumberColumnFactory(mFinishedWeightColumn, false);
+		setNumberColumnFactory(mFinishedLowPriceColumn, true);
+		setNumberColumnFactory(mFinishedSuccessPriceColumn, true);
+		setNumberColumnFactory(mWaitWeightColumn, false);
+		setNumberColumnFactory(mWaitLowPriceColumn, true);
+		setNumberColumnFactory(mWaitSuccessPriceColumn, true);
+		setNumberColumnFactory(mBiddingPriceColumn, true);
+		// [e] fmt - number
+
+		// [s] binding
 		// 테이블 컬럼 - 완료
 		mFinishedEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
 		mFinishedExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
@@ -296,10 +344,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mFinishedSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder());
 		mFinishedResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mFinishedNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
-
-		setNumberColumnFactory(mFinishedWeightColumn, false);
-		setNumberColumnFactory(mFinishedLowPriceColumn, true);
-		setNumberColumnFactory(mFinishedSuccessPriceColumn, true);
 
 		// 테이블 컬럼 - 대기
 		mWaitEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
@@ -315,21 +359,86 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mWaitResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mWaitNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
 
-		setNumberColumnFactory(mWaitWeightColumn, false);
-		setNumberColumnFactory(mWaitLowPriceColumn, true);
-		setNumberColumnFactory(mWaitSuccessPriceColumn, true);
-
-		// 테이블 컬럼 - 접속자
-		mConnectionUserColumn_1.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
-		mConnectionUserColumn_2.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
-		mConnectionUserColumn_3.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
-		mConnectionUserColumn_4.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
-		mConnectionUserColumn_5.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
-
 		// 테이블 컬럼 - 응찰자
 		mBiddingPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getPrice());
 		mBiddingUserColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionJoinNum());
-		setNumberColumnFactory(mBiddingPriceColumn, true);
+
+		// 테이블 컬럼 - 접속자
+		mConnectionUserColumn_1.setCellValueFactory(cellData -> cellData.getValue().getUserNo()[0]);
+		mConnectionUserColumn_2.setCellValueFactory(cellData -> cellData.getValue().getUserNo()[1]);
+		mConnectionUserColumn_3.setCellValueFactory(cellData -> cellData.getValue().getUserNo()[2]);
+		mConnectionUserColumn_4.setCellValueFactory(cellData -> cellData.getValue().getUserNo()[3]);
+		mConnectionUserColumn_5.setCellValueFactory(cellData -> cellData.getValue().getUserNo()[4]);
+		
+		
+		mConnectionUserColumn_2.setCellFactory(cellData -> {
+			
+			TableCell<SpBidderConnectInfo, String> cell = new TableCell<SpBidderConnectInfo, String>(){
+				@Override
+				public void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+				
+					if (item == null || empty) {
+						setText(null);
+					}else {
+					
+						boolean isBreak = false;
+					
+						for (int i = 0; mConnectionUserDataList.size() > i; i++) {
+
+							int len = mConnectionUserDataList.get(i).getUserNo().length;
+
+							for (int j = 0; len > j; j++) {
+						
+								if (mConnectionUserDataList.get(i).getUserNo()[j].getValue().equals(item)) {
+									
+									if (mConnectionUserDataList.get(i).getStatus()[j].getValue().equals("99")) {
+										Platform.runLater(()->setStyle("-fx-background-color: red;"));
+										isBreak = true;
+										System.out.println("GOOOOOOOOOOOOOOOOOOOOOOOOOO");
+									}
+									isBreak = true;
+									break;
+								}
+								if(isBreak) {
+									break;
+								}
+							}
+						}
+						
+						
+						
+						setText(item);
+					}
+					
+				}
+			};
+			
+			return cell;
+		});
+		
+		
+//		mConnectionUserColumn_2.setCellFactory(e -> new TableCell<SpBidderConnectInfo, String>() {
+//			@Override
+//			public void updateItem(String item, boolean empty) {
+//				super.updateItem(item, empty);
+//				setStyle(null);
+//				setTooltip(null);
+//				if (item == null || empty) {
+//					setText(null);
+//				} else {
+//
+//					setText(item);
+//
+//					if (item.equals("6")) {
+//						setStyle("-fx-background-color: red;");
+//					}
+//
+//				}
+//			}
+//		});
+
+		// [e] binding
 
 		// holder default msg
 		mFinishedTableView.setPlaceholder(new Label(mResMsg.getString("msg.entry.finish.default")));
@@ -344,6 +453,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 컬럼 센터 정렬
+	 * 
 	 * @param col
 	 */
 	private <T> void setAlignCenterCol(TableColumn<T, String> col) {
@@ -352,12 +462,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 컬럼 왼쪽 정렬
+	 * 
 	 * @param col
 	 */
 	private void setAlignLeftCol(TableColumn<SpEntryInfo, String> col) {
 		col.getStyleClass().add("left-column");
 	}
-	
+
 	private void setRobotoRegularFont(TableColumn<SpEntryInfo, String> col) {
 		col.getStyleClass().add("font-style-roboto-bold");
 	}
@@ -611,6 +722,35 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 접속자 현황 초기값.
 	 */
 	private void initConnectionUserDataList() {
+
+		List<BidderConnectInfo> dataList = new ArrayList<BidderConnectInfo>();
+
+		for (int i = 0; 50 > i; i++) {
+			BidderConnectInfo bidderConnectInfo = new BidderConnectInfo();
+			bidderConnectInfo.setAuctionHouseCode("1010101 " + i);
+			bidderConnectInfo.setUserNo("" + i);
+			bidderConnectInfo.setStatus("111");
+			dataList.add(bidderConnectInfo);
+		}
+
+		List<List<BidderConnectInfo>> al = new ArrayList<>();
+
+		List<BidderConnectInfo> list = new ArrayList<>();
+
+		for (int i = 0; i < dataList.size(); i++) {
+
+			if (i != 0 && i % 5 == 0) {
+				al.add(list);
+				list = new ArrayList<>();
+			}
+
+			list.add(dataList.get(i));
+		}
+
+		ObservableList<SpBidderConnectInfo> test = al.stream().map(item -> new SpBidderConnectInfo(item)).collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+		mConnectionUserDataList.addAll(test);
+
 		mConnectionUserTableView.setItems(mConnectionUserDataList);
 	}
 
@@ -888,9 +1028,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				dismissShowingDialog();
 
 				if (isClose) {
-				
-					if(!SettingApplication.getInstance().isSingleAuction()){
-						//일괄경매로 변경된 경우 현재창 종료 후 일괄경매 이동
+
+					if (!SettingApplication.getInstance().isSingleAuction()) {
+						// 일괄경매로 변경된 경우 현재창 종료 후 일괄경매 이동
 						onCloseApplication();
 						return;
 					}
@@ -941,10 +1081,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						MoveStageUtil.getInstance().moveAuctionType(mStage);
 					});
 				}
-			}else {
-				
-				if(!SettingApplication.getInstance().isSingleAuction()){
-					//환경설정 -> 일괄경매 변경 -> 팝업 -> 취소시 다시 단일로 설정
+			} else {
+
+				if (!SettingApplication.getInstance().isSingleAuction()) {
+					// 환경설정 -> 일괄경매 변경 -> 팝업 -> 취소시 다시 단일로 설정
 					SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, AuctionToggle.SINGLE.toString());
 					SettingApplication.getInstance().initSharedData();
 				}
@@ -953,20 +1093,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	}
 
-	/**(
-	 * 출품 이관 전 체크
+	/**
+	 * ( 출품 이관 전 체크
+	 * 
 	 * @return true : 이관 완료 , false : 이관 필요
 	 */
 	private boolean isSendEnterInfo() {
-		
+
 		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
 			return false;
-		}else {
+		} else {
 			return true;
 		}
 	}
-	
-	
+
 	/**
 	 * 단일 경매 시작. 종료
 	 *
@@ -974,12 +1114,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void onStartAndStopAuction(int countDown) {
 
-		//출품 이관 체크
-		if(!isSendEnterInfo()) {
+		// 출품 이관 체크
+		if (!isSendEnterInfo()) {
 			showAlertPopupOneButton(mResMsg.getString("msg.auction.send.need.entry.data"));
 		}
-	
-		//음성경매 상황에서 ENTER 누른 경우.
+
+		// 음성경매 상황에서 ENTER 누른 경우.
 		if (SettingApplication.getInstance().isUseSoundAuction()) {
 			if (!isStartedAuction) {
 				showAlertPopupOneButton(mResMsg.getString("dialog.auction.sound"));
@@ -988,7 +1128,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 		switch (mAuctionStatus.getState()) {
-		case GlobalDefineCode.AUCTION_STATUS_READY:		//준비,경매완료,유찰 상황에서 시작 가능.
+		case GlobalDefineCode.AUCTION_STATUS_READY: // 준비,경매완료,유찰 상황에서 시작 가능.
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 		case GlobalDefineCode.AUCTION_STATUS_PASS:
 			// 갱신 후 변경점 있으면 서버 전달.
@@ -998,7 +1138,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 시작
 			onStartAuction();
 			break;
-		case GlobalDefineCode.AUCTION_STATUS_START:		//경매 진행 상황에서 낙찰 예정자가 있으면 경매 완료, 없으면 카운트다운 보냄.
+		case GlobalDefineCode.AUCTION_STATUS_START: // 경매 진행 상황에서 낙찰 예정자가 있으면 경매 완료, 없으면 카운트다운 보냄.
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
 			if (isAuctionComplete) {
@@ -1018,12 +1158,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void onStartSoundAuction() {
 
-		//출품 이관 체크
-		if(!isSendEnterInfo()) {
+		// 출품 이관 체크
+		if (!isSendEnterInfo()) {
 			showAlertPopupOneButton(mResMsg.getString("msg.auction.send.need.entry.data"));
 		}
 
-		//단일 경매 상황에서 ENTER 누른 경우.
+		// 단일 경매 상황에서 ENTER 누른 경우.
 		if (!SettingApplication.getInstance().isUseSoundAuction()) {
 			if (!isStartedAuction) {
 				showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.sound"));
@@ -1053,24 +1193,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 경매 결과 전송, DB 저장
 	 */
 	public void sendAuctionResultInfo() {
-		
-		//결과 전송~ 다음 경매 준비 까지 방어 플래그 
+
+		// 결과 전송~ 다음 경매 준비 까지 방어 플래그
 		isResultCompleteFlag = true;
 
 		if (mRank_1_User != null) {
-			//1순위자 체크
+			// 1순위자 체크
 			if (!isEmptyProperty(mRank_1_User.getAuctionJoinNum())) {
-				//1순위 있으면 낙찰
+				// 1순위 있으면 낙찰
 				saveAuctionResult(true, mCurrentSpEntryInfo, mRank_1_User, GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS);
 			} else {
-				//없는경우 유찰
+				// 없는경우 유찰
 				saveAuctionResult(false, mCurrentSpEntryInfo, mRank_1_User, GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
 			}
 		} else {
-			//없는경우 유찰
+			// 없는경우 유찰
 			saveAuctionResult(false, mCurrentSpEntryInfo, mRank_1_User, GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
 		}
-		
+
 		// 사운드 경매 타이머 정지
 		stopAutoAuctionScheduler();
 	}
@@ -1093,19 +1233,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				return;
 			}
 
-			//시작 로그 msg
+			// 시작 로그 msg
 			String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), mCurrentSpEntryInfo.getEntryNum().getValue());
-			
+
 			// 시작 서버로 Start 보냄.
 			addLogItem(msgStart + AuctionDelegate.getInstance().onStartAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
 
-//                new Bidding(this.auctionRound.getNaBzplc(), null,"0" , "0", "0", ", msgStart, msgStart)
-//                insertBiddingHistory();
-
-			//경매 시작 플래그
+			// 경매 시작 플래그
 			isStartedAuction = true;
 
-			//음성경매인 경우 사운드  
+			// 음성경매인 경우 사운드
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
 				// 출품번호 사운드 set
 				setCurrentEntrySoundData();
@@ -1125,25 +1262,61 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 	}
 
-	private void insertBiddingHistory(Bidding bidding) {
+	/**
+	 * 경매 시작 => 시작 로그 저장 경매 종료 => 종료 로그 저장
+	 */
+	private void insertStdrLog() {
 
 		// 응찰 로그 저장
-		// TODO: OSLP_NO, RG_SQNO 확인 및 수정
 		AucEntrData aucEntrData = new AucEntrData();
 		aucEntrData.setNaBzplc(this.auctionRound.getNaBzplc());
 		aucEntrData.setAucObjDsc(this.auctionRound.getAucObjDsc());
 		aucEntrData.setAucDt(this.auctionRound.getAucDt());
-		aucEntrData.setOslpNo(bidding.getUserNo());
-		aucEntrData.setRgSqno("121212");
-		aucEntrData.setTrmnAmnno(bidding.getUserNo());
-		aucEntrData.setLvstAucPtcMnNo(bidding.getAuctionJoinNum());
-		aucEntrData.setAtdrAm(bidding.getPrice());
-		aucEntrData.setAtdrDtm(LocalDateTime.parse(bidding.getBiddingTime(), DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
-		aucEntrData.setAucPrgSq(bidding.getEntryNum());
-//<!--	OSLP_NO            decimal       not null comment '원표번호',-->
-//<!--	RG_SQNO            decimal       not null comment '등록일련번호',-->
+		aucEntrData.setOslpNo(mCurrentSpEntryInfo.getOslpNo().getValue());
 
-		int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
+		aucEntrData.setTrmnAmnno("0");
+		aucEntrData.setLvstAucPtcMnNo("0");
+		aucEntrData.setAtdrAm("0");
+		aucEntrData.setAtdrDtm(CommonUtils.getInstance().getCurrentTimeSc());
+		aucEntrData.setAucPrgSq(mCurrentSpEntryInfo.getEntryNum().getValue());
+		aucEntrData.setRgSqno("0");
+
+		int startCnt = EntryInfoMapperService.getInstance().getBiddingHistoryCount(aucEntrData);
+
+		if (startCnt <= 0) {
+
+			aucEntrData.setRmkCntn("시작");
+
+			int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
+
+			if (resultValue > 0) {
+				addLogItem("시작 로그 저장 완료");
+			} else {
+				addLogItem("시작 로그 저장 실패.");
+			}
+
+		} else {
+
+			addLogItem("시작 로그 있음. 종료 로그 체크");
+
+			aucEntrData.setRgSqno("99999999");
+			aucEntrData.setRmkCntn("종료");
+
+			int finishCnt = EntryInfoMapperService.getInstance().getBiddingHistoryCount(aucEntrData);
+
+			if (finishCnt <= 0) {
+
+				int resultValue = EntryInfoMapperService.getInstance().insertBiddingHistory(aucEntrData);
+
+				if (resultValue > 0) {
+					addLogItem("종료 로그 저장 완료");
+				} else {
+					addLogItem("종료 로그 저장 실패");
+				}
+			} else {
+				addLogItem("종료 로그 있음.");
+			}
+		}
 	}
 
 	/**
@@ -1153,7 +1326,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void onStopAuction(int countDown) {
 
-		//현재 경매 대상이 없으면 ..
+		// 현재 경매 대상이 없으면 ..
 		if (mCurrentSpEntryInfo == null) {
 			return;
 		}
@@ -1166,13 +1339,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
-			//카운트 시작 플래그 . onAuctionCountDown 에서 하는게 맞지만 0으로 보낼경우 임의 시작 처리 하기 위함. 방어코드
+			// 카운트 시작 플래그 . onAuctionCountDown 에서 하는게 맞지만 0으로 보낼경우 임의 시작 처리 하기 위함. 방어코드
 			isCountDownRunning = true;
-			//카운트 시간
+			// 카운트 시간
 			mRemainingTimeCount = countDown;
-			//남은 시간별 라벨 표시
+			// 남은 시간별 라벨 표시
 			setCountDownLabelState(countDown, true);
-			//서버로 정지 전송. 카운트 시작.
+			// 서버로 정지 전송. 카운트 시작.
 			addLogItem(mResMsg.getString("msg.auction.send.complete") + AuctionDelegate.getInstance().onStopAuction(mCurrentSpEntryInfo.getEntryNum().getValue(), countDown));
 			break;
 		}
@@ -1384,7 +1557,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			spEntryInfo.getIsLastEntry().setValue(GlobalDefine.ETC_INFO.AUCTION_DATA_MODIFY_M);
 
-			addLogItem("[가격 변경 정보 보냄]=> " +  AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
+			addLogItem("[가격 변경 정보 보냄]=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
 
 			spEntryInfo.getIsLastEntry().setValue(tmpIsLastEntry);
 
@@ -1484,14 +1657,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@Override
 	public void onAuctionStatus(AuctionStatus auctionStatus) {
 		super.onAuctionStatus(auctionStatus);
-		
+
 		setAuctionVariableState(auctionStatus.getState());
 
 		switch (auctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
-			//사운드 경매인 경우 타이머 시작.
+			// 사운드 경매인 경우 타이머 시작.
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
 				// 타이머 초기화
 				stopAutoAuctionScheduler();
@@ -1514,13 +1687,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		//정지 Task
-		//waiting time 기다린 후 실행.
+		// 정지 Task
+		// waiting time 기다린 후 실행.
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
 				addLogItem("Run Stop Scheduler.");
-				//서버로 정지 전송
+				// 서버로 정지 전송
 				onStopAuction(countDown);
 			}
 		};
@@ -1547,39 +1720,39 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@Override
 	protected void soundAuctionTimerTask() {
 
-		//응찰자가 있는경우
+		// 응찰자가 있는경우
 		if (mCurrentBidderMap.size() > 0) {
 
-			//현재 1순위
+			// 현재 1순위
 			SpBidding rank_1_user = mBiddingUserInfoDataList.get(0);
-			
+
 			// 응찰 가격 조건 체크
 			// 최저가 + 상한가 상황이면 사운드 재생 , 경매 카운트 정지.
 			if (!checkOverPrice(rank_1_user)) {
-				
+
 				// 응찰금액 확인 사운드 메세지
 				String overPriceSoundMessage = String.format(mResMsg.getString("str.sound.auction.over.price"), rank_1_user.getAuctionJoinNum().getValue());
 
 				if (SettingApplication.getInstance().isUseSoundAuction()) {
-					//사운드 시작
+					// 사운드 시작
 					SoundUtil.getInstance().playSound(overPriceSoundMessage, null);
-					//카운트 라벨 설정 시간 기준 초기화
+					// 카운트 라벨 설정 시간 기준 초기화
 					setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), false);
 				}
 
 				addLogItem("soundAuctionTimerTask ==== 사운드 경매 자동 종료");
 
-				//응찰영역 카운트다운 라벨 숨김.
+				// 응찰영역 카운트다운 라벨 숨김.
 				if (mCountDownLabel.isVisible()) {
 					mCountDownLabel.setVisible(false);
 				}
-				
+
 				// 타이머 멈춤.
 				onPause();
-				
+
 				return;
 			} else {
-				//응찰 가격이 정상인경우 설정 대기시간 기다린 후 경매 정지
+				// 응찰 가격이 정상인경우 설정 대기시간 기다린 후 경매 정지
 				startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
 			}
 		} else {
@@ -1595,11 +1768,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN)) {
 
-			//카운트다운 시작 플래그
+			// 카운트다운 시작 플래그
 			isCountDownRunning = true;
 
 			Platform.runLater(() -> {
-				
+
 				if (!mCountDownLabel.isVisible()) {
 					mCountDownLabel.setVisible(true);
 				}
@@ -1607,7 +1780,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mCountDownLabel.setText(auctionCountDown.getCountDownTime());
 			});
 
-			//현재 카운트다운 초 저장.
+			// 현재 카운트다운 초 저장.
 			mRemainingTimeCount = Integer.parseInt(auctionCountDown.getCountDownTime());
 
 			// 카운트다운 라벨 상태
@@ -1627,42 +1800,42 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN_COMPLETED)) {
 
-			//카운트다운 종료 플래그
+			// 카운트다운 종료 플래그
 			isCountDownRunning = false;
 
 			addLogItem("==== 카운트 다운 완료 ====");
-			
-			//취소 눌린경우 카운트다운 완료가 후에 들어오기 때문에.. 아래 코드 실행 안 함.
-			if(isCancel) {
+
+			// 취소 눌린경우 카운트다운 완료가 후에 들어오기 때문에.. 아래 코드 실행 안 함.
+			if (isCancel) {
 				return;
 			}
 
-			//남은시간이 0이거나 현재 카운트다운 
+			// 남은시간이 0이거나 현재 카운트다운
 			if (mRemainingTimeCount <= 0 || Integer.parseInt(auctionCountDown.getCountDownTime()) <= 0) {
 				if (mCountDownLabel.isVisible()) {
 					mCountDownLabel.setVisible(false);
 				}
 			}
 
-			//음성경매가 아닌경우.
+			// 음성경매가 아닌경우.
 			if (!SettingApplication.getInstance().isUseSoundAuction()) {
-				//카운트다운 종료시 응찰자가 있는경우
+				// 카운트다운 종료시 응찰자가 있는경우
 				if (mCurrentBidderMap.size() > 0) {
-					//아직 낙찰 확정자가 없으면
+					// 아직 낙찰 확정자가 없으면
 					if (!isAuctionComplete) {
-						//낙찰자 저장
+						// 낙찰자 저장
 						calSuccessfulBidder(false);
 					} else {
-						//낙찰자가 있으면 
+						// 낙찰자가 있으면
 						onStartAndStopAuction(0);
 					}
 				} else {
-				
+
 					setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), false);
 				}
 
 			} else {
-				//음성경매인경우
+				// 음성경매인경우
 				if (mRemainingTimeCount <= 0 || Integer.parseInt(auctionCountDown.getCountDownTime()) <= 0) {
 					addLogItem("==== 음성경매 카운트 다운 완료 ==== : " + mRemainingTimeCount);
 					calSuccessfulBidder(false);
@@ -1787,7 +1960,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 	}
-	
+
 	/**
 	 * 낙유찰 및 재경매 설정
 	 *
@@ -1795,7 +1968,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void calSuccessfulBidder(boolean isPass) {
 
-		//응찰자 여부
+		// 응찰자 여부
 		if (mCurrentBidderMap.size() > 0) {
 			// 응찰 가격 조건 체크
 			if (!isBidderPriceValid()) {
@@ -1807,13 +1980,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		//응찰자 리스트 체크
-		if(CommonUtils.getInstance().isListEmpty(mBiddingUserInfoDataList)) {
+		// 응찰자 리스트 체크
+		if (CommonUtils.getInstance().isListEmpty(mBiddingUserInfoDataList)) {
 			return;
 		}
-		
-		//응찰자 존재. 응찰가격 정상 이후 체크 ===============
-		
+
+		// 응찰자 존재. 응찰가격 정상 이후 체크 ===============
+
 		// 1순위 회원
 		SpBidding rank_1_user = mBiddingUserInfoDataList.get(0);
 
@@ -1833,12 +2006,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 재경매 횟수가 없으면 1순위 응찰자 낙/유찰 처리
 			if (mReAuctionCount <= 0) {
 				if (!CommonUtils.getInstance().isListEmpty(mBiddingUserInfoDataList)) {
-					//1순위 낙/유찰 처리
+					// 1순위 낙/유찰 처리
 					setSuccessUser(rank_1_user);
 				} else {
 					addLogItem("==== 응찰자.. 없으면 오류... 무조건..있음....있어야 됨 ");
 				}
-				
+
 				return;
 			}
 
@@ -1847,7 +2020,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 재경매 횟수가 남아있고 응찰자가 한명 이상이면 비교 시작..
 			if (mBiddingUserInfoDataList.size() > 1) {
 
-				//재경매자 목록 초기화
+				// 재경매자 목록 초기화
 				mReAuctionBidderDataList.clear();
 
 				for (SpBidding spBidding : mBiddingUserInfoDataList) {
@@ -1865,7 +2038,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// 동가 없으면 낙찰 처리
 				if (mReAuctionBidderDataList.size() <= 0) {
 					setSuccessUser(rank_1_user);
-					
+
 				} else {
 
 					// 재경매 여부
@@ -1879,7 +2052,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						if (!mReAuctionLabel.isVisible()) {
 							mReAuctionLabel.setVisible(true);
 						}
-						
+
 						// 재경매 대상자
 						StringBuffer strReAuctionBidder = new StringBuffer();
 						strReAuctionBidder.append(mReAuctionBidderDataList.stream().map(v -> v.getAuctionJoinNum().getValue()).collect(Collectors.joining(",")));
@@ -1889,7 +2062,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						// 재경매 카운트 라벨
 						mReAuctionCountLabel.setText(Integer.toString(mReAuctionCount));
 
-						//사운드 경매인경우 재경매자 음성 시작
+						// 사운드 경매인경우 재경매자 음성 시작
 						if (SettingApplication.getInstance().isUseSoundAuction()) {
 
 							StringBuffer stringBuffer = new StringBuffer();
@@ -1908,7 +2081,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
 				if (SettingApplication.getInstance().isUseSoundAuction()) {
-					//응찰 가격이 정상인경우 설정 대기시간 기다린 후 경매 정지
+					// 응찰 가격이 정상인경우 설정 대기시간 기다린 후 경매 정지
 					startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
 				}
 
@@ -1928,31 +2101,31 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param rank_1_user
 	 */
 	private void setSuccessUser(SpBidding rank_1_user) {
-		//1순위자
+		// 1순위자
 		mRank_1_User = rank_1_user;
-		//1순위 낙찰 예정자 플래그
+		// 1순위 낙찰 예정자 플래그
 		isAuctionComplete = true;
-		//재경매 여부
+		// 재경매 여부
 		isReAuction = false;
-		//재경매 현재 횟수
+		// 재경매 현재 횟수
 		mReAuctionCount = -1;
 
 		Platform.runLater(() -> {
-			//재경매 라벨, 카운트 숨김.
+			// 재경매 라벨, 카운트 숨김.
 			if (mReAuctionLabel.isVisible()) {
 				mReAuctionLabel.setVisible(false);
 				mReAuctionCountLabel.setText("");
 			}
 		});
 
-		//낙찰 예정자 확인용 로그.
+		// 낙찰 예정자 확인용 로그.
 		if (rank_1_user != null) {
 			addLogItem("=== 낙찰 예정자 : " + rank_1_user.getAuctionJoinNum());
 		} else {
 			addLogItem("=== 낙찰 예정자 없음");
 		}
 
-		//응찰자 테이블 disable처리
+		// 응찰자 테이블 disable처리
 		mBiddingInfoTableView.setDisable(true);
 
 		// 단일경매일 경우 한번더 카운팅이나 enter시 경매 결과 전송 처리함.
@@ -2023,9 +2196,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.ready"));
 				// 경매 시작 여부
 				isStartedAuction = false;
-				//취소 여부
+				// 취소 여부
 				isCancel = false;
-				//결과 전송~ 다음 경매 준비 까지 방어 플래그 초기화
+				// 결과 전송~ 다음 경매 준비 까지 방어 플래그 초기화
 				isResultCompleteFlag = false;
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_START:
@@ -2162,8 +2335,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //                setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 
 				if (spEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
-				
-					if((mWaitTableView.getSelectionModel().getSelectedIndex() + 1) == mRecordCount) {
+
+					if ((mWaitTableView.getSelectionModel().getSelectedIndex() + 1) == mRecordCount) {
 						System.out.println("마지막. 뷰 초기화");
 						setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 						return;
@@ -2205,7 +2378,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	@Override
 	protected void updateBidderList(List<SpBidding> spBiddingDataList) {
-		super.updateBidderList(spBiddingDataList);
 
 		List<SpBidding> bidderDataList = null;
 
@@ -2373,11 +2545,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mStage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 
 				public void handle(KeyEvent ke) {
-					
-					if(isResultCompleteFlag) {
+
+					if (isResultCompleteFlag) {
 						return;
 					}
-					
+
 					// 종료
 					if (ke.getCode() == KeyCode.ESCAPE) {
 						// 사운드 중지
@@ -2394,18 +2566,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							PdpDelegate.getInstance().completePdp();
 						} else {
 
-							if(SettingApplication.getInstance().isUseSoundAuction()) {
-							
-								if(!mBtnSpace.getUserData().toString().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+							if (SettingApplication.getInstance().isUseSoundAuction()) {
+
+								if (mBtnSpace.getUserData() != null && !mBtnSpace.getUserData().toString().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 									// 경매 진행중 아니면.. 프로그램 종료
 									onCloseApplication();
+								} else {
+									onCloseApplication();
 								}
-								
-							}else {
+
+							} else {
 								// 경매 진행중 아니면.. 프로그램 종료
 								onCloseApplication();
 							}
-							
+
 						}
 
 						ke.consume(); // 다음 노드로 이벤트를 전달하지 않는다.

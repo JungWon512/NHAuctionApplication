@@ -24,6 +24,9 @@ public interface EntryInfoMapper {
     
     SelStsCountData getSelStsCount(AuctionStnData auctionStnData);
     
+    int getBiddingHistoryCount(AucEntrData aucEntrData);
+
+    int getNextBiddingHistoryCount(AucEntrData aucEntrData);
     
     /**
      * 낙찰/보류 목록 조회

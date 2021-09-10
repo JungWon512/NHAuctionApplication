@@ -97,7 +97,7 @@ public class ChooseAuctionController implements Initializable {
 	
 	
 	private void test() {
-		mTestIp.setText("");
+		mTestIp.setText(GlobalDefine.AUCTION_INFO.AUCTION_HOST);
 		mTestPort.setText(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_PORT));
 		mCalfToggleButton.setSelected(true);
 	}

@@ -1,17 +1,15 @@
 package com.nh.controller.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.AuctionStnData;
 import com.nh.controller.model.SelStsCountData;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.session.SqlSession;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 출품 데이터 Dao
@@ -38,7 +36,7 @@ public class EntryInfoDao {
     
     /**
      * 가격 정보 업데이트
-     * @param entryInfo
+     * @param EntryInfo
      * @param session
      * @return
      */
@@ -48,7 +46,7 @@ public class EntryInfoDao {
     
     /**
      * 가격 정보 다중 업데이트
-     * @param entryInfo
+     * @param List<EntryInfo>
      * @param session
      * @return
      */
@@ -68,7 +66,7 @@ public class EntryInfoDao {
     
     /**
      * 경매 결과 저장
-     * @param auctionResult
+     * @param SendAuctionResult
      * @param session
      * @return
      */
@@ -78,11 +76,32 @@ public class EntryInfoDao {
     
     /**
      * 경매 결과 저장
-     * @param auctionResult
+     * @param AucEntrData
      * @param session
      * @return
      */
     public int insertBiddingHistory(AucEntrData aucEntrData,SqlSession session) {
         return session.update("insertBiddingHistory", aucEntrData);
     }
+    
+    /**
+     * 응찰 내역 카운트
+     * @param AucEntrData
+     * @param session
+     * @return
+     */
+    public int selectBiddingHistoryCount(AucEntrData aucEntrData,SqlSession session) {
+        return session.selectOne("selectBiddingHistoryCount", aucEntrData);
+    }
+    
+    /**
+     * 다음 저장될 응찰 내역 RG_SQNO 조회
+     * @param AucEntrData
+     * @param session
+     * @return
+     */
+    public int selectNextBiddingHistoryCount(AucEntrData aucEntrData,SqlSession session) {
+        return session.selectOne("selectNextBiddingHistoryCount", aucEntrData);
+    }
+    
 }

@@ -262,10 +262,32 @@
 		   AND	LED_SQNO	= #{mLedSqno}
     </update>
 
-	<select id="selectBiddingHistory" parameterType="EntryData">
+	<!-- 응찰 내역 카운트-->
+	<select id="selectBiddingHistoryCount" resultType="int">
 	
-	
+		SELECT COUNT(*)
+		FROM TB_LA_IS_MH_ATDR_LOG
+		WHERE NA_BZPLC = #{naBzplc}
+		AND AUC_DT = #{aucDt}
+		AND AUC_OBJ_DSC = #{aucObjDsc}
+		AND OSLP_NO = #{oslpNo}
+		AND RG_SQNO = #{rgSqno}
+
 	</select>
+	
+	<!-- 다음 응찰 RG_SQNO-->
+	<select id="selectNextBiddingHistoryCount" resultType="int">
+	
+		SELECT ISNULL(MAX(RG_SQNO)+1,1)
+		FROM TB_LA_IS_MH_ATDR_LOG
+		WHERE NA_BZPLC = #{naBzplc}
+		AND AUC_DT = #{aucDt}
+		AND AUC_OBJ_DSC = #{aucObjDsc}
+		AND OSLP_NO = #{oslpNo}
+		AND RG_SQNO <![CDATA[>]]> '0' AND RG_SQNO <![CDATA[<]]> '99999999'
+
+	</select>
+	
 	
 	<!-- 응찰 내역 업데이트-->
 	<insert id="insertBiddingHistory" parameterType="EntryData">
@@ -278,8 +300,11 @@
 			TRMN_AMNNO,
 			LVST_AUC_PTC_MN_NO,
 			ATDR_AM,
+			RMK_CNTN,
 			ATDR_DTM,
-			AUC_PRG_SQ
+			AUC_PRG_SQ,
+			MMO_INP_YN,
+			TMS_YN
 		)
 		VALUES (
 			#{naBzplc},
@@ -290,8 +315,11 @@
 			#{trmnAmnno},
 			#{lvstAucPtcMnNo},
 			#{atdrAm},
+			#{rmkCntn},
 			#{atdrDtm},
-			#{aucPrgSq}
+			#{aucPrgSq},
+			'0',
+			'0'
 		)
 	</insert>
 

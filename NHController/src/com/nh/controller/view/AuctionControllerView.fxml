@@ -407,7 +407,7 @@
                               <Image url="@../resource/images/ic_cow.png" />
                            </image>
                         </ImageView>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="mBtnTest" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../resource/images/ic_cow.png" />
                            </image>

@@ -1,18 +1,16 @@
 package com.nh.controller.model;
 
-import com.nh.controller.setting.SettingApplication;
-import com.nh.controller.utils.CommonUtils;
-import com.nh.controller.utils.GlobalDefine;
+import java.io.Serializable;
+import java.util.Objects;
+
 import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.setting.AuctionShareSetting;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-
-import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * 경매 응찰 처리 기능

@@ -230,7 +230,38 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 		return countData;
 	}
-	
-	
 
+	@Override
+	public int getBiddingHistoryCount(AucEntrData aucEntrData) {
+		
+		int resultValue = 0;
+
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultValue = getDao().selectBiddingHistoryCount(aucEntrData, session);
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
+			return resultValue = 0;
+		}
+
+		return resultValue;
+	}
+
+	@Override
+	public int getNextBiddingHistoryCount(AucEntrData aucEntrData) {
+		
+		int resultValue = -1;
+
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultValue = getDao().selectNextBiddingHistoryCount(aucEntrData, session);
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
+			return resultValue = -1;
+		}
+
+		return resultValue;
+	}
 }

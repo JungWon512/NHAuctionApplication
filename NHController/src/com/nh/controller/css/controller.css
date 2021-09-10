@@ -217,6 +217,7 @@
 .base-contents .connection-user .table-view{
 	-fx-background-color: transparent;
 	-fx-border-width: 1px 1px 1px 1px;
+	-fx-font-size: 12px;
 	-fx-border-color: #ccc;
 	-fx-padding:0;
 }
@@ -225,6 +226,7 @@
 	-fx-padding:0px;
 	-fx-max-height: 0;
 	-fx-pref-height: 0;
+	-fx-font-size: 6px;
 	-fx-min-height: 0;
 }
 /*테이블 접속자 정보 */
@@ -236,11 +238,20 @@
 
 /*접속자 정보 테이블 셀 크기 */
 .connection-user .table-view .table-row-cell{
-	-fx-cell-size: 25px;
+	-fx-cell-size: 31px;
 	-fx-background-color: #ffffff;
-	-fx-border-width: 0px 0px 1px 0px;
+	-fx-border-width: 0px 0px 0px 0px;
 	-fx-border-color: #cccccc;
 }
+
+.connection-user .table-view .table-cell {
+  	-fx-font-size: 11px;
+}
+
+.connection-user .table-view .table-cell:odd{
+	-fx-font-size: 11px;
+}
+
 
 /*테이블 응찰자 정보 */
 .base-contents .bidding-user-info{

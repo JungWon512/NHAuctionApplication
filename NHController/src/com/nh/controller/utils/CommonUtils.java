@@ -214,7 +214,7 @@ public class CommonUtils {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        SimpleDateFormat sFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
+        SimpleDateFormat sFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         String result = sFormat.format(date);
         return result;
     }
@@ -468,6 +468,20 @@ public class CommonUtils {
         return result;
     }
 
+    /**
+     * @return String
+     * @MethodName getCurrentTime
+     * @Description 현재 시간을 반환 처리(yyyy-MM-dd HH:mm:ss.SSS)
+     */
+    public synchronized String getCurrentTimeSc() {
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        Date current = new Date();
+        String result = date.format(current);
+
+        return result;
+    }
+    
+    
     /**
      * @param textField
      * @MethodName setEngAndNumber
