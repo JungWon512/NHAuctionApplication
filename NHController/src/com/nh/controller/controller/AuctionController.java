@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
-import org.checkerframework.common.returnsreceiver.qual.This;
-
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.controller.controller.SettingController.AuctionToggle;
 import com.nh.controller.interfaces.BooleanListener;
@@ -21,7 +19,6 @@ import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
-import com.nh.controller.model.SpAuctionStnData;
 import com.nh.controller.model.SpBidderConnectInfo;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
@@ -51,7 +48,6 @@ import com.nh.share.server.models.CurrentEntryInfo;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -76,7 +72,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
@@ -256,24 +251,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	private void test() {
 
-//		BidderConnectInfo bidding = new BidderConnectInfo("TEST", Integer.toString(tsetin), "1", "1", "99", "1");
-//
-//		for (int i = 0; mConnectionUserDataList.size() > i; i++) {
-//
-//			int len = mConnectionUserDataList.get(i).getUserNo().length;
-//
-//			for (int j = 0; len > j; j++) {
-//				if (mConnectionUserDataList.get(i).getUserNo()[j].getValue().equals(bidding.getUserNo())) {
-//					
-//					mConnectionUserDataList.get(i).getStatus()[j] = new SimpleStringProperty(bidding.getStatus());
-//					System.out.println("!!!!!!!!!!!!!!!!!!! " + mConnectionUserDataList.get(i).getStatus()[j]);
-//					break;
-//				}
-//			}
-//		}
-//			mConnectionUserTableView.refresh();
-//			
-//			tsetin +=5;
+		BidderConnectInfo bidding = new BidderConnectInfo("TEST", Integer.toString(tsetin), "1", "1", "L", "1");
+
+		for (int i = 0; mConnectionUserDataList.size() > i; i++) {
+
+			int len = mConnectionUserDataList.get(i).getUserNo().length;
+
+			for (int j = 0; len > j; j++) {
+				if (mConnectionUserDataList.get(i).getUserNo()[j].getValue().equals(bidding.getUserNo())) {
+					
+					mConnectionUserDataList.get(i).getStatus()[j] = new SimpleStringProperty(bidding.getStatus());
+					System.out.println("!!!!!!!!!!!!!!!!!!! " + mConnectionUserDataList.get(i).getStatus()[j]);
+					break;
+				}
+			}
+		}
+			mConnectionUserTableView.refresh();
+			
+			tsetin +=5;
 
 	}
 
@@ -370,52 +365,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mConnectionUserColumn_4.setCellValueFactory(cellData -> cellData.getValue().getUserNo()[3]);
 		mConnectionUserColumn_5.setCellValueFactory(cellData -> cellData.getValue().getUserNo()[4]);
 		
+		setBidderConnectInfoColumnFactory(mConnectionUserColumn_1);
+		setBidderConnectInfoColumnFactory(mConnectionUserColumn_2);
+		setBidderConnectInfoColumnFactory(mConnectionUserColumn_3);
+		setBidderConnectInfoColumnFactory(mConnectionUserColumn_4);
+		setBidderConnectInfoColumnFactory(mConnectionUserColumn_5);
 		
-		mConnectionUserColumn_2.setCellFactory(cellData -> {
-			
-			TableCell<SpBidderConnectInfo, String> cell = new TableCell<SpBidderConnectInfo, String>(){
-				@Override
-				public void updateItem(String item, boolean empty) {
-					super.updateItem(item, empty);
-				
-					if (item == null || empty) {
-						setText(null);
-					}else {
-					
-						boolean isBreak = false;
-					
-						for (int i = 0; mConnectionUserDataList.size() > i; i++) {
-
-							int len = mConnectionUserDataList.get(i).getUserNo().length;
-
-							for (int j = 0; len > j; j++) {
-						
-								if (mConnectionUserDataList.get(i).getUserNo()[j].getValue().equals(item)) {
-									
-									if (mConnectionUserDataList.get(i).getStatus()[j].getValue().equals("99")) {
-										Platform.runLater(()->setStyle("-fx-background-color: red;"));
-										isBreak = true;
-										System.out.println("GOOOOOOOOOOOOOOOOOOOOOOOOOO");
-									}
-									isBreak = true;
-									break;
-								}
-								if(isBreak) {
-									break;
-								}
-							}
-						}
-						
-						
-						
-						setText(item);
-					}
-					
-				}
-			};
-			
-			return cell;
-		});
 		
 		
 //		mConnectionUserColumn_2.setCellFactory(e -> new TableCell<SpBidderConnectInfo, String>() {
@@ -2891,6 +2846,46 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		});
 	}
+	
+	private synchronized <T> void setBidderConnectInfoColumnFactory(TableColumn<T, String> column) {
+
+			column.setCellFactory(cellData -> {
+			
+			TableCell<T, String> cell = new TableCell<T, String>(){
+				@Override
+				public void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+				
+					if (item == null || empty) {
+						setText(null);
+					}else {
+						loop:
+						for (int i = 0; mConnectionUserDataList.size() > i; i++) {
+	
+							int len = mConnectionUserDataList.get(i).getUserNo().length;
+	
+							for (int j = 0; len > j; j++) {
+						
+								if (mConnectionUserDataList.get(i).getUserNo()[j].getValue().equals(item)) {
+									
+									if (mConnectionUserDataList.get(i).getStatus()[j].getValue().equals("L")) {
+										setStyle("-fx-background-color: gray;");
+									}else {
+										setStyle("-fx-background-color: white;");
+									}
+									break loop;
+								}
+							}
+						}
+						setText(item);
+					}
+				}
+			};
+			
+			return cell;
+		});
+		
+		}
 
 	/**
 	 * 컬럼 데이터 콤마 표시
