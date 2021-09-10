@@ -29,6 +29,8 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 
 	private int mPriceInt;
 	private boolean isCancelBidding = false;
+	
+	public Bidding() {}
 
 	public Bidding(String auctionHouseCode, String channel, String userNo, String auctionJoinNum, String entryNum,
 			String price, String isNewBid, String biddingTime) {

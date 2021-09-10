@@ -21,6 +21,8 @@ public class BidderConnectInfo implements FromAuctionServer {
 	private String mStatus; // 응찰 상태
 	private String mBidPrice; // 응찰 상태
 
+	public BidderConnectInfo() {}
+	
 	public BidderConnectInfo(String auctionHouseCode, String userNo, String channel, String os, String status,
 			String bidPrice) {
 		mAuctionHouseCode = auctionHouseCode;
