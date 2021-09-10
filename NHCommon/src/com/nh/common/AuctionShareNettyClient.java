@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.common.handlers.AuctionClientDecodedAuctionResultHandler;
 import com.nh.common.handlers.AuctionClientDecodedAuctionStatusHandler;
+import com.nh.common.handlers.AuctionClientDecodedBidderConnectInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedBiddingHandler;
 import com.nh.common.handlers.AuctionClientDecodedCancelBiddingHandler;
 import com.nh.common.handlers.AuctionClientDecodedCheckSessionHandler;
@@ -119,6 +120,7 @@ public class AuctionShareNettyClient {
                             pipeline.addLast(new AuctionClientDecodedAuctionResultHandler(controller)); // 낙유찰 정보
                             pipeline.addLast(new AuctionClientDecodedCancelBiddingHandler(controller)); // 응찰 취소 정보
                             pipeline.addLast(new AuctionClientDecodedRequestAuctionResultHandler(controller)); // 낙유찰 정보
+                            pipeline.addLast(new AuctionClientDecodedBidderConnectInfoHandler(controller)); // 접속자 정보
                             // 요청
 
                             pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));

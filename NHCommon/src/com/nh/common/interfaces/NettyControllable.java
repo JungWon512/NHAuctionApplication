@@ -9,6 +9,7 @@ import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
+import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
@@ -72,4 +73,6 @@ public interface NettyControllable {
     public void exceptionCaught(int port); // 서버와 연결 끊어졌을경우
 
     public void onCheckSession(ChannelHandlerContext ctx, AuctionCheckSession auctionCheckSession); // 경매 서버 접속 유효 확인 요청
+    
+    public void onBidderConnectInfo(BidderConnectInfo bidderConnectInfo); // 경매 서버 접속 유효 확인 요청
 }
