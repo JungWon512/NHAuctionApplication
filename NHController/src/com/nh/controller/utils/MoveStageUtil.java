@@ -249,9 +249,8 @@ public class MoveStageUtil {
 			controller.setConfig(stage,type,auctionRound,listener);
 			openDialog(stage, parent);
 			controller.setOnCloseRequest();
-//			stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
-//			stage.getScene().getRoot().setDisable(true);
-
+			stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
+			stage.getScene().getRoot().setDisable(true);
 
 		} catch (IOException e) {
 			e.printStackTrace();
