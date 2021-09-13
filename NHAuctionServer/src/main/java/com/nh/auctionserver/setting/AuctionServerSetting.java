@@ -2,7 +2,10 @@ package com.nh.auctionserver.setting;
 
 public class AuctionServerSetting {
 	// SSL 적용 여부
-	public static final boolean FLAG_SSL = false;
+	public static final boolean FLAG_SSL = true;
+	// 개발,운영 여부
+	public static final boolean FLAG_PRD = true;
+	
     // 경매 서버 버전정보
     public static final String RELEASE_VERSION_NAME = "0.0.9";
     public static final String RELEASE_VERSION_DATE = "2021.06.11";

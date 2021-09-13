@@ -24,6 +24,13 @@ socketio:
   # Ping message interval (milliseconds), default 25 seconds.Client sends a heartbeat message interval to server
   pingInterval: 25000
   ssl:
-    cert-name: File_www.xne20bw05b.kr_apache.crt
-    key-name: KeyFile_www.xne20bw05b.kr_apache.pem
-    jks-name: www.xne20bw05b.kr.jks
+    dev:
+        cert-name: File_www.xne20bw05b.kr_apache.crt
+        key-name: KeyFile_www.xne20bw05b.kr_apache.pem
+        jks-name: www.xne20bw05b.kr.jks
+        password: ishift7150!
+    prd:
+        cert-name: File_www.cowauction.kr_apache.crt
+        key-name: KeyFile_www.cowauction.kr_apache.pem
+        jks-name: www.cowauction.kr_tomcat.jks
+        password: ishift

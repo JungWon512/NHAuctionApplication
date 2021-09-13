@@ -34,7 +34,6 @@ import com.nh.share.common.models.RequestEntryInfo;
 import com.nh.share.common.models.ResponseBiddingInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
-import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
@@ -78,12 +77,23 @@ public class SocketIOHandler {
 	@Value("${socketio.pingInterval}")
 	private int pingInterval;
 
-	@Value("${socketio.ssl.cert-name}")
-	private String mCertName;
-	@Value("${socketio.ssl.key-name}")
-	private String mKeyName;
-	@Value("${socketio.ssl.jks-name}")
-	private String mJksName;
+	@Value("${socketio.ssl.dev.cert-name}")
+	private String mDevCertName;
+	@Value("${socketio.ssl.dev.key-name}")
+	private String mDevKeyName;
+	@Value("${socketio.ssl.dev.jks-name}")
+	private String mDevJksName;
+	@Value("${socketio.ssl.prd.password}")
+	private String mPrdPassword;
+	
+	@Value("${socketio.ssl.prd.cert-name}")
+	private String mPrdCertName;
+	@Value("${socketio.ssl.prd.key-name}")
+	private String mPrdKeyName;
+	@Value("${socketio.ssl.prd.jks-name}")
+	private String mPrdJksName;
+	@Value("${socketio.ssl.dev.password}")
+	private String mDevPassword;
 
 	private SocketIOServer mSocketIOServer;
 
@@ -107,13 +117,22 @@ public class SocketIOHandler {
 
 	@Bean
 	public SslContext sslContext() {
-		ClassPathResource certPath = new ClassPathResource(mCertName);
-		ClassPathResource keyPath = new ClassPathResource(mKeyName);
+		ClassPathResource certPath = null;
+		ClassPathResource keyPath = null;
+		
+		if (AuctionServerSetting.FLAG_PRD) {
+			certPath = new ClassPathResource(mPrdCertName);
+			keyPath = new ClassPathResource(mPrdKeyName);
+		} else {
+			certPath = new ClassPathResource(mDevCertName);
+			keyPath = new ClassPathResource(mDevKeyName);
+		}
 
 		mSslContext = null;
 		try {
 			// mSslContext = SslContextBuilder.forServer(certPath.getInputStream(),
 			// keyPath.getInputStream()).protocols("TLSv1.3").build();
+			
 			mSslContext = SslContextBuilder.forServer(certPath.getInputStream(), keyPath.getInputStream()).build();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -146,13 +165,28 @@ public class SocketIOHandler {
 		config.setPingInterval(pingInterval);
 
 		if (AuctionServerSetting.FLAG_SSL) {
-			config.setKeyStorePassword("ishift7150!");
-			ClassPathResource jksPath = new ClassPathResource(mJksName);
-			try {
-				config.setKeyStore(jksPath.getInputStream());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (AuctionServerSetting.FLAG_PRD) {
+				// 운영 서버 Keystore Pw
+				config.setKeyStorePassword(mPrdPassword);
+				ClassPathResource jksPath = new ClassPathResource(mPrdJksName);
+				
+				try {
+					config.setKeyStore(jksPath.getInputStream());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				// 개발 서버 Keystore Pw
+				config.setKeyStorePassword(mDevPassword);
+				ClassPathResource jksPath = new ClassPathResource(mDevJksName);
+				
+				try {
+					config.setKeyStore(jksPath.getInputStream());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 
