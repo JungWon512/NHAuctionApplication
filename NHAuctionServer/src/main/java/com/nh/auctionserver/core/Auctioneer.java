@@ -51,7 +51,6 @@ public class Auctioneer {
 	private Map<String, Boolean> mIsRequestAuctionStopMap = new HashMap<String, Boolean>(); // 경매 자동 시작 정지 요청 Flag Map
 	private Map<String, Boolean> mIsAuctionPassMap = new HashMap<String, Boolean>(); // 경매 강제 유찰 처리 Flag Map
 
-	private static AuctionConfig mAuctionConfig = new AuctionConfig(); // 경매 생성시 설정 정보
 	private static Map<String, AuctionState> mAuctionStateMap = null; // 경매 진행 상태, 현재 경매 상황 등 계속 변화하는 정보
 	// 출품 목록
 	private static Map<String, AuctionEntryRepository> mAuctionEntryRepositoryMap = new HashMap<String, AuctionEntryRepository>();

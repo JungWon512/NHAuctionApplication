@@ -707,8 +707,10 @@ public class SocketIOHandler {
 				break;
 			case ResponseBiddingInfo.TYPE:
 				result = new ResponseBiddingInfo(messages[1], messages[2], messages[3], messages[4], messages[5]);
+				break;
 			case RetryTargetInfo.TYPE: // 재경매 대상 정보 전송
 				result = new RetryTargetInfo(messages[1], messages[2], messages[3]);
+				break;
 			default:
 				result = null;
 				break;
