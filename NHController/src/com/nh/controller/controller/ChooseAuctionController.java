@@ -57,9 +57,6 @@ public class ChooseAuctionController implements Initializable {
 	@FXML // 경매 날짜
 	private DatePicker mAuctionDatePicker;
 	
-	//경매 회차 정보
-	private AuctionRound mAuctionRound = null;
-	
 	@FXML
 	private TextField mTestIp, mTestPort;
 
@@ -169,10 +166,10 @@ public class ChooseAuctionController implements Initializable {
 			CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
 			
 			if(!isTest) {
-				MoveStageUtil.getInstance().onConnectServer(mStage, GlobalDefine.AUCTION_INFO.AUCTION_HOST, GlobalDefine.AUCTION_INFO.AUCTION_PORT, GlobalDefine.ADMIN_INFO.adminData.getUserId(),mAuctionRound);
+				MoveStageUtil.getInstance().onConnectServer(mStage, GlobalDefine.AUCTION_INFO.AUCTION_HOST, GlobalDefine.AUCTION_INFO.AUCTION_PORT, GlobalDefine.ADMIN_INFO.adminData.getUserId());
 			}else {
 				if(CommonUtils.getInstance().isValidString(mTestIp.getText()) && CommonUtils.getInstance().isValidString(mTestPort.getText())) {
-					MoveStageUtil.getInstance().onConnectServer(mStage,mTestIp.getText().toString(), Integer.parseInt(mTestPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId(),mAuctionRound);
+					MoveStageUtil.getInstance().onConnectServer(mStage,mTestIp.getText().toString(), Integer.parseInt(mTestPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId());
 				}else {
 					CommonUtils.getInstance().showAlertPopupOneButton(mStage, "IP 또는 PORT 정보를 입력해주세요.", mResMsg.getString("popup.btn.ok"));
 					CommonUtils.getInstance().dismissLoadingDialog();
@@ -200,18 +197,19 @@ public class ChooseAuctionController implements Initializable {
 		auctionRound.setAucObjDsc(Integer.parseInt(aucObjDsc));
 		auctionRound.setNaBzplc(GlobalDefine.ADMIN_INFO.adminData.getNabzplc());
 
-		mAuctionRound = null;
-		mAuctionRound = AuctionRoundMapperService.getInstance().obtainAuctionRoundData(auctionRound);
+		
+		GlobalDefine.AUCTION_INFO.auctionRoundData = null;
+		GlobalDefine.AUCTION_INFO.auctionRoundData = AuctionRoundMapperService.getInstance().obtainAuctionRoundData(auctionRound);
 
-		if(mAuctionRound == null) {
+		if(GlobalDefine.AUCTION_INFO.auctionRoundData == null) {
 			//경매 회차 존재 하지 않음.
 //			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"), mResMsg.getString("popup.btn.ok"));
 			return false;
 		}
 		
-		mLogger.debug("[경매 정보 조회 결과]=> " + mAuctionRound.toString());
-		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, mAuctionRound.getNaBzplc());
-		auctionRound.setNaBzplc(mAuctionRound.getNaBzplc());
+		mLogger.debug("[경매 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
+		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
+		auctionRound.setNaBzplc(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
 
 		int count = EntryInfoMapperService.getInstance().getAllEntryDataCount(auctionRound);
 		

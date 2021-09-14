@@ -85,8 +85,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	protected Stage mStage = null; // 현재 Stage
 
-	protected AuctionRound auctionRound = null; // 경매 회차 정보
-
 	protected SpEntryInfo mCurrentSpEntryInfo = null; // 현재 진행 출품
 
 	protected SpBidding mRank_1_User = null; // 낙찰 될 1순위 회원
@@ -368,7 +366,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 		// 접속자 정보
 		ConnectionInfoMapperService service = new ConnectionInfoMapperService();
 
-		userNum = service.selectConnectionInfo(auctionHouseCode, auctionRound.getAucDt(), String.valueOf(auctionRound.getAucObjDsc()), userMemNum); // 실세사용
+		userNum = service.selectConnectionInfo(auctionHouseCode, GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt(), String.valueOf(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()), userMemNum); // 실세사용
 
 		mLogger.debug("onConnectionInfo - userNum :\t" + userNum);
 
@@ -621,7 +619,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 		SpBidding bidder = spBidding;
 
 		// 최저가 + 상한가
-		int lowPrice = entryInfo.getLowPriceInt() + SettingApplication.getInstance().getCowUpperLimitPrice(auctionRound.getAucObjDsc());
+		int lowPrice = entryInfo.getLowPriceInt() + SettingApplication.getInstance().getCowUpperLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 		// 응찰가
 		int curPrice = bidder.getPriceInt();
 
@@ -669,7 +667,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 				int bidUpr = 0;
 
-				switch (auctionRound.getAucObjDsc()) {
+				switch (GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()) {
 				case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:// 비육우
 					bidUpr = Integer.parseInt(bidder.getPrice().getValue());
 					break;
@@ -988,9 +986,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 	private AucEntrData getCurrentBaseEntrData(boolean isStartOrFinish) {
 		
 		AucEntrData aucEntrData = new AucEntrData();
-		aucEntrData.setNaBzplc(this.auctionRound.getNaBzplc());
-		aucEntrData.setAucObjDsc(this.auctionRound.getAucObjDsc());
-		aucEntrData.setAucDt(this.auctionRound.getAucDt());
+		aucEntrData.setNaBzplc(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
+		aucEntrData.setAucObjDsc(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		aucEntrData.setAucDt(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt());
 		aucEntrData.setOslpNo(mCurrentSpEntryInfo.getOslpNo().getValue());
 		aucEntrData.setAucPrgSq(mCurrentSpEntryInfo.getEntryNum().getValue());
 		
@@ -1026,7 +1024,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 				int bidUpr = 0;
 				
 				if(!isCancel) {
-					switch (auctionRound.getAucObjDsc()) {
+					switch (GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()) {
 						case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:// 비육우
 							bidUpr = bidding.getPriceInt();
 							break;

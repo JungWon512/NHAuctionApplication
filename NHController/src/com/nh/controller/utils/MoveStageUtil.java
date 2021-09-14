@@ -158,14 +158,14 @@ public class MoveStageUtil {
 	 * 
 	 * @param stage
 	 */
-	public synchronized void onConnectServer(Stage chooseAuctionStage, String ip, int port, String id,AuctionRound auctionRound) {
+	public synchronized void onConnectServer(Stage chooseAuctionStage, String ip, int port, String id) {
 
 		try {
 
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("AuctionControllerView.fxml"), getResourceBundle());
 			fxmlLoader.load();
 			AuctionController controller = fxmlLoader.getController();
-			controller.onConnectServer(chooseAuctionStage, fxmlLoader, ip, port, id,auctionRound);
+			controller.onConnectServer(chooseAuctionStage, fxmlLoader, ip, port, id);
 
 		} catch (Exception e) {
 			e.printStackTrace();

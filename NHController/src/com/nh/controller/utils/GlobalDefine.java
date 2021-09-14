@@ -112,6 +112,7 @@ public class GlobalDefine {
 		public static final int MULTIPLICATION_BIDDER_PRICE_1000 = 1000; // 응찰 기본 단위 -비육우
 		public static final int MULTIPLICATION_BIDDER_PRICE_10000 = 10000; // 응찰 기본 단위 -송아지,번식우
 
+		public static final String BIDDER_STATUS_L = "L"; // 응찰자 접속 해제 여부
 	}
 
 	/**
