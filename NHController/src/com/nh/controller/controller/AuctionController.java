@@ -1021,26 +1021,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			if (btnResult.get().getButtonData() == ButtonData.LEFT) {
 
-				CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.app.closeing"));
-
 				isApplicationClosePopup = true;
 
-				if (AuctionDelegate.getInstance().isActive()) {
-					AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
-						@Override
-						public void onShutDown(int port) {
-							Platform.runLater(() -> {
-								CommonUtils.getInstance().dismissLoadingDialog();
-								MoveStageUtil.getInstance().moveAuctionType(mStage);
-							});
-						}
-					});
-				} else {
-					Platform.runLater(() -> {
-						CommonUtils.getInstance().dismissLoadingDialog();
-						MoveStageUtil.getInstance().moveAuctionType(mStage);
-					});
-				}
+				onServerAndClose();
+				
 			} else {
 
 				if (!SettingApplication.getInstance().isSingleAuction()) {
@@ -1051,6 +1035,28 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		});
 
+	}
+	
+	private void onServerAndClose() {
+		
+		CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.app.closeing"));
+
+		if (AuctionDelegate.getInstance().isActive()) {
+			AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+				@Override
+				public void onShutDown(int port) {
+					Platform.runLater(() -> {
+						CommonUtils.getInstance().dismissLoadingDialog();
+						MoveStageUtil.getInstance().moveAuctionType(mStage);
+					});
+				}
+			});
+		} else {
+			Platform.runLater(() -> {
+				CommonUtils.getInstance().dismissLoadingDialog();
+				MoveStageUtil.getInstance().moveAuctionType(mStage);
+			});
+		}
 	}
 
 	/**
@@ -1639,24 +1645,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					isApplicationClosePopup = true;
 
-					CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.app.closeing"));
-
-					if (AuctionDelegate.getInstance().isActive()) {
-						AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
-							@Override
-							public void onShutDown(int port) {
-								Platform.runLater(() -> {
-									CommonUtils.getInstance().dismissLoadingDialog();
-									MoveStageUtil.getInstance().moveAuctionType(mStage);
-								});
-							}
-						});
-					} else {
-						Platform.runLater(() -> {
-							CommonUtils.getInstance().dismissLoadingDialog();
-							MoveStageUtil.getInstance().moveAuctionType(mStage);
-						});
-					}
+					onServerAndClose();
+					
 				}
 
 			});
@@ -1682,6 +1672,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 	}
 
+	@Override
+	public void onChannelInactive(int port) {
+		mLogger.debug("onChannelInactive : " + port);
+		// ESC 눌러서 임의로 접속 종료시 접속 해제 팝업 노출 X
+		if (isApplicationClosePopup) {
+			return;
+		}
+		Platform.runLater(() -> {
+			
+			Optional<ButtonType> btnResult = showAlertPopupOneButton(mResMsg.getString("msg.disconnection"));
+
+			if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+				onServerAndClose();
+			}
+			
+		});
+	}
+	
 	/**
 	 * 사운드경매(자동경매) 일정 대기시간 후 경매 카운트
 	 */
@@ -3097,6 +3105,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			break;
 		}
-
 	}
+	
 }

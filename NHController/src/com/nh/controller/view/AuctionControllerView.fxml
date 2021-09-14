@@ -258,13 +258,13 @@
                                 <columns>
                                   <TableColumn fx:id="mFinishedEntryNumColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="번호" />
                                   <TableColumn fx:id="mFinishedExhibitorColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="출하주" />
-                                    <TableColumn fx:id="mFinishedGenderColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="성별" />
+                                    <TableColumn fx:id="mFinishedGenderColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="성별" />
                                     <TableColumn fx:id="mFinishedMotherColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="혈통" />
                                     <TableColumn fx:id="mFinishedMatimeColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="산차" />
                                     <TableColumn fx:id="mFinishedPasgQcnColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="계대" />
                                     <TableColumn fx:id="mFinishedWeightColumn" maxWidth="80.0" minWidth="80.0" text="중량(kg)" />
-                                    <TableColumn fx:id="mFinishedLowPriceColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="최저가" />
-                                    <TableColumn fx:id="mFinishedSuccessPriceColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="경락가" />
+                                    <TableColumn fx:id="mFinishedLowPriceColumn" maxWidth="80.0" minWidth="80.0" text="최저가" />
+                                    <TableColumn fx:id="mFinishedSuccessPriceColumn" maxWidth="80.0" minWidth="80.0" text="경락가" />
                                     <TableColumn fx:id="mFinishedSuccessfulBidderColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="낙찰" />
                                     <TableColumn fx:id="mFinishedResultColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="결과" />
                                     <TableColumn fx:id="mFinishedNoteColumn" minWidth="130.0" prefWidth="130.0" text="비고" />
@@ -294,7 +294,7 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="mCurGenterLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="current-auction-row" HBox.hgrow="ALWAYS">
+                              <Label fx:id="mCurGenterLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" styleClass="current-auction-row" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -319,12 +319,12 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="mCurLowPriceLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="current-auction-row" HBox.hgrow="ALWAYS">
+                              <Label fx:id="mCurLowPriceLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" styleClass="current-auction-row" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="mCurSuccessPriceLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="current-auction-row" HBox.hgrow="ALWAYS">
+                              <Label fx:id="mCurSuccessPriceLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" styleClass="current-auction-row" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -368,13 +368,13 @@
                                  <columns>
                                     <TableColumn fx:id="mWaitEntryNumColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="번호" />
                                     <TableColumn fx:id="mWaitExhibitorColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="출하주" />
-                                    <TableColumn fx:id="mWaitGenderColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="성별" />
+                                    <TableColumn fx:id="mWaitGenderColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="성별" />
                                     <TableColumn fx:id="mWaitMotherColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="혈통" />
                                     <TableColumn fx:id="mWaitMatimeColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="산차" />
                                     <TableColumn fx:id="mWaitPasgQcnColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="계대" />
                                     <TableColumn fx:id="mWaitWeightColumn" maxWidth="80.0" minWidth="80.0" text="중량(kg)" />
-                                    <TableColumn fx:id="mWaitLowPriceColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="최저가" />
-                                    <TableColumn fx:id="mWaitSuccessPriceColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="경락가" />
+                                    <TableColumn fx:id="mWaitLowPriceColumn" maxWidth="80.0" minWidth="80.0" text="최저가" />
+                                    <TableColumn fx:id="mWaitSuccessPriceColumn" maxWidth="80.0" minWidth="80.0" text="경락가" />
                                     <TableColumn fx:id="mWaitSuccessfulBidderColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="낙찰" />
                                     <TableColumn fx:id="mWaitResultColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="결과" />
                                     <TableColumn fx:id="mWaitNoteColumn" minWidth="130.0" prefWidth="130.0" text="비고" />
@@ -404,7 +404,7 @@
                      <children>
                         <ImageView fx:id="mImgMessage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../resource/images/ic_cow.png" />
+                              <Image url="@../resource/images/ic_msg_s.png" />
                            </image>
                         </ImageView>
                         <ImageView fx:id="mBtnTest" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -478,7 +478,7 @@
                            <graphic>
                               <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -495,7 +495,7 @@
                            <graphic>
                               <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>

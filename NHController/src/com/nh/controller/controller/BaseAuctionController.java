@@ -117,6 +117,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 	
 	protected boolean isResultCompleteFlag = false; // 낙찰/유찰 결과 ~ 다음 경매 준비까지 버튼 눌림 방지 방어 플래그
 
+	private boolean isConnectionTest = true;
+	
 	public BaseAuctionController() {
 		init();
 	}
@@ -355,6 +357,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 		mLogger.debug("onFavoriteEntryInfo : " + favoriteEntryInfo.getEncodedMessage());
 		addLogItem(favoriteEntryInfo.getEncodedMessage());
 	}
+	
+	
 
 	@Override
 	public void onConnectionInfo(ConnectionInfo connectionInfo) {
@@ -362,6 +366,13 @@ public abstract class BaseAuctionController implements NettyControllable {
 		String auctionHouseCode = connectionInfo.getAuctionHouseCode();
 		String userMemNum = connectionInfo.getUserMemNum();
 		String userNum;
+
+		//테스트 접속
+		if(isConnectionTest) {
+			// 성공or실패 서버 전송
+			mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_SUCCESS, userMemNum, userMemNum)));
+			return;
+		}
 
 		// 접속자 정보
 		ConnectionInfoMapperService service = new ConnectionInfoMapperService();
@@ -379,7 +390,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 			// 성공
 			resultCode = GlobalDefineCode.CONNECT_SUCCESS;
 		}
-
+		
 		// 성공or실패 서버 전송
 		mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, resultCode, userMemNum, userNum)));
 	}
@@ -485,13 +496,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	@Override
 	public void onChannelInactive(int port) {
-		mLogger.debug("onChannelInactive : " + port);
-		// ESC 눌러서 임의로 접속 종료시 접속 해제 팝업 노출 X
-		if (isApplicationClosePopup) {
-			return;
-		}
-		addLogItem(mResMsg.getString("msg.disconnection"));
-		Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("msg.disconnection")));
 	}
 
 	@Override
