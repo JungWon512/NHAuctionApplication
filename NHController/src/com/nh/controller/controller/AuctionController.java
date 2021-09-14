@@ -240,8 +240,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단 UI
 		// 표시 숨김.
 
-		mBtnStopSound.setOnMouseClicked(event -> test());
-//		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 		mBtnIntroSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
 		mBtnBuyerSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER));
 		mBtnGuideSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE));
@@ -255,58 +254,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnReStart.setOnMouseClicked(event -> onReStart());
 		mBtnPause.setOnMouseClicked(event -> onPause());
 
-	}
-
-	int tsetin = 1;
-	boolean testboo = false;
-
-	private void test() {
-
-//		private String mAuctionHouseCode; // 거점코드
-//		private String mUserNo; // 회원번호
-//		private String mChannel; // 접속 요청 채널
-//		private String mOS; // 사용 채널
-//		private String mStatus; // 응찰 상태
-//		private String mBidPrice; // 응찰 상태
-//		
-
-		BidderConnectInfo bidder = new BidderConnectInfo();
-		bidder.setAuctionHouseCode("" + tsetin);
-		bidder.setUserNo("" + tsetin);
-		bidder.setStatus("" + tsetin);
-		bidder.setChannel("" + tsetin);
-
-		onBidderConnectInfo(bidder);
-
-		tsetin++;
-
-//		if(isAuctionComplete) {
-//			isAuctionComplete = false;
-//		}else {
-//			isAuctionComplete = true;
-//		}
-
-//
-//		setBidding(new Bidding(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), "AND", "111", "111", "1", "3710000", "N", "20210624123412789"));
-//
-//		BidderConnectInfo bidding = new BidderConnectInfo("TEST", Integer.toString(tsetin), "1", "1", "L", "1");
-//
-//		for (int i = 0; mConnectionUserDataList.size() > i; i++) {
-//
-//			int len = mConnectionUserDataList.get(i).getUserNo().length;
-//
-//			for (int j = 0; len > j; j++) {
-//				if (mConnectionUserDataList.get(i).getUserNo()[j].getValue().equals(bidding.getUserNo())) {
-//
-//					mConnectionUserDataList.get(i).getStatus()[j] = new SimpleStringProperty(bidding.getStatus());
-//					System.out.println("!!!!!!!!!!!!!!!!!!! " + mConnectionUserDataList.get(i).getStatus()[j]);
-//					break;
-//				}
-//			}
-//		}
-//		mConnectionUserTableView.refresh();
-//		mWaitTableView.refresh();
-//		tsetin += 5;
 	}
 
 	/**
@@ -401,33 +348,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mConnectionUserColumn_3.setCellValueFactory(cellData -> cellData.getValue().getUserNo()[2]);
 		mConnectionUserColumn_4.setCellValueFactory(cellData -> cellData.getValue().getUserNo()[3]);
 		mConnectionUserColumn_5.setCellValueFactory(cellData -> cellData.getValue().getUserNo()[4]);
-
-//		setBidderConnectInfoColumnFactory(mConnectionUserColumn_1);
-//		setBidderConnectInfoColumnFactory(mConnectionUserColumn_2);
-//		setBidderConnectInfoColumnFactory(mConnectionUserColumn_3);
-//		setBidderConnectInfoColumnFactory(mConnectionUserColumn_4);
-//		setBidderConnectInfoColumnFactory(mConnectionUserColumn_5);
-
-//		mConnectionUserColumn_2.setCellFactory(e -> new TableCell<SpBidderConnectInfo, String>() {
-//			@Override
-//			public void updateItem(String item, boolean empty) {
-//				super.updateItem(item, empty);
-//				setStyle(null);
-//				setTooltip(null);
-//				if (item == null || empty) {
-//					setText(null);
-//				} else {
-//
-//					setText(item);
-//
-//					if (item.equals("6")) {
-//						setStyle("-fx-background-color: red;");
-//					}
-//
-//				}
-//			}
-//		});
-
 		// [e] binding
 
 		// holder default msg
@@ -437,7 +357,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBiddingInfoTableView.setPlaceholder(new Label(mResMsg.getString("msg.bidder.default")));
 
 //		initFinishedEntryDataList();
+		//응찰 현황
 		initBiddingInfoDataList();
+		//접속 현황
 		initConnectionUserDataList();
 
 	}
@@ -712,7 +634,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 접속자 현황 set
 	 */
 	@SuppressWarnings("unchecked")
-	private void initConnectionUserDataList() {
+	private synchronized void initConnectionUserDataList() {
 		
 		mConnectionUserDataList.clear();
 
@@ -2947,46 +2869,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return true;
 		}
 	}
-
-	private synchronized <T> void setBidderConnectInfoColumnFactory(TableColumn<T, String> column) {
-
-		column.setCellFactory(cellData -> {
-
-			TableCell<T, String> cell = new TableCell<T, String>() {
-				@Override
-				public void updateItem(String item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if (item == null || empty) {
-						setText(null);
-					} else {
-						loop: for (int i = 0; mConnectionUserDataList.size() > i; i++) {
-
-							int len = mConnectionUserDataList.get(i).getUserNo().length;
-
-							for (int j = 0; len > j; j++) {
-
-								if (mConnectionUserDataList.get(i).getUserNo()[j].getValue().equals(item)) {
-
-									if (mConnectionUserDataList.get(i).getStatus()[j].getValue().equals("L")) {
-										setStyle("-fx-background-color: gray;");
-									} else {
-										setStyle("-fx-background-color: white;");
-									}
-									break loop;
-								}
-							}
-						}
-						setText(item);
-					}
-				}
-			};
-
-			return cell;
-		});
-
-	}
-
 	/**
 	 * 컬럼 데이터 콤마 표시
 	 *
