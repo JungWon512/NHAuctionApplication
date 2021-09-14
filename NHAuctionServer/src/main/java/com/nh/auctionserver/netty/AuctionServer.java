@@ -1096,10 +1096,17 @@ public class AuctionServer {
 						break;
 					}
 				} else {
-					if (JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken())
-							.equals(closeMember)) {
-						channelId = (ChannelId) key;
-						break;
+					if (AuctionServerSetting.FLAG_TEST_MODE) {
+						if (mConnectorInfoMap.get(key).getUserMemNum().equals(closeMember)) {
+							channelId = (ChannelId) key;
+							break;
+						}
+					} else {
+						if (JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken())
+								.equals(closeMember)) {
+							channelId = (ChannelId) key;
+							break;
+						}
 					}
 				}
 			} catch (Exception e) {

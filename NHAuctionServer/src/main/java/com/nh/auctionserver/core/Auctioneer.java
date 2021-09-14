@@ -934,8 +934,8 @@ public class Auctioneer {
 		if (mAuctionServer != null) {
 			mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
 			// 낙유찰 정보 전송 요청
-			mAuctionServer.itemAdded(new RequestAuctionResult(auctionHouseCode,
-					mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEntryNum()).getEncodedMessage());
+//			mAuctionServer.itemAdded(new RequestAuctionResult(auctionHouseCode,
+//					mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEntryNum()).getEncodedMessage());
 		}
 	}
 }

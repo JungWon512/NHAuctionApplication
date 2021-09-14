@@ -83,8 +83,8 @@ public class SocketIOHandler {
 	private String mDevKeyName;
 	@Value("${socketio.ssl.dev.jks-name}")
 	private String mDevJksName;
-	@Value("${socketio.ssl.prd.password}")
-	private String mPrdPassword;
+	@Value("${socketio.ssl.dev.password}")
+	private String mDevPassword;
 	
 	@Value("${socketio.ssl.prd.cert-name}")
 	private String mPrdCertName;
@@ -92,8 +92,8 @@ public class SocketIOHandler {
 	private String mPrdKeyName;
 	@Value("${socketio.ssl.prd.jks-name}")
 	private String mPrdJksName;
-	@Value("${socketio.ssl.dev.password}")
-	private String mDevPassword;
+	@Value("${socketio.ssl.prd.password}")
+	private String mPrdPassword;
 
 	private SocketIOServer mSocketIOServer;
 

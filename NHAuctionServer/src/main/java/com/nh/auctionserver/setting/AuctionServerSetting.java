@@ -5,6 +5,8 @@ public class AuctionServerSetting {
 	public static final boolean FLAG_SSL = true;
 	// 개발,운영 여부
 	public static final boolean FLAG_PRD = true;
+	// 부하 테스트 모드
+	public static final boolean FLAG_TEST_MODE = true;
 	
     // 경매 서버 버전정보
     public static final String RELEASE_VERSION_NAME = "0.0.9";

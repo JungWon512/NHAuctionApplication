@@ -45,7 +45,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	private String mInitPrice; // 최초최저낙찰한도금액
 	private String mLowPrice; // 최저낙찰한도금액
 	private String mNote; // 비고내용
-	private String mAuctionResult; // 낙유찰결과(01:낙찰/02:유찰)
+	private String mAuctionResult; // 낙유찰결과(22:낙찰/23:유찰)
 	private String mAuctionSucBidder; // 낙찰자
 	private String mAuctionBidPrice; // 응찰금액
 	private String mAuctionBidDateTime; // 응찰일시

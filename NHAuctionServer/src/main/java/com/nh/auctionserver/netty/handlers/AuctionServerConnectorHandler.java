@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
+import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
@@ -68,7 +69,12 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 	protected void channelRead0(ChannelHandlerContext ctx, ConnectionInfo connectionInfo) throws Exception {
 		String userMemNum = null;
 
-		userMemNum = JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken());
+		if(AuctionServerSetting.FLAG_TEST_MODE) {
+			userMemNum = connectionInfo.getUserMemNum();
+		} else {
+			userMemNum = JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken());
+		}
+		
 		
 		// 제어 프로그램 채널 일 경우 토큰과 무관하게 userMemNum 생성 처리 필요
 		if(connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
@@ -96,8 +102,14 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 							mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
 
 							// Connector Channel Map 등록
-							mConnectionChannelInfoMap
-									.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+							if (AuctionServerSetting.FLAG_TEST_MODE) {
+								mConnectionChannelInfoMap.put(
+										connectionInfo.getUserMemNum(), ctx);
+							} else {
+								mConnectionChannelInfoMap.put(
+										JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
+										ctx);
+							}
 						}
 					} else {
 						ctx.channel()
@@ -186,6 +198,19 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 															.getAuctionState(connectionInfo.getAuctionHouseCode())
 															.getAuctionStatus().getEncodedMessage() + "\r\n");
 										}
+									}
+								}
+								
+								// 접속자 정보 최초 전송
+								for (Object mapKey : mConnectionInfoMap.keySet()) {
+									if (mConnectionInfoMap.get(mapKey).getAuctionHouseCode().equals(connectionInfo.getAuctionHouseCode())
+											&& mConnectionInfoMap.get(mapKey).getChannel()
+													.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+										ctx.channel()
+												.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(mapKey).getAuctionHouseCode(),
+														mConnectionInfoMap.get(mapKey).getAuctionJoinNum(),
+														mConnectionInfoMap.get(mapKey).getChannel(), mConnectionInfoMap.get(mapKey).getOS(),
+														"N", "0").getEncodedMessage() + "\r\n");
 									}
 								}
 							}
@@ -502,8 +527,12 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 			if(mConnectionInfoMap.get(ctx.channel().id()).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
 				closeMember = mConnectionInfoMap.get(ctx.channel().id()).getAuctionHouseCode() + "_" + mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
 			} else {
-				closeMember = JwtCertTokenUtils.getInstance()
-						.getUserMemNum(mConnectionInfoMap.get(ctx.channel().id()).getAuthToken());
+				if (AuctionServerSetting.FLAG_TEST_MODE) {
+					closeMember = mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
+				} else {
+					closeMember = JwtCertTokenUtils.getInstance()
+							.getUserMemNum(mConnectionInfoMap.get(ctx.channel().id()).getAuthToken());
+				}
 			}
 
 			mAuctionServer
