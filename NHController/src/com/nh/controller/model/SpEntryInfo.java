@@ -504,7 +504,7 @@ public class SpEntryInfo implements FromAuctionController {
                 getMotherObjNum().getValue(), AuctionShareSetting.DELIMITER, getMatime().getValue(), AuctionShareSetting.DELIMITER, getMaMonth().getValue(), AuctionShareSetting.DELIMITER, getPasgQcn().getValue(), AuctionShareSetting.DELIMITER, getObjIdNum().getValue(), AuctionShareSetting.DELIMITER,
                 getObjRegNum().getValue(), AuctionShareSetting.DELIMITER, getObjRegTypeNum().getValue(), AuctionShareSetting.DELIMITER, getRgnName().getValue(), AuctionShareSetting.DELIMITER, getDnaYn().getValue(), AuctionShareSetting.DELIMITER, getIsNew().getValue(), AuctionShareSetting.DELIMITER,
                 getWeight().getValue(), AuctionShareSetting.DELIMITER, getInitPrice().getValue(), AuctionShareSetting.DELIMITER, getLowPrice().getValue(), AuctionShareSetting.DELIMITER, getNote().getValue(), AuctionShareSetting.DELIMITER, getAuctionResult().getValue(), AuctionShareSetting.DELIMITER,
-                getAuctionSucBidder().getValue(), AuctionShareSetting.DELIMITER, getAuctionBidDateTime().getValue(), AuctionShareSetting.DELIMITER, getNote().getValue(), AuctionShareSetting.DELIMITER, getIsLastEntry().getValue());
+                getAuctionSucBidder().getValue(), AuctionShareSetting.DELIMITER, getAuctionBidDateTime().getValue(), AuctionShareSetting.DELIMITER, getAuctionBidDateTime().getValue(), AuctionShareSetting.DELIMITER, getIsLastEntry().getValue());
     }
 
     @Override
