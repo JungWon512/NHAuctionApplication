@@ -94,7 +94,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -103,7 +103,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -124,7 +124,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -133,7 +133,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -154,7 +154,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -163,7 +163,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -184,7 +184,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -193,7 +193,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -214,7 +214,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -223,7 +223,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -244,7 +244,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -253,7 +253,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -270,7 +270,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -279,7 +279,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -296,7 +296,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -305,7 +305,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -322,7 +322,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -331,7 +331,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -348,7 +348,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -357,7 +357,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -374,7 +374,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -383,7 +383,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -400,7 +400,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -409,7 +409,7 @@
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/ic_close.png" />
+                                    <Image url="@../resource/images/ic_pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
