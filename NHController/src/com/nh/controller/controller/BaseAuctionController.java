@@ -116,8 +116,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 	private List<SpBidding> mRankBiddingDataList; // 랭킹 계산
 	
 	protected boolean isResultCompleteFlag = false; // 낙찰/유찰 결과 ~ 다음 경매 준비까지 버튼 눌림 방지 방어 플래그
-
-	private boolean isConnectionTest = true;
 	
 	public BaseAuctionController() {
 		init();
@@ -368,7 +366,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 		String userNum;
 
 		//테스트 접속
-		if(isConnectionTest) {
+		if(GlobalDefine.APPLICATION_INFO.isTestMode) {
 			// 성공or실패 서버 전송
 			mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_SUCCESS, userMemNum, userMemNum)));
 			return;

@@ -20,7 +20,8 @@ public class GlobalDefine {
 		public static final String RELEASE_VERION = "V1.0.7"; // application 버전
 
 		public static final String RELEASE_DATE = "20201129"; // 업데이트 날짜
-
+		
+		public static boolean isTestMode = false;
 	}
 
 	/**

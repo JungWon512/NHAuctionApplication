@@ -486,7 +486,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </HBox.margin>
                         </Button>
-                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="44.0" prefHeight="44.0" styleClass="contents-auction-info-column-style-3" text="접속 현황" HBox.hgrow="ALWAYS">
+                        <Label alignment="CENTER" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="44.0" prefHeight="44.0" styleClass="contents-auction-info-column-style-3" text="접속 현황" HBox.hgrow="ALWAYS">
                            <font>
                               <Font size="18.0" />
                            </font>
