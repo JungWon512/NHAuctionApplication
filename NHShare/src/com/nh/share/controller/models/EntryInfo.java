@@ -35,7 +35,7 @@ public class EntryInfo implements FromAuctionController {
 	private String mMotherObjNum; // 어미축산개체관리번호
 	private String mMotherCowName; // 혈통명
 	private String mMaTime; // 산차
-	private String mMaMonth; // 임신개월수
+	private int mMaMonth; // 임신개월수
 	private String mPasgQcn; // 계대
 	private String mObjIdNum; // 개체식별번호
 	private String mObjRegNum; // 축산개체종축등록번호
@@ -44,8 +44,9 @@ public class EntryInfo implements FromAuctionController {
 	private String mDnaYn; // 친자검사결과여부
 	private String mIsNew; // 신규여부
 	private String mWeight; // 우출하중량
-	private String mInitPrice; // 최초최저낙찰한도금액
-	private String mLowPrice; // 최저낙찰한도금액
+	private int mInitPrice; // 최초최저낙찰한도금액
+	private int mLowPrice; // 최저낙찰한도금액
+	private int mSraSbidUpPrice; // 축산낙찰단가
 	private String mNote; // 비고내용
 	private String mAucDt; // 경매일
 	private String mOslpNo; // 원표 번호
@@ -54,12 +55,12 @@ public class EntryInfo implements FromAuctionController {
 	
 	private String mAuctionResult; // 낙유찰결과 (11 대기 ,22 낙찰 ,23 보류)
 	private String mAuctionSucBidder; // 낙찰자
-	private String mAuctionBidPrice; // 응찰금액/낙찰금액
+	private int mAuctionBidPrice; // 응찰금액/낙찰금액
 	private String mAuctionBidDateTime; // 응찰일시
 
 	private String mLsChgDtm; // 최종변경일시
 	private String mLsCmeNo; // 최종변경자개인번호
-	private String mLwprChgNt; // 최저가 변경 횟수
+	private int mLwprChgNt; // 최저가 변경 횟수
 
 	private String mIsLastEntry; // 마지막 출품 여부
 
@@ -88,7 +89,7 @@ public class EntryInfo implements FromAuctionController {
 		mMotherTypeCode = motherTypeCode;
 		mMotherObjNum = motherObjNum;
 		mMaTime = maTime;
-		mMaMonth = maMonth;
+		mMaMonth = Integer.parseInt(maMonth);
 		mPasgQcn = pasgQcn;
 		mObjIdNum = objIdNum;
 		mObjRegNum = objRegNum;
@@ -97,12 +98,12 @@ public class EntryInfo implements FromAuctionController {
 		mDnaYn = dnaYn;
 		mIsNew = isNew;
 		mWeight = weight;
-		mInitPrice = initPrice;
-		mLowPrice = lowPrice;
+		mInitPrice = Integer.parseInt(initPrice);
+		mLowPrice = Integer.parseInt(lowPrice);
 		mNote = note;
 		mAuctionResult = auctionResult;
 		mAuctionSucBidder = auctionSucBidder;
-		mAuctionBidPrice = auctionBidPrice;
+		mAuctionBidPrice = Integer.parseInt(auctionBidPrice);
 		mAuctionBidDateTime = auctionBidDateTime;
 		mIsLastEntry = isLastEntry;
 	}
@@ -124,7 +125,7 @@ public class EntryInfo implements FromAuctionController {
 		mMotherTypeCode = messages[14];
 		mMotherObjNum = messages[15];
 		mMaTime = messages[16];
-		mMaMonth = messages[17];
+		mMaMonth = Integer.parseInt(messages[17]);
 		mPasgQcn = messages[18];
 		mObjIdNum = messages[19];
 		mObjRegNum = messages[20];
@@ -133,12 +134,12 @@ public class EntryInfo implements FromAuctionController {
 		mDnaYn = messages[23];
 		mIsNew = messages[24];
 		mWeight = messages[25];
-		mInitPrice = messages[26];
-		mLowPrice = messages[27];
+		mInitPrice = Integer.parseInt(messages[26]);
+		mLowPrice = Integer.parseInt(messages[27]);
 		mNote = messages[28];
 		mAuctionResult = messages[29];
 		mAuctionSucBidder = messages[30];
-		mAuctionBidPrice = messages[31];
+		mAuctionBidPrice = Integer.parseInt(messages[31]);
 		mAuctionBidDateTime = messages[32];
 		mIsLastEntry = messages[33];
 	}
@@ -276,11 +277,11 @@ public class EntryInfo implements FromAuctionController {
 		this.mMaTime = maTime;
 	}
 
-	public String getMaMonth() {
+	public int getMaMonth() {
 		return mMaMonth;
 	}
 
-	public void setMatime(String maMonth) {
+	public void setMatime(int maMonth) {
 		this.mMaMonth = maMonth;
 	}
 
@@ -348,19 +349,19 @@ public class EntryInfo implements FromAuctionController {
 		this.mWeight = mWeight;
 	}
 
-	public String getInitPrice() {
+	public int getInitPrice() {
 		return mInitPrice;
 	}
 
-	public void setInitPrice(String mInitPrice) {
+	public void setInitPrice(int mInitPrice) {
 		this.mInitPrice = mInitPrice;
 	}
 
-	public String getLowPrice() {
+	public int getLowPrice() {
 		return mLowPrice;
 	}
 
-	public void setLowPrice(String mLowPrice) {
+	public void setLowPrice(int mLowPrice) {
 		this.mLowPrice = mLowPrice;
 	}
 
@@ -388,11 +389,11 @@ public class EntryInfo implements FromAuctionController {
 		this.mAuctionSucBidder = auctionSucBidder;
 	}
 
-	public String getAuctionBidPrice() {
+	public int getAuctionBidPrice() {
 		return mAuctionBidPrice;
 	}
 
-	public void setAuctionBidPrice(String auctionBidPrice) {
+	public void setAuctionBidPrice(int auctionBidPrice) {
 		this.mAuctionBidPrice = auctionBidPrice;
 	}
 
@@ -436,11 +437,11 @@ public class EntryInfo implements FromAuctionController {
 		this.mLsCmeNo = mLsCmeNo;
 	}
 
-	public String getLwprChgNt() {
+	public int getLwprChgNt() {
 		return mLwprChgNt;
 	}
 
-	public void setLwprChgNt(String mLwprChgNt) {
+	public void setLwprChgNt(int mLwprChgNt) {
 		this.mLwprChgNt = mLwprChgNt;
 	}
 	
@@ -478,6 +479,12 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setMotherCowName(String mMotherCowName) {
 		this.mMotherCowName = mMotherCowName;
+	}
+	public int getSraSbidUpPrice() {
+		return mSraSbidUpPrice;
+	}
+	public void setSraSbidUpPrice(int mSraSbidUpPrice) {
+		this.mSraSbidUpPrice = mSraSbidUpPrice;
 	}
 
 	@Override

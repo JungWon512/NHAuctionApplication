@@ -44,6 +44,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	private String mWeight; // 우출하중량
 	private String mInitPrice; // 최초최저낙찰한도금액
 	private String mLowPrice; // 최저낙찰한도금액
+	private String mSraSbidUpPrice; // 축산낙찰단가
 	private String mNote; // 비고내용
 	private String mAuctionResult; // 낙유찰결과(22:낙찰/23:유찰)
 	private String mAuctionSucBidder; // 낙찰자
@@ -145,7 +146,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mMotherTypeCode = entryInfo.getMotherTypeCode();
 		mMotherObjNum = entryInfo.getMotherObjNum();
 		mMaTime = entryInfo.getMaTime();
-		mMaMonth = entryInfo.getMaMonth();
+		mMaMonth = Integer.toString(entryInfo.getMaMonth());
 		mPasgQcn = entryInfo.getPasgQcn();
 		mObjIdNum = entryInfo.getObjIdNum();
 		mObjRegNum = entryInfo.getObjRegNum();
@@ -154,14 +155,15 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mDnaYn = entryInfo.getDnaYn();
 		mIsNew = entryInfo.getIsNew();
 		mWeight = entryInfo.getWeight();
-		mInitPrice = entryInfo.getInitPrice();
-		mLowPrice = entryInfo.getLowPrice();
+		mInitPrice =  Integer.toString(entryInfo.getInitPrice());
+		mLowPrice = Integer.toString(entryInfo.getLowPrice());
 		mNote = entryInfo.getNote();
 		mAuctionResult = entryInfo.getAuctionResult();
 		mAuctionSucBidder = entryInfo.getAuctionSucBidder();
-		mAuctionBidPrice = entryInfo.getAuctionBidPrice();
+		mAuctionBidPrice = Integer.toString(entryInfo.getAuctionBidPrice());
 		mAuctionBidDateTime = entryInfo.getAuctionBidDateTime();
 		mIsLastEntry = entryInfo.getIsLastEntry();
+		mSraSbidUpPrice = Integer.toString(entryInfo.getSraSbidUpPrice());
 	}
 
 	public String getAuctionHouseCode() {
@@ -426,6 +428,13 @@ public class CurrentEntryInfo implements FromAuctionServer {
 
 	public void setIsLastEntry(String mIsLastEntry) {
 		this.mIsLastEntry = mIsLastEntry;
+	}
+	public String getSraSbidUpPrice() {
+		return mSraSbidUpPrice;
+	}
+
+	public void setSraSbidUpPrice(String mSraSbidUpPrice) {
+		this.mSraSbidUpPrice = mSraSbidUpPrice;
 	}
 
 	@Override
