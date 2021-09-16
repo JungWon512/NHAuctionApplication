@@ -1,7 +1,5 @@
 package com.nh.controller.utils;
 
-import java.util.Arrays;
-
 import com.nh.controller.model.AdminData;
 import com.nh.controller.model.AuctionRound;
 
@@ -21,7 +19,7 @@ public class GlobalDefine {
 
 		public static final String RELEASE_DATE = "20201129"; // 업데이트 날짜
 		
-		public static boolean isTestMode = false;
+		public static boolean isTestMode = false;		//테스트 플래그
 	}
 
 	/**
@@ -80,8 +78,8 @@ public class GlobalDefine {
 		
 		public static AuctionRound auctionRoundData = null;
 		
-//		 public static final String AUCTION_HOST = "192.168.0."; // Server Host default
-		public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
+		 public static final String AUCTION_HOST = "192.168.0."; // Server Host default
+//		public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
 //		public static final String AUCTION_HOST = "192.168.0.13"; // Server Host 도히꺼
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
@@ -110,10 +108,14 @@ public class GlobalDefine {
 		public static final int AUCTION_OBJ_DSC_2 = 2; // 경매 구분 - 비육우
 		public static final int AUCTION_OBJ_DSC_3 = 3; // 경매 구분 - 번육우
 
-		public static final int MULTIPLICATION_BIDDER_PRICE_1000 = 1000; // 응찰 기본 단위 -비육우
+		public static final int MULTIPLICATION_BIDDER_PRICE_1000 = 1; // 응찰 기본 단위 -비육우
 		public static final int MULTIPLICATION_BIDDER_PRICE_10000 = 10000; // 응찰 기본 단위 -송아지,번식우
 
 		public static final String BIDDER_STATUS_L = "L"; // 응찰자 접속 해제 여부
+		
+		public static final String LOG_AUCTION_START = "0"; 		// 출품 경매 시작 로그 기본값
+		public static final String LOG_AUCTION_FINISH = "99999999"; // 출품 경매 종료 로그 기본값
+		
 	}
 
 	/**

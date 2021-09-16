@@ -181,8 +181,8 @@ public class EntryListController implements Initializable {
 		mMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
 		mPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
 		mWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
-		mLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
-		mSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionBidPrice());
+		mLowPriceColumn.setCellValueFactory(cellData ->  cellData.getValue().getOriLowPrice());
+		mSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSraSbidUpPrice());
 		mSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder());
 		mResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
@@ -246,8 +246,14 @@ public class EntryListController implements Initializable {
 		if (!CommonUtils.getInstance().isListEmpty(mEntryDataList)) {
 
 			for (SpEntryInfo spEntryInfo : mEntryDataList) {
+				
+				if(spEntryInfo.getLowPriceInt() <= 0) {
+					continue;
+				}
 
-				if (spEntryInfo.getLowPriceInt() <= cowLowerLimitPrice) {
+				int targetPrice = Integer.parseInt(spEntryInfo.getOriLowPrice().getValue());
+				
+				if (targetPrice <= cowLowerLimitPrice) {
 					System.out.println("entryinfo : " + spEntryInfo.getEntryNum().getValue() + " / " + spEntryInfo.getLowPriceInt() + "/ " + cowLowerLimitPrice);
 					continue;
 				}
@@ -256,9 +262,14 @@ public class EntryListController implements Initializable {
 				String targetAuctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
 				String targetEntryType = spEntryInfo.getEntryType().getValue();
 				String targetAucDt = spEntryInfo.getAucDt().getValue();
-				String updatePrice = Integer.toString(spEntryInfo.getLowPriceInt() + lowPrice);
+				String updatePrice = Integer.toString(targetPrice + lowPrice);
 				String oslpNo = spEntryInfo.getOslpNo().getValue();
 				String ledSqNo = spEntryInfo.getLedSqno().getValue();
+				
+				//한번더체크
+				if(Integer.parseInt(updatePrice) <= 0) {
+					continue;
+				}
 
 				int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
 
@@ -269,11 +280,11 @@ public class EntryListController implements Initializable {
 				entryInfo.setAuctionHouseCode(targetAuctionHouseCode);
 				entryInfo.setEntryType(targetEntryType);
 				entryInfo.setAucDt(targetAucDt);
-				entryInfo.setLowPrice(updatePrice);
+				entryInfo.setLowPrice(Integer.parseInt(updatePrice));
 				entryInfo.setOslpNo(oslpNo);
 				entryInfo.setLedSqno(ledSqNo);
 				entryInfo.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
-				entryInfo.setLwprChgNt(Integer.toString(lowPriceCnt));
+				entryInfo.setLwprChgNt(lowPriceCnt);
 				entryInfoDataList.add(entryInfo);
 			}
 		}

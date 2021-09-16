@@ -252,7 +252,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnReStart.setOnMouseClicked(event -> onReStart());
 		mBtnPause.setOnMouseClicked(event -> onPause());
 	}
-	
+
 	/**
 	 * 테이블뷰 관련
 	 */
@@ -316,7 +316,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mFinishedPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
 		mFinishedWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
 		mFinishedLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
-		mFinishedSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionBidPrice());
+		mFinishedSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSraSbidUpPrice());
 		mFinishedSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder());
 		mFinishedResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mFinishedNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
@@ -330,7 +330,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mWaitPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
 		mWaitWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
 		mWaitLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
-		mWaitSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionBidPrice());
+		mWaitSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSraSbidUpPrice());
 		mWaitSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder());
 		mWaitResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
 		mWaitNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
@@ -439,10 +439,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 경매 정보
 	 */
 	private void setAuctionInfo() {
-
-		String auctionDate = CommonUtils.getInstance().getCurrentTime("yyyy-MM-dd");
-
-		mAuctionInfoDateLabel.setText(auctionDate);
+		mAuctionInfoDateLabel.setText(CommonUtils.getInstance().getCurrentTime_yyyyMMdd(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt()));
 		mAuctionInfoRoundLabel.setText(String.valueOf(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()));
 		mAuctionInfoGubunLabel.setText(AuctionUtil.AucObjDsc.which(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc())));
 		mAuctionInfoNameLabel.setText("-");
@@ -634,8 +631,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		item1.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				//접속자 재정렬
-				if(mConnectionUserMap.size() > 0) {
+				// 접속자 재정렬
+				if (mConnectionUserMap.size() > 0) {
 					sortConnectionUserDataList();
 				}
 			}
@@ -645,13 +642,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mConnectionUserTableView.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			@Override
 			public void handle(ContextMenuEvent event) {
-				//우클릭 새로고침 show
+				// 우클릭 새로고침 show
 				contextMenu.show(mConnectionUserTableView, event.getScreenX(), event.getSceneY());
 			}
 		});
 
 		mConnectionUserDataList.clear();
-		
+
 		if (mConnectionUserDataList.size() <= 0) {
 			ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
 			observDataList.add(new SpBidderConnectInfo());
@@ -666,7 +663,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	@SuppressWarnings("unchecked")
 	private synchronized void sortConnectionUserDataList() {
-		
+
 		mConnectionUserDataList.clear();
 
 		if (mConnectionUserMap.size() > 0) {
@@ -999,7 +996,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						mBtnEnter.setDisable(true);
 						mBtnSpace.setDisable(false);
 					}
-					
+
 					int BaselowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 					setBaseDownPrice(Integer.toString(BaselowPrice));
 				}
@@ -1432,7 +1429,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void onUpPrice(MouseEvent event) {
 		System.out.println("예정가 높이기");
-		int upPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		long upPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 		setLowPrice(upPrice, true);
 	}
 
@@ -1443,7 +1440,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void onDownPrice(MouseEvent event) {
 		System.out.println("예정가 낮추기");
-		int lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()) * -1;
+		long lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()) * -1;
 		setLowPrice(lowPrice, false);
 	}
 
@@ -1452,7 +1449,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 *
 	 * @param price
 	 */
-	private void setLowPrice(int price, boolean isUp) {
+	private void setLowPrice(long price, boolean isUp) {
 
 		// 현재 선택된 row
 		SpEntryInfo spEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
@@ -1461,7 +1458,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		String targetAuctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
 		String targetEntryType = spEntryInfo.getEntryType().getValue();
 		String targetAucDt = spEntryInfo.getAucDt().getValue();
-		String updatePrice = Integer.toString(spEntryInfo.getLowPriceInt() + price);
+		long targetPrice = spEntryInfo.getLowPriceInt() * GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice();
 		String oslpNo = spEntryInfo.getOslpNo().getValue();
 		String ledSqNo = spEntryInfo.getLedSqno().getValue();
 		int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
@@ -1471,17 +1468,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		} else {
 			lowPriceCnt += 1;
 		}
+		
+		String updatePrice = Long.toString(targetPrice + price);
 
 		EntryInfo entryInfo = new EntryInfo();
 		entryInfo.setEntryNum(targetEntryNum);
 		entryInfo.setAuctionHouseCode(targetAuctionHouseCode);
 		entryInfo.setEntryType(targetEntryType);
 		entryInfo.setAucDt(targetAucDt);
-		entryInfo.setLowPrice(updatePrice);
+		entryInfo.setLowPrice(Integer.parseInt(updatePrice));
 		entryInfo.setOslpNo(oslpNo);
 		entryInfo.setLedSqno(ledSqNo);
 		entryInfo.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
-		entryInfo.setLwprChgNt(Integer.toString(lowPriceCnt));
+		entryInfo.setLwprChgNt(lowPriceCnt);
 
 		if (updatePrice == null || updatePrice.isEmpty() || Integer.parseInt(updatePrice) < 0) {
 			// 가격정보 null, 0보다 작으면 리턴
@@ -1492,7 +1491,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		if (resultValue > 0) { // 업데이트 성공시 UI갱신, 서버로 바뀐 정보 보냄
 
-			spEntryInfo.getLowPrice().setValue(updatePrice);
+			String divisPrice = Long.toString(Long.parseLong(updatePrice) / GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice());
+			spEntryInfo.getLowPrice().setValue(divisPrice);
 			spEntryInfo.getLwprChgNt().setValue(Integer.toString(lowPriceCnt));
 			setCurrentEntryInfo();
 
@@ -1836,9 +1836,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //                    }
 				}
 			}
-
-			// 카운트 다운 완료시 강제낙찰/강제유찰/경매완료 버튼 활성화
-//			btnStopAuctionToggle(false);
 		}
 	}
 
@@ -2338,7 +2335,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			if (isSuccess) {
 				spEntryInfo.setAuctionSucBidder(new SimpleStringProperty(bidder.getAuctionJoinNum().getValue()));
-				spEntryInfo.setAuctionBidPrice(new SimpleStringProperty(bidder.getPrice().getValue()));
+				spEntryInfo.setAuctionBidPrice(new SimpleStringProperty(bidder.getSraSbidAm().getValue()));
+				spEntryInfo.setSraSbidUpPrice(new SimpleStringProperty(bidder.getPrice().getValue()));
 				spEntryInfo.setAuctionResult(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS));
 				spEntryInfo.setAuctionBidDateTime(new SimpleStringProperty(bidder.getBiddingTime().getValue()));
 				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.success"));
@@ -2348,6 +2346,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			} else {
 				spEntryInfo.setAuctionSucBidder(new SimpleStringProperty(""));
 				spEntryInfo.setAuctionBidPrice(new SimpleStringProperty("0"));
+				spEntryInfo.setSraSbidUpPrice(new SimpleStringProperty("0"));
 				spEntryInfo.setAuctionResult(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING));
 				spEntryInfo.setAuctionBidDateTime(new SimpleStringProperty(""));
 				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.fail"));
@@ -2494,23 +2493,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mCurNoteLabel.setText(mCurrentSpEntryInfo.getNote().getValue());
 			mLowPriceChgNtLabel.setText(mCurrentSpEntryInfo.getLwprChgNt().getValue());
 			mCurWeightLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getWeight().getValue())));
-
-			int price = 0;
-			int bidPrice = 0;
-
-			switch (GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()) {
-			case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:// 비육우 천단위
-				price = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getLowPrice().getValue(), GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_1000);
-				bidPrice = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getAuctionBidPrice().getValue(), GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_1000);
-				break;
-			default: // 송아지,번식우 만단위
-				price = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getLowPrice().getValue(), GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000);
-				bidPrice = CommonUtils.getInstance().getBaseUnitDivision(mCurrentSpEntryInfo.getAuctionBidPrice().getValue(), GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000);
-				break;
-			}
-
-			mCurLowPriceLabel.setText(String.format(mResMsg.getString("str.price"), price));
-			mCurSuccessPriceLabel.setText(String.format(mResMsg.getString("str.price"), bidPrice));
+			mCurLowPriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getLowPrice().getValue())));
+			mCurSuccessPriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getSraSbidUpPrice().getValue())));
 
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
 				setCurrentEntrySoundData();
@@ -2564,7 +2548,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			if (mLowPriceCheckBox.isSelected() && CommonUtils.getInstance().isValidString(mCurLowPriceLabel.getText())) {
 				entrySoundContent.append(EMPTY_SPACE);
-				entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.low.price.won"), mCurLowPriceLabel.getText()));
+				if (!Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()).equals(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2)) {
+					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.low.price.1000"), mCurLowPriceLabel.getText()));
+				} else {
+					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.low.price.10000"), mCurLowPriceLabel.getText()));
+				}
 			}
 
 			if (mBrandNameCheckBox.isSelected() && !isEmptyProperty(mCurrentSpEntryInfo.getBrandName())) {
@@ -2906,26 +2894,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				super.updateItem(value, empty);
 
 				if (CommonUtils.getInstance().isValidString(value)) {
-
-					int reValue = 0;
-
-					if (isPrice) {
-
-						switch (GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()) {
-						case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:// 비육우
-							reValue = CommonUtils.getInstance().getBaseUnitDivision(value, GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_1000);
-							break;
-						default: // 송아지,번식우
-							reValue = CommonUtils.getInstance().getBaseUnitDivision(value, GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000);
-							break;
-						}
-
-					} else {
-						reValue = Integer.parseInt(value);
-					}
-
-					setText(CommonUtils.getInstance().getNumberFormatComma(reValue));
-
+					setText(CommonUtils.getInstance().getNumberFormatComma(Integer.parseInt(value)));
 				} else {
 					setText("");
 				}

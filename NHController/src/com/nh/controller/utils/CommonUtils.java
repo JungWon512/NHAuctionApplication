@@ -248,7 +248,7 @@ public class CommonUtils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        SimpleDateFormat sFormat = new SimpleDateFormat("yyyy.MM.dd");
+        SimpleDateFormat sFormat = new SimpleDateFormat("yyyy-MM-dd");
         String result = sFormat.format(date);
         return result;
     }

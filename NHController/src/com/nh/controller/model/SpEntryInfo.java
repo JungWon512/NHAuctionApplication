@@ -1,5 +1,7 @@
 package com.nh.controller.model;
 
+import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.GlobalDefine;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.controller.models.EntryInfo;
@@ -51,6 +53,7 @@ public class SpEntryInfo implements FromAuctionController {
     private StringProperty mWeight; // 우출하중량
     private StringProperty mInitPrice; // 최초최저낙찰한도금액
     private StringProperty mLowPrice; // 최저낙찰한도금액
+    private StringProperty mSraSbidUpPrice; // 축산낙찰단가
     private StringProperty mNote; // 비고내용
     private StringProperty mAucDt; // 경매일자
     private StringProperty mOslpNo; // 원표 번호
@@ -92,30 +95,31 @@ public class SpEntryInfo implements FromAuctionController {
         this.mMotherObjNum = new SimpleStringProperty(entryInfo.getMotherObjNum());
         this.mMotherCowName = new SimpleStringProperty(entryInfo.getMotherCowName());
         this.mMatime = new SimpleStringProperty(entryInfo.getMaTime());
-        this.mMaMonth = new SimpleStringProperty(entryInfo.getMaMonth());
+        this.mMaMonth = new SimpleStringProperty(Integer.toString(entryInfo.getMaMonth()));
         this.mPasgQcn = new SimpleStringProperty(entryInfo.getPasgQcn());
         this.mObjIdNum = new SimpleStringProperty(entryInfo.getObjIdNum());
         this.mObjRegNum = new SimpleStringProperty(entryInfo.getObjRegNum());
         this.mObjRegTypeNum = new SimpleStringProperty(entryInfo.getObjRegTypeNum());
         this.mIsNew = new SimpleStringProperty(entryInfo.getIsNew());
         this.mWeight = new SimpleStringProperty(Integer.toString((int) Double.parseDouble(entryInfo.getWeight())));
-        this.mInitPrice = new SimpleStringProperty(Integer.toString((int) Double.parseDouble(entryInfo.getInitPrice())));
-        this.mLowPrice = new SimpleStringProperty(Integer.toString((int) Double.parseDouble(entryInfo.getLowPrice())));
+        this.mInitPrice = new SimpleStringProperty(Integer.toString(entryInfo.getInitPrice()));
+        this.mLowPrice = new SimpleStringProperty(Integer.toString(entryInfo.getLowPrice()));
         this.mNote = new SimpleStringProperty(entryInfo.getNote());
         this.mRgnName = new SimpleStringProperty(entryInfo.getRgnName());
         this.mDnaYn = new SimpleStringProperty(entryInfo.getDnaYn());
         this.mAuctionSucBidder = new SimpleStringProperty(entryInfo.getAuctionSucBidder());
-        this.mAuctionBidPrice = new SimpleStringProperty(entryInfo.getAuctionBidPrice());
+        this.mAuctionBidPrice = new SimpleStringProperty(Integer.toString(entryInfo.getAuctionBidPrice()));
         this.mAuctionBidDateTime = new SimpleStringProperty(entryInfo.getAuctionBidDateTime());
         this.mAuctionResult = new SimpleStringProperty(entryInfo.getAuctionResult());
         this.mIsLastEntry = new SimpleStringProperty(entryInfo.getIsLastEntry());
         this.mAucDt = new SimpleStringProperty(entryInfo.getAucDt());
         this.mLsChgDtm = new SimpleStringProperty(entryInfo.getLsChgDtm());
         this.mLsCmeNo = new SimpleStringProperty(entryInfo.getLsCmeNo());
-        this.mLwprChgNt = new SimpleStringProperty(Integer.toString((int) Double.parseDouble(entryInfo.getLwprChgNt())));
+        this.mLwprChgNt = new SimpleStringProperty(Integer.toString(entryInfo.getLwprChgNt()));
         this.mOslpNo = new SimpleStringProperty(entryInfo.getOslpNo());
         this.mTrmnAmnNo = new SimpleStringProperty(entryInfo.getTrmnAmnNo());
         this.mLedSqno = new SimpleStringProperty(entryInfo.getLedSqno());
+        this.mSraSbidUpPrice = new SimpleStringProperty(Integer.toString(entryInfo.getSraSbidUpPrice()));
     }
 
     public StringProperty getAuctionHouseCode() {
@@ -297,6 +301,20 @@ public class SpEntryInfo implements FromAuctionController {
     public StringProperty getLowPrice() {
         return returnValue(mLowPrice);
     }
+    
+    public StringProperty getOriLowPrice() {
+    	
+    	String val = returnValue(mLowPrice).getValue();
+    	
+    	if(CommonUtils.getInstance().isValidString(val)) {
+    		
+    		long reVal = Long.parseLong(val) * GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice();
+    		return new SimpleStringProperty(Long.toString(reVal));
+    	}else {
+            return new SimpleStringProperty("");
+    	}
+    	
+    }
 
     public void setMaMonth(StringProperty maMonth) {
         this.mMaMonth = maMonth;
@@ -463,6 +481,14 @@ public class SpEntryInfo implements FromAuctionController {
 	public void setMotherCowName(StringProperty mMotherCowName) {
 		this.mMotherCowName = mMotherCowName;
 	}
+	
+	public StringProperty getSraSbidUpPrice() {
+		return mSraSbidUpPrice;
+	}
+
+	public void setSraSbidUpPrice(StringProperty mSraSbidUpPrice) {
+		this.mSraSbidUpPrice = mSraSbidUpPrice;
+	}
 
 	public StringProperty getBiddingResult() {
 
@@ -485,7 +511,6 @@ public class SpEntryInfo implements FromAuctionController {
     }
 
     private StringProperty returnValue(StringProperty value) {
-
         if (value != null && value.getValue() != null && !value.getValue().isBlank()) {
             return value;
         } else {
@@ -496,15 +521,43 @@ public class SpEntryInfo implements FromAuctionController {
     @Override
     public String getEncodedMessage() {
         return String.format(
-                "%c%c%c" + "%s%c" + "%s%c"+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c"
-                        + "%s%c" + "%s",
-                ORIGIN, TYPE, AuctionShareSetting.DELIMITER, getAuctionHouseCode().getValue(), AuctionShareSetting.DELIMITER, getEntryNum().getValue(), AuctionShareSetting.DELIMITER, getAuctionQcn().getValue(), AuctionShareSetting.DELIMITER, getEntryType().getValue(), AuctionShareSetting.DELIMITER, getIndNum().getValue(), AuctionShareSetting.DELIMITER,
-                getIndMngCd().getValue(), AuctionShareSetting.DELIMITER, getFhsNum().getValue(), AuctionShareSetting.DELIMITER, getFarmMngNum().getValue(), AuctionShareSetting.DELIMITER, getExhibitor().getValue(), AuctionShareSetting.DELIMITER, getBrandName().getValue(),
-                AuctionShareSetting.DELIMITER, getBirthday().getValue(), AuctionShareSetting.DELIMITER, getKpn().getValue(), AuctionShareSetting.DELIMITER, getGenderName().getValue(), AuctionShareSetting.DELIMITER, getMotherTypeCode().getValue(), AuctionShareSetting.DELIMITER,
-                getMotherObjNum().getValue(), AuctionShareSetting.DELIMITER, getMatime().getValue(), AuctionShareSetting.DELIMITER, getMaMonth().getValue(), AuctionShareSetting.DELIMITER, getPasgQcn().getValue(), AuctionShareSetting.DELIMITER, getObjIdNum().getValue(), AuctionShareSetting.DELIMITER,
-                getObjRegNum().getValue(), AuctionShareSetting.DELIMITER, getObjRegTypeNum().getValue(), AuctionShareSetting.DELIMITER, getRgnName().getValue(), AuctionShareSetting.DELIMITER, getDnaYn().getValue(), AuctionShareSetting.DELIMITER, getIsNew().getValue(), AuctionShareSetting.DELIMITER,
-                getWeight().getValue(), AuctionShareSetting.DELIMITER, getInitPrice().getValue(), AuctionShareSetting.DELIMITER, getLowPrice().getValue(), AuctionShareSetting.DELIMITER, getNote().getValue(), AuctionShareSetting.DELIMITER, getAuctionResult().getValue(), AuctionShareSetting.DELIMITER,
-                getAuctionSucBidder().getValue(), AuctionShareSetting.DELIMITER, getAuctionBidDateTime().getValue(), AuctionShareSetting.DELIMITER, getAuctionBidDateTime().getValue(), AuctionShareSetting.DELIMITER, getIsLastEntry().getValue());
+                "%c%c%c" + "%s%c" + "%s%c"+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" 
+                		+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" 
+                		+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" 
+                		+ "%s%c" + "%s%c" + "%s",
+                ORIGIN, TYPE, AuctionShareSetting.DELIMITER, getAuctionHouseCode().getValue(), AuctionShareSetting.DELIMITER,
+                getEntryNum().getValue(), AuctionShareSetting.DELIMITER,
+                getAuctionQcn().getValue(), AuctionShareSetting.DELIMITER,
+                getEntryType().getValue(), AuctionShareSetting.DELIMITER,
+                getIndNum().getValue(), AuctionShareSetting.DELIMITER,
+                getIndMngCd().getValue(), AuctionShareSetting.DELIMITER,
+                getFhsNum().getValue(), AuctionShareSetting.DELIMITER,
+                getFarmMngNum().getValue(), AuctionShareSetting.DELIMITER,
+                getExhibitor().getValue(), AuctionShareSetting.DELIMITER,
+                getBrandName().getValue(), AuctionShareSetting.DELIMITER,
+                getBirthday().getValue(), AuctionShareSetting.DELIMITER, 
+                getKpn().getValue(), AuctionShareSetting.DELIMITER, 
+                getGenderName().getValue(), AuctionShareSetting.DELIMITER, 
+                getMotherCowName().getValue(), AuctionShareSetting.DELIMITER,
+                getMotherObjNum().getValue(), AuctionShareSetting.DELIMITER, 
+                getMatime().getValue(), AuctionShareSetting.DELIMITER, 
+                getMaMonth().getValue(), AuctionShareSetting.DELIMITER, 
+                getPasgQcn().getValue(), AuctionShareSetting.DELIMITER,
+                getObjIdNum().getValue(), AuctionShareSetting.DELIMITER,
+                getObjRegNum().getValue(), AuctionShareSetting.DELIMITER,
+                getObjRegTypeNum().getValue(), AuctionShareSetting.DELIMITER,
+                getRgnName().getValue(), AuctionShareSetting.DELIMITER, 
+                getDnaYn().getValue(), AuctionShareSetting.DELIMITER, 
+                getIsNew().getValue(), AuctionShareSetting.DELIMITER,
+                getWeight().getValue(), AuctionShareSetting.DELIMITER,
+                getInitPrice().getValue(), AuctionShareSetting.DELIMITER,
+                getLowPrice().getValue(), AuctionShareSetting.DELIMITER, 
+                getNote().getValue(), AuctionShareSetting.DELIMITER,
+                getAuctionResult().getValue(), AuctionShareSetting.DELIMITER,
+                getAuctionSucBidder().getValue(), AuctionShareSetting.DELIMITER,
+                getAuctionBidPrice().getValue(), AuctionShareSetting.DELIMITER, 
+                getAuctionBidDateTime().getValue(), AuctionShareSetting.DELIMITER,
+                getIsLastEntry().getValue());
     }
 
     @Override

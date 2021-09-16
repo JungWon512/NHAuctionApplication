@@ -21,7 +21,7 @@
         <result property="mKpn" column="KPN_NO"/>
         <result property="mGender" column="INDV_SEX_C"/>
         <result property="mGenderName" column="INDV_SEX_C_NAME"/>
-        <result property="mMotherTypeCode" column="MCOW_DSC"/>
+        <result property="mMotherTypeCode" column="SIMP_C"/>
         <result property="mMotherObjNum" column="MCOW_SRA_INDV_AMNNO"/>
         <result property="mMotherCowName" column="MCOW_DSC"/>
         <result property="mMaTime" column="MATIME"/>
@@ -36,6 +36,7 @@
         <result property="mWeight" column="COW_SOG_WT"/>
         <result property="mInitPrice" column="FIR_LOWS_SBID_LMT_AM"/>
         <result property="mLowPrice" column="LOWS_SBID_LMT_AM"/>
+        <result property="mSraSbidUpPrice" column="SRA_SBID_UPR"/>
         <result property="mNote" column="RMK_CNTN"/>
         <result property="mAucDt" column="AUC_DT"/>
         <result property="mLsChgDtm" column="LSCHG_DTM"/>
@@ -79,8 +80,10 @@
 		${alias}.AUC_PRG_SQ,
 		${alias}.COW_SOG_WT,
 		${alias}.AUC_OBJ_DSC,
-		${alias}.FIR_LOWS_SBID_LMT_AM,
-		${alias}.LOWS_SBID_LMT_AM,
+		${alias}.FIR_LOWS_SBID_LMT_AM / #{divisionPrice} AS FIR_LOWS_SBID_LMT_AM,
+		${alias}.LOWS_SBID_LMT_AM / #{divisionPrice} AS LOWS_SBID_LMT_AM,
+		${alias}.SRA_SBID_AM / #{divisionPrice} AS SRA_SBID_AM,
+		${alias}.SRA_SBID_UPR,
 		${alias}.RMK_CNTN,
 		${alias}.BRANDNM,
 		${alias}.PRNY_MTCN,
@@ -90,7 +93,6 @@
 		${alias}.SEL_STS_DSC,
 		${alias}.LWPR_CHG_NT,
 		${alias}.LVST_AUC_PTC_MN_NO,
-		${alias}.SRA_SBID_AM,
 		${alias}.DNA_YN,
 		${alias}.SRA_PD_RGNNM,
 		${alias}.OSLP_NO,
@@ -104,6 +106,7 @@
 	</sql>
 
 	<sql id="aplColumn">
+		${alias}.SIMP_C,
 		${alias}.SIMP_CNM AS MCOW_DSC
 	</sql>
 	
@@ -139,7 +142,7 @@
 	<!-- 출품 데이터 추출 -->
 	<select id="selectAllEntry" resultMap="entryInfoMap" resultType="linkedHashMap">
 		SELECT
-				<include refid="sogCowColumn"><property name="alias" value="A"/></include>,
+				<include refid="sogCowColumn"><property name="alias" value="A"/><property name="divisionPrice" value="#{divisionPrice}" /></include>,
 				<include refid="fhsColumn"><property name="alias" value="B"/></include>,
 				<include refid="indvColumn"><property name="alias" value="C"/></include>,
 				<include refid="aplColumn"><property name="alias" value="E"/></include>,

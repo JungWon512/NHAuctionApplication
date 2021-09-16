@@ -28,7 +28,8 @@ public class SpBidding implements FromAuctionCommon, Serializable, Comparable<Sp
     private StringProperty auctionHouseCode;
     private StringProperty channel;
     private StringProperty userNo; // 경매회원번호
-    private StringProperty price;
+    private StringProperty price;  //응찰가격 단가
+    private StringProperty sraSbidAm; // 최종가격
     private StringProperty auctionJoinNum; // 경매참가번호
     private StringProperty entryNum; // 출품번호
     private StringProperty isNewBid;
@@ -48,6 +49,7 @@ public class SpBidding implements FromAuctionCommon, Serializable, Comparable<Sp
         isNewBid = new SimpleStringProperty(bidding.getIsNewBid());
         biddingTime = new SimpleStringProperty(bidding.getBiddingTime());
         price = new SimpleStringProperty(bidding.getPrice());
+        sraSbidAm = new SimpleStringProperty("");
     }
 
     public StringProperty getAuctionHouseCode() {
@@ -121,8 +123,15 @@ public class SpBidding implements FromAuctionCommon, Serializable, Comparable<Sp
     public void setIsCancelBidding(BooleanProperty isCancelBidding) {
         this.isCancelBidding = isCancelBidding;
     }
+	public StringProperty getSraSbidAm() {
+		return sraSbidAm;
+	}
 
-    public int getPriceInt() {
+	public void setSraSbidAm(StringProperty sraSbidAm) {
+		this.sraSbidAm = sraSbidAm;
+	}
+
+	public int getPriceInt() {
 
         if (price != null) {
             return Integer.parseInt(price.getValue());
@@ -168,6 +177,11 @@ public class SpBidding implements FromAuctionCommon, Serializable, Comparable<Sp
         if (p.getEntryNum() == null) {
             return false;
         }
+        
+        if (this.getUserNo() == null || p.getUserNo() == null) {
+            return false;
+        }
+        
 
         return this.getUserNo().getValue().equals(p.getUserNo().getValue());
     }

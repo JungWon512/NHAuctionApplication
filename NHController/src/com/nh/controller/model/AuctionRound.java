@@ -28,9 +28,8 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 	private String fsgmnEno; // 최초등록자개인번호
 	private LocalDateTime lschgDtm; // 최종변경일시
 	private String lsCmeno; // 최초변경자개인번호
+	private int divisionPrice; // 송아지,번식우 : 10000, 비육우 : 1
 	
-	
-
 	public AuctionRound() {
 	}
 
@@ -191,6 +190,14 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 
 	public void setLsCmeno(String lsCmeno) {
 		this.lsCmeno = lsCmeno;
+	}
+
+	public int getDivisionPrice() {
+		return divisionPrice;
+	}
+
+	public void setDivisionPrice(int divisionPrice) {
+		this.divisionPrice = divisionPrice;
 	}
 
 	@Override
