@@ -11,7 +11,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * CI | 조합구분코드 | 출품번호 | 경매회차 | 경매대상구분코드 | 축산개체관리번호 | 축산축종구분코드 | 농가식별번호 | 농장관리번호
  * | 농가명 | 브랜드명 | 생년월일 | KPN번호 | 개체성별코드 | 어미소구분코드 | 어미소축산개체관리번호 | 산차 | 임신개월수 |
  * 계대 | 계체식별번호 | 축산개체종축등록번호 | 등록구분번호 | 출하생산지역 | 친자검사결과여부 | 신규여부 | 우출하중량 |
- * 최초최저낙찰한도금액 | 최저낙찰한도금액 | 비고내용 | 낙유찰결과 | 낙찰자 | 낙찰금액 | 응찰일시 | 마지막출품여부
+ * 최초최저낙찰한도금액 | 최저낙찰한도금액 | 비고내용 | 낙유찰결과 | 낙찰자 | 낙찰금액 | 응찰일시 | 마지막출품여부 | 계류대번호 | 초과출장우여부
  *
  */
 public class EntryInfo implements FromAuctionController {
@@ -52,7 +52,7 @@ public class EntryInfo implements FromAuctionController {
 	private String mOslpNo; // 원표 번호
 	private String mLedSqno; // 원장 일련번호
 	private String mTrmnAmnNo; // 거래인 관리 번호
-	
+
 	private String mAuctionResult; // 낙유찰결과 (11 대기 ,22 낙찰 ,23 보류)
 	private String mAuctionSucBidder; // 낙찰자
 	private int mAuctionBidPrice; // 응찰금액/낙찰금액
@@ -64,6 +64,9 @@ public class EntryInfo implements FromAuctionController {
 
 	private String mIsLastEntry; // 마지막 출품 여부
 
+	private String mStandPosition; // 계류대 번호
+	private String mIsExcessCow; // 초과출장우여부
+
 	public EntryInfo() {
 	}
 
@@ -72,7 +75,8 @@ public class EntryInfo implements FromAuctionController {
 			String kpn, String gender, String motherTypeCode, String motherObjNum, String maTime, String maMonth,
 			String pasgQcn, String objIdNum, String objRegNum, String objRegTypeNum, String rgnName, String dnaYn,
 			String isNew, String weight, String initPrice, String lowPrice, String note, String auctionResult,
-			String auctionSucBidder, String auctionBidPrice, String auctionBidDateTime, String isLastEntry) {
+			String auctionSucBidder, String auctionBidPrice, String auctionBidDateTime, String isLastEntry,
+			String standPosition, String isExcessCow) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 		mAuctionQcn = auctionQcn;
@@ -106,6 +110,8 @@ public class EntryInfo implements FromAuctionController {
 		mAuctionBidPrice = Integer.parseInt(auctionBidPrice);
 		mAuctionBidDateTime = auctionBidDateTime;
 		mIsLastEntry = isLastEntry;
+		mStandPosition = standPosition;
+		mIsExcessCow = isExcessCow;
 	}
 
 	public EntryInfo(String[] messages) {
@@ -142,6 +148,8 @@ public class EntryInfo implements FromAuctionController {
 		mAuctionBidPrice = Integer.parseInt(messages[31]);
 		mAuctionBidDateTime = messages[32];
 		mIsLastEntry = messages[33];
+		mStandPosition = messages[34];
+		mIsExcessCow = messages[35];
 	}
 
 	@Override
@@ -444,20 +452,23 @@ public class EntryInfo implements FromAuctionController {
 	public void setLwprChgNt(int mLwprChgNt) {
 		this.mLwprChgNt = mLwprChgNt;
 	}
-	
+
 	public String getOslpNo() {
 		return mOslpNo;
 	}
+
 	public void setOslpNo(String mOslpNo) {
 		this.mOslpNo = mOslpNo;
 	}
+
 	public String getTrmnAmnNo() {
 		return mTrmnAmnNo;
 	}
+
 	public void setTrmnAmnNo(String mTrmnAmnNo) {
 		this.mTrmnAmnNo = mTrmnAmnNo;
 	}
-	
+
 	public String getLedSqno() {
 		return mLedSqno;
 	}
@@ -465,6 +476,7 @@ public class EntryInfo implements FromAuctionController {
 	public void setLedSqno(String mLedSqno) {
 		this.mLedSqno = mLedSqno;
 	}
+
 	public String getGenderName() {
 		return mGenderName;
 	}
@@ -487,13 +499,26 @@ public class EntryInfo implements FromAuctionController {
 		this.mSraSbidUpPrice = mSraSbidUpPrice;
 	}
 
+	public String getStandPosition() {
+		return mStandPosition;
+	}
+
+	public void setStandPosition(String standPosition) {
+		this.mStandPosition = standPosition;
+	}
+
+	public String getIsExcessCow() {
+		return mIsExcessCow;
+	}
+
+	public void setIsExcessCow(String isExcessCow) {
+		this.mIsExcessCow = isExcessCow;
+	}
+
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
-				"%c%c%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c"
-						+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c"
-						+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c"
-						+ "%s%c" + "%s%c" + "%s",
+				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
 				mEntryNum, AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mEntryType,
 				AuctionShareSetting.DELIMITER, mIndNum, AuctionShareSetting.DELIMITER, mIndMngCd,
@@ -510,7 +535,8 @@ public class EntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mLowPrice, AuctionShareSetting.DELIMITER, mNote,
 				AuctionShareSetting.DELIMITER, mAuctionResult, AuctionShareSetting.DELIMITER, mAuctionSucBidder,
 				AuctionShareSetting.DELIMITER, mAuctionBidPrice, AuctionShareSetting.DELIMITER, mAuctionBidDateTime,
-				AuctionShareSetting.DELIMITER, mIsLastEntry);
+				AuctionShareSetting.DELIMITER, mIsLastEntry, AuctionShareSetting.DELIMITER, mStandPosition,
+				AuctionShareSetting.DELIMITER, mIsExcessCow);
 	}
 
 }
