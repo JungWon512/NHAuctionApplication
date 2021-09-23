@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.common.interfaces.NettyControllable;
+import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.CommonMessageParser;
 import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.server.ServerMessageParser;
@@ -26,6 +27,14 @@ public final class AuctionClientInboundDecoder extends MessageToMessageDecoder<S
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
+
+        //ssl 적용 안하면 여기서 channelActive 
+        if (!GlobalDefineCode.USE_CLIENT_SSL_FLAG) {
+        	 if (mController != null) {
+                 mController.onActiveChannel(ctx.channel());
+             }
+        }
+
         mLogger.info(((InetSocketAddress)ctx.channel().remoteAddress()).getPort() + "번 포트 채널이 Active 되었습니다.");
     }
 

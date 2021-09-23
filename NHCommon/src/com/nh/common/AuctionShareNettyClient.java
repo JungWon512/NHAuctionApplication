@@ -25,6 +25,7 @@ import com.nh.common.handlers.AuctionClientDecodedToastMessageHandler;
 import com.nh.common.handlers.AuctionClientInboundDecoder;
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
+import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.interfaces.NettySendable;
 import com.nh.share.setting.AuctionShareSetting;
 
@@ -61,164 +62,168 @@ import io.netty.util.concurrent.GenericFutureListener;
  * @see {@link NettyControllable}
  */
 public class AuctionShareNettyClient {
-    private Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+	private Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private int port; // 테스트를 위해 port 확인용 변수, 운영 환경에서는 이용하지 않는다.
-    private EventLoopGroup group;
-    private Channel channel;
+	private int port; // 테스트를 위해 port 확인용 변수, 운영 환경에서는 이용하지 않는다.
+	private EventLoopGroup group;
+	private Channel channel;
 
-    private SslContext mSSLContext;
-    private SslHandler mSslHandler;
+	private SslContext mSSLContext;
+	private SslHandler mSslHandler;
 
-    private AuctionShareNettyClient(Builder builder) {
-        this.port = builder.port;
-        createNettyClient(builder.host, builder.port, builder.controller);
-    }
+	private AuctionShareNettyClient(Builder builder) {
+		this.port = builder.port;
+		createNettyClient(builder.host, builder.port, builder.controller);
+	}
 
-    private void createNettyClient(String host, int port, NettyControllable controller) {
-        group = new NioEventLoopGroup();
-        try {
-            Bootstrap b = new Bootstrap();
-            b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        public void initChannel(SocketChannel ch) throws Exception {
-                            ChannelPipeline pipeline = ch.pipeline();
+	private void createNettyClient(String host, int port, NettyControllable controller) {
+		group = new NioEventLoopGroup();
+		try {
+			Bootstrap b = new Bootstrap();
+			b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000).handler(new ChannelInitializer<SocketChannel>() {
+				@Override
+				public void initChannel(SocketChannel ch) throws Exception {
 
-                            // 사설 인증서 - 사용시 주석 해제
-                            SslContext sslContext = SslContextBuilder.forClient()
-                                    .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-                            SslHandler sslHandler = sslContext.newHandler(ch.alloc());
-                            sslHandler.handshakeFuture().addListener(new GenericFutureListener<Future<? super Channel>>() {
-                                @Override
-                                public void operationComplete(Future<? super Channel> future) throws Exception {
-                                    mLogger.debug("Hands Shake " + future.isSuccess());
-                                    if (future.isSuccess()) {
-                                        controller.onActiveChannel(ch);
-                                    }
-                                }
-                            });
-                            pipeline.addFirst("ssl", sslHandler);
-                            pipeline.addAfter("ssl", "delimiter", new DelimiterBasedFrameDecoder(
-                                    AuctionShareSetting.NETTY_MAX_FRAME_LENGTH, Delimiters.lineDelimiter()));
+					ChannelPipeline pipeline = ch.pipeline();
 
-                            // pipeline.addLast(new WriteTimeoutHandler(15));
-                            // pipeline.addLast(new ReadTimeoutHandler(15));
-                            pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
-                            pipeline.addLast(new AuctionClientInboundDecoder(controller));
-                            pipeline.addLast(new AuctionClientDecodedCurrentEntryInfoHandler(controller)); // 현재 출품 정보
-                            pipeline.addLast(new AuctionClientDecodedBiddingHandler(controller)); // 응찰 정보
-                            pipeline.addLast(new AuctionClientDecodedCountDownHandler(controller)); // 경매 시작 카운트 다운 기능
-                            pipeline.addLast(new AuctionClientDecodedFavoriteEntryInfoHandler(controller)); // 관심출품 정보
-                            pipeline.addLast(new AuctionClientDecodedAuctionStatusHandler(controller)); // 경매 상태 정보 전송
-                            pipeline.addLast(new AuctionClientDecodedToastMessageHandler(controller)); // 메시지 전송 처리
-                            pipeline.addLast(new AuctionClientDecodedConnectionInfoHandler(controller)); // 응찰자접속요청
-                            pipeline.addLast(new AuctionClientDecodedResponseConnectionInfoHandler(controller)); // 접속응답처리
-                            pipeline.addLast(new AuctionClientDecodedResponseCodeHandler(controller)); // 예외 상황 전송
-                            pipeline.addLast(new AuctionClientDecodedCheckSessionHandler(controller)); // 경매 서버 접속 유효 확인
-                            pipeline.addLast(new AuctionClientDecodedAuctionResultHandler(controller)); // 낙유찰 정보
-                            pipeline.addLast(new AuctionClientDecodedCancelBiddingHandler(controller)); // 응찰 취소 정보
-                            pipeline.addLast(new AuctionClientDecodedRequestAuctionResultHandler(controller)); // 낙유찰 정보
-                            pipeline.addLast(new AuctionClientDecodedBidderConnectInfoHandler(controller)); // 접속자 정보
-                            // 요청
+					// ssl 적용 여부
+					if (GlobalDefineCode.USE_CLIENT_SSL_FLAG) {
 
-                            pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
-                        }
-                    });
-            channel = b.connect(host, port).sync().channel();
-        } catch (Exception e) {
-            controller.onConnectionException(port);
-            e.printStackTrace();
-            stopClient();
-        }
-    }
+						// 사설 인증서 - 사용시 주석 해제
+						SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+						SslHandler sslHandler = sslContext.newHandler(ch.alloc());
+						sslHandler.handshakeFuture().addListener(new GenericFutureListener<Future<? super Channel>>() {
+							@Override
+							public void operationComplete(Future<? super Channel> future) throws Exception {
+								mLogger.debug("Hands Shake " + future.isSuccess());
+								if (future.isSuccess()) {
+									controller.onActiveChannel(ch);
+								}
+							}
+						});
+						pipeline.addFirst("ssl", sslHandler);
+						pipeline.addAfter("ssl", "delimiter", new DelimiterBasedFrameDecoder(AuctionShareSetting.NETTY_MAX_FRAME_LENGTH, Delimiters.lineDelimiter()));
 
-    /**
-     * 객체를 송신할 때 사용한다.
-     *
-     * @param object 보낼 객체
-     */
-    public void sendMessage(NettySendable object) {
-        sendMessage(object.getEncodedMessage());
-    }
+					} else {
+						pipeline.addLast(new DelimiterBasedFrameDecoder(AuctionShareSetting.NETTY_MAX_FRAME_LENGTH,Delimiters.lineDelimiter()));
+					}
 
-    /**
-     * 문자열을 송신할 때 사용한다.
-     *
-     * @param message 보낼 문자열
-     */
-    public void sendMessage(String message) {
-        channel.writeAndFlush(message + "\r\n");
-    }
+					// pipeline.addLast(new WriteTimeoutHandler(15));
+					// pipeline.addLast(new ReadTimeoutHandler(15));
+					pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
+					pipeline.addLast(new AuctionClientInboundDecoder(controller));
+					pipeline.addLast(new AuctionClientDecodedCurrentEntryInfoHandler(controller)); // 현재 출품 정보
+					pipeline.addLast(new AuctionClientDecodedBiddingHandler(controller)); // 응찰 정보
+					pipeline.addLast(new AuctionClientDecodedCountDownHandler(controller)); // 경매 시작 카운트 다운 기능
+					pipeline.addLast(new AuctionClientDecodedFavoriteEntryInfoHandler(controller)); // 관심출품 정보
+					pipeline.addLast(new AuctionClientDecodedAuctionStatusHandler(controller)); // 경매 상태 정보 전송
+					pipeline.addLast(new AuctionClientDecodedToastMessageHandler(controller)); // 메시지 전송 처리
+					pipeline.addLast(new AuctionClientDecodedConnectionInfoHandler(controller)); // 응찰자접속요청
+					pipeline.addLast(new AuctionClientDecodedResponseConnectionInfoHandler(controller)); // 접속응답처리
+					pipeline.addLast(new AuctionClientDecodedResponseCodeHandler(controller)); // 예외 상황 전송
+					pipeline.addLast(new AuctionClientDecodedCheckSessionHandler(controller)); // 경매 서버 접속 유효 확인
+					pipeline.addLast(new AuctionClientDecodedAuctionResultHandler(controller)); // 낙유찰 정보
+					pipeline.addLast(new AuctionClientDecodedCancelBiddingHandler(controller)); // 응찰 취소 정보
+					pipeline.addLast(new AuctionClientDecodedRequestAuctionResultHandler(controller)); // 낙유찰 정보
+					pipeline.addLast(new AuctionClientDecodedBidderConnectInfoHandler(controller)); // 접속자 정보
+					// 요청
 
-    public void stopClient() {
-        group.shutdownGracefully();
-    }
+					pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
+				}
+			});
+			channel = b.connect(host, port).sync().channel();
+		} catch (Exception e) {
+			controller.onConnectionException(port);
+			e.printStackTrace();
+			stopClient();
+		}
+	}
 
-    /**
-     * @param listener
-     * @MethodName stopClient
-     * @Description 종료 후 결과 콜백
-     */
-    public void stopClient(NettyClientShutDownListener listener) {
-        Future<?> future = group.shutdownGracefully();
-        future.addListener(new GenericFutureListener() {
-            @Override
-            public void operationComplete(Future future) throws Exception {
-                if (listener != null) {
-                    listener.onShutDown(getPort());
-                }
-            }
-        });
-    }
+	/**
+	 * 객체를 송신할 때 사용한다.
+	 *
+	 * @param object 보낼 객체
+	 */
+	public void sendMessage(NettySendable object) {
+		sendMessage(object.getEncodedMessage());
+	}
 
-    public int getPort() { // 테스트를 위해 port 확인용 변수, 운영 환경에서는 이용하지 않는다.
-        return port;
-    }
+	/**
+	 * 문자열을 송신할 때 사용한다.
+	 *
+	 * @param message 보낼 문자열
+	 */
+	public void sendMessage(String message) {
+		channel.writeAndFlush(message + "\r\n");
+	}
 
-    public boolean isActive() {
-        if (channel != null) {
-            return channel.isActive();
-        }
+	public void stopClient() {
+		group.shutdownGracefully();
+	}
 
-        return false;
-    }
+	/**
+	 * @param listener
+	 * @MethodName stopClient
+	 * @Description 종료 후 결과 콜백
+	 */
+	public void stopClient(NettyClientShutDownListener listener) {
+		Future<?> future = group.shutdownGracefully();
+		future.addListener(new GenericFutureListener() {
+			@Override
+			public void operationComplete(Future future) throws Exception {
+				if (listener != null) {
+					listener.onShutDown(getPort());
+				}
+			}
+		});
+	}
 
-    public Channel getChannel() {
-        return channel;
-    }
+	public int getPort() { // 테스트를 위해 port 확인용 변수, 운영 환경에서는 이용하지 않는다.
+		return port;
+	}
 
-    /**
-     * 접속 상태 확인
-     *
-     * @return
-     */
-    public boolean isEmptyChannel() {
-        if (channel != null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+	public boolean isActive() {
+		if (channel != null) {
+			return channel.isActive();
+		}
 
-    public static class Builder {
-        private final String host;
-        private final int port;
-        private NettyControllable controller;
+		return false;
+	}
 
-        public Builder(String host, int port) {
-            this.host = host;
-            this.port = port;
-        }
+	public Channel getChannel() {
+		return channel;
+	}
 
-        public Builder setController(NettyControllable controller) {
-            this.controller = controller;
-            return this;
-        }
+	/**
+	 * 접속 상태 확인
+	 *
+	 * @return
+	 */
+	public boolean isEmptyChannel() {
+		if (channel != null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
-        public AuctionShareNettyClient buildAndRun() {
-            return new AuctionShareNettyClient(this);
-        }
-    }
+	public static class Builder {
+		private final String host;
+		private final int port;
+		private NettyControllable controller;
+
+		public Builder(String host, int port) {
+			this.host = host;
+			this.port = port;
+		}
+
+		public Builder setController(NettyControllable controller) {
+			this.controller = controller;
+			return this;
+		}
+
+		public AuctionShareNettyClient buildAndRun() {
+			return new AuctionShareNettyClient(this);
+		}
+	}
 }
