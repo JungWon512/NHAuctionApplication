@@ -69,7 +69,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 	protected void channelRead0(ChannelHandlerContext ctx, ConnectionInfo connectionInfo) throws Exception {
 		String userMemNum = null;
 
-		if(AuctionServerSetting.FLAG_TEST_MODE) {
+		if(GlobalDefineCode.FLAG_TEST_MODE) {
 			userMemNum = connectionInfo.getUserMemNum();
 		} else {
 			userMemNum = JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken());
@@ -102,7 +102,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 							mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
 
 							// Connector Channel Map 등록
-							if (AuctionServerSetting.FLAG_TEST_MODE) {
+							if (GlobalDefineCode.FLAG_TEST_MODE) {
 								mConnectionChannelInfoMap.put(
 										connectionInfo.getUserMemNum(), ctx);
 							} else {
@@ -527,7 +527,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 			if(mConnectionInfoMap.get(ctx.channel().id()).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
 				closeMember = mConnectionInfoMap.get(ctx.channel().id()).getAuctionHouseCode() + "_" + mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
 			} else {
-				if (AuctionServerSetting.FLAG_TEST_MODE) {
+				if (GlobalDefineCode.FLAG_TEST_MODE) {
 					closeMember = mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
 				} else {
 					closeMember = JwtCertTokenUtils.getInstance()

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketConfig;
@@ -85,7 +86,7 @@ public class SocketIOHandler {
 	private String mDevJksName;
 	@Value("${socketio.ssl.dev.password}")
 	private String mDevPassword;
-	
+
 	@Value("${socketio.ssl.prd.cert-name}")
 	private String mPrdCertName;
 	@Value("${socketio.ssl.prd.key-name}")
@@ -119,8 +120,8 @@ public class SocketIOHandler {
 	public SslContext sslContext() {
 		ClassPathResource certPath = null;
 		ClassPathResource keyPath = null;
-		
-		if (AuctionServerSetting.FLAG_PRD) {
+
+		if (GlobalDefineCode.FLAG_PRD) {
 			certPath = new ClassPathResource(mPrdCertName);
 			keyPath = new ClassPathResource(mPrdKeyName);
 		} else {
@@ -132,7 +133,7 @@ public class SocketIOHandler {
 		try {
 			// mSslContext = SslContextBuilder.forServer(certPath.getInputStream(),
 			// keyPath.getInputStream()).protocols("TLSv1.3").build();
-			
+
 			mSslContext = SslContextBuilder.forServer(certPath.getInputStream(), keyPath.getInputStream()).build();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -164,12 +165,12 @@ public class SocketIOHandler {
 		config.setPingTimeout(pingTimeout);
 		config.setPingInterval(pingInterval);
 
-		if (AuctionServerSetting.FLAG_SSL) {
-			if (AuctionServerSetting.FLAG_PRD) {
+		if (GlobalDefineCode.FLAG_SSL) {
+			if (GlobalDefineCode.FLAG_PRD) {
 				// 운영 서버 Keystore Pw
 				config.setKeyStorePassword(mPrdPassword);
 				ClassPathResource jksPath = new ClassPathResource(mPrdJksName);
-				
+
 				try {
 					config.setKeyStore(jksPath.getInputStream());
 				} catch (IOException e) {
@@ -180,7 +181,7 @@ public class SocketIOHandler {
 				// 개발 서버 Keystore Pw
 				config.setKeyStorePassword(mDevPassword);
 				ClassPathResource jksPath = new ClassPathResource(mDevJksName);
-				
+
 				try {
 					config.setKeyStore(jksPath.getInputStream());
 				} catch (IOException e) {
@@ -234,6 +235,10 @@ public class SocketIOHandler {
 		this.mAuctioneer = auctioneer;
 	}
 
+	public Auctioneer getAuctioneer() {
+		return this.mAuctioneer;
+	}
+
 	public void setNettyConnectionInfoMap(Map<Object, ConnectionInfo> connectorInfoMap) {
 		this.mConnectorInfoMap = connectorInfoMap;
 	}
@@ -264,7 +269,7 @@ public class SocketIOHandler {
 						client.sendEvent("ResponseConnectionInfo",
 								new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 										GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage());
-						
+
 						client.disconnect();
 
 						return;
@@ -578,14 +583,18 @@ public class SocketIOHandler {
 			try {
 				closeMember = JwtCertTokenUtils.getInstance()
 						.getUserMemNum(mConnectorInfoMap.get(client.getSessionId()).getAuthToken());
-				
+
 				// 사용자 접속 해제 상테 전송
-				if(mConnectorInfoMap.get(client.getSessionId()).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
-					mAuctionServer.itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(client.getSessionId()).getAuctionHouseCode(), mConnectorInfoMap.get(client.getSessionId()).getAuctionJoinNum(),
-							mConnectorInfoMap.get(client.getSessionId()).getChannel(), mConnectorInfoMap.get(client.getSessionId()).getOS(), "L", "0")
-									.getEncodedMessage());
+				if (mConnectorInfoMap.get(client.getSessionId()).getChannel()
+						.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+					mAuctionServer.itemAdded(
+							new BidderConnectInfo(mConnectorInfoMap.get(client.getSessionId()).getAuctionHouseCode(),
+									mConnectorInfoMap.get(client.getSessionId()).getAuctionJoinNum(),
+									mConnectorInfoMap.get(client.getSessionId()).getChannel(),
+									mConnectorInfoMap.get(client.getSessionId()).getOS(), "L", "0")
+											.getEncodedMessage());
 				}
-				
+
 				mConnectorInfoMap.remove(client.getSessionId());
 				mConnectorChannelInfoMap.remove(closeMember);
 
@@ -828,7 +837,7 @@ public class SocketIOHandler {
 					client.sendEvent("ResponseConnectionInfo",
 							new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 									GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage());
-					
+
 					client.disconnect();
 				}
 			} else {

@@ -87,7 +87,7 @@ public class AuctionShareNettyClient {
 					ChannelPipeline pipeline = ch.pipeline();
 
 					// ssl 적용 여부
-					if (GlobalDefineCode.USE_CLIENT_SSL_FLAG) {
+					if (GlobalDefineCode.FLAG_SSL) {
 
 						// 사설 인증서 - 사용시 주석 해제
 						SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();

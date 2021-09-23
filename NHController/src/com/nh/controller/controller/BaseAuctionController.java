@@ -373,7 +373,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 		String userNum;
 
 		// 테스트 접속
-		if (GlobalDefine.APPLICATION_INFO.isTestMode) {
+		if (GlobalDefineCode.FLAG_TEST_MODE) {
 			// 성공or실패 서버 전송
 			mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_SUCCESS, userMemNum, userMemNum)));
 			return;
@@ -471,7 +471,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 			bidding.setPriceInt(0);
 			bidding.setBiddingTime(cancelBidding.getCancelBiddingTime());
 
-			insertBiddingLog(bidding, false);
+			if (!GlobalDefineCode.FLAG_TEST_MODE) {
+				insertBiddingLog(bidding, false);
+			}
 		}
 	}
 
@@ -553,7 +555,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 		}
 
 		// 응찰 로그 저장
-		insertBiddingLog(bidding, false);
+		if (!GlobalDefineCode.FLAG_TEST_MODE) {
+			insertBiddingLog(bidding, false);
+		}
 	}
 
 	/**

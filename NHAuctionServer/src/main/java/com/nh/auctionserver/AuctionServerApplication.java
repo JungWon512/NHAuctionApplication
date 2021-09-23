@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import com.nh.auctionserver.netty.AuctionServer;
+import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.auctionserver.socketio.SocketIOServer;
 import com.nh.share.setting.AuctionShareSetting;
 
@@ -67,7 +68,7 @@ public class AuctionServerApplication implements CommandLineRunner, ApplicationL
 
 	@Override
 	public void onApplicationEvent(ApplicationStartedEvent event) {
-		runServer(new String[] { "start", "5001" });
+		runServer(new String[] { "start", AuctionServerSetting.DEFAULT_CONNECT_PORT });
 		mSocketIOServer.start();
 
 		mServer.setSocketIOHandler(mSocketIOServer.getSocketIOHandler(), mSSLContext);

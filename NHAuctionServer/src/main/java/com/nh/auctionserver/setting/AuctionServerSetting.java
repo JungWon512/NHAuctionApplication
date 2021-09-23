@@ -1,16 +1,11 @@
 package com.nh.auctionserver.setting;
 
 public class AuctionServerSetting {
-	// SSL 적용 여부
-	public static final boolean FLAG_SSL = true;
-	// 개발,운영 여부
-	public static final boolean FLAG_PRD = true;
-	// 부하 테스트 모드
-	public static final boolean FLAG_TEST_MODE = true;
-	
     // 경매 서버 버전정보
     public static final String RELEASE_VERSION_NAME = "0.0.9";
     public static final String RELEASE_VERSION_DATE = "2021.06.11";
+    
+    public static final String DEFAULT_CONNECT_PORT = "5001";
 
     // Log 파일 정보
     //public static final String AUCTION_LOG_FILE_PATH = "/auctserver/nh_auction/FileUpDown/LogFile/";
@@ -33,9 +28,9 @@ public class AuctionServerSetting {
     // 경매 유효 세션 확인 간격
     public static long CHECK_SESSION_TIME = 5000;
 
-    public static int AUCTION_ENTRY_TOTAL_COUNT = 0; // 출품 차량 총 수
-    public static int AUCTION_ENTRY_REMAIN_COUNT = 0; // 경매 남은 출품 차량 수
-    public static int AUCTION_ENTRY_FINISH_COUNT = -1; // 경매 종료 출품 차량 수
+    public static int AUCTION_ENTRY_TOTAL_COUNT = 0; // 출품 총 수
+    public static int AUCTION_ENTRY_REMAIN_COUNT = 0; // 경매 남은 출풀 수
+    public static int AUCTION_ENTRY_FINISH_COUNT = -1; // 경매 종료 출품 수
 
     public static int AUCTION_START_PRICE = 0; // 경매 시작가
 }

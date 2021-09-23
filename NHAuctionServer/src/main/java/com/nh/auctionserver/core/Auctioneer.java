@@ -196,15 +196,14 @@ public class Auctioneer {
 		if (mStartCountDownJobMap.containsKey(auctionHouseCode)) {
 			mStartCountDownJobMap.get(auctionHouseCode).cancel(true);
 		}
-		
+
 		mAuctionStateMap.get(auctionHouseCode).onAuctionCountDownCompleted();
 
 		mAuctionServer.itemAdded(new AuctionCountDown(auctionHouseCode,
-				mAuctionStateMap.get(auctionHouseCode).getAuctionCountDownStatus(), "-1")
-						.getEncodedMessage());
-		
-		mAuctionStateMap.get(auctionHouseCode).onAuctionCountDownReady(
-				Integer.valueOf(mAuctionEditSettingMap.get(auctionHouseCode).getCountDown()));
+				mAuctionStateMap.get(auctionHouseCode).getAuctionCountDownStatus(), "-1").getEncodedMessage());
+
+		mAuctionStateMap.get(auctionHouseCode)
+				.onAuctionCountDownReady(Integer.valueOf(mAuctionEditSettingMap.get(auctionHouseCode).getCountDown()));
 	}
 
 	public synchronized void broadcastToastMessage(ToastMessageRequest requestToastMessage) {
@@ -937,5 +936,24 @@ public class Auctioneer {
 //			mAuctionServer.itemAdded(new RequestAuctionResult(auctionHouseCode,
 //					mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEntryNum()).getEncodedMessage());
 		}
+	}
+
+	public synchronized boolean changeStandPosion(String auctionHouseCode, String entryNum, String standPosionNum) {
+		boolean result = false;
+
+		mLogger.debug("entryNum: " + entryNum);
+		mLogger.debug("standPosionNum: " + standPosionNum);
+
+		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)) {
+			result = mAuctionEntryRepositoryMap.get(auctionHouseCode).changeStandPosionInfo(entryNum, standPosionNum);
+
+			if (result) {
+				mAuctionServer.itemAdded(
+						new CurrentEntryInfo(mAuctionEntryRepositoryMap.get(auctionHouseCode).getEntryInfo(entryNum))
+								.getEncodedMessage());
+			}
+		}
+
+		return result;
 	}
 }

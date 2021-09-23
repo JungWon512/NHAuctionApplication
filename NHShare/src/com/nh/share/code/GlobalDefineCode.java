@@ -8,6 +8,12 @@ package com.nh.share.code;
  * @since 2021.06.15
  */
 public class GlobalDefineCode {
+	// SSL 적용 여부
+	public static final boolean FLAG_SSL = true;
+	// 개발,운영 여부
+	public static final boolean FLAG_PRD = true;
+	// 부하 테스트 모드
+	public static final boolean FLAG_TEST_MODE = true;
 	
 	// 경매장 거점 코드
 	public enum AUCTION_HOUSE {
@@ -32,9 +38,6 @@ public class GlobalDefineCode {
 	public static final String AUCTION_HOUSE_HWASUN = "8808990661315";
 	public static final String AUCTION_HOUSE_JANGSU = "8808990657202";
 	
-	//클라이언트 ssl 적용 여부 플래그 / true : 사용, false : 미사용
-	public static final boolean USE_CLIENT_SSL_FLAG = false;
-
 	// 응찰 채널
 	public static final String CONNECT_CHANNEL_BIDDER = "6001";
 	// 제어 채널

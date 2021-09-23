@@ -9,11 +9,11 @@ public class AuctionEntryRepository {
 	private int mTotalCount = 0;
 	private LinkedList<EntryInfo> mEntryList = new LinkedList<EntryInfo>();
 
-	public synchronized void removeAllEntryList( ) {
+	public synchronized void removeAllEntryList() {
 		mEntryList = new LinkedList<EntryInfo>();
 		mTotalCount = 0;
 	}
-	
+
 	public synchronized void setInitialEntryList(List<EntryInfo> entryList) {
 		if (mTotalCount != 0) {
 			mEntryList.addAll(entryList);
@@ -51,8 +51,8 @@ public class AuctionEntryRepository {
 				for (int i = 0; i < mEntryList.size(); i++) {
 					if (mEntryList.get(i).getEntryNum().equals(entryNum)) {
 						entryInfo = mEntryList.get(i);
-						//mEntryList.remove(i);
-						//mTotalCount--;
+						// mEntryList.remove(i);
+						// mTotalCount--;
 					}
 				}
 			}
@@ -70,8 +70,8 @@ public class AuctionEntryRepository {
 
 		if (mEntryList != null && mEntryList.size() > 0) {
 			entryInfo = mEntryList.get(0);
-			//mEntryList.remove(0);
-			//mTotalCount--;
+			// mEntryList.remove(0);
+			// mTotalCount--;
 		}
 
 		if (entryInfo == null) {
@@ -93,5 +93,25 @@ public class AuctionEntryRepository {
 
 			System.out.println("출품 자료가 추가되었습니다.(자료수 : " + mTotalCount + ")");
 		}
+	}
+
+	public synchronized boolean changeStandPosionInfo(String entryNum, String standPosionNum) {
+		boolean result = false;
+
+		if (mEntryList != null) {
+			if (mEntryList != null && mEntryList.size() > 0) {
+				for (int i = 0; i < mEntryList.size(); i++) {
+					if (mEntryList.get(i).getEntryNum().equals(entryNum)) {
+
+						mEntryList.get(i).setStandPosition(standPosionNum);
+						result = true;
+
+						return result;
+					}
+				}
+			}
+		}
+
+		return result;
 	}
 }

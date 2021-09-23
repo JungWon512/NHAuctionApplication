@@ -692,10 +692,16 @@ public class SettingController implements Initializable {
 							@Override
 							public void onShutDown(int port) {
 								BillboardDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""));
+								
+								// 전광판 셋팅
+								BillboardDelegate.getInstance().initBillboard();
 							}
 						});
 					} else {
 						BillboardDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""));
+						
+						// 전광판 셋팅
+						BillboardDelegate.getInstance().initBillboard();
 					}
 				}
 
@@ -708,19 +714,18 @@ public class SettingController implements Initializable {
 							@Override
 							public void onShutDown(int port) {
 								PdpDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, ""));
+								
+								// PDP 셋팅
+								PdpDelegate.getInstance().initPdp();
 							}
 						});
 					} else {
 						PdpDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, ""));
+						
+						// PDP 셋팅
+						PdpDelegate.getInstance().initPdp();
 					}
 				}
-
-				// 전광판 셋팅
-				BillboardDelegate.getInstance().initBillboard();
-
-				// PDP 셋팅
-				PdpDelegate.getInstance().initPdp();
-
 			}
 			// 환경설정 저장 후 값들 재설정
 			SettingApplication.getInstance().initSharedData();

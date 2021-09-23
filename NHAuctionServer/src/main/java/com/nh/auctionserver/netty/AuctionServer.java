@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -195,7 +196,9 @@ public class AuctionServer {
 
 						pipeline.addLast(new LoggingHandler(LogLevel.INFO));
 
-						pipeline.addLast(mSSLContext.newHandler(ch.alloc()));
+						if (GlobalDefineCode.FLAG_SSL) {
+							pipeline.addLast(mSSLContext.newHandler(ch.alloc()));
+						}
 						
 						pipeline.addLast("idleStateHandler",
 								new IdleStateHandler(AuctionServerSetting.AUCTION_SERVER_READ_CHECK_SESSION_TIME,
@@ -1096,7 +1099,7 @@ public class AuctionServer {
 						break;
 					}
 				} else {
-					if (AuctionServerSetting.FLAG_TEST_MODE) {
+					if (GlobalDefineCode.FLAG_TEST_MODE) {
 						if (mConnectorInfoMap.get(key).getUserMemNum().equals(closeMember)) {
 							channelId = (ChannelId) key;
 							break;
@@ -1177,6 +1180,15 @@ public class AuctionServer {
 			}
 
 			mLogger.debug("ConnectorInfoMap size : " + mConnectorInfoMap.size());
+			
+			Iterator<Object> iter = mConnectorInfoMap.keySet().iterator();
+
+			while (iter.hasNext()) {
+				Object key = iter.next();
+				ConnectionInfo value = (ConnectionInfo) mConnectorInfoMap.get(key);
+				System.out.println(key + " : " + value.getEncodedMessage());
+			}
+
 		}
 	}
 

@@ -251,7 +251,7 @@ public class BillboardData implements NettySendable {
         sb.append(makeBoardNumberMessage(getKPN(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_KPN, "")));
         sb.append(makeBoardKoreanMessage(getbRegion(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_REGION, "")));
         sb.append(makeNoteMessage(getbNote(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_NOTE, "")));
-        sb.append(makeBoardNumberMessage(getBaseUnitDivision(getbLowPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_LOWPRICE, "0")));
+        sb.append(makeBoardNumberMessage(getBaseUnitDivision(getbLowPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_LOWPRICE, "")));
         sb.append(makeBoardNumberMessage(getBaseUnitDivision(getbAuctionBidPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_SUCPRICE, "")));
         
         sb.append(makeBoardNumberMessage(getbAuctionSucBidder(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_SUCBIDDER, "")));
@@ -273,24 +273,108 @@ public class BillboardData implements NettySendable {
 
         StringBuilder temp = new StringBuilder();
 
+        System.out.println("비고 메시지 Byte수 : " + count);
+        System.out.println("비고 메시지 길이 : " + s.length());
+        System.out.println("비고 메시지 Byte : " + stringToByteSize);
+        System.out.println("비고 메시지 : " + substringByBytes(s, 0, count));
+        
         if (s.length() < doubleCount) {
-            return " ".repeat(count - stringToByteSize) + s;
+            return s + " ".repeat(count - stringToByteSize);
         } else {
             if ((stringToByteSize < doubleCount)) {
-                temp = new StringBuilder(" ".repeat(count - stringToByteSize) + s);
+                temp = new StringBuilder(s + " ".repeat(count - stringToByteSize));
             } else {
                 temp = new StringBuilder(s.substring(0, doubleCount));
             }
+            
             for (int ch :
                     temp.toString().toCharArray()) {
                 if ((33 <= ch) && (ch <= 126)) { // 특수문자, 알파벳, 숫자 등 => 1 byte 이기 때문에 빈 문자열 추가
-                    temp.insert(0, " ");
+                    //temp.insert(0, " ");
+                    temp.append(" ");
                 }
             }
             return temp.toString();
         }
     }
 
+	public static String getNoteString(String inputString, int baseByte, int maxByte) {
+		byte[] inputByte = inputString.getBytes();
+		int cutByte = 0;
+
+		for (int i = 0; i < inputString.length(); i++) {
+			if (isInclude(inputString.substring(i, i + 1))) {
+				if (cutByte + baseByte > maxByte) {
+					break;
+				}
+				
+				cutByte += baseByte;
+			} else {
+				if (cutByte + 1 > maxByte) {
+					break;
+				}
+				cutByte += 1;
+			}
+		}
+
+		System.out.println(cutByte + "바이트까지 추출");
+		return new String(inputByte, 0, cutByte);
+	}
+
+	public static boolean isInclude(String inputString) {
+		for (int j = 0; j < inputString.length(); j++) {
+			if (Character.getType(inputString.charAt(j)) == Character.OTHER_LETTER) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+    public static String substringByBytes(String str, int beginBytes, int endBytes) {
+        if (str == null || str.length() == 0) {
+            return "";
+        }
+     
+
+         if (beginBytes < 0) {
+            beginBytes = 0;
+        }
+
+        if (endBytes < 1) {
+            return "";
+        }
+
+        int len = str.length();
+
+        int beginIndex = -1;
+        int endIndex = 0;
+
+        int curBytes = 0;
+        String ch = null;
+        for (int i = 0; i < len; i++) {
+            ch = str.substring(i, i + 1);
+
+            curBytes += (ch.getBytes().length - 1);
+     
+
+            if (beginIndex == -1 && curBytes >= beginBytes) {
+                beginIndex = i;
+            }
+
+            System.out.println("curBytes : " + curBytes);
+            if (curBytes >= endBytes) {
+                break;
+            } else {
+                endIndex = i + 1;
+            }
+        }
+     
+        return new String(str.getBytes(), 0, endBytes);
+
+        //return str.substring(beginIndex, endIndex);
+    }
+    
     /**
      * @Description 한글이 들어가는 전광판
      */
@@ -324,7 +408,7 @@ public class BillboardData implements NettySendable {
             return "";
         }
         int price = Integer.parseInt(str);
-        int resultPrice = price / GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000;
+        int resultPrice = price; // / GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000;
         return String.valueOf(resultPrice);
     }
 

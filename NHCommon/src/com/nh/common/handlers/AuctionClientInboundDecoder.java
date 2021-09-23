@@ -29,7 +29,7 @@ public final class AuctionClientInboundDecoder extends MessageToMessageDecoder<S
         super.channelActive(ctx);
 
         //ssl 적용 안하면 여기서 channelActive 
-        if (!GlobalDefineCode.USE_CLIENT_SSL_FLAG) {
+        if (!GlobalDefineCode.FLAG_SSL) {
         	 if (mController != null) {
                  mController.onActiveChannel(ctx.channel());
              }
