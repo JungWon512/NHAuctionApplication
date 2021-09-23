@@ -440,3 +440,11 @@
 .display-board-status:disabled{
 	-fx-image:  url("../resource/images/ic_con_off.png");
 }
+
+.main-top-text{
+	-fx-font-size: 14px;
+}
+.main-top-text:focused{
+	-fx-font-size: 14px;
+}
+
