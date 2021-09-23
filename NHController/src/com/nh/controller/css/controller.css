@@ -432,3 +432,11 @@
 .bg-color-27293d{
 	-fx-background-color: #27293d;
 }
+
+.display-board-status{
+	-fx-image:  url("../resource/images/ic_con_on.png");
+}
+
+.display-board-status:disabled{
+	-fx-image:  url("../resource/images/ic_con_off.png");
+}

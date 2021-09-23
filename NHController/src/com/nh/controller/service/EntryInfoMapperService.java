@@ -12,6 +12,7 @@ import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.AuctionStnData;
 import com.nh.controller.model.SelStsCountData;
+import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
@@ -58,11 +59,22 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 		}
 
 		if (!list.isEmpty()) {
+	
+			int standPosition = Integer.parseInt(SettingApplication.getInstance().getStandPosition());
+			
 			// 마지막 출품정보 표기 (Y/N)
 			for (int i = 0; i < list.size(); i++) {
 				String flag = (i == list.size() - 1) ? "Y" : "N";
 				list.get(i).setIsLastEntry(flag);
+				
+				if(standPosition > i ) {
+					list.get(i).setStandPosition(list.get(i).getEntryNum());
+					list.get(i).setIsExcessCow("N");
+				}else {
+					list.get(i).setIsExcessCow("Y");
+				}
 			}
+			
 		}
 		return list;
 	}

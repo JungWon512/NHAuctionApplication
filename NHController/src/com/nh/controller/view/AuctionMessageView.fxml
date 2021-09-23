@@ -23,9 +23,9 @@
             <Insets bottom="3.0" left="6.0" right="6.0" top="6.0" />
          </BorderPane.margin>
          <children>
-            <ImageView fitHeight="55.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+            <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
                <image>
-                  <Image url="@../resource/images/ic_msg_s.png" />
+                  <Image url="@../resource/images/ic_logo.png" />
                </image>
             </ImageView>
       		<VBox alignment="CENTER_LEFT" minHeight="100.0" prefHeight="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
@@ -64,7 +64,7 @@
       </HBox>
 	</top>
 	<center>
-		<GridPane styleClass="base-pane" BorderPane.alignment="CENTER">
+		<GridPane BorderPane.alignment="CENTER">
 			<columnConstraints>
 				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
 			</columnConstraints>
@@ -74,7 +74,7 @@
 				<RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
-            <HBox maxWidth="1.7976931348623157E308" styleClass="sub-view" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <HBox maxWidth="1.7976931348623157E308" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -89,7 +89,7 @@
                               <Insets top="1.0" />
                            </VBox.margin>
                         </TextField>
-      						<Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="medium-font" text="전송 메시지 입력 (최대 한/영 100자)" textFill="WHITE">
+      						<Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="전송 메시지 입력 (최대 한/영 100자)" textFill="WHITE">
       							<font>
       								<Font size="13.0" />
       							</font>
@@ -99,10 +99,13 @@
       						<Insets left="15.0" right="15.0" />
       					</padding>
       				</VBox>
-								<Button fx:id="btnSend" maxHeight="1.7976931348623157E308" mnemonicParsing="false" prefWidth="120.0" styleClass="control-popup-button" text="전송" HBox.hgrow="ALWAYS">
+								<Button fx:id="btnSend" maxHeight="1.7976931348623157E308" mnemonicParsing="false" prefWidth="120.0" text="전송" HBox.hgrow="ALWAYS">
 									<HBox.margin>
 										<Insets right="15.0" />
 									</HBox.margin>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
 								</Button>
                </children>
                <padding>
@@ -114,7 +117,7 @@
 						<Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
 					</GridPane.margin>
 				</ListView>
-				<HBox alignment="CENTER" maxWidth="1.7976931348623157E308" spacing="10.0" styleClass="sub-view" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+				<HBox alignment="CENTER" maxWidth="1.7976931348623157E308" spacing="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
 					<children>
 						<TextField fx:id="textFieldAddMessage" maxHeight="1.7976931348623157E308" promptText="추가하실 메시지 내용을 입력하세요." styleClass="regular-font" HBox.hgrow="ALWAYS">
                      <HBox.margin>
@@ -123,7 +126,7 @@
                      <font>
                         <Font size="15.0" />
                      </font></TextField>
-						<Button fx:id="btnAddMessage" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="50.0" styleClass="control-popup-button">
+						<Button fx:id="btnAddMessage" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="50.0">
                      <HBox.margin>
                         <Insets bottom="5.0" top="5.0" />
                      </HBox.margin>

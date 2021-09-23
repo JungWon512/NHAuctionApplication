@@ -131,8 +131,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@FXML // 남은 시간 Bar
 	private Label cnt_5, cnt_4, cnt_3, cnt_2, cnt_1;
 
-	@FXML // 메세지 보내기 버튼
-	private ImageView mImgMessage;
+	@FXML // 경매 상단 아이콘 메세지보내기,전광판 1 상태, 전광판 2 상태
+	private ImageView mMsgImageView,mDisplay_1_ImageView,mDisplay_2_ImageView;
 
 	@FXML // 감가 기준 금액 / 횟수
 	private Label mDeprePriceLabel, mLowPriceChgNtLabel;
@@ -228,7 +228,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnF6.setOnMouseClicked(event -> onSuccessAuction());
 //		mBtnF7.setOnMouseClicked(event -> onPassAuction());
 		mBtnF8.setOnMouseClicked(event -> openSettingDialog());
-		mImgMessage.setOnMouseClicked(event -> openSendMessage(event));
+		mMsgImageView.setOnMouseClicked(event -> openSendMessage(event));
 		mWaitTableView.setOnMouseClicked(event -> onClickWaitTableView(event));
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
@@ -736,6 +736,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 *
 	 */
 	public void onSendEntryData() {
+		
 
 		/**
 		 * 네티 접속 상태 출품 데이터 전송 전 상태
@@ -972,7 +973,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		MoveStageUtil.getInstance().openSettingDialog(mStage, new BooleanListener() {
+		MoveStageUtil.getInstance().openSettingDialog(mStage,true, new BooleanListener() {
 
 			@Override
 			public void callBack(Boolean isClose) {
@@ -997,6 +998,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						mBtnSpace.setDisable(false);
 					}
 
+					updateDisplayBoardStatusUI();
+
 					int BaselowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 					setBaseDownPrice(Integer.toString(BaselowPrice));
 				}
@@ -1004,6 +1007,28 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		});
 	}
 
+	/**
+	 * 전광판 접속 현황
+	 */
+	@Override
+	public void updateDisplayBoardStatusUI() {
+
+		System.out.println("[DisplayBoard - BillboardDelegate]  : " + BillboardDelegate.getInstance().isActive());
+		System.out.println("[DisplayBoard - PdpDelegate]  : " + PdpDelegate.getInstance().isActive());
+		
+		if (BillboardDelegate.getInstance().isActive()) {
+			mDisplay_1_ImageView.setDisable(false);
+		}else {
+			mDisplay_1_ImageView.setDisable(true);
+		}
+		if (PdpDelegate.getInstance().isActive()) {
+			mDisplay_2_ImageView.setDisable(false);
+		}else {
+			mDisplay_2_ImageView.setDisable(true);
+		}
+		
+	}
+	
 	/**
 	 * 경매 진행중 => 취소 경매 진행중 아님 => 종료
 	 */
@@ -2357,8 +2382,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			// 상단 경매 상태 라벨 낙/유찰 에 따라 표시
 			auctionStateLabelToggle(spEntryInfo.getAuctionResult().getValue());
-			// 현재 선택된 row 갱신
-			setCurrentEntryInfo();
+
 
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
 
@@ -2435,6 +2459,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 					addLogItem("경매 상태 유찰이거나 하나씩진행 체크 됨." + spEntryInfo.getAuctionResult().getValue() + " / " + SettingApplication.getInstance().isUseOneAuction());
 				}
+				
+				// 현재 선택된 row 갱신
+				setCurrentEntryInfo();
 
 			}
 		});

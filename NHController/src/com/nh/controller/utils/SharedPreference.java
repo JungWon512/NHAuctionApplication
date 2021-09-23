@@ -134,6 +134,9 @@ public class SharedPreference {
 	public static final String PREFERENCE_SETTING_SOUND_ETC_5 = "PREFERENCE_SETTING_SOUND_ETC_5";
 	public static final String PREFERENCE_SETTING_SOUND_ETC_6 = "PREFERENCE_SETTING_SOUND_ETC_6";
 	// 메인 -> 음성설정 -> 텍스트  [END]
+
+	//계류대 번호
+	public static final String PREFERENCE_SETTING_STAND_POSITION = "PREFERENCE_SETTING_MOORING_SQ";
 	
 	// --- 메인 출품 정보 음성 설정 체크박스
 	public static final String PREFERENCE_MAIN_SOUND_ENTRY_NUMBER = "PREFERENCE_MAIN_SOUND_ENTRY_NUMBER";

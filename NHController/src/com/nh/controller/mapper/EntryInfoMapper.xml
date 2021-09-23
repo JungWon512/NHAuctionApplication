@@ -48,6 +48,7 @@
         <result property="mOslpNo" column="OSLP_NO"/>
         <result property="mTrmnAmnNo" column="TRMN_AMNNO"/>
         <result property="mLedSqno" column="LED_SQNO"/>
+        <result property="mStandPosition" column="STAND_POSITION"/>
 
     </resultMap>
 
@@ -99,7 +100,7 @@
 		${alias}.TRMN_AMNNO,
 		${alias}.LED_SQNO
 	</sql>
-
+		<!-- ${alias}.STAND_POSITION -->
 	<!-- tb_la_is_mm_fhs -->
 	<sql id="fhsColumn">
 		${alias}.FTSNM

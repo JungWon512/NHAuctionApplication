@@ -202,7 +202,7 @@ public class MoveStageUtil {
 	/**
 	 * @Description 환경설정 Dialog
 	 */
-	public void openSettingDialog(Stage stage,BooleanListener listener) {
+	public void openSettingDialog(Stage stage,boolean isDisplayBordConnection,BooleanListener listener) {
 
 		if(mDialog != null && mDialog.isShowing()) {
 			return;
@@ -216,7 +216,7 @@ public class MoveStageUtil {
 
 			SettingController controller = fxmlLoader.getController();
 
-			controller.setStage(stage,listener);
+			controller.setStage(stage,isDisplayBordConnection,listener);
 
 			openDialog(stage, parent);
 			setStageDisable(stage);

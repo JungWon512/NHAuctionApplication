@@ -402,19 +402,19 @@
                <children>
                   <HBox alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" spacing="10.0">
                      <children>
-                        <ImageView fx:id="mImgMessage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="mMsgImageView" fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
                            <image>
                               <Image url="@../resource/images/ic_msg_s.png" />
                            </image>
                         </ImageView>
-                        <ImageView fx:id="mBtnTest" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="mDisplay_1_ImageView" disable="true" fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" styleClass="display-board-status" HBox.hgrow="ALWAYS">
                            <image>
-                              <Image url="@../resource/images/ic_cow.png" />
+                              <Image url="@../resource/images/ic_con_off.png" />
                            </image>
                         </ImageView>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="mDisplay_2_ImageView" disable="true" fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" styleClass="display-board-status" HBox.hgrow="ALWAYS">
                            <image>
-                              <Image url="@../resource/images/ic_cow.png" />
+                              <Image url="@../resource/images/ic_con_off.png" />
                            </image>
                         </ImageView>
                      </children>

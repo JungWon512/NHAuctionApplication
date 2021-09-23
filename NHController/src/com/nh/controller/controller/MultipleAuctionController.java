@@ -695,7 +695,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			return;
 		}
 
-		MoveStageUtil.getInstance().openSettingDialog(mStage, new BooleanListener() {
+		MoveStageUtil.getInstance().openSettingDialog(mStage,true, new BooleanListener() {
 
 			@Override
 			public void callBack(Boolean isClose) {

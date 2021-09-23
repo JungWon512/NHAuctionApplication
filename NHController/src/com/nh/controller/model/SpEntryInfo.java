@@ -1,5 +1,9 @@
 package com.nh.controller.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.share.code.GlobalDefineCode;
@@ -71,6 +75,10 @@ public class SpEntryInfo implements FromAuctionController {
     private StringProperty mLwprChgNt; // 최저가 변경 횟수
 
     private StringProperty mIsLastEntry; // 마지막 출품 여부
+    
+	private StringProperty mStandPosition; // 계류대 번호
+	private StringProperty mIsExcessCow; // 초과출장우여부
+
 
     public SpEntryInfo() {
     }
@@ -120,6 +128,8 @@ public class SpEntryInfo implements FromAuctionController {
         this.mTrmnAmnNo = new SimpleStringProperty(entryInfo.getTrmnAmnNo());
         this.mLedSqno = new SimpleStringProperty(entryInfo.getLedSqno());
         this.mSraSbidUpPrice = new SimpleStringProperty(Integer.toString(entryInfo.getSraSbidUpPrice()));
+        this.mStandPosition = new SimpleStringProperty(entryInfo.getStandPosition());
+        this.mIsExcessCow = new SimpleStringProperty(entryInfo.getIsExcessCow());
     }
 
     public StringProperty getAuctionHouseCode() {
@@ -489,6 +499,57 @@ public class SpEntryInfo implements FromAuctionController {
 	public void setSraSbidUpPrice(StringProperty mSraSbidUpPrice) {
 		this.mSraSbidUpPrice = mSraSbidUpPrice;
 	}
+	
+	public StringProperty getStandPosition() {
+		return mStandPosition;
+	}
+
+	public void setStandPosition(StringProperty mStandPosition) {
+		this.mStandPosition = mStandPosition;
+	}
+
+	public StringProperty getIsExcessCow() {
+		return mIsExcessCow;
+	}
+
+	public void setIsExcessCow(StringProperty mIsExcessCow) {
+		this.mIsExcessCow = mIsExcessCow;
+	}
+	
+
+	public String getConvertBirthDay() {
+
+		String convertBirthDay = "";
+		
+		String month = "";
+
+		if (CommonUtils.getInstance().isValidString(getBirthday().getValue())) {
+
+			boolean isCheck = CommonUtils.getInstance().isValidationDate(getBirthday().getValue());
+
+			if (isCheck) {
+
+				try {
+					SimpleDateFormat dtFormat = new SimpleDateFormat("yyyyMMdd");
+					SimpleDateFormat newDtFormat = new SimpleDateFormat("yy.MM.dd");
+					Date formatDate = dtFormat.parse(getBirthday().getValue());
+					convertBirthDay = newDtFormat.format(formatDate);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				month = CommonUtils.getInstance().geDiffDateMonth(getBirthday().getValue(), CommonUtils.getInstance().getTodayYYYYMMDD());
+			}else {
+				convertBirthDay = getBirthday().getValue();
+				month = "";
+			}
+		}
+		
+		if(CommonUtils.getInstance().isValidString(convertBirthDay) && CommonUtils.getInstance().isValidString(convertBirthDay)) {
+			return convertBirthDay + "(" + month + "개월)";
+		}else {
+			return "";
+		}
+	}
 
 	public StringProperty getBiddingResult() {
 
@@ -524,7 +585,7 @@ public class SpEntryInfo implements FromAuctionController {
                 "%c%c%c" + "%s%c" + "%s%c"+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" 
                 		+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" 
                 		+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" 
-                		+ "%s%c" + "%s%c" + "%s",
+                		+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s",
                 ORIGIN, TYPE, AuctionShareSetting.DELIMITER, getAuctionHouseCode().getValue(), AuctionShareSetting.DELIMITER,
                 getEntryNum().getValue(), AuctionShareSetting.DELIMITER,
                 getAuctionQcn().getValue(), AuctionShareSetting.DELIMITER,
@@ -535,7 +596,7 @@ public class SpEntryInfo implements FromAuctionController {
                 getFarmMngNum().getValue(), AuctionShareSetting.DELIMITER,
                 getExhibitor().getValue(), AuctionShareSetting.DELIMITER,
                 getBrandName().getValue(), AuctionShareSetting.DELIMITER,
-                getBirthday().getValue(), AuctionShareSetting.DELIMITER, 
+                getConvertBirthDay(), AuctionShareSetting.DELIMITER, 
                 getKpn().getValue(), AuctionShareSetting.DELIMITER, 
                 getGenderName().getValue(), AuctionShareSetting.DELIMITER, 
                 getMotherCowName().getValue(), AuctionShareSetting.DELIMITER,
@@ -549,15 +610,17 @@ public class SpEntryInfo implements FromAuctionController {
                 getRgnName().getValue(), AuctionShareSetting.DELIMITER, 
                 getDnaYn().getValue(), AuctionShareSetting.DELIMITER, 
                 getIsNew().getValue(), AuctionShareSetting.DELIMITER,
-                getWeight().getValue(), AuctionShareSetting.DELIMITER,
+                getWeight().getValue() + "kg", AuctionShareSetting.DELIMITER,
                 getInitPrice().getValue(), AuctionShareSetting.DELIMITER,
                 getLowPrice().getValue(), AuctionShareSetting.DELIMITER, 
                 getNote().getValue(), AuctionShareSetting.DELIMITER,
                 getAuctionResult().getValue(), AuctionShareSetting.DELIMITER,
                 getAuctionSucBidder().getValue(), AuctionShareSetting.DELIMITER,
-                getAuctionBidPrice().getValue(), AuctionShareSetting.DELIMITER, 
+                getSraSbidUpPrice().getValue(), AuctionShareSetting.DELIMITER, 
                 getAuctionBidDateTime().getValue(), AuctionShareSetting.DELIMITER,
-                getIsLastEntry().getValue());
+                getIsLastEntry().getValue(), AuctionShareSetting.DELIMITER, 
+                getStandPosition().getValue(), AuctionShareSetting.DELIMITER, 
+                getIsExcessCow().getValue());
     }
 
     @Override

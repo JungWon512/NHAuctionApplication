@@ -7,12 +7,13 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="720.0" styleClass="base-pane" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.ChooseAuctionController">
+<BorderPane fx:id="mRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="720.0" styleClass="base-pane" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.ChooseAuctionController">
    <top>
       <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="100.0" styleClass="bg-color-1e1e2f" text="전자경매 시스템" textFill="#56afff" BorderPane.alignment="CENTER">
          <graphic>
@@ -33,7 +34,12 @@
             <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
          </BorderPane.margin>
          <children>
-            <HBox alignment="CENTER" prefHeight="80.0" prefWidth="200.0" spacing="50.0" styleClass="bg-color-1e1e2f">
+            <AnchorPane>
+               <children>
+                  <Button fx:id="mBtnSetting" alignment="CENTER" contentDisplay="CENTER" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="setting-button" text="환경설정" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <HBox alignment="CENTER" prefHeight="80.0" prefWidth="200.0" spacing="50.0" style="-fx-background-color: #ffffff;">
                <children>
                   <RadioButton fx:id="mCalfToggleButton" mnemonicParsing="false" selected="true" text="송아지" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="1">
                   	<toggleGroup>

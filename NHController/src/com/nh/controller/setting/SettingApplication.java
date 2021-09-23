@@ -124,6 +124,8 @@ public class SettingApplication {
 	//경매 타입
 	public final String DEFAULT_SETTING_AUCTION_TOGGLE_TYPE =  AuctionToggle.SINGLE.toString();
 
+	//계류대번호
+	public final String DEFAULT_SETTING_STAND_POSITION ="150";
 	
 	private static SettingApplication instance = null;
 
@@ -136,11 +138,12 @@ public class SettingApplication {
 	private String reAuctionCount = null; // 동가 재경매 횟수
 	private String auctionCountdown = null; // 경매 종료 카운트 다운 초
 	private String soundAuctionWaitTime = null; // 음성 경매 대기 시간
+	private String standPosition = null; // 계류대 번호
 
 	private boolean useReAuction = false; // 동가 재경매 여부
 	private boolean useOneAuction = false; // 연속경매 - 하나씩 진행 여부
 	private boolean useSoundAuction = false; // 음성경매 - 음성경부 여부
-	private boolean isSingleAuction = true;
+	private boolean isSingleAuction = true;	//경매 타입
 
 	private int aucObjDsc = 0; // 경매 구분
 
@@ -306,7 +309,8 @@ public class SettingApplication {
 
 			// 경매 타입 (단일 or 일괄)
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, DEFAULT_SETTING_AUCTION_TOGGLE_TYPE);
-			
+			// 계류대 번호
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, DEFAULT_SETTING_STAND_POSITION);
 			// 첫실행 후 false
 			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, false);
 		} else {
@@ -339,6 +343,8 @@ public class SettingApplication {
 		}else {
 			isSingleAuction =  false;
 		}
+		
+		standPosition = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, DEFAULT_SETTING_STAND_POSITION);
 	}
 
 	/**
@@ -468,6 +474,14 @@ public class SettingApplication {
 
 	public int getSoundAuctionWaitTime() {
 		return reInt(soundAuctionWaitTime);
+	}
+
+	public String getStandPosition() {
+		return standPosition;
+	}
+
+	public void setStandPosition(String standPosition) {
+		this.standPosition = standPosition;
 	}
 
 	public boolean isUseReAuction() {

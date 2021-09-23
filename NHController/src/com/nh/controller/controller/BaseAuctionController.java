@@ -176,6 +176,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onActiveChannel(Channel channel) {
 		mLogger.debug("onActiveChannel");
+		updateDisplayBoardStatusUI();
 		// 제어프로그램 접속
 		addLogItem(mResMsg.getString("msg.auction.send.connection.info") + AuctionDelegate.getInstance().onSendConnectionInfo());
 	}
@@ -258,25 +259,20 @@ public abstract class BaseAuctionController implements NettyControllable {
 			addLogItem(String.format(mResMsg.getString("msg.auction.status.pass"), auctionStatus.getEntryNum()));
 			BillboardDelegate.getInstance().completeBillboard();
 			PdpDelegate.getInstance().completePdp();
-			// 종료 로그
-			insertFinishLog();
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 			addLogItem(String.format(mResMsg.getString("msg.auction.status.completed"), auctionStatus.getEntryNum()));
 			BillboardDelegate.getInstance().completeBillboard();
 			PdpDelegate.getInstance().completePdp();
-			// 종료 로그
-			insertFinishLog();
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_FINISH:
 			addLogItem(mResMsg.getString("msg.auction.status.finish"));
 			BillboardDelegate.getInstance().finishBillboard();
 			PdpDelegate.getInstance().finishPdp();
-			// 종료 로그
-			insertFinishLog();
 			break;
 		}
 
+		updateDisplayBoardStatusUI();
 	}
 
 	@Override
@@ -505,10 +501,12 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	@Override
 	public void onChannelInactive(int port) {
+		updateDisplayBoardStatusUI();
 	}
 
 	@Override
 	public void exceptionCaught(int port) {
+		updateDisplayBoardStatusUI();
 		mLogger.debug("exceptionCaught : " + port);
 		addLogItem("exceptionCaught : " + port);
 	}
@@ -993,6 +991,11 @@ public abstract class BaseAuctionController implements NettyControllable {
 	 */
 	abstract void soundAuctionTimerTask();
 
+	/**
+	 * 전광판 접속 현황
+	 */
+	abstract void updateDisplayBoardStatusUI();
+	
 	/**
 	 * ADD 로그
 	 *

@@ -9,9 +9,11 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.service.AuctionRoundMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
+import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
@@ -51,8 +53,8 @@ public class ChooseAuctionController implements Initializable {
 	@FXML // 소 타입 , 송아지,비육우,번식우
 	private ToggleButton mCalfToggleButton, mFatteningCattleToggleButton, mBreedingCattleToggleButton;
 
-	@FXML // 접속 , 종료
-	private Button mBtnConnect, mBtnClose;
+	@FXML // 접속 , 종료 , 환경설정
+	private Button mBtnConnect, mBtnClose,mBtnSetting;
 
 	@FXML // 경매 날짜
 	private DatePicker mAuctionDatePicker;
@@ -88,6 +90,7 @@ public class ChooseAuctionController implements Initializable {
 
 		mBtnConnect.setOnMouseClicked(event -> onConnection());
 		mBtnClose.setOnMouseClicked(event -> onCloseApplication());
+		mBtnSetting.setOnMouseClicked(event -> openSettingDialog());
 		
 		test();
 	}
@@ -246,6 +249,43 @@ public class ChooseAuctionController implements Initializable {
 		});
 	}
 
+
+	/**
+	 * 환경 설정
+	 */
+	public void openSettingDialog() {
+
+		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+			return;
+		}
+
+		MoveStageUtil.getInstance().openSettingDialog(mStage,false, new BooleanListener() {
+
+			@Override
+			public void callBack(Boolean isClose) {
+				
+				dismissShowingDialog();
+				
+				if (isClose) {
+
+					if (!SettingApplication.getInstance().isSingleAuction()) {
+						// 일괄경매로 변경된 경우 현재창 종료 후 일괄경매 이동
+						onCloseApplication();
+						return;
+					}
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Showing dialog Close
+	 */
+	private void dismissShowingDialog() {
+		MoveStageUtil.getInstance().dismissDialog();
+		MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
+	}
+	
 	/**
 	 * 프로그램 종료
 	 */
