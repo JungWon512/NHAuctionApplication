@@ -67,12 +67,12 @@
                   </HBox>
                   <HBox alignment="CENTER" maxHeight="30.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Ver.0.0.1" HBox.hgrow="ALWAYS">
+                        <Label fx:id="mVersionLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Ver.0.0.1" HBox.hgrow="ALWAYS">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Date. 20210824.155140" HBox.hgrow="ALWAYS">
+                        <Label fx:id="mReleaseDateLabel" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Date. 20210824.155140" HBox.hgrow="ALWAYS">
                            <font>
                               <Font size="18.0" />
                            </font>

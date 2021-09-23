@@ -186,12 +186,11 @@ public class PdpDelegate {
      * @return
      */
     public boolean isActive() {
-
-        if (!isEmptyClient() && !mClient.isEmptyChannel()) {
-            return mClient.getChannel().isActive();
-        }
-
-        return false;
+ 
+    	if(isEmptyClient()) {
+    		return false;
+    	}
+    	 return mClient.isActive();
     }
     
 	/**

@@ -43,10 +43,12 @@ public class BillboardDelegate {
      * @param object 보낼 객체
      */
     public String sendMessage(NettySendable object) {
-        if (!isEmptyClient()) {
+    	if (!isEmptyClient() && isActive()) {
             mClient.sendMessage(object.getEncodedMessage());
+            return object.getEncodedMessage();
+        }else {
+        	return "";
         }
-        return object.getEncodedMessage();
     }
 
     /**
@@ -55,11 +57,14 @@ public class BillboardDelegate {
      * @param object 보낼 객체
      */
     public String sendMessage(String object) {
-        if (!isEmptyClient()) {
+        if (!isEmptyClient() &&  isActive()) {
         	mLogger.debug("BillboardData Send : " + object);
             mClient.sendMessage(object);
+            return object;
+        }else {
+        	return "";
         }
-        return object;
+       
     }
 
     /**
@@ -207,11 +212,11 @@ public class BillboardDelegate {
      */
     public boolean isActive() {
 
-        if (!isEmptyClient() && !mClient.isEmptyChannel()) {
-            return mClient.getChannel().isActive();
-        }
-
-        return false;
+    	if(isEmptyClient()) {
+    		return false;
+    	}
+    	
+        return mClient.isActive();
     }
 
     /**
