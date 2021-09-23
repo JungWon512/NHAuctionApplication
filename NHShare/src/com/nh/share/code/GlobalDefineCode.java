@@ -31,6 +31,9 @@ public class GlobalDefineCode {
 	public static final String AUCTION_HOUSE_HWADONG = "8808990656656";
 	public static final String AUCTION_HOUSE_HWASUN = "8808990661315";
 	public static final String AUCTION_HOUSE_JANGSU = "8808990657202";
+	
+	//클라이언트 ssl 적용 여부 플래그 / true : 사용, false : 미사용
+	public static final boolean USE_CLIENT_SSL_FLAG = false;
 
 	// 응찰 채널
 	public static final String CONNECT_CHANNEL_BIDDER = "6001";
