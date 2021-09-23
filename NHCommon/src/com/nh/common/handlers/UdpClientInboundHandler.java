@@ -1,21 +1,27 @@
 package com.nh.common.handlers;
 
-import com.nh.common.interfaces.NettyControllable;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.socket.DatagramPacket;
+import java.net.InetSocketAddress;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
+import com.nh.common.interfaces.UdpStatusListener;
 
-public class BillboardClientInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.socket.DatagramPacket;
 
-    private static final Logger mLogger = LoggerFactory.getLogger(BillboardClientInboundHandler.class);
-    private final NettyControllable mController;
+public class UdpClientInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
-    public BillboardClientInboundHandler(NettyControllable controller) {
-        this.mController = controller;
+    private static final Logger mLogger = LoggerFactory.getLogger(UdpClientInboundHandler.class);
+    private final UdpStatusListener mUdpStatusListener;
+
+    public UdpClientInboundHandler() {
+		this.mUdpStatusListener = null;
+    }
+    
+    public UdpClientInboundHandler(UdpStatusListener listener) {
+        this.mUdpStatusListener = listener;
     }
 
     @Override
@@ -31,14 +37,16 @@ public class BillboardClientInboundHandler extends SimpleChannelInboundHandler<D
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
-        mController.onChannelInactive(address.getPort());    // 서버와 연결 끊어졌을경우
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+
         InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
-        mController.exceptionCaught(address.getPort());
+        if(mUdpStatusListener != null) {
+        	mUdpStatusListener.exceptionCaught();
+        }
         cause.printStackTrace();
         super.exceptionCaught(ctx, cause);
     }

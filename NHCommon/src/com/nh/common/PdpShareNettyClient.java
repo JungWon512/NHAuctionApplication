@@ -7,7 +7,9 @@ import java.nio.charset.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.common.handlers.UdpClientInboundHandler;
 import com.nh.common.interfaces.NettyClientShutDownListener;
+import com.nh.common.interfaces.UdpStatusListener;
 import com.nh.share.code.GlobalDefineCode;
 
 import io.netty.bootstrap.Bootstrap;
@@ -49,6 +51,7 @@ public class PdpShareNettyClient {
 						@Override
 						public void initChannel(NioDatagramChannel ch) {
 							ChannelPipeline pipeline = ch.pipeline();
+							pipeline.addLast(new UdpClientInboundHandler(udpStatusListener));
 							pipeline.addLast(new DatagramPacketEncoder<>(new StringEncoder(CharsetUtil.UTF_8)));
 						}
 					});
@@ -139,6 +142,14 @@ public class PdpShareNettyClient {
 			return new PdpShareNettyClient(this);
 		}
 	}
+	
+	public UdpStatusListener udpStatusListener = new UdpStatusListener() {
+		@Override
+		public void exceptionCaught() {
+			mLogger.info("[UDP] BillboardShareNettyClient exceptionCaught");
+			stopClient();
+		}
+	};
 	
 	
 }

@@ -7,7 +7,9 @@ import java.nio.charset.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.common.handlers.UdpClientInboundHandler;
 import com.nh.common.interfaces.NettyClientShutDownListener;
+import com.nh.common.interfaces.UdpStatusListener;
 import com.nh.share.code.GlobalDefineCode;
 
 import io.netty.bootstrap.Bootstrap;
@@ -39,6 +41,7 @@ public class BillboardShareNettyClient {
 		this.port = builder.port;
 		createNettyClient(builder.host, builder.port);
 	}
+	
 
 	private void createNettyClient(String host, int port) {
 		group = new NioEventLoopGroup();
@@ -49,6 +52,7 @@ public class BillboardShareNettyClient {
 						@Override
 						public void initChannel(NioDatagramChannel ch) {
 							ChannelPipeline pipeline = ch.pipeline();
+							pipeline.addLast(new UdpClientInboundHandler(udpStatusListener));
 							pipeline.addLast(new DatagramPacketEncoder<>(new StringEncoder(CharsetUtil.UTF_8)));
 						}
 					});
@@ -83,6 +87,7 @@ public class BillboardShareNettyClient {
 
 	public void stopClient() {
 		group.shutdownGracefully();
+		channel = null;
 	}
 
 	/**
@@ -140,4 +145,12 @@ public class BillboardShareNettyClient {
 			return new BillboardShareNettyClient(this);
 		}
 	}
+
+	public UdpStatusListener udpStatusListener = new UdpStatusListener() {
+		@Override
+		public void exceptionCaught() {
+			mLogger.info("[UDP] BillboardShareNettyClient exceptionCaught");
+			stopClient();
+		}
+	};
 }
