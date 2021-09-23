@@ -193,6 +193,7 @@ public class MoveStageUtil {
 			stage.show();
 			// show 후에 ..
 			controller.initConfiguration();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

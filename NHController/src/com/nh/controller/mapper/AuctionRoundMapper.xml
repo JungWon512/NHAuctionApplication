@@ -6,18 +6,22 @@
 <mapper namespace="com.nh.controller.mapper.AuctionRoundMapper">
 
 	<!-- 경매 회차 정보 조회 -->
+	<!-- 비육우 원단위, 기타 만단위 기준. => AS-IS 비육우도 만단위.
+		CASE WHEN AUC_OBJ_DSC = '1' THEN 10000 ELSE 1 END as divisionPrice  -->
 	<select id="selectAllAuctionRound" resultType="AuctionRound">
 		SELECT *,
-		CASE WHEN AUC_OBJ_DSC = '1' THEN 10000 ELSE 1 END as divisionPrice
+		CASE WHEN AUC_OBJ_DSC = '1' THEN 10000 ELSE 10000 END as divisionPrice
 		FROM TB_LA_IS_MH_AUC_QCN AS A
 		WHERE A.NA_BZPLC = #{naBzplc}
 		AND A.AUC_DT = #{aucDt}
 	</select> 	<!--AND A.DDL_YN = '0'; 마감 여부 -->
 
 	<!-- 경매 회차 단일 정보 조회 -->
+	<!-- 비육우 원단위, 기타 만단위 기준. => AS-IS 비육우도 만단위.
+		CASE WHEN AUC_OBJ_DSC = '1' THEN 10000 ELSE 1 END as divisionPrice  -->
 	<select id="obtainAuctionRound" resultType="AuctionRound">
 		SELECT *,
-		CASE WHEN AUC_OBJ_DSC = '1' THEN 10000 ELSE 1 END as divisionPrice
+		CASE WHEN AUC_OBJ_DSC = '1' THEN 10000 ELSE 10000 END as divisionPrice
 		FROM tb_la_is_mh_auc_qcn as A
 		WHERE A.AUC_DT = #{aucDt}
 		AND A.NA_BZPLC = #{naBzplc}

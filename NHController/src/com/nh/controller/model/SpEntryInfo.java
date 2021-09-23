@@ -52,6 +52,7 @@ public class SpEntryInfo implements FromAuctionController {
     private StringProperty mObjRegNum; // 축산개체종축등록번호
     private StringProperty mObjRegTypeNum; // 등록구분번호
     private StringProperty mRgnName; // 출하생산지역
+    private StringProperty mReRgnName; // 출하생산지역 split => ex) 경남 하동군 금남면  계천리 => 금남, 경상남도 하동군 악양면 상중대2길 22-3 => 악양
     private StringProperty mDnaYn; // 친자검사결과여부
     private StringProperty mIsNew; // 신규여부
     private StringProperty mWeight; // 우출하중량
@@ -130,6 +131,7 @@ public class SpEntryInfo implements FromAuctionController {
         this.mSraSbidUpPrice = new SimpleStringProperty(Integer.toString(entryInfo.getSraSbidUpPrice()));
         this.mStandPosition = new SimpleStringProperty(entryInfo.getStandPosition());
         this.mIsExcessCow = new SimpleStringProperty(entryInfo.getIsExcessCow());
+        this.mReRgnName = new SimpleStringProperty(entryInfo.getReRgnName());
     }
 
     public StringProperty getAuctionHouseCode() {
@@ -516,6 +518,13 @@ public class SpEntryInfo implements FromAuctionController {
 		this.mIsExcessCow = mIsExcessCow;
 	}
 	
+	public StringProperty getReRgnName() {
+		return mReRgnName;
+	}
+
+	public void setReRgnName(StringProperty mReRgnName) {
+		this.mReRgnName = mReRgnName;
+	}
 
 	public String getConvertBirthDay() {
 
@@ -607,7 +616,7 @@ public class SpEntryInfo implements FromAuctionController {
                 getObjIdNum().getValue(), AuctionShareSetting.DELIMITER,
                 getObjRegNum().getValue(), AuctionShareSetting.DELIMITER,
                 getObjRegTypeNum().getValue(), AuctionShareSetting.DELIMITER,
-                getRgnName().getValue(), AuctionShareSetting.DELIMITER, 
+                getReRgnName().getValue(), AuctionShareSetting.DELIMITER, 
                 getDnaYn().getValue(), AuctionShareSetting.DELIMITER, 
                 getIsNew().getValue(), AuctionShareSetting.DELIMITER,
                 getWeight().getValue() + "kg", AuctionShareSetting.DELIMITER,

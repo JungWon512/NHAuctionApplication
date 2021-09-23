@@ -13,6 +13,7 @@ import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.AuctionStnData;
 import com.nh.controller.model.SelStsCountData;
 import com.nh.controller.setting.SettingApplication;
+import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
@@ -59,22 +60,47 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 		}
 
 		if (!list.isEmpty()) {
-	
+
 			int standPosition = Integer.parseInt(SettingApplication.getInstance().getStandPosition());
-			
+
 			// 마지막 출품정보 표기 (Y/N)
 			for (int i = 0; i < list.size(); i++) {
-				String flag = (i == list.size() - 1) ? "Y" : "N";
-				list.get(i).setIsLastEntry(flag);
 				
-				if(standPosition > i ) {
+				String[] splitAddr = list.get(i).getRgnName().split("\\s+");
+				
+				if (splitAddr.length > 2) {
+
+					String tmpAddr = splitAddr[2].trim();
+
+					
+					if (tmpAddr.length() == 3) {
+
+						String subAddr = tmpAddr.substring(0, 2);
+						
+						if (CommonUtils.getInstance().isValidString(subAddr)) {
+							list.get(i).setReRgnName(subAddr);
+						} else {
+							list.get(i).setReRgnName("");
+						}
+					}else {
+						list.get(i).setReRgnName("");
+					}
+				}else {
+					list.get(i).setReRgnName("");
+				}
+
+				String flag = (i == list.size() - 1) ? "Y" : "N";
+
+				list.get(i).setIsLastEntry(flag);
+
+				if (standPosition > i) {
 					list.get(i).setStandPosition(list.get(i).getEntryNum());
 					list.get(i).setIsExcessCow("N");
-				}else {
+				} else {
 					list.get(i).setIsExcessCow("Y");
 				}
 			}
-			
+
 		}
 		return list;
 	}
@@ -231,12 +257,12 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 	@Override
 	public SelStsCountData getSelStsCount(AuctionStnData auctionStnData) {
-		
+
 		SelStsCountData countData;
 
 		try (SqlSession session = DBSessionFactory.getSession()) {
-			countData =  getDao().selectSelStsCount(auctionStnData, session);
-		}catch (Exception e) {
+			countData = getDao().selectSelStsCount(auctionStnData, session);
+		} catch (Exception e) {
 			return new SelStsCountData();
 		}
 
@@ -245,7 +271,7 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 	@Override
 	public int getBiddingHistoryCount(AucEntrData aucEntrData) {
-		
+
 		int resultValue = 0;
 
 		try (SqlSession session = DBSessionFactory.getSession()) {
@@ -262,7 +288,7 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 	@Override
 	public int getNextBiddingHistoryCount(AucEntrData aucEntrData) {
-		
+
 		int resultValue = -1;
 
 		try (SqlSession session = DBSessionFactory.getSession()) {

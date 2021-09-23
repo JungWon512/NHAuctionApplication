@@ -684,21 +684,11 @@ public abstract class BaseAuctionController implements NettyControllable {
 				auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
 				auctionResult.setSuccessBidUpr(bidder.getPrice().getValue());
 
-				int sraSbidAm = 0;
-
-				switch (GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()) {
-				case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:// 비육우
-					int weight = Integer.parseInt(spEntryInfo.getWeight().getValue());
-					sraSbidAm = weight * bidder.getPriceInt();
-					break;
-				default: // 송아지,번식우
-					sraSbidAm = bidder.getPriceInt() * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000;
-					break;
-				}
-
+				int sraSbidAm = bidder.getPriceInt() * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000;
+				
 				auctionResult.setSuccessBidPrice(Integer.toString(sraSbidAm));
+				
 				bidder.setSraSbidAm(new SimpleStringProperty(Integer.toString(sraSbidAm)));
-
 
 				// 전광판 전송
 				BillboardData billboardData = new BillboardData();
@@ -905,7 +895,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 					logContent.append(ENTER_LINE);
 					String user = biddingList.get(i).getAuctionJoinNum().getValue() + "(" + biddingList.get(i).getUserNo().getValue() + ")";
 					String rankUser = String.format(mResMsg.getString("log.auction.result.rank"), Integer.toString((i + 1)), user);
-					String price = String.format(mResMsg.getString("log.auction.result.price"), biddingList.get(i).getPriceInt()) + EMPTY_SPACE + CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(biddingList.get(i).getBiddingTime().getValue());
+					String price = String.format(mResMsg.getString("log.auction.result.price"), biddingList.get(i).getPriceInt()* GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000) + EMPTY_SPACE + CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(biddingList.get(i).getBiddingTime().getValue());
 					logContent.append(rankUser + EMPTY_SPACE + price);
 
 				}
@@ -935,7 +925,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 					for (SpBidding beforeBidding : mBeForeBidderDataList) {
 
 						if (disBidding.getUserNo().getValue().equals(beforeBidding.getUserNo().getValue())) {
-							logContent.append(String.format(mResMsg.getString("log.auction.result.price"), beforeBidding.getPriceInt()));
+							logContent.append(String.format(mResMsg.getString("log.auction.result.price"), beforeBidding.getPriceInt() * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000 ));
 							logContent.append(EMPTY_SPACE);
 							logContent.append(EMPTY_SPACE);
 							logContent.append(CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(beforeBidding.getBiddingTime().getValue()));

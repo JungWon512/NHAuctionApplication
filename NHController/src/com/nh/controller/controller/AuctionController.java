@@ -205,6 +205,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 		// Views
 		initViewConfiguration();
+		
 		SoundUtil.getInstance().initSoundSetting();
 	}
 
@@ -233,8 +234,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 
-		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
-		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+//		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
+//		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
 		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단 숨김.
 
@@ -431,8 +432,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		requestEntryData();
 		// 경매 정보
 		setAuctionInfo();
-
-		CommonUtils.getInstance().dismissLoadingDialog();
 	}
 
 	/**
@@ -736,7 +735,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 *
 	 */
 	public void onSendEntryData() {
-		
 
 		/**
 		 * 네티 접속 상태 출품 데이터 전송 전 상태
@@ -1917,6 +1915,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				return item;
 			}).forEach(System.out::println);
 
+			if(mConnectionUserMap.size() <= 0) {
+				sortConnectionUserDataList();
+			}
 		}
 
 		// 갱신
@@ -2526,6 +2527,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
 				setCurrentEntrySoundData();
 			}
+			
+			CommonUtils.getInstance().dismissLoadingDialog();
 		});
 	}
 
