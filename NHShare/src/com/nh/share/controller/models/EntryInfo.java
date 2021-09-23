@@ -41,6 +41,7 @@ public class EntryInfo implements FromAuctionController {
 	private String mObjRegNum; // 축산개체종축등록번호
 	private String mObjRegTypeNum; // 등록구분번호
 	private String mRgnName; // 출하생산지역
+	private String mReRgnName; // 출하생산지역 split => ex) 경남 하동군 금남면  계천리 => 금남, 경상남도 하동군 악양면 상중대2길 22-3 => 악양
 	private String mDnaYn; // 친자검사결과여부
 	private String mIsNew; // 신규여부
 	private String mWeight; // 우출하중량
@@ -513,6 +514,14 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setIsExcessCow(String isExcessCow) {
 		this.mIsExcessCow = isExcessCow;
+	}
+	
+	public String getReRgnName() {
+		return mReRgnName;
+	}
+
+	public void setReRgnName(String mReRgnName) {
+		this.mReRgnName = mReRgnName;
 	}
 
 	@Override
