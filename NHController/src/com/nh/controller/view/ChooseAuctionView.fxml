@@ -17,7 +17,7 @@
    <top>
       <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="100.0" styleClass="bg-color-1e1e2f" text="전자경매 시스템" textFill="#56afff" BorderPane.alignment="CENTER">
          <graphic>
-            <Label text="농협" textFill="WHITE">
+            <Label text="가축시장" textFill="WHITE">
                <font>
                   <Font size="36.0" />
                </font>
@@ -34,11 +34,7 @@
             <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
          </BorderPane.margin>
          <children>
-            <AnchorPane>
-               <children>
-                  <Button fx:id="mBtnSetting" alignment="CENTER" contentDisplay="CENTER" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="setting-button" text="환경설정" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children>
-            </AnchorPane>
+            <AnchorPane />
             <HBox alignment="CENTER" prefHeight="80.0" prefWidth="200.0" spacing="50.0" style="-fx-background-color: #ffffff;">
                <children>
                   <RadioButton fx:id="mCalfToggleButton" mnemonicParsing="false" selected="true" text="송아지" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="1">
@@ -97,20 +93,30 @@
       </VBox>
    </center>
    <bottom>
-      <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="90.0" spacing="20.0" BorderPane.alignment="CENTER">
+      <AnchorPane maxHeight="90.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="mBtnConnect" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="confirm-button" text="확인">
-               <font>
-                  <Font size="21.0" />
-               </font></Button>
-            <Button fx:id="mBtnClose" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="close-button" text="종료">
-               <font>
-                  <Font size="21.0" />
-               </font></Button>
+            <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="90.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Button fx:id="mBtnConnect" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="confirm-button" text="확인">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="mBtnClose" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="close-button" text="종료">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="30.0" />
+               </padding>
+            </HBox>
+            <Button fx:id="mBtnSetting" alignment="CENTER" contentDisplay="RIGHT" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="setting-button" text="환경설정" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
-         <padding>
-            <Insets bottom="30.0" left="20.0" right="20.0" />
-         </padding>
-      </HBox>
+         <BorderPane.margin>
+            <Insets left="30.0" right="30.0" />
+         </BorderPane.margin>
+      </AnchorPane>
    </bottom>
 </BorderPane>

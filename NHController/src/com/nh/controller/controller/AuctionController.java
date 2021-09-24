@@ -120,7 +120,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private TableColumn<SpBidding, String> mBiddingPriceColumn, mBiddingUserColumn;
 
 	@FXML // 하단 버튼
-	private Button mBtnEsc, mBtnF1, mBtnF3, mBtnF4, mBtnF5, mBtnF6, mBtnF7, mBtnF8, mBtnEnter, mBtnSpace, mBtnUpPrice, mBtnDownPrice;
+	private Button mBtnEsc, mBtnF1, mBtnF3, mBtnF4, mBtnF5, mBtnF6, mBtnF7, mBtnF8, mBtnEnter, mBtnSpace,mBtnMessage, mBtnUpPrice, mBtnDownPrice;
 
 	@FXML // 경매 정보
 	private Label mAuctionInfoDateLabel, mAuctionInfoRoundLabel, mAuctionInfoGubunLabel, mAuctionInfoNameLabel;
@@ -132,7 +132,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private Label cnt_5, cnt_4, cnt_3, cnt_2, cnt_1;
 
 	@FXML // 경매 상단 아이콘 메세지보내기,전광판 1 상태, 전광판 2 상태
-	private ImageView mMsgImageView,mDisplay_1_ImageView,mDisplay_2_ImageView;
+	private ImageView mDisplay_1_ImageView, mDisplay_2_ImageView;
 
 	@FXML // 감가 기준 금액 / 횟수
 	private Label mDeprePriceLabel, mLowPriceChgNtLabel;
@@ -151,6 +151,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	@FXML // 재경매중 라벨,카운트다운
 	private Label mReAuctionLabel, mReAuctionCountLabel, mCountDownLabel;
+
+	@FXML // 접속자 정보 수
+	private Label mConnectionUserCntLabel;
 
 	private int mRemainingTimeCount = 5; // 카운트다운 남은 시간. 정지 상황에서 남은 시간을 저장하기 위함.
 
@@ -205,7 +208,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 		// Views
 		initViewConfiguration();
-		
+
 		SoundUtil.getInstance().initSoundSetting();
 	}
 
@@ -227,17 +230,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnEnter.setOnMouseClicked(event -> onStartAndStopAuction(0));
 		mBtnSpace.setOnMouseClicked(event -> onStartSoundAuction());
 		mBtnF6.setOnMouseClicked(event -> onSuccessAuction());
-//		mBtnF7.setOnMouseClicked(event -> onPassAuction());
 		mBtnF8.setOnMouseClicked(event -> openSettingDialog());
-		mMsgImageView.setOnMouseClicked(event -> openSendMessage(event));
+		
 		mWaitTableView.setOnMouseClicked(event -> onClickWaitTableView(event));
+		mBtnMessage.setOnMouseClicked(event -> openSendMessage(event));
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 
-//		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
-//		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
+		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
-		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단 숨김.
+		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단
+		// 숨김.
+		// mBtnF7.setOnMouseClicked(event -> -());
 
 		// 표시 숨김.
 		mBtnIntroSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
@@ -655,6 +660,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 		mConnectionUserTableView.setItems(mConnectionUserDataList);
+
+		// 접속자수
+		Platform.runLater(()->mConnectionUserCntLabel.setText(String.format(mResMsg.getString("str.connection.user.count"), mConnectionUserMap.size())));
+	
 	}
 
 	/**
@@ -663,24 +672,28 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@SuppressWarnings("unchecked")
 	private synchronized void sortConnectionUserDataList() {
 
-		mConnectionUserDataList.clear();
+		Platform.runLater(() -> {
 
-		if (mConnectionUserMap.size() > 0) {
+			mConnectionUserDataList.clear();
 
-			List<BidderConnectInfo> connectionUserList = new ArrayList<BidderConnectInfo>();
+			if (mConnectionUserMap.size() > 0) {
 
-			connectionUserList.addAll(mConnectionUserMap.values());
+				List<BidderConnectInfo> connectionUserList = new ArrayList<BidderConnectInfo>();
 
-			Collections.sort(connectionUserList, new ListComparator());
+				connectionUserList.addAll(mConnectionUserMap.values());
 
-			ObservableList<SpBidderConnectInfo> observDataList = partDataList(connectionUserList, 5).stream().map(item -> new SpBidderConnectInfo(item)).collect(Collectors.toCollection(FXCollections::observableArrayList));
+				Collections.sort(connectionUserList, new ListComparator());
 
-			mConnectionUserDataList.addAll(observDataList);
-		}
+				ObservableList<SpBidderConnectInfo> observDataList = partDataList(connectionUserList, 5).stream().map(item -> new SpBidderConnectInfo(item)).collect(Collectors.toCollection(FXCollections::observableArrayList));
 
-		mConnectionUserTableView.setItems(mConnectionUserDataList);
-		mConnectionUserTableView.refresh();
-		mConnectionUserTableView.scrollTo(0);
+				mConnectionUserDataList.addAll(observDataList);
+			}
+
+			mConnectionUserTableView.setItems(mConnectionUserDataList);
+			mConnectionUserTableView.refresh();
+			mConnectionUserTableView.scrollTo(0);
+
+		});
 	}
 
 	/**
@@ -855,12 +868,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void openFinishedEntryListPopUp() {
 
-		ObservableList<SpEntryInfo> dataList = getFinishedEntryInfoDataList();
-
-		if (CommonUtils.getInstance().isListEmpty(dataList)) {
-			addLogItem("경매 결과 없음.");
-			return;
-		}
+//		ObservableList<SpEntryInfo> dataList = getFinishedEntryInfoDataList();
+//
+//		if (CommonUtils.getInstance().isListEmpty(dataList)) {
+//			addLogItem("경매 결과 없음.");
+//			return;
+//		}
 
 		openEntryDialog(EntryDialogType.ENTRY_FINISH_LIST);
 
@@ -971,7 +984,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		MoveStageUtil.getInstance().openSettingDialog(mStage,true, new BooleanListener() {
+		MoveStageUtil.getInstance().openSettingDialog(mStage, true, new BooleanListener() {
 
 			@Override
 			public void callBack(Boolean isClose) {
@@ -1013,20 +1026,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		System.out.println("[DisplayBoard - BillboardDelegate]  : " + BillboardDelegate.getInstance().isActive());
 		System.out.println("[DisplayBoard - PdpDelegate]  : " + PdpDelegate.getInstance().isActive());
-		
+
 		if (BillboardDelegate.getInstance().isActive()) {
 			mDisplay_1_ImageView.setDisable(false);
-		}else {
+		} else {
 			mDisplay_1_ImageView.setDisable(true);
 		}
 		if (PdpDelegate.getInstance().isActive()) {
 			mDisplay_2_ImageView.setDisable(false);
-		}else {
+		} else {
 			mDisplay_2_ImageView.setDisable(true);
 		}
-		
+
 	}
-	
+
 	/**
 	 * 경매 진행중 => 취소 경매 진행중 아님 => 종료
 	 */
@@ -1491,7 +1504,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		} else {
 			lowPriceCnt += 1;
 		}
-		
+
 		String updatePrice = Long.toString(targetPrice + price);
 
 		EntryInfo entryInfo = new EntryInfo();
@@ -1866,64 +1879,69 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	public void onBidderConnectInfo(BidderConnectInfo bidderConnectInfo) {
 		super.onBidderConnectInfo(bidderConnectInfo);
 
-		if (!bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_L)) {
-			
-			//상태가 접속해제(L)이 아니고 이미 맵에 있는경우 하위 실행 X
-			if(mConnectionUserMap.containsKey(bidderConnectInfo.getUserNo())) {
-				return;
-			}
+		Platform.runLater(() -> {
 
-			// 맵에 담음.
-			mConnectionUserMap.put(bidderConnectInfo.getUserNo(), bidderConnectInfo);
+			if (!bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_L)) {
 
-			if (mConnectionUserDataList.size() <= 0) {
-				ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
-				observDataList.add(new SpBidderConnectInfo());
-				mConnectionUserDataList.addAll(observDataList);
-			}
-
-			Loop:
-			for(SpBidderConnectInfo spBidderConnectInfo : mConnectionUserDataList) {
-
-				int len = spBidderConnectInfo.getUserNo().length;
-
-				for (int i = 0; len > i; i++) {
-					if (spBidderConnectInfo.getUserNo()[i] == null || !CommonUtils.getInstance().isValidString(spBidderConnectInfo.getUserNo()[i].getValue())) {
-	
-						spBidderConnectInfo.getUserNo()[i] = new SimpleStringProperty(bidderConnectInfo.getUserNo());
-						// 부가 정보들 필요시 주석 해제
-						spBidderConnectInfo.getStatus()[i] = new SimpleStringProperty(bidderConnectInfo.getStatus());
-						
-						if (i == 4) {
-							ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
-							observDataList.add(new SpBidderConnectInfo());
-							mConnectionUserDataList.addAll(observDataList);
-						}
-						
-						break Loop;
-					}
+				// 상태가 접속해제(L)이 아니고 이미 맵에 있는경우 하위 실행 X
+				if (mConnectionUserMap.containsKey(bidderConnectInfo.getUserNo())) {
+					return;
 				}
-				
+
+				// 맵에 담음.
+				mConnectionUserMap.put(bidderConnectInfo.getUserNo(), bidderConnectInfo);
+
+				if (mConnectionUserDataList.size() <= 0) {
+					ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
+					observDataList.add(new SpBidderConnectInfo());
+					mConnectionUserDataList.addAll(observDataList);
+				}
+
+				Loop: for (SpBidderConnectInfo spBidderConnectInfo : mConnectionUserDataList) {
+
+					int len = spBidderConnectInfo.getUserNo().length;
+
+					for (int i = 0; len > i; i++) {
+						if (spBidderConnectInfo.getUserNo()[i] == null || !CommonUtils.getInstance().isValidString(spBidderConnectInfo.getUserNo()[i].getValue())) {
+
+							spBidderConnectInfo.getUserNo()[i] = new SimpleStringProperty(bidderConnectInfo.getUserNo());
+							// 부가 정보들 필요시 주석 해제
+							spBidderConnectInfo.getStatus()[i] = new SimpleStringProperty(bidderConnectInfo.getStatus());
+
+							if (i == 4) {
+								ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
+								observDataList.add(new SpBidderConnectInfo());
+								mConnectionUserDataList.addAll(observDataList);
+							}
+
+							break Loop;
+						}
+					}
+
+				}
+
+			} else {
+				// 접속 해제인경우.
+				// 지움.
+				mConnectionUserMap.remove(bidderConnectInfo.getUserNo());
+				// 찾아서 지움.
+				mConnectionUserDataList.stream().flatMap(a -> Arrays.stream(a.getUserNo())).filter(b -> b != null && b.getValue().equals(bidderConnectInfo.getUserNo())).map(item -> {
+					System.out.println("remove user number : " + item.getValue());
+					item.setValue("");
+					return item;
+				}).forEach(System.out::println);
+
+				if (mConnectionUserMap.size() <= 0) {
+					sortConnectionUserDataList();
+				}
 			}
 
-		} else {
-			// 접속 해제인경우.
-			// 지움.
-			mConnectionUserMap.remove(bidderConnectInfo.getUserNo());
-			// 찾아서 지움.
-			mConnectionUserDataList.stream().flatMap(a -> Arrays.stream(a.getUserNo())).filter(b -> b != null && b.getValue().equals(bidderConnectInfo.getUserNo())).map(item -> {
-				System.out.println("remove user number : " + item.getValue());
-				item.setValue("");
-				return item;
-			}).forEach(System.out::println);
+			// 갱신
+			mConnectionUserTableView.refresh();
+			Platform.runLater(()->mConnectionUserCntLabel.setText(String.format(mResMsg.getString("str.connection.user.count"), mConnectionUserMap.size())));
 
-			if(mConnectionUserMap.size() <= 0) {
-				sortConnectionUserDataList();
-			}
-		}
+		});
 
-		// 갱신
-		mConnectionUserTableView.refresh();
 	}
 
 	/**
@@ -2386,7 +2404,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 상단 경매 상태 라벨 낙/유찰 에 따라 표시
 			auctionStateLabelToggle(spEntryInfo.getAuctionResult().getValue());
 
-
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
 
 				SoundUtil.getInstance().playLocalSound(LocalSoundDefineRunnable.LocalSoundType.END, new LineListener() {
@@ -2462,7 +2479,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 					addLogItem("경매 상태 유찰이거나 하나씩진행 체크 됨." + spEntryInfo.getAuctionResult().getValue() + " / " + SettingApplication.getInstance().isUseOneAuction());
 				}
-				
+
 				// 현재 선택된 row 갱신
 				setCurrentEntryInfo();
 
@@ -2477,24 +2494,27 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@Override
 	protected void updateBidderList(List<SpBidding> spBiddingDataList) {
 
-		List<SpBidding> bidderDataList = null;
+		Platform.runLater(() -> {
 
-		if (spBiddingDataList != null) {
-			if (spBiddingDataList.size() > 11) {
-				bidderDataList = new ArrayList<SpBidding>(spBiddingDataList.subList(0, 12));
+			List<SpBidding> bidderDataList = null;
+
+			if (spBiddingDataList != null) {
+				if (spBiddingDataList.size() > 11) {
+					bidderDataList = new ArrayList<SpBidding>(spBiddingDataList.subList(0, 12));
+				} else {
+					bidderDataList = new ArrayList<SpBidding>(spBiddingDataList);
+				}
+
+				mBiddingUserInfoDataList.clear();
+				mBiddingUserInfoDataList.addAll(bidderDataList);
+				mBiddingInfoTableView.getSelectionModel().select(0);
+				mBiddingInfoTableView.refresh();
+
 			} else {
-				bidderDataList = new ArrayList<SpBidding>(spBiddingDataList);
+				initBiddingInfoDataList();
 			}
 
-			mBiddingUserInfoDataList.clear();
-			mBiddingUserInfoDataList.addAll(bidderDataList);
-			mBiddingInfoTableView.getSelectionModel().select(0);
-			mBiddingInfoTableView.refresh();
-
-		} else {
-			initBiddingInfoDataList();
-		}
-
+		});
 	}
 
 	/**
@@ -2529,7 +2549,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
 				setCurrentEntrySoundData();
 			}
-			
+
 			CommonUtils.getInstance().dismissLoadingDialog();
 		});
 	}

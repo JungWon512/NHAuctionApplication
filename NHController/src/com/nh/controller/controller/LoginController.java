@@ -14,6 +14,7 @@ import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.GlobalDefine.AUCTION_INFO;
 import com.nh.controller.utils.MoveStageUtil;
+import com.nh.controller.utils.SharedPreference;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.request.body.RequestLoginBody;
 import com.nh.share.api.response.ResponseAuctionLogin;
@@ -23,6 +24,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -42,11 +45,16 @@ public class LoginController implements Initializable {
 	private ResourceBundle mResMsg = null;
 
 	@FXML
-	private TextField	mIdTextField, // 아이디 
-						mPwTextField; // 비밀번호
-
+	private TextField	mIdTextField; // 아이디
+	
 	@FXML
+	private PasswordField	mPwTextField; // 비밀번호 
+
+	@FXML	//로그인
 	private Button mBtnLogin;
+	
+	@FXML	//아이디 저장
+	private CheckBox mSaveIdCheckBox;
 
 	 
 	/**
@@ -79,15 +87,14 @@ public class LoginController implements Initializable {
 
 		mBtnLogin.setOnMouseClicked(event -> onLogin());
 		
-		testValues();
-	}
-	
-	/**
-	 * 테스트값. 지울것.
-	 */
-	private void testValues() {
-		mIdTextField.setText(AUCTION_INFO.AUCTION_MEMBER);
-		mPwTextField.setText("1111");
+		String savedID = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_LOGIN_SAVE_ID,"");
+		
+		if(CommonUtils.getInstance().isValidString(savedID)) {
+			mIdTextField.setText(savedID.trim());
+			Platform.runLater(()->mPwTextField.requestFocus());
+			mSaveIdCheckBox.setSelected(true);
+		}
+		
 	}
 
 	/**
@@ -99,7 +106,7 @@ public class LoginController implements Initializable {
 			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.login.empty.user.info"), mResMsg.getString("popup.btn.close"));
 			return;
 		}
-
+		
 		final RequestLoginBody requestLoginBody = new RequestLoginBody(mIdTextField.getText().toString().trim(), mPwTextField.getText().toString().trim());
 
 		CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.login.request"));
@@ -114,6 +121,11 @@ public class LoginController implements Initializable {
 					CommonUtils.getInstance().dismissLoadingDialog(); //dismiss loading
 					
 					if(result.getSuccess()) {
+						
+						if(mSaveIdCheckBox.isSelected()) {
+							SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_LOGIN_SAVE_ID,mIdTextField.getText().toString().trim());
+						}
+						
 						mLogger.debug("[로그인성공]=> " +result.getNaBzplc() + " / " + result.getAccessToken());
 						//정보저장
 						GlobalDefine.ADMIN_INFO.adminData = new AdminData();

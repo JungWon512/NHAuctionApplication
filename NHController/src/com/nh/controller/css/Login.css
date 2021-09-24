@@ -9,21 +9,51 @@
 }
 
 .login-view .button:hover{
-	-fx-border-width: 2px;
+	-fx-border-width: 1.0;
 	-fx-border-color: #0082e5;
-	-fx-background-color:  #0A1931;
+	-fx-background-color : #0082e5;
+	-fx-font-size: 22px;
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
 	-fx-text-fill: #ffffff;
 }
 
 .text-field {
-	-fx-background-color: #27293d ;
+	-fx-background-color: #ffffff ;
 	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
 	-fx-background-radius: 0.0 ;
+	-fx-border-color: #0a1931;
 	-fx-font-size: 16px;
-	-fx-text-fill: #f7f7f7;
+	-fx-text-fill: #111111;
 }
 .text-field:focused {
-	-fx-background-color:  #27293d ;
+	-fx-background-color:  #ffffff ;
 	-fx-font-size: 16px;
-	-fx-text-fill: #f7f7f7;
+	-fx-text-fill: #111111;
+	-fx-border-color: #0a1931;
+}
+
+
+/* 체크박스 */
+.check-box {
+    -fx-text-fill: #111;
+    -fx-font-size: 14px;
+}
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #8e8e8e;
+    -fx-border-radius: 3px;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #0082e5;
+}
+
+.check-box:pressed .box {
+    -fx-scale-y: 0.90;
+    -fx-scale-x: 0.90;
 }

@@ -17,7 +17,7 @@ public class GlobalDefine {
 
 		public static final String RELEASE_VERION = "V1.0.7"; // application 버전
 
-		public static final String RELEASE_DATE = "20201129"; // 업데이트 날짜
+		public static final String RELEASE_DATE = "2020-11-29"; // 업데이트 날짜
 	}
 
 	/**
@@ -77,10 +77,9 @@ public class GlobalDefine {
 		public static AuctionRound auctionRoundData = null;
 		
 //		 public static final String AUCTION_HOST = "192.168.0."; // Server Host default
-//		public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
-//		public static final String AUCTION_HOST = "192.168.0.13"; // Server Host 도히꺼
+		public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
-		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
+//		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
 //		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민
 //		public static final String AUCTION_HOST = "192.168.0.23"; // dev local server
 //        public static final String AUCTION_HOST = "115.41.222.25"; // dev remote server

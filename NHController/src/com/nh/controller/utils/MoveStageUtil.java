@@ -70,12 +70,12 @@ public class MoveStageUtil {
 
 		try {
 
-			
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("LoginView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
 			LoginController controller = fxmlLoader.getController();
 			controller.setStage(stage);
-			setRemoveTitlebar(stage);
+			setWindowTitle(stage,fxmlLoader.getResources());
+//			setRemoveTitlebar(stage);
 			Scene scene = new Scene(parent);
 			stage.setScene(scene);
 			stage.show();
@@ -87,7 +87,6 @@ public class MoveStageUtil {
 			e.printStackTrace();
 		}
 	}
-	
 	
 	/**
 	 * 단일경매 타입 => moveChooseAuctionStage 이동
@@ -116,7 +115,7 @@ public class MoveStageUtil {
 			Stage stage = new Stage();
 			ChooseAuctionController controller = fxmlLoader.getController();
 			controller.setStage(stage);
-			setRemoveTitlebar(stage);
+			setWindowTitle(stage,fxmlLoader.getResources());
 			Scene scene = new Scene(parent);
 			stage.setScene(scene);
 			stage.show();
@@ -187,6 +186,7 @@ public class MoveStageUtil {
 			AuctionController controller = fxmlLoader.getController();
 			Stage stage = new Stage();
 			controller.setStage(stage);
+			setWindowTitle(stage,fxmlLoader.getResources());
 //			setRemoveTitlebar(stage);
 			Scene scene = new Scene(fxmlLoader.getRoot());
 			stage.setScene(scene);
@@ -219,7 +219,7 @@ public class MoveStageUtil {
 
 			controller.setStage(stage,isDisplayBordConnection,listener);
 
-			openDialog(stage, parent);
+			openDialog(stage, parent,getResourceBundle().getString("app.title.setting.config"));
 			setStageDisable(stage);
 			controller.initConfiguration();
 
@@ -230,9 +230,9 @@ public class MoveStageUtil {
 	
 	
 	/**
-	 * 출품 리스트
-	 * 출품 보류 리스트
-	 * 낙찰 결과 리스트
+	 * 출품 리스트 ENTRY_LIST
+	 * 출품 보류 리스트 ENTRY_PENDING_LIST
+	 * 낙찰 결과 리스트 ENTRY_FINISH_LIST
 	 * @param stage
 	 */
 	
@@ -243,12 +243,22 @@ public class MoveStageUtil {
 		}
 		
 		try {
-
+			
+			String pageTitle = "";
+			
+			if(type.equals(EntryDialogType.ENTRY_LIST)) {
+				pageTitle = getResourceBundle().getString("app.title.entry.list");
+			}else if(type.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
+				pageTitle = getResourceBundle().getString("app.title.entry.list.pending");
+			}else if(type.equals(EntryDialogType.ENTRY_FINISH_LIST)) {
+				pageTitle = getResourceBundle().getString("app.title.entry.list.finish");
+			}
+			
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("EntryListView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
 			EntryListController controller = fxmlLoader.getController();
 			controller.setConfig(stage,type,auctionRound,listener);
-			openDialog(stage, parent);
+			openDialog(stage, parent,pageTitle);
 			controller.setOnCloseRequest();
 			stage.getScene().getRoot().setEffect(CommonUtils.getInstance().getDialogBlurEffect()); // 뒷 배경 블러처리 Add
 			stage.getScene().getRoot().setDisable(true);
@@ -266,7 +276,7 @@ public class MoveStageUtil {
 	 * 
 	 * @param stage
 	 */
-	public void openDialog(Stage stage, Parent parent) {
+	public void openDialog(Stage stage, Parent parent,String title) {
 
 		mDialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane();
@@ -277,6 +287,10 @@ public class MoveStageUtil {
 		mDialog.setResizable(true);
 		mDialog.initModality(Modality.NONE);
 		mDialog.setDialogPane(dialogPane);
+		
+		if(CommonUtils.getInstance().isValidString(title)) {
+			mDialog.setTitle(title);
+		}
 		
 		mDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 		Node closeButton = mDialog.getDialogPane().lookupButton(ButtonType.CLOSE);
@@ -317,7 +331,7 @@ public class MoveStageUtil {
 			SettingSoundController controller = fxmlLoader.getController();
 			controller.setStage(stage);
 			controller.setListener(listener);
-			openDialog(stage, parent);
+			openDialog(stage, parent,getResourceBundle().getString("app.title.setting.sound"));
 			
 			setStageDisable(stage,listener);
 
@@ -422,6 +436,7 @@ public class MoveStageUtil {
 			controller.setCallBackListener(listener);
 			Scene scene = new Scene(parent);
 			Stage stage = new Stage();
+			setWindowTitle(stage, getResourceBundle().getString("app.title.message"));
 			stage.setScene(scene);
 			stage.showAndWait();
 
@@ -545,5 +560,29 @@ public class MoveStageUtil {
 	public ResourceBundle getResourceBundle() {
 		return ResourceBundle.getBundle("com/nh/controller/utils/properties/UIResources");
 	}
+	
+
+	/**
+	 * 타이틀바 텍스트
+	 * @param stage
+	 * @param resources
+	 */
+	private void setWindowTitle(Stage stage, ResourceBundle resources) {
+		stage.setTitle(resources.getString("app.title"));
+	}
+	
+	/**
+	 * 타이틀바 텍스트
+	 * @param stage
+	 * @param resources
+	 */
+	private void setWindowTitle(Stage stage, String msg) {
+		if(CommonUtils.getInstance().isValidString(msg)) {
+			stage.setTitle(msg);
+		}else {
+			stage.setTitle("");
+		}
+	}
+
 
 }

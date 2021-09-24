@@ -201,6 +201,7 @@ public class ChooseAuctionController implements Initializable {
 			}.start();
 
 		} else {
+			CommonUtils.getInstance().dismissLoadingDialog();
 			// 경매 데이터 없습니다. 팝업
 			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"), mResMsg.getString("popup.btn.ok"));
 		}
