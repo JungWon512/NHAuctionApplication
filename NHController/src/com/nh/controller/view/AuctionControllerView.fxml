@@ -74,7 +74,7 @@
                               <ColumnConstraints />
                               <ColumnConstraints hgrow="ALWAYS" />
                               <ColumnConstraints hgrow="ALWAYS" percentWidth="1.0" />
-                              <ColumnConstraints maxWidth="220.0" minWidth="220.0" prefWidth="220.0" />
+                              <ColumnConstraints maxWidth="225.0" minWidth="225.0" prefWidth="225.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />

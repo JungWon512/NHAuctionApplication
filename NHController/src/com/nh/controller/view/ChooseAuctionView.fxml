@@ -99,7 +99,7 @@
    <bottom>
       <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="90.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="mBtnConnect" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" text="확인">
+            <Button fx:id="mBtnConnect" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="confirm-button" text="확인">
                <font>
                   <Font size="21.0" />
                </font></Button>

@@ -224,8 +224,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnF3.setOnMouseClicked(event -> onPending());
 		mBtnF4.setOnMouseClicked(event -> openEntryListPopUp());
 		mBtnF5.setOnMouseClicked(event -> openEntryPendingListPopUp());
-//		mBtnEnter.setOnMouseClicked(event -> onStartAndStopAuction(0));
-//		mBtnSpace.setOnMouseClicked(event -> onStartSoundAuction());
+		mBtnEnter.setOnMouseClicked(event -> onStartAndStopAuction(0));
+		mBtnSpace.setOnMouseClicked(event -> onStartSoundAuction());
 		mBtnF6.setOnMouseClicked(event -> onSuccessAuction());
 //		mBtnF7.setOnMouseClicked(event -> onPassAuction());
 		mBtnF8.setOnMouseClicked(event -> openSettingDialog());
@@ -1867,6 +1867,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		super.onBidderConnectInfo(bidderConnectInfo);
 
 		if (!bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_L)) {
+			
+			//상태가 접속해제(L)이 아니고 이미 맵에 있는경우 하위 실행 X
+			if(mConnectionUserMap.containsKey(bidderConnectInfo.getUserNo())) {
+				return;
+			}
 
 			// 맵에 담음.
 			mConnectionUserMap.put(bidderConnectInfo.getUserNo(), bidderConnectInfo);
@@ -1877,31 +1882,28 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mConnectionUserDataList.addAll(observDataList);
 			}
 
-			SpBidderConnectInfo spBidderConnectInfo = mConnectionUserDataList.get(mConnectionUserDataList.size() - 1);
+			Loop:
+			for(SpBidderConnectInfo spBidderConnectInfo : mConnectionUserDataList) {
 
-			int len = spBidderConnectInfo.getUserNo().length;
+				int len = spBidderConnectInfo.getUserNo().length;
 
-			int index = 0;
-
-			for (int i = 0; len > i; i++) {
-				if (spBidderConnectInfo.getUserNo()[i] == null) {
-					index = i;
-					break;
+				for (int i = 0; len > i; i++) {
+					if (spBidderConnectInfo.getUserNo()[i] == null || !CommonUtils.getInstance().isValidString(spBidderConnectInfo.getUserNo()[i].getValue())) {
+	
+						spBidderConnectInfo.getUserNo()[i] = new SimpleStringProperty(bidderConnectInfo.getUserNo());
+						// 부가 정보들 필요시 주석 해제
+						spBidderConnectInfo.getStatus()[i] = new SimpleStringProperty(bidderConnectInfo.getStatus());
+						
+						if (i == 4) {
+							ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
+							observDataList.add(new SpBidderConnectInfo());
+							mConnectionUserDataList.addAll(observDataList);
+						}
+						
+						break Loop;
+					}
 				}
-			}
-
-			spBidderConnectInfo.getUserNo()[index] = new SimpleStringProperty(bidderConnectInfo.getUserNo());
-			// 부가 정보들 필요시 주석 해제
-			spBidderConnectInfo.getStatus()[index] = new SimpleStringProperty(bidderConnectInfo.getStatus());
-//			spBidderConnectInfo.getAuctionHouseCode()[index] = new SimpleStringProperty(bidderConnectInfo.getAuctionHouseCode());
-//			spBidderConnectInfo.getChannel()[index] = new SimpleStringProperty(bidderConnectInfo.getChannel());
-//			spBidderConnectInfo.getOs()[index] = new SimpleStringProperty(bidderConnectInfo.getOS());
-//			spBidderConnectInfo.getBidPrice()[index] = new SimpleStringProperty(bidderConnectInfo.getBidPrice());
-
-			if (index == 4) {
-				ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
-				observDataList.add(new SpBidderConnectInfo());
-				mConnectionUserDataList.addAll(observDataList);
+				
 			}
 
 		} else {
