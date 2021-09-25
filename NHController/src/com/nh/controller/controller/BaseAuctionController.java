@@ -741,7 +741,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 				auctionResult.setSuccessAuctionJoinNum(null);
 				auctionResult.setSuccessBidPrice("0");
 				auctionResult.setSuccessBidUpr("0");
-				bidder.setSraSbidAm(new SimpleStringProperty("0"));
 			}
 
 			// 경매 결과 DB 저장

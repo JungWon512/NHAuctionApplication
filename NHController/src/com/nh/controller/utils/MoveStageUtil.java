@@ -28,6 +28,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -78,6 +79,7 @@ public class MoveStageUtil {
 //			setRemoveTitlebar(stage);
 			Scene scene = new Scene(parent);
 			stage.setScene(scene);
+//			stage.setResizable(false);
 			stage.show();
 			centerOnScreen(stage);
 			// show 후에 ..

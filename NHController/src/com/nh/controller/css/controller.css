@@ -171,10 +171,12 @@
 
 /* 현재 경매 진행중인 row */
 .base-contents .current-auction-row{
-	-fx-border-width: 4px 0px 4px 0px;
+	-fx-border-width: 4px 0.5px 4px 0.5px;
 	-fx-border-color: #27293d;
 	-fx-background-color: #ffe135;
 	-fx-font-size: 18px;
+	
+	-fx-border-insets: 0 0 0 0;
 }
 
 /* 현재 경매 대기중인 테이블 뷰 헤더 */

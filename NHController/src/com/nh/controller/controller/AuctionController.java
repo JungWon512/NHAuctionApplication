@@ -1541,6 +1541,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			spEntryInfo.getIsLastEntry().setValue(tmpIsLastEntry);
 
 			if (!isUp) {
+				price = price*-1;
 				SoundUtil.getInstance().setCurrentEntryInfoMessage("최저가를 " + price + " 원 낮췄습니다. 지금 재경매 하겠습니다.");
 				SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.change.low.price"), price), null);
 			}
