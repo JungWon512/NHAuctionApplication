@@ -264,11 +264,13 @@ public abstract class BaseAuctionController implements NettyControllable {
 			addLogItem(String.format(mResMsg.getString("msg.auction.status.completed"), auctionStatus.getEntryNum()));
 			BillboardDelegate.getInstance().completeBillboard();
 			PdpDelegate.getInstance().completePdp();
+			insertFinishLog();
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_FINISH:
 			addLogItem(mResMsg.getString("msg.auction.status.finish"));
 			BillboardDelegate.getInstance().finishBillboard();
 			PdpDelegate.getInstance().finishPdp();
+			insertFinishLog();
 			break;
 		}
 
@@ -438,11 +440,13 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 		// 재경매 상황인경우 응찰 취소 불가
 		if (isReAuction && SettingApplication.getInstance().isUseReAuction() && mReAuctionCount > 0 && !CommonUtils.getInstance().isListEmpty(mReAuctionBidderDataList)) {
+			addLogItem("[재경매중 응찰 취소 불가]");
 			return;
 		}
 
 		// 낙찰 확정시 취소 응찰 안 받음.
 		if (isAuctionComplete) {
+			addLogItem("[낙찰 확정 상태임. 응찰 취소 불가]");
 			return;
 		}
 
@@ -474,6 +478,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 			if (!GlobalDefineCode.FLAG_TEST_MODE) {
 				insertBiddingLog(bidding, false);
 			}
+		}else {
+			addLogItem("[현재 응찰현황에 없음. 취소 불가.]");
 		}
 	}
 

@@ -240,8 +240,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
 		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
-		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단
-		// 숨김.
+		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단 숨김.
 		// mBtnF7.setOnMouseClicked(event -> -());
 
 		// 표시 숨김.
@@ -258,7 +257,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnReStart.setOnMouseClicked(event -> onReStart());
 		mBtnPause.setOnMouseClicked(event -> onPause());
 	}
-
+	
+	
 	/**
 	 * 테이블뷰 관련
 	 */
@@ -2169,6 +2169,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							stringBuffer.append(stringBuffer.toString());
 							stringBuffer.append(mResMsg.getString("str.sound.user.re.auction"));
 							SoundUtil.getInstance().playSound(stringBuffer.toString(), null);
+							stopAutoAuctionScheduler();
 						}
 					});
 				}
@@ -2361,7 +2362,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		});
 	}
-
+	
 	/**
 	 * 경매정보 - 경매 상태 표시
 	 *
@@ -2445,7 +2446,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// 경매 완료 테이블에 데이터 넣음
 				addFinishedTableViewItem(spEntryInfo);
 				// 경매 준비 상태로 뷰들 초기화
-//                setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+                setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 
 				if (spEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
 
