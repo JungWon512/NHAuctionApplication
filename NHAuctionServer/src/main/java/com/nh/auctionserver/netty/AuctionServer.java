@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,20 +99,20 @@ public class AuctionServer {
 
 	private EventLoopGroup mBossGroup;
 	private EventLoopGroup mWorkerGroup;
-	private Map<String, ChannelGroup> mControllerChannelsMap = new HashMap<String, ChannelGroup>();
-	private Map<String, ChannelGroup> mBidderChannelsMap = new HashMap<String, ChannelGroup>();
-	private Map<String, ChannelGroup> mWatcherChannelsMap = new HashMap<String, ChannelGroup>();
-	private Map<String, ChannelGroup> mAuctionResultMonitorChannelsMap = new HashMap<String, ChannelGroup>();
-	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = new HashMap<String, ChannelGroup>();
+	private ConcurrentHashMap<String, ChannelGroup> mControllerChannelsMap = new ConcurrentHashMap<String, ChannelGroup>();
+	private ConcurrentHashMap<String, ChannelGroup> mBidderChannelsMap = new ConcurrentHashMap<String, ChannelGroup>();
+	private ConcurrentHashMap<String, ChannelGroup> mWatcherChannelsMap = new ConcurrentHashMap<String, ChannelGroup>();
+	private ConcurrentHashMap<String, ChannelGroup> mAuctionResultMonitorChannelsMap = new ConcurrentHashMap<String, ChannelGroup>();
+	private ConcurrentHashMap<String, ChannelGroup> mConnectionMonitorChannelsMap = new ConcurrentHashMap<String, ChannelGroup>();
 
 	private static Auctioneer mAuctioneer;
 
-	private Map<Object, ConnectionInfo> mConnectorInfoMap = new HashMap<Object, ConnectionInfo>();
-	private Map<String, Object> mConnectorChannelInfoMap = new HashMap<String, Object>();
+	private ConcurrentHashMap<Object, ConnectionInfo> mConnectorInfoMap = new ConcurrentHashMap<Object, ConnectionInfo>();
+	private ConcurrentHashMap<String, Object> mConnectorChannelInfoMap = new ConcurrentHashMap<String, Object>();
 
 	private boolean mWaitServerShutDown = false;
 
-	private Map<String, Map<Integer, Object>> mBiddingInfoMap = new HashMap<String, Map<Integer, Object>>();
+	private ConcurrentHashMap<String, Map<Integer, Object>> mBiddingInfoMap = new ConcurrentHashMap<String, Map<Integer, Object>>();
 
 	private SocketIOHandler mSocketIOHandler;
 	private SslContext mSSLContext;
