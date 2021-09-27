@@ -24,6 +24,8 @@ public class CancelBidding implements FromAuctionCommon, Serializable {
 	private String mChannel;
 	private String mCancelBiddingTime;
 
+	public CancelBidding(){}
+	
 	public CancelBidding(String auctionHouseCode, String entryNum, String userNo, String auctionJoinNum, String channel,
 			String cancelBiddingTime) {
 		mAuctionHouseCode = auctionHouseCode;
