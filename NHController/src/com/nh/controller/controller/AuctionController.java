@@ -257,7 +257,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnEtc_6_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6));
 
 		mBtnReStart.setOnMouseClicked(event -> onReStart());
-		mBtnPause.setOnMouseClicked(event -> onPause());
+		mBtnPause.setOnMouseClicked(event -> checkAndOnPause());
 		
 	}	
 	
@@ -1161,6 +1161,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 			return;
 		}
+		
+		//정지상태인경우
+		if(isPause) {
+			return;
+		}
 
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_READY: // 준비,경매완료,유찰 상황에서 시작 가능.
@@ -1207,6 +1212,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 		if (mBtnSpace.isDisable()) {
+			return;
+		}
+		
+
+		if(isPause) {
 			return;
 		}
 
@@ -1383,6 +1393,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //		}
 //	}
 
+	
+	public void checkAndOnPause() {
+		if(isCountDownRunning) {
+			isPause = true;
+			onPause();
+		}
+	}
 	/**
 	 * 경매 진행 -> 카운트 다운 일시 정지.
 	 */
@@ -1391,12 +1408,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			switch (mAuctionStatus.getState()) {
 			case GlobalDefineCode.AUCTION_STATUS_START:
 			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
-
 				// 자동경매 카운트다운중인경우 스케줄러 멈춤.
 				if (SettingApplication.getInstance().isUseSoundAuction()) {
 					stopAutoAuctionScheduler();
 					mBtnSpace.setUserData("");
-//					mBtnSpace.setText(mResMsg.getString("str.btn.sound.auction.ready"));
+					mBtnSpace.setText(mResMsg.getString("str.btn.sound.auction.ready"));
 					CommonUtils.getInstance().removeStyleClass(mBtnSpace, "bg-color-04cf5c");
 				}
 
@@ -1412,6 +1428,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+			isPause = false;
 			onStopAuction(mRemainingTimeCount);
 		}
 	}
@@ -1838,7 +1855,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			addLogItem("==== 카운트 다운 완료 ====");
 
 			// 취소 눌린경우 카운트다운 완료가 후에 들어오기 때문에.. 아래 코드 실행 안 함.
-			if (isCancel) {
+			// 정지인경우.
+			if (isCancel || isPause) {
 				return;
 			}
 
@@ -2313,6 +2331,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				isStartedAuction = false;
 				// 취소 여부
 				isCancel = false;
+				//정지 여부
+				isPause = false;
 				// 결과 전송~ 다음 경매 준비 까지 방어 플래그 초기화
 				isResultCompleteFlag = false;
 
@@ -2820,7 +2840,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param countDown
 	 */
 	private void sendCountDown(int countDown) {
-		if (isCountDownRunning) {
+		if (isCountDownRunning || isPause) {
 			return;
 		}
 		onStopAuction(countDown);

@@ -113,6 +113,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected boolean isCountDownRunning = false; // 카운트다운 실행 여부
 
 	protected boolean isCancel = false; // 취소 여부
+	protected boolean isPause = false; // 정지 여부
 
 	protected boolean isStartedAuction = false; // 시작 여부
 
