@@ -68,7 +68,14 @@ public class PdpShareNettyClient {
 	 * @param message 보낼 문자열
 	 */
 	public void sendMessage(String message) {
-		channel.writeAndFlush(datagramPacket(message, (InetSocketAddress) getChannel().remoteAddress()));
+		
+		try {
+			channel.writeAndFlush(datagramPacket(message, (InetSocketAddress) getChannel().remoteAddress()));
+		} catch (Exception e) {
+			stopClient();
+		}
+		
+		
 	}
 
 	/**
@@ -84,7 +91,9 @@ public class PdpShareNettyClient {
 	}
 
 	public void stopClient() {
+		mLogger.debug("[Billboard stopClient shutdownGracefully]");
 		group.shutdownGracefully();
+		channel = null;
 	}
 
 	/**
