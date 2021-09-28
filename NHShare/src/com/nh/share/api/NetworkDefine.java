@@ -1,5 +1,10 @@
 package com.nh.share.api;
 
+/**
+ * API 정보 클래스.
+ * @author jhlee
+ *
+ */
 public class NetworkDefine {
 
 	private static NetworkDefine globalDefine = null;
@@ -13,7 +18,8 @@ public class NetworkDefine {
 		return globalDefine;
 	}
 	
-	public static final String NH_AUCTION_API_HOST = "http://115.41.222.25:8080"; // 운영 API의 호스트
+	public static final String NH_AUCTION_API_HOST = "http://115.41.222.25:8080"; // 개발 API의 호스트
+//	public static final String NH_AUCTION_API_HOST = "http://1.201.161.58:8080"; // 운영 API의 호스트
 
 	public static final String API_VERSION =  "v1"; // API Version
 	

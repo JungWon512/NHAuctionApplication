@@ -25,7 +25,6 @@ public class GlobalDefineCode {
 	    
 		AUCTION_HOUSE(String value){
 	        this.value = value;
-	            
 	    }
 	    
 	    public String getValue(){
