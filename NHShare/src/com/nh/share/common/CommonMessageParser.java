@@ -4,6 +4,7 @@ import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.common.models.AuctionReponseSession;
 import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.common.models.AuctionType;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
@@ -50,6 +51,8 @@ public class CommonMessageParser {
 			return new ResponseBiddingInfo(messages[1], messages[2], messages[3], messages[4], messages[5]); // 응찰 정보 응답
 		case RetryTargetInfo.TYPE:
 			return new RetryTargetInfo(messages[1], messages[2], messages[3]); // 재경매 대상 참여자번호
+		case AuctionType.TYPE:
+			return new AuctionType(messages[1], messages[2]); // 경매 유형 코드 전송
 		default:
 			return null;
 		}

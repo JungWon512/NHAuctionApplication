@@ -33,7 +33,7 @@ public class ServerMessageParser {
 		case RequestAuctionResult.TYPE: // 낙유찰 결과 전송 요청
 			return new RequestAuctionResult(messages[1], messages[2]);
 		case ShowEntryInfo.TYPE: // 출품 정보 노출 설정 요청
-			return new ShowEntryInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6], messages[7], messages[8], messages[9]);
+			return new ShowEntryInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6], messages[7], messages[8], messages[9], messages[10], messages[11]);
 		default:
 			return null;
 		}

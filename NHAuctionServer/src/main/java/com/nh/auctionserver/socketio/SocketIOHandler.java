@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketConfig;
@@ -22,10 +21,10 @@ import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
-import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.common.models.AuctionType;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
@@ -734,7 +733,7 @@ public class SocketIOHandler {
 				break;
 			case ShowEntryInfo.TYPE: // 출품 정보 노출 설정 요청
 				result = new ShowEntryInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6],
-						messages[7], messages[8], messages[9]);
+						messages[7], messages[8], messages[9], messages[10], messages[11]);
 				break;
 			default:
 				result = null;
@@ -922,7 +921,17 @@ public class SocketIOHandler {
 
 		Object parseObject = messageParse(message);
 
-		if (parseObject instanceof AuctionCountDown) {
+		if (parseObject instanceof AuctionType) {
+			if (mBidderChannelClientMap.containsKey(((AuctionCountDown) parseObject).getAuctionHouseCode())) {
+				if (mBidderChannelClientMap.get(((AuctionCountDown) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mBidderChannelClientMap.get(((AuctionCountDown) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mBidderChannelClientMap.get(((AuctionCountDown) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("AuctionCountDown", message);
+					}
+				}
+			}
+		} else if (parseObject instanceof AuctionCountDown) {
 			if (mBidderChannelClientMap.containsKey(((AuctionCountDown) parseObject).getAuctionHouseCode())) {
 				if (mBidderChannelClientMap.get(((AuctionCountDown) parseObject).getAuctionHouseCode()).size() > 0) {
 					for (UUID uuid : mBidderChannelClientMap.get(((AuctionCountDown) parseObject).getAuctionHouseCode())

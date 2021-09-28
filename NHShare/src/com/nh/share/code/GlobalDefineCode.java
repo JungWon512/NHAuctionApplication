@@ -13,7 +13,7 @@ public class GlobalDefineCode {
 	// 개발,운영 여부
 	public static final boolean FLAG_PRD = true;
 	// 부하 테스트 모드
-	public static final boolean FLAG_TEST_MODE = true;
+	public static final boolean FLAG_TEST_MODE = false;
 	
 	// 경매장 거점 코드
 	public enum AUCTION_HOUSE {

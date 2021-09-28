@@ -9,7 +9,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 제어프로그램 -> 경매서버
  * <p>
  * CE | 조합구분코드 | 경매번호노출여부 | 출하주노출여부 | 성별노출여부 | 중량노출여부 | 어미노출여부 | 계대노출여부 | 산차노출여부
- * | KPN노출여부 | 지여명노출여부 | 비고노출여부 | 최저가노출여부 | 친자노출여부 | 카운트다운초설정값(1 ~ 9)
+ * | KPN노출여부 | 지여명노출여부 | 비고노출여부 | 최저가노출여부 | 친자노출여부 | 카운트다운초설정값(1 ~ 9) | 경매유형코드(10:일괄 / 20:단일)
  */
 public class EditSetting implements FromAuctionController {
     public static final char TYPE = 'E';
@@ -27,6 +27,7 @@ public class EditSetting implements FromAuctionController {
     private String mIsShowLowPrice; // 최저가노출여부
     private String mIsShowDna; // 친자노출여부
     private String mCountDown; // 카운트다운횟수(초)
+    private String mAuctionType; // 경매유형코드(10:일괄/20:단일)
 
     public EditSetting(String[] messages) {
         this.mAuctionHouseCode = messages[1];
@@ -43,12 +44,13 @@ public class EditSetting implements FromAuctionController {
         this.mIsShowLowPrice = messages[12];
         this.mIsShowDna = messages[13];
         this.mCountDown = messages[14];
+        this.mAuctionType = messages[15];
     }
 
     public EditSetting(String mAuctionHouseCode, String mIsShowEntryNum, String mIsShowExhUser,
                        String mIsShowGender, String mIsShowWeight, String mIsShowMother, String mIsShowPasg,
                        String mIsShowCaving, String mIsShowKpn, String mIsShowLocation, String mIsShowNote,
-                       String mIsShowLowPrice, String mIsShowDna, String mCountDown
+                       String mIsShowLowPrice, String mIsShowDna, String mCountDown, String mAuctionType
     ) {
         this.mAuctionHouseCode = mAuctionHouseCode;
         this.mIsShowEntryNum = mIsShowEntryNum;
@@ -64,6 +66,7 @@ public class EditSetting implements FromAuctionController {
         this.mIsShowLowPrice = mIsShowLowPrice;
         this.mIsShowDna = mIsShowDna;
         this.mCountDown = mCountDown;
+        this.mAuctionType = mAuctionType;
     }
 
     public String getAuctionHouseCode() {
@@ -178,15 +181,23 @@ public class EditSetting implements FromAuctionController {
         this.mCountDown = countDown;
     }
 
+    public String getAuctionType() {
+        return mAuctionType;
+    }
+
+    public void setAuctionType(String auctionType) {
+        this.mAuctionType = auctionType;
+    }
+    
     @Override
     public String getEncodedMessage() {
-        return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
+        return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
                 AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mIsShowEntryNum,
                 AuctionShareSetting.DELIMITER, mIsShowExhUser, AuctionShareSetting.DELIMITER, mIsShowGender,
                 AuctionShareSetting.DELIMITER, mIsShowWeight, AuctionShareSetting.DELIMITER, mIsShowMother,
                 AuctionShareSetting.DELIMITER, mIsShowPasg, AuctionShareSetting.DELIMITER, mIsShowCaving,
                 AuctionShareSetting.DELIMITER, mIsShowKpn, AuctionShareSetting.DELIMITER, mIsShowLocation,
                 AuctionShareSetting.DELIMITER, mIsShowNote, AuctionShareSetting.DELIMITER, mIsShowLowPrice,
-                AuctionShareSetting.DELIMITER, mIsShowDna, AuctionShareSetting.DELIMITER, mCountDown);
+                AuctionShareSetting.DELIMITER, mIsShowDna, AuctionShareSetting.DELIMITER, mCountDown, AuctionShareSetting.DELIMITER, mAuctionType);
     }
 }

@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
-import com.nh.auctionserver.socketio.SocketIOHandler;
 import com.nh.share.code.GlobalDefineCode;
+import com.nh.share.common.models.AuctionType;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.server.models.BidderConnectInfo;
@@ -102,8 +102,11 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 								.add(clientChannelContext.channel());
 					}
 
-					// 현재 출품 정보 노출 설정 정보 전송
 					if(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode()) != null) {
+						// 경매 유형코드 전송
+						clientChannelContext.writeAndFlush(new AuctionType(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode()).getAuctionHouseCode(), mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode()).getAuctionType()) + "\r\n");
+						
+						// 현재 출품 정보 노출 설정 정보 전송
 						clientChannelContext.writeAndFlush(new ShowEntryInfo(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode())).getEncodedMessage() + "\r\n");
 					}
 

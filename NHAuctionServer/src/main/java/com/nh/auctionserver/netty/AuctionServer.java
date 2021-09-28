@@ -17,6 +17,7 @@ import com.nh.auctionserver.netty.handlers.AuctionServerConnectorHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionResponseConnectionInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionResponseSessionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionResultHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionTypeInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedBiddingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedCancelBiddingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedEditSettingHandler;
@@ -40,6 +41,7 @@ import com.nh.share.common.CommonMessageParser;
 import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.common.models.AuctionResult;
 import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.common.models.AuctionType;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
@@ -213,6 +215,9 @@ public class AuctionServer {
 						pipeline.addLast(new AuctionServerInboundDecoder());
 
 						pipeline.addLast(new AuctionServerConnectorHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedAuctionTypeInfoHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedAuctionResponseConnectionInfoHandler(
@@ -610,6 +615,10 @@ public class AuctionServer {
 			if (commonParsedMessage instanceof RetryTargetInfo) {
 				channelItemWriteAndFlush((RetryTargetInfo) commonParsedMessage);
 			}
+			
+			if (commonParsedMessage instanceof AuctionType) {
+				channelItemWriteAndFlush((AuctionType) commonParsedMessage);
+			}
 			break;
 		default:
 			break;
@@ -879,6 +888,20 @@ public class AuctionServer {
 			String[] splitMessages = message.split(AuctionShareSetting.DELIMITER_REGEX);
 
 			switch (splitMessages[0].charAt(1)) {
+			case AuctionType.TYPE: // 경매 유형 정보 전송
+				// Web Socket Broadcast
+				if (mSocketIOHandler != null) {
+					mSocketIOHandler.sendPacketData(message);
+				}
+				
+				if (mBidderChannelsMap != null) {
+					for (String key : mBidderChannelsMap.keySet()) {
+						if (mBidderChannelsMap.get(key).size() > 0) {
+							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+				break;
 			case ResponseConnectionInfo.TYPE: // 접속 인승 결과 전송
 				if (mBidderChannelsMap != null) {
 					for (String key : mBidderChannelsMap.keySet()) {
