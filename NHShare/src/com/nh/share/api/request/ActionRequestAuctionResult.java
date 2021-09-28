@@ -28,7 +28,8 @@ public class ActionRequestAuctionResult extends Action {
 	
 	private RequestAuctionResultBody body = null;
 	
-	public ActionRequestAuctionResult(RequestAuctionResultBody body, ActionResultListener<BaseResponse> resultListener) {
+	public ActionRequestAuctionResult(RequestAuctionResultBody body, String token ,ActionResultListener<BaseResponse> resultListener) {
+		this.mAccessToken = token;
 		this.body = body;
 		this.mResultListenerBase = resultListener;
 	}

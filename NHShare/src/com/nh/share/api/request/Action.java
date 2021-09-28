@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.NetworkDefine;
 import com.nh.share.api.response.BaseResponse;
+import com.nh.share.code.GlobalDefineCode;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -27,6 +28,11 @@ public abstract class Action implements Runnable {
 	public final String CONTENT_TYPE = "Content-Type";
 
 	public final String ACCEPT_CONTENT_TYPE = "application/json";
+	
+	public final String AUTHORIZATION_TYPE = "Authorization";
+	
+	public final String BEARER = "Bearer";
+	
 
 	// 공통 Request Header 정의[Start]
 	private final String REQUEST_ACCEPT = "accept";
@@ -34,6 +40,8 @@ public abstract class Action implements Runnable {
 	private static String USER_AGENT_OS = System.getProperty("os.name").toLowerCase();
 	// 공통 Request Header 정의[End]
 
+	protected String mAccessToken;
+	
 	protected ActionResultListener mResultListenerBase;
 
 	protected Retrofit mRetrofit;
@@ -63,9 +71,14 @@ public abstract class Action implements Runnable {
 		@Override
 		public Response intercept(Interceptor.Chain chain) throws IOException {
 
+			mLogger.debug("[Request Interceptor] mAccessToken : " + mAccessToken);
+			
 			Request original = chain.request();
 
-			Request request = original.newBuilder().header(REQUEST_ACCEPT, ACCEPT_CONTENT_TYPE).header(USER_AGENT, USER_AGENT_OS).method(original.method(), original.body()).build();
+			Request request = original.newBuilder().header(REQUEST_ACCEPT, ACCEPT_CONTENT_TYPE)
+					.header(AUTHORIZATION_TYPE,BEARER + " " + mAccessToken)
+					.header(USER_AGENT, USER_AGENT_OS)
+					.method(original.method(), original.body()).build();
 
 			mLogger.debug("[Request Interceptor] url > " + request.url());
 			mLogger.debug("[Request Interceptor] headers > " + request.headers());
