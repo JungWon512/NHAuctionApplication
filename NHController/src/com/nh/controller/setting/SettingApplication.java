@@ -507,5 +507,19 @@ public class SettingApplication {
 	private int reInt(String value) {
 		return Integer.parseInt(value);
 	}
+	
+	public String getSettingAuctionType() {
+		
+		String aucType = "";
+		
+		if(isSingleAuction) {
+			aucType = GlobalDefine.AUCTION_INFO.AUCTION_TYPE_SINGLE;
+		}else {
+			aucType = GlobalDefine.AUCTION_INFO.AUCTION_TYPE_MULTI;
+		}
+		
+		return aucType;
+		
+	}
 
 }

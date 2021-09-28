@@ -5,6 +5,11 @@
     -fx-background-color: #ffffff;
     -fx-background-radius: 5px;
     -fx-padding: 10;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 3px;
+}
+.grid-pane .label{
+    -fx-font-family: "Noto Sans CJK KR Regular";
 }
 
 /* 라벨 */
@@ -20,10 +25,10 @@
 
 
 .label-background {
-    -fx-background-color: #27293d;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
+    -fx-background-color: #cccccc;
+    -fx-text-fill: #111111;
+    -fx-font-family: "Noto Sans CJK KR Regular";
+    -fx-font-size: 15px;
 }
 
 /* 텍스트 필드 */
@@ -43,25 +48,28 @@
 
 /* 표 라인 그리기 */
 .underline {
-    -fx-background-color: #ccc;
+    -fx-background-color: #e9e9e9;
 }
 
 /* 버튼 */
 .btn-submit {
     -fx-border-width: 1px;
-    -fx-border-color: #ffe135;
-    -fx-background-color: #ffe135;
-    -fx-text-fill: #111;
+    -fx-border-color: #008fff;
+    -fx-background-color: #008fff;
+    -fx-text-fill: #ffffff;
     -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;
     -fx-padding: 0px 12px 0px 12px;
     -fx-border-radius: 5px;
+    -fx-font-family: "Noto Sans CJK KR Regular";
+    -fx-font-size: 16px;
 }
 
 .btn-submit:hover {
-    -fx-border-width: 2px;
-    -fx-border-color: #ffe135;
-    -fx-background-color: #ffe279;
-    -fx-text-fill: #111;
+    -fx-border-width: 1px;
+    -fx-border-color: #008fff;
+    -fx-background-color: #008fff;
+   -fx-text-fill: #ffffff;
+    -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;
     -fx-padding: 0px 12px 0px 12px;
     -fx-border-radius: 5px;
 }
@@ -70,6 +78,7 @@
 .check-box {
     -fx-text-fill: #111;
     -fx-font-size: 15px;
+    -fx-font-family: "Noto Sans CJK KR Regular";
 }
 
 .check-box .box {
@@ -95,4 +104,54 @@
 /* 폰트 */
 .font-s {
     -fx-font-size: 13px;
+}
+
+
+/* 라디오버튼 */
+.radio-button {
+    -fx-text-fill: #111;
+    -fx-font-size: 13px;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+.radio-button .radio {
+    -fx-border-width: 1px;
+    -fx-border-color: #cccccc;
+    -fx-background-color: white;
+    -fx-background-image: null;
+    -fx-border-radius: 11px;
+    -fx-background-insets: 0;
+}
+
+.radio-button:pressed .radio {
+    -fx-scale-y: 0.90;
+    -fx-scale-x: 0.90;
+}
+
+.radio-button .radio:selected {
+    -fx-background-color: white;
+    -fx-background-image: null;
+    -fx-border-width: 1px;
+  	-fx-border-color: #27293d;
+}
+
+.radio-button:selected .radio .dot {
+    -fx-background-color: #0082e5;
+    -fx-background-radius: 15px;
+    -fx-background-insets: 0;
+}
+
+.text-field {
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
+	-fx-background-radius: 0.0 ;
+	-fx-border-color: #cccccc;
+	-fx-font-size: 14px;
+	-fx-text-fill: #111111;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+.text-field:focused {
+	-fx-font-size: 14px;
+	-fx-text-fill: #111111;
+	-fx-border-color: #cccccc;
+	-fx-font-family: "Noto Sans CJK KR Regular";
 }

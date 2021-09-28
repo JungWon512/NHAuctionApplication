@@ -29,6 +29,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -70,6 +71,13 @@ public class MoveStageUtil {
 	public synchronized void moveLoginStage(Stage stage) {
 
 		try {
+			
+			String fontFamily = "";
+			fontFamily = Font.loadFont(getApplicationClass().getResource("/com/nh/controller/resource/fonts/NotoSansKR-Bold.otf").toString(), 16).getFamily();
+			 
+			System.out.println(fontFamily);
+
+			
 
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("LoginView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
@@ -194,7 +202,7 @@ public class MoveStageUtil {
 			stage.setScene(scene);
 			stage.show();
 			// show 후에 ..
-			controller.initConfiguration();
+			controller.initConfiguration(stage);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

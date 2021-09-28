@@ -12,19 +12,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRoot" prefHeight="860.0" prefWidth="1280.0" styleClass="base-pane" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.EntryListController">
+<BorderPane fx:id="mRoot" prefHeight="860.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/entry_list.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.EntryListController">
    <center>
       <AnchorPane BorderPane.alignment="CENTER">
          <children>
             <VBox maxHeight="1.7976931348623157E308" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                  <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="header-button">
                      <children>
-                        <Label fx:id="mDownPriceLabel" text="최저가 낮춤" textFill="WHITE" visible="false" />
-                        <TextField fx:id="mDownPriceTextField" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="120.0" text="0" visible="false" />
-                        <Button fx:id="mBtnDownPrice" maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="button-12" text="최저가낮춤" visible="false" />
-                        <Button fx:id="mBtnSelect" maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="button-12" text="[ENT]선택" visible="false" />
-                        <Button fx:id="mBtnClose" maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" styleClass="button-12" text="[ESC]종료" />
+                        <Label fx:id="mDownPriceLabel" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="최저가 낮춤" textFill="#1a1a1a" visible="false">
+                           <font>
+                              <Font name="Noto Sans CJK KR Regular" size="16.0" />
+                           </font></Label>
+                        <TextField fx:id="mDownPriceTextField" focusTraversable="false" maxHeight="40.0" maxWidth="120.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
+                        <Button fx:id="mBtnDownPrice" maxHeight="40.0" maxWidth="100.0" minHeight="40.0" minWidth="0.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" styleClass="button-12" text="최저가낮춤" visible="false" />
+                        <Button fx:id="mBtnSelect" maxHeight="40.0" maxWidth="100.0" minHeight="40.0" minWidth="0.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" styleClass="button-12" text="[ENT]선택" visible="false" />
+                        <Button fx:id="mBtnClose" maxHeight="40.0" maxWidth="100.0" minHeight="40.0" minWidth="0.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" styleClass="button-12" text="[ESC]종료" />
                      </children>
                   </HBox>
                   <VBox spacing="5.0" styleClass="bg-color-1e1e2f" VBox.vgrow="ALWAYS">
@@ -132,14 +135,7 @@
       </AnchorPane>
    </center>
    <top>
-      <Label fx:id="mTitleLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="100.0" styleClass="bg-color-1e1e2f" text="경매예정" textFill="#56afff" BorderPane.alignment="CENTER">
-         <graphic>
-            <Label text="OO축협" textFill="WHITE">
-               <font>
-                  <Font size="36.0" />
-               </font>
-            </Label>
-         </graphic>
+      <Label fx:id="mTitleLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="100.0" styleClass="text-bold-008fff" text="전체 목록" textFill="#56afff" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="36.0" />
          </font>

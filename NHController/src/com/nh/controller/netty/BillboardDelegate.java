@@ -80,8 +80,11 @@ public class BillboardDelegate {
      */
     public void finishBillboard() {
         mLogger.debug("finishBillboard");
-        clearBillboard();
-        sendMessage(String.format("%c%c%c", GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.FINISH_CODE, GlobalDefine.BILLBOARD.ETX));
+        if (!isEmptyClient() &&  isActive()) {
+        	 clearBillboard();
+             sendMessage(String.format("%c%c%c", GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.FINISH_CODE, GlobalDefine.BILLBOARD.ETX));
+        }
+       
     }
    
     /**
@@ -197,7 +200,7 @@ public class BillboardDelegate {
      *
      * @return
      */
-    private boolean isEmptyClient() {
+    public boolean isEmptyClient() {
         if (mClient != null) {
             return false;
         } else {

@@ -1,11 +1,18 @@
 @import "common.css";
-.login-view .button{
+
+.login-view .label{
+	-fx-font-size: 17px;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+.login-view .button {
 	-fx-border-width: 1.0;
 	-fx-border-color: #0082e5;
 	-fx-background-color : #0082e5;
 	-fx-font-size: 22px;
 	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
 	-fx-text-fill: #ffffff;
+	-fx-font-family: "Noto Sans CJK KR Bold";
 }
 
 .login-view .button:hover{
@@ -15,6 +22,7 @@
 	-fx-font-size: 22px;
 	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
 	-fx-text-fill: #ffffff;
+	-fx-font-family: "Noto Sans CJK KR Bold";
 }
 
 .text-field {
@@ -24,25 +32,29 @@
 	-fx-border-color: #0a1931;
 	-fx-font-size: 16px;
 	-fx-text-fill: #111111;
+	-fx-font-family: "Noto Sans CJK KR Regular";
 }
 .text-field:focused {
 	-fx-background-color:  #ffffff ;
 	-fx-font-size: 16px;
 	-fx-text-fill: #111111;
 	-fx-border-color: #0a1931;
+	-fx-font-family: "Noto Sans CJK KR Regular";
 }
 
 
 /* 체크박스 */
 .check-box {
     -fx-text-fill: #111;
-    -fx-font-size: 14px;
+    -fx-font-size: 17px;
+    -fx-font-family: "Noto Sans CJK KR Regular";
 }
 
 .check-box .box {
     -fx-background-color: white;
     -fx-border-color: #8e8e8e;
     -fx-border-radius: 3px;
+    	-fx-font-family: "Noto Sans CJK KR Regular";
 }
 
 .check-box:selected .mark {

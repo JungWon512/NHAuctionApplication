@@ -74,7 +74,7 @@ public class GlobalDefine {
 	 */
 	public static final class AUCTION_INFO {
 
-//		public static final String AUCTION_HOST = "1.201.161.58"; // Server Host default
+//		public static final String AUCTION_HOST = "1.201.161.58"; // 운영 서버
 		public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
@@ -111,6 +111,8 @@ public class GlobalDefine {
 		public static final String LOG_AUCTION_START = "0"; 		// 출품 경매 시작 로그 기본값
 		public static final String LOG_AUCTION_FINISH = "99999999"; // 출품 경매 종료 로그 기본값
 		
+		public static final String AUCTION_TYPE_MULTI = "10"; // 환경설정 전송 경매 타입 = 일괄
+		public static final String AUCTION_TYPE_SINGLE = "20"; // 환경설정 전송 경매 타입 = 단일
 	}
 
 	/**

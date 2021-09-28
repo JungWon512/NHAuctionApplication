@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="550.0" styleClass="base-pane" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionMessageController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="550.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionMessageController">
 	<top>
       <HBox alignment="CENTER_LEFT" styleClass="sub-view" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -28,19 +28,19 @@
                   <Image url="@../resource/images/ic_logo.png" />
                </image>
             </ImageView>
-      		<VBox alignment="CENTER_LEFT" minHeight="100.0" prefHeight="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+      		<VBox alignment="CENTER_LEFT" minHeight="100.0" prefHeight="100.0" HBox.hgrow="ALWAYS">
       			<children>
-      				<Label maxWidth="1.7976931348623157E308" styleClass="title-bold-white" text="메시지 전송" textFill="WHITE">
+      				<Label maxWidth="1.7976931348623157E308" styleClass="title-bold-white" text="메시지 전송" textFill="#111111">
       					<font>
-      						<Font size="20.0" />
+      						<Font name="Noto Sans CJK KR Bold" size="24.0" />
       					</font>
       				</Label>
-      				<Label maxWidth="1.7976931348623157E308" styleClass="regular-font" text="전송할 메시지를 입력하세요." textFill="WHITE">
+      				<Label maxWidth="1.7976931348623157E308" styleClass="regular-font" text="전송할 메시지를 입력하세요." textFill="#868686">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                      <font>
-                        <Font size="15.0" />
+                        <Font name="Noto Sans CJK KR Regular" size="18.0" />
                      </font>
                   </Label>
       			</children>
@@ -64,7 +64,7 @@
       </HBox>
 	</top>
 	<center>
-		<GridPane BorderPane.alignment="CENTER">
+		<GridPane styleClass="msg" BorderPane.alignment="CENTER">
 			<columnConstraints>
 				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
 			</columnConstraints>
@@ -79,7 +79,7 @@
                   <Insets />
                </GridPane.margin>
                <children>
-      				<VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
+      				<VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" spacing="1.0" HBox.hgrow="ALWAYS">
       					<children>
 								<TextField fx:id="textFieldSendMessage" focusTraversable="false" maxHeight="1.7976931348623157E308" promptText="메시지를 입력 혹은 목록에서 선택하세요." VBox.vgrow="ALWAYS">
                            <font>
@@ -89,9 +89,9 @@
                               <Insets top="1.0" />
                            </VBox.margin>
                         </TextField>
-      						<Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="전송 메시지 입력 (최대 한/영 100자)" textFill="WHITE">
+      						<Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="전송 메시지 입력 (최대 한/영 100자)" textFill="#1a1a1a">
       							<font>
-      								<Font size="13.0" />
+      								<Font name="Noto Sans CJK KR Regular" size="13.0" />
       							</font>
       						</Label>
       					</children>
@@ -131,7 +131,7 @@
                         <Insets bottom="5.0" top="5.0" />
                      </HBox.margin>
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../resource/images/ic_plus.png" />
                            </image>

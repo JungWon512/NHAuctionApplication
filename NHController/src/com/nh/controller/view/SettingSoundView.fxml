@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -12,12 +11,13 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRoot" prefHeight="900.0" prefWidth="1280.0" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.SettingSoundController">
+<BorderPane fx:id="mRoot" prefHeight="900.0" prefWidth="1280.0" styleClass="setting-sound" stylesheets="@../css/sound.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.SettingSoundController">
    <top>
-      <GridPane BorderPane.alignment="CENTER">
+      <GridPane style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
          <columnConstraints>
             <ColumnConstraints minWidth="10.0" />
             <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
@@ -27,9 +27,9 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Label text="음성경매 음성내역을 관리합니다." textFill="WHITE">
+            <Label text="음성경매 음성내역을 관리합니다." textFill="#111111">
                <font>
-                  <Font size="16.0" />
+                  <Font size="19.0" />
                </font>
             </Label>
             <HBox spacing="5.0" GridPane.columnIndex="2">
@@ -47,21 +47,21 @@
       </GridPane>
    </top>
    <center>
-      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #27293d;" BorderPane.alignment="CENTER">
+      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>
          <children>
-            <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #1e1e2f;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #eeeeee;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columnConstraints>
                 <ColumnConstraints />
                 <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" vgrow="ALWAYS" />
-                  <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" />
+                  <RowConstraints />
                   <RowConstraints maxHeight="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" vgrow="ALWAYS" />
-                  <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" />
+                  <RowConstraints />
                   <RowConstraints maxHeight="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" vgrow="ALWAYS" />
                   <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" />
                   <RowConstraints maxHeight="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" vgrow="ALWAYS" />
@@ -83,27 +83,34 @@
                   <RowConstraints maxHeight="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <HBox spacing="4.0">
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+                  <HBox alignment="CENTER" spacing="4.0">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="경매전" textFill="WHITE" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="인삿말" textFill="WHITE" />
+                              <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="인삿말" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font></Label>
                            </graphic>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
                         </Label>
-                        <Button fx:id="mBtnPlaySound_1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_1" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_1" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -113,27 +120,27 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="2">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="2">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="경매" textFill="WHITE" HBox.hgrow="ALWAYS">
                            <graphic>
                               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="종료시" textFill="WHITE" />
                            </graphic>
                         </Label>
-                        <Button fx:id="mBtnPlaySound_2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_2" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_2" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -143,27 +150,27 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="4">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="4">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="안내" textFill="WHITE" HBox.hgrow="ALWAYS">
                            <graphic>
                               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="멘트" textFill="WHITE" />
                            </graphic>
                         </Label>
-                        <Button fx:id="mBtnPlaySound_3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_3" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_3" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -173,27 +180,27 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="6">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="6">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="연습" textFill="WHITE" HBox.hgrow="ALWAYS">
                            <graphic>
                               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="안내" textFill="WHITE" />
                            </graphic>
                         </Label>
-                        <Button fx:id="mBtnPlaySound_4" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_4" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_4" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_4" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -203,27 +210,27 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="8">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="8">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="성별" textFill="WHITE" HBox.hgrow="ALWAYS">
                            <graphic>
                               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="안내" textFill="WHITE" />
                            </graphic>
                         </Label>
-                        <Button fx:id="mBtnPlaySound_5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_5" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_5" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -233,27 +240,27 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="10">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="10">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="사용" textFill="WHITE" HBox.hgrow="ALWAYS">
                            <graphic>
                               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="하세요" textFill="WHITE" />
                            </graphic>
                         </Label>
-                        <Button fx:id="mBtnPlaySound_6" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_6" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_6" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_6" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -263,23 +270,23 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="12">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="12">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비 1" textFill="WHITE" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="mBtnPlaySound_7" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_7" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_7" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_7" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -289,23 +296,23 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="14">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="14">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비 2" textFill="WHITE" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="mBtnPlaySound_8" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_8" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_8" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_8" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -315,23 +322,23 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="16">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="16">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비 3" textFill="WHITE" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="mBtnPlaySound_9" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_9" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_9" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_9" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -341,23 +348,23 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="18">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="18">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비4" textFill="WHITE" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="mBtnPlaySound_10" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_10" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_10" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_10" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -367,23 +374,23 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="20">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="20">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비 5" textFill="WHITE" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="mBtnPlaySound_11" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_11" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_11" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_11" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -393,23 +400,23 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <HBox spacing="4.0" GridPane.rowIndex="22">
+                  <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="22">
                      <children>
                         <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비 6" textFill="WHITE" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="mBtnPlaySound_12" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnPlaySound_12" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_play.png" />
+                                    <Image url="@../resource/images/ic_play_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="mBtnStopSound_12" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
+                        <Button fx:id="mBtnStopSound_12" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-stop" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../resource/images/ic_pause.png" />
+                                    <Image url="@../resource/images/ic_cancel_white.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -419,17 +426,6 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="9" />
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="11" />
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="13" />
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="15" />
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="17" />
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="19" />
-                  <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #cccccc;" textFill="#ddd6d6" GridPane.columnSpan="2" GridPane.rowIndex="21" />
                   <TextArea fx:id="mMsgTextArea_1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="text-area-style-1" wrapText="true" GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -526,6 +522,16 @@
                         <Font size="16.0" />
                      </font>
                   </TextArea>
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" />
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="11" />
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="13" />
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="15" />
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="17" />
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="19" />
+                  <Pane maxHeight="5.0" minHeight="5.0" prefHeight="5.0" style="-fx-background-color: #ffffff;" GridPane.columnSpan="2147483647" GridPane.rowIndex="21" />
                </children>
             </GridPane>
          </children>
@@ -534,8 +540,4 @@
          </padding>
       </AnchorPane>
    </center>
-   <styleClass>
-      <String fx:value="base-pane" />
-      <String fx:value="setting-sound" />
-   </styleClass>
 </BorderPane>

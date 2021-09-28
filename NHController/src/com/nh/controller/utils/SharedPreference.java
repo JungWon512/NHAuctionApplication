@@ -151,6 +151,8 @@ public class SharedPreference {
 	public static final String PREFERENCE_MAIN_SOUND_ENTRY_KPN = "PREFERENCE_MAIN_SOUND_ENTRY_KPN";
 	// 메인 출품 정보 음성 설정 체크박스  [END]
 	
+	public static final String PREFERENCE_SEND_MESSAGE = "PREFERENCE_SEND_MESSAGE"; // 메세지 전송
+	
 	//로그인 아이디 저장
 	public static final String PREFERENCE_LOGIN_SAVE_ID = "PREFERENCE_LOGIN_SAVE_ID";
 

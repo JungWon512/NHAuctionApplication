@@ -2,98 +2,47 @@
     src: url('../resource/fonts/NotoSansKR-Regular.otf');
 }
 @font-face {
-    src: url('../resource/fonts/NanumBarunGothicBold.woff');
+    src: url('../resource/fonts/NotoSansKR-Bold.otf');
 }
-@font-face {
-    src: url('../resource/fonts/Roboto-Bold.ttf');
-}
-@font-face {
-    src: url('../resource/fonts/Roboto-Regular.ttf');
-}
-
-/*-fx-font-family: "Roboto Bold";*/
-/*-fx-font-family: "Roboto Regular";*/
-/*-fx-font-family: "NanumBarunGothic";*/
 
 .text {
-	-fx-font-family: "Noto Sans CJK KR Regular";
     -fx-font-smoothing-type: gray;
 }
 
 .button {
-	-fx-font-family: "Noto Sans CJK KR Regular";
     -fx-font-smoothing-type: gray;
 }
 
 .label {
-	-fx-font-family: "Noto Sans CJK KR Regular";
     -fx-font-smoothing-type: gray;
 }
 
 .text-field {
-	-fx-font-family: "Noto Sans CJK KR Regular";
     -fx-font-smoothing-type: gray;
 }
 
 .text-area {
-	-fx-font-family: "Noto Sans CJK KR Regular";
     -fx-font-smoothing-type: gray;
 }
 
-.base-pane {
-	-fx-font-family: "Noto Sans CJK KR Regular";
-    -fx-background-color: #0A1931;
-}
-
-
 .button:pressed {
-	-fx-font-family: "Noto Sans CJK KR Regular";
     -fx-scale-y: 0.95;
     -fx-scale-x: 0.95;
 }
 
-.font-style-nanumBarunGothic{
-	-fx-font-family: "NanumGothic";
-}
-.font-style-roboto-regular{
-	-fx-font-family: "Roboto Regular";
-}
-.font-style-roboto-bold{
-	-fx-font-family: "Roboto Bold";
-}
-.font-style-noto-sans-kr{
-	-fx-font-family: "Noto Sans KR";
+.text-bold-111111{
+	-fx-font-size: 32px;
+	-fx-text-fill: #111111;
+	-fx-font-family: "Noto Sans CJK KR Bold";
 }
 
-
-/* 라디오버튼 */
-.radio-button {
-    -fx-text-fill: #111;
-    -fx-font-size: 13px;
+.text-bold-008fff{
+	-fx-font-size: 32px;
+	-fx-text-fill: #008fff;
+	-fx-font-family: "Noto Sans CJK KR Bold";
 }
 
-.radio-button .radio {
-    -fx-border-width: 1px;
-    -fx-border-color: #27293d;
-    -fx-background-color: white;
-    -fx-background-image: null;
-    -fx-border-radius: 15px;
-    -fx-background-insets: 0;
-}
-
-.radio-button:pressed .radio {
-    -fx-scale-y: 0.90;
-    -fx-scale-x: 0.90;
-}
-
-.radio-button .radio:selected {
-    -fx-background-color: white;
-    -fx-background-image: null;
-    -fx-background-insets: 0;
-}
-
-.radio-button:selected .radio .dot {
-    -fx-background-color: #0082e5;
-    -fx-background-radius: 15px;
-    -fx-background-insets: 0;
+.border-line-707070{
+	-fx-border-width: 1px;
+	-fx-border-color: #707070;
 }

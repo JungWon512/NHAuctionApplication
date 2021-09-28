@@ -76,9 +76,11 @@ public class PdpDelegate {
 	 * @Description 경매 종료
 	 */
 	public void finishPdp() {
-		mLogger.debug("finishPdp");
-		clearPdp();
-		sendMessage(String.format("%c%c%c", GlobalDefine.PDP.STX, GlobalDefine.PDP.FINISH_CODE, GlobalDefine.PDP.ETX));
+		if(!isEmptyClient() && isActive()) {
+			mLogger.debug("finishPdp");
+			clearPdp();
+			sendMessage(String.format("%c%c%c", GlobalDefine.PDP.STX, GlobalDefine.PDP.FINISH_CODE, GlobalDefine.PDP.ETX));
+		}
 	}
 
 	/**
@@ -86,7 +88,9 @@ public class PdpDelegate {
 	 */
 	public void completePdp() {
 		mLogger.debug("completeBillboard");
-		sendMessage(String.format("%c%c%c", GlobalDefine.PDP.STX, GlobalDefine.PDP.FINISH_CODE, GlobalDefine.PDP.ETX));
+		 if(!isEmptyClient() && isActive()) {
+			 sendMessage(String.format("%c%c%c", GlobalDefine.PDP.STX, GlobalDefine.PDP.FINISH_CODE, GlobalDefine.PDP.ETX));
+		 }
 	}
 
 	/**
@@ -175,7 +179,7 @@ public class PdpDelegate {
 	 *
 	 * @return
 	 */
-	private boolean isEmptyClient() {
+	public boolean isEmptyClient() {
 		if (mClient != null) {
 			return false;
 		} else {

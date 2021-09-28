@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="720.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/Login.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.LoginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="776.0" prefWidth="920.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/Login.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.LoginController">
    <children>
       <VBox alignment="CENTER" maxHeight="295.0" maxWidth="460.0" minHeight="295.0" minWidth="460.0" prefHeight="295.0" prefWidth="460.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -30,22 +30,22 @@
                         <Separator prefWidth="200.0" />
                         <Label text="아이디">
                            <font>
-                              <Font size="14.0" />
+                              <Font name="Noto Sans CJK KR Regular" size="17.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="mIdTextField" maxHeight="50.0" maxWidth="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" promptText="아이디" VBox.vgrow="ALWAYS" />
+                        <TextField fx:id="mIdTextField" maxHeight="60.0" maxWidth="1.7976931348623157E308" minHeight="60.0" prefHeight="60.0" promptText="아이디" VBox.vgrow="ALWAYS" />
                         <Label text="비밀번호">
                            <font>
-                              <Font size="14.0" />
+                              <Font name="Noto Sans CJK KR Regular" size="17.0" />
                            </font>
                         </Label>
-                        <PasswordField fx:id="mPwTextField" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" promptText="비밀번호" />
+                        <PasswordField fx:id="mPwTextField" maxHeight="60.0" minHeight="60.0" prefHeight="60.0" promptText="비밀번호" />
                         <CheckBox fx:id="mSaveIdCheckBox" mnemonicParsing="false" selected="true" text="아이디 기억하기">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </CheckBox>
-                        <Button fx:id="mBtnLogin" alignment="CENTER" contentDisplay="RIGHT" graphicTextGap="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="110.0" mnemonicParsing="false" prefWidth="110.0" text="로그인">
+                        <Button fx:id="mBtnLogin" alignment="CENTER" contentDisplay="RIGHT" graphicTextGap="0.0" maxHeight="60.0" maxWidth="1.7976931348623157E308" minHeight="60.0" minWidth="110.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" text="로그인">
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>
