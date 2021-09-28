@@ -1,7 +1,16 @@
 package com.nh.controller.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.json.Json;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.SharedPreference;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -41,6 +50,7 @@ public class AuctionMessageController implements Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
 		btnSend.setOnMouseClicked(event -> sendMessage(event));
 		btnAddMessage.setOnMouseClicked(event -> addMessage(event));
 		btnClose.setOnMouseClicked(event -> close(event));
@@ -59,13 +69,24 @@ public class AuctionMessageController implements Initializable {
 	 */
 	public List<String> getMessageList() {
 
-		List<String> dataList = new ArrayList<String>();
+		try {
+			
+			String getJson = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SEND_MESSAGE, null);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			
+			List<String> msgDataList = mapper.readValue(getJson, List.class);
 
-		for (int i = 1; i < 50; i++) {
-			dataList.add("Test Message_" + i);
+			return msgDataList;
+			
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			return null;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
 		}
-
-		return dataList;
+		
 	}
 	
 	/**
@@ -117,8 +138,9 @@ public class AuctionMessageController implements Initializable {
 			msgListView.getItems().add(msg);
 			msgListView.scrollTo(msgListView.getItems().size() -1);
 			textFieldAddMessage.setText("");
+			String msgJson = new Gson().toJson(msgListView.getItems());
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SEND_MESSAGE, msgJson);
 		}
-		
 	}
 
 	/**
@@ -131,7 +153,6 @@ public class AuctionMessageController implements Initializable {
 			msgListView.getItems().addAll(dataList);
 		}
 	}
-	
 	
 	/**
 	 * 창 닫기

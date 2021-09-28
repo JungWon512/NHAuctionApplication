@@ -191,11 +191,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 구성 설정
 	 */
-	public void initConfiguration() {
+	public void initConfiguration(Stage stage) {
 		// 키 설정
 		initKeyConfig();
 		// 창 이동 설정
-		CommonUtils.getInstance().canMoveStage(mStage, mRootPane);
+		Platform.runLater(()->CommonUtils.getInstance().canMoveStage(stage, mRootPane));
 //		CommonUtils.getInstance().canMoveStage(mStage, mWaitTableView);  //대기중인 테이블뷰 드래그 이동. 일단 막아둠
 		// 더블클릭 풀스크린
 //		CommonUtils.getInstance().onDoubleClickfullScreenMode(mStage, null , null);
@@ -1620,12 +1620,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	}
 
 	private void onSendSettingInfo() {
-		// TODO: default value setting이랑 맞추기
+
 		EditSetting setting = new EditSetting(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "Y"),
 				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
 				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
 				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
-				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"));
+				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"),SettingApplication.getInstance().getSettingAuctionType());
 		addLogItem(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
 	}
 

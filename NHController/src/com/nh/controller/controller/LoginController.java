@@ -132,6 +132,7 @@ public class LoginController implements Initializable {
 						GlobalDefine.ADMIN_INFO.adminData.setUserId(mIdTextField.getText().toString().trim());
 						GlobalDefine.ADMIN_INFO.adminData.setNabzplc(result.getNaBzplc());
 						GlobalDefine.ADMIN_INFO.adminData.setAccessToken(result.getAccessToken());
+						
 						MoveStageUtil.getInstance().moveAuctionType(mStage);
 				
 					}else {
