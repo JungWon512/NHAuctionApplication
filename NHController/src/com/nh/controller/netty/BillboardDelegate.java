@@ -211,7 +211,7 @@ public class BillboardDelegate {
      * @return
      */
     public boolean isActive() {
-
+    	
     	if(isEmptyClient()) {
     		return false;
     	}

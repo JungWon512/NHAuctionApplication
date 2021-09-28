@@ -156,8 +156,7 @@ public class ChooseAuctionController implements Initializable {
 			}
 		});
 
-//		mAuctionDatePicker.setValue(LocalDate.now());
-		mAuctionDatePicker.setValue(LocalDate.of(2021, 7, 16));
+		mAuctionDatePicker.setValue(LocalDate.now());
 	}
 
 	/**

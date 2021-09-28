@@ -30,6 +30,10 @@ public class EntryInfoDao {
         return session.selectList("selectStnEntry", auctionStnData);
     }
     
+    public EntryInfo obtainEntryInfo(EntryInfo entryInfo, SqlSession session) {
+        return session.selectOne("obtainEntryInfo", entryInfo);
+    }
+    
     public SelStsCountData selectSelStsCount(AuctionStnData auctionStnData, SqlSession session) {
         return session.selectOne("selectSelStsCount", auctionStnData);
     }

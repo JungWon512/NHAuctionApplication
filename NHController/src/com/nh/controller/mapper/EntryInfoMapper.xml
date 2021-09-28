@@ -51,7 +51,7 @@
         <result property="mStandPosition" column="STAND_POSITION"/>
 
     </resultMap>
-
+  
 	<!-- tb_la_is_mm_indv -->
 	<sql id="indvColumn">
 		${alias}.NA_BZPLC,
@@ -203,6 +203,31 @@
 		ORDER BY AUC_PRG_SQ
 		
 	</select>
+	
+	<!--소 한건 조회-->
+	<select id="obtainEntryInfo" resultMap="entryInfoMap">
+		SELECT  NA_BZPLC,
+				AUC_OBJ_DSC,
+				OSLP_NO,
+				LED_SQNO,
+				AUC_PRG_SQ,
+				AUC_DT,
+				CONVERT(CHAR(19), LSCHG_DTM, 20) AS LSCHG_DTM,
+				TRMN_AMNNO,
+				LVST_AUC_PTC_MN_NO,
+				SEL_STS_DSC,
+				SRA_SBID_AM,
+				SRA_SBID_UPR,
+				LS_CMENO
+		FROM TB_LA_IS_MH_SOG_COW
+		WHERE	AUC_PRG_SQ	= #{mEntryNum}
+			AND	NA_BZPLC	= #{mAuctionHouseCode}
+			AND	AUC_OBJ_DSC	= #{mEntryType}
+			AND	OSLP_NO		= #{mOslpNo}
+			AND	AUC_DT		= #{mAucDt}
+			AND	LED_SQNO     = #{mLedSqno}
+	</select>
+	
 	
 	 <!-- 경매 대기/진행/종료/보류 조회 -->
 	<select id="selectSelStsCount" resultType="SelStsCountData" >

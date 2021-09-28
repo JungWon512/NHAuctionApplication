@@ -52,6 +52,11 @@ public class ApiUtils {
 	 * @param listener_
 	 */
 	public void requestAuctionResult(RequestAuctionResultBody body, ActionResultListener<BaseResponse> listener_) {
+
+		if(body.size() > 0) {
+			System.out.println("[API 낙유찰 결과 전송 : " + body.toString());
+		}
+	
 		ActionRuler.getInstance().addAction(new ActionRequestAuctionResult(body, listener_));
 		ActionRuler.getInstance().runNext();
 	}

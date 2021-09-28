@@ -22,6 +22,8 @@ public interface EntryInfoMapper {
     
     List<EntryInfo> getStnEntryData(AuctionStnData auctionStnData);
     
+    EntryInfo obtainEntryInfo(EntryInfo entryInfo);
+    
     SelStsCountData getSelStsCount(AuctionStnData auctionStnData);
     
     int getBiddingHistoryCount(AucEntrData aucEntrData);

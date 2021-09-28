@@ -93,8 +93,11 @@ public class PdpDelegate {
 	 * @Description 경매 정보 전송
 	 */
 	public void sendPdpData(NettySendable sendable) {
-		clearPdp();
-		sendMessage(sendable);
+		
+		if(!isEmptyClient() && isActive()) {
+			clearPdp();
+			sendMessage(sendable);
+		}
 	}
 
 	/**

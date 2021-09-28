@@ -17,7 +17,7 @@ public class GlobalDefine {
 
 		public static final String RELEASE_VERION = "V0.0.1"; // application 버전
 
-		public static final String RELEASE_DATE = "2020-11-29"; // 업데이트 날짜
+		public static final String RELEASE_DATE = "2021-09-27"; // 업데이트 날짜
 	}
 
 	/**
@@ -73,21 +73,19 @@ public class GlobalDefine {
 	 * 경매 관련 정보
 	 */
 	public static final class AUCTION_INFO {
-		
-		public static AuctionRound auctionRoundData = null;
-		
-//		 public static final String AUCTION_HOST = "192.168.0."; // Server Host default
+
+//		public static final String AUCTION_HOST = "1.201.161.58"; // Server Host default
 		public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
 //		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민
 //		public static final String AUCTION_HOST = "192.168.0.23"; // dev local server
-//        public static final String AUCTION_HOST = "115.41.222.25"; // dev remote server
+//		public static final String AUCTION_HOST = "115.41.222.25"; // dev remote server
 
 		public static final int AUCTION_PORT = 5001; // Server Port
 
-		public static final String AUCTION_MEMBER = "admin1"; // 테스트 회원 번호
-
+		public static AuctionRound auctionRoundData = null;	//경매 회차 데이터
+		
 		// 경매 진행 상태
 		public static final String AUCTION_STATUS_NONE = "8000";
 		public static final String AUCTION_STATUS_READY = "8001"; // 경매 준비 상태

@@ -164,6 +164,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private EntryDialogType mCurPageType; // 전체or보류목록 타입
 
 	private Map<String, BidderConnectInfo> mConnectionUserMap = new HashMap<>(); // 접속 현황
+	
+	private boolean isChangePricePlaySound = false;
 
 	/**
 	 * setStage
@@ -256,8 +258,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		mBtnReStart.setOnMouseClicked(event -> onReStart());
 		mBtnPause.setOnMouseClicked(event -> onPause());
-	}
-	
+		
+	}	
 	
 	/**
 	 * 테이블뷰 관련
@@ -1385,21 +1387,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 경매 진행 -> 카운트 다운 일시 정지.
 	 */
 	public void onPause() {
-		switch (mAuctionStatus.getState()) {
-		case GlobalDefineCode.AUCTION_STATUS_START:
-		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+		
+			switch (mAuctionStatus.getState()) {
+			case GlobalDefineCode.AUCTION_STATUS_START:
+			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
-			// 자동경매 카운트다운중인경우 스케줄러 멈춤.
-			if (SettingApplication.getInstance().isUseSoundAuction()) {
-				stopAutoAuctionScheduler();
-				mBtnSpace.setUserData("");
-				mBtnSpace.setText(mResMsg.getString("str.btn.sound.auction.ready"));
-				CommonUtils.getInstance().removeStyleClass(mBtnSpace, "bg-color-04cf5c");
+				// 자동경매 카운트다운중인경우 스케줄러 멈춤.
+				if (SettingApplication.getInstance().isUseSoundAuction()) {
+					stopAutoAuctionScheduler();
+					mBtnSpace.setUserData("");
+//					mBtnSpace.setText(mResMsg.getString("str.btn.sound.auction.ready"));
+					CommonUtils.getInstance().removeStyleClass(mBtnSpace, "bg-color-04cf5c");
+				}
+
+				addLogItem("카운트 다운 정지 : " + AuctionDelegate.getInstance().onPause(new PauseAuction(mCurrentSpEntryInfo.getAuctionHouseCode().getValue(), mCurrentSpEntryInfo.getEntryNum().getValue())));
+
 			}
-
-			addLogItem("카운트 다운 정지 : " + AuctionDelegate.getInstance().onPause(new PauseAuction(mCurrentSpEntryInfo.getAuctionHouseCode().getValue(), mCurrentSpEntryInfo.getEntryNum().getValue())));
-
-		}
 	}
 
 	/**
@@ -1542,8 +1545,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			if (!isUp) {
 				price = price*-1;
-				SoundUtil.getInstance().setCurrentEntryInfoMessage("최저가를 " + price + " 원 낮췄습니다. 지금 재경매 하겠습니다.");
-				SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.change.low.price"), price), null);
+				
+				if(!isChangePricePlaySound) {
+
+					isChangePricePlaySound = true;
+					
+					SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.change.low.price"), price), new PlaybackListener() {
+						@Override
+						public void playbackFinished(PlaybackEvent evt) {
+							isChangePricePlaySound = false;
+						}
+					});	
+				}
 			}
 
 		} else {
@@ -1714,7 +1727,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		if (mAutoStopScheduler != null) {
 			return;
 		}
-
+		
+		
 		// 정지 Task
 		// waiting time 기다린 후 실행.
 		TimerTask timerTask = new TimerTask() {
@@ -1757,16 +1771,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 응찰 가격 조건 체크
 			// 최저가 + 상한가 상황이면 사운드 재생 , 경매 카운트 정지.
 			if (!checkOverPrice(rank_1_user)) {
-
-				// 응찰금액 확인 사운드 메세지
-				String overPriceSoundMessage = String.format(mResMsg.getString("str.sound.auction.over.price"), rank_1_user.getAuctionJoinNum().getValue());
-
-				if (SettingApplication.getInstance().isUseSoundAuction()) {
-					// 사운드 시작
-					SoundUtil.getInstance().playSound(overPriceSoundMessage, null);
-					// 카운트 라벨 설정 시간 기준 초기화
-					setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), false);
-				}
 
 				addLogItem("soundAuctionTimerTask ==== 사운드 경매 자동 종료");
 
@@ -1927,7 +1931,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mConnectionUserMap.remove(bidderConnectInfo.getUserNo());
 				// 찾아서 지움.
 				mConnectionUserDataList.stream().flatMap(a -> Arrays.stream(a.getUserNo())).filter(b -> b != null && b.getValue().equals(bidderConnectInfo.getUserNo())).map(item -> {
-					System.out.println("remove user number : " + item.getValue());
+				
 					item.setValue("");
 					return item;
 				}).forEach(System.out::println);
@@ -2091,7 +2095,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (mReAuctionCount < 0) {
 				// 재경매 횟수 +
 				mReAuctionCount = SettingApplication.getInstance().getReAuctionCount();
-				addLogItem("==== 재경매 횟수 ====: " + mReAuctionCount);
 			} else {
 				// 카운트다운마다 재경매 횟수 -
 				mReAuctionCount--;
@@ -2109,7 +2112,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				return;
 			}
 
-			addLogItem("==== --- 재경매 횟수 ====: " + mReAuctionCount);
+			addLogItem("==== 재경매 횟수 ====: " + mReAuctionCount);
 
 			// 재경매 횟수가 남아있고 응찰자가 한명 이상이면 비교 시작..
 			if (mBiddingUserInfoDataList.size() > 1) {
@@ -2516,6 +2519,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				initBiddingInfoDataList();
 			}
 
+			//응찰자 갱신 후 완료 콜백
+			mCalculationRankCallBack.completed(true, null);
 		});
 	}
 
@@ -3009,6 +3014,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 낙찰금액을 확인해주세요.
 			if (!SettingApplication.getInstance().isUseSoundAuction()) {
 				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("str.auction.over.price.valid")));
+			}else {
+				
+				// 응찰금액 확인 사운드 메세지
+				String overPriceSoundMessage = String.format(mResMsg.getString("str.sound.auction.over.price"), rank_1_user.getAuctionJoinNum().getValue());
+
+					System.out.println("[SOUND 응찰 금액 확인] : " + overPriceSoundMessage);
+					// 사운드 시작
+					SoundUtil.getInstance().playSound(overPriceSoundMessage, null);
+					// 카운트 라벨 설정 시간 기준 초기화
+					setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), false);
 			}
 			return false;
 		}

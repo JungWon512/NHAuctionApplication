@@ -12,6 +12,7 @@ import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.AuctionStnData;
 import com.nh.controller.model.SelStsCountData;
+import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
@@ -103,6 +104,22 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 		}
 		return list;
+	}
+	
+	@Override
+	public EntryInfo obtainEntryInfo(EntryInfo entryInfo) {
+		
+		EntryInfo resultEntryInfo = null;
+		
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultEntryInfo = getDao().obtainEntryInfo(entryInfo, session);
+
+		} catch (Exception e) {
+			return null;
+		}
+		
+		return resultEntryInfo;
 	}
 
 	@Override
