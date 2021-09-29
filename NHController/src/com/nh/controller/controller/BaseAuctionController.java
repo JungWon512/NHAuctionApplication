@@ -86,8 +86,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	protected ResourceBundle mResMsg = null; // 메세지 처리
 
-	protected FXMLLoader mFxmlLoader = null;
-
 	protected Stage mStage = null; // 현재 Stage
 
 	protected SpEntryInfo mCurrentSpEntryInfo = null; // 현재 진행 출품
@@ -353,7 +351,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 			}
 
 			if (bidding.getPrice().length() > 4) {
-				addLogItem("가격 4자리 이상입니다. 응찰 비정상입니다.");
+				addLogItem("응찰가가 4자리 이상입니다. 응찰에 실패했습니다.");
 				return;
 			}
 

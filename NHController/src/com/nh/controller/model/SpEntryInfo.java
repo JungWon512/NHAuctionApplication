@@ -33,7 +33,7 @@ public class SpEntryInfo implements FromAuctionController {
     private StringProperty mEntryType; // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
     private StringProperty mAuctionQcn; // 경매회차
     private StringProperty mIndNum; // 축산개체관리번호
-    private StringProperty mIndMngCd; // 축산축종구분코드
+    private StringProperty mIndMngCd; // 축산축종구분코드 
     private StringProperty mFhsNum; // 농가식별번호
     private StringProperty mFarmMngNum; // 농장관리번호
     private StringProperty mExhibitor; // 농가명
@@ -49,7 +49,7 @@ public class SpEntryInfo implements FromAuctionController {
     private StringProperty mMaMonth; // 임신개월수
     private StringProperty mPasgQcn; // 계대
     private StringProperty mObjIdNum; // 개체식별번호
-    private StringProperty mObjRegNum; // 축산개체종축등록번호
+    private StringProperty mObjRegNum; // 축산개체종축등록번호 
     private StringProperty mObjRegTypeNum; // 등록구분번호
     private StringProperty mRgnName; // 출하생산지역
     private StringProperty mReRgnName; // 출하생산지역 split => ex) 경남 하동군 금남면  계천리 => 금남, 경상남도 하동군 악양면 상중대2길 22-3 => 악양
@@ -595,31 +595,32 @@ public class SpEntryInfo implements FromAuctionController {
                 		+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" 
                 		+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" 
                 		+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s",
-                ORIGIN, TYPE, AuctionShareSetting.DELIMITER, getAuctionHouseCode().getValue(), AuctionShareSetting.DELIMITER,
+                ORIGIN, TYPE, AuctionShareSetting.DELIMITER, 
+                getAuctionHouseCode().getValue(), AuctionShareSetting.DELIMITER,
                 getEntryNum().getValue(), AuctionShareSetting.DELIMITER,
                 getAuctionQcn().getValue(), AuctionShareSetting.DELIMITER,
                 getEntryType().getValue(), AuctionShareSetting.DELIMITER,
-                getIndNum().getValue(), AuctionShareSetting.DELIMITER,
-                getIndMngCd().getValue(), AuctionShareSetting.DELIMITER,
-                getFhsNum().getValue(), AuctionShareSetting.DELIMITER,
-                getFarmMngNum().getValue(), AuctionShareSetting.DELIMITER,
-                getExhibitor().getValue(), AuctionShareSetting.DELIMITER,
-                getBrandName().getValue(), AuctionShareSetting.DELIMITER,
-                getConvertBirthDay(), AuctionShareSetting.DELIMITER, 
-                getKpn().getValue(), AuctionShareSetting.DELIMITER, 
-                getGenderName().getValue(), AuctionShareSetting.DELIMITER, 
-                getMotherCowName().getValue(), AuctionShareSetting.DELIMITER,
-                getMotherObjNum().getValue(), AuctionShareSetting.DELIMITER, 
-                getMatime().getValue(), AuctionShareSetting.DELIMITER, 
-                getMaMonth().getValue(), AuctionShareSetting.DELIMITER, 
-                getPasgQcn().getValue(), AuctionShareSetting.DELIMITER,
-                getObjIdNum().getValue(), AuctionShareSetting.DELIMITER,
-                getObjRegNum().getValue(), AuctionShareSetting.DELIMITER,
-                getObjRegTypeNum().getValue(), AuctionShareSetting.DELIMITER,
-                getReRgnName().getValue(), AuctionShareSetting.DELIMITER, 
-                getDnaYn().getValue(), AuctionShareSetting.DELIMITER, 
+                getIndNum().getValue(), AuctionShareSetting.DELIMITER,			// 축산개체관리번호		SRA_INDV_AMNNO
+                getIndMngCd().getValue(), AuctionShareSetting.DELIMITER,		// 축산축종구분코드		SRA_SRS_DSC
+                getFhsNum().getValue(), AuctionShareSetting.DELIMITER,			// 농가 식별번호		FHS_ID_NO
+                getFarmMngNum().getValue(), AuctionShareSetting.DELIMITER,		// 농장 관리 번호		FARM_AMNNO
+                getExhibitor().getValue(), AuctionShareSetting.DELIMITER,		// 농가명 			FTSNM
+                getBrandName().getValue(), AuctionShareSetting.DELIMITER,		// 브랜드명			BRANDNM
+                getConvertBirthDay(), AuctionShareSetting.DELIMITER, 			// 생년월일			BIRTH
+                getKpn().getValue(), AuctionShareSetting.DELIMITER, 			// KPN				KPN_NO
+                getGenderName().getValue(), AuctionShareSetting.DELIMITER,		// 개체 성별코드명		INDV_SEX_C_NAME
+                getMotherCowName().getValue(), AuctionShareSetting.DELIMITER,	// 혈통명				SIMP_CNM AS MCOW_DSC
+                getMotherObjNum().getValue(), AuctionShareSetting.DELIMITER,	// 어미축산개체관리번호	MCOW_SRA_INDV_AMNNO
+                getMatime().getValue(), AuctionShareSetting.DELIMITER, 			// 산차				MATIME
+                getMaMonth().getValue(), AuctionShareSetting.DELIMITER, 		// 임신개월수			PRNY_MTCN
+                getPasgQcn().getValue(), AuctionShareSetting.DELIMITER,			// 계대				SRA_INDV_PASG_QCN
+                getObjIdNum().getValue(), AuctionShareSetting.DELIMITER,		// 개체 식별번호		INDV_ID_NO
+                getObjRegNum().getValue(), AuctionShareSetting.DELIMITER,		// 축산개체종축등록번호 	SRA_INDV_BRDSRA_RG_NO
+                getObjRegTypeNum().getValue(), AuctionShareSetting.DELIMITER,	// 등록구분코드			RG_DSC
+                getReRgnName().getValue(), AuctionShareSetting.DELIMITER, 		// 출하생산지역			SRA_PD_RGNNM
+                getDnaYn().getValue(), AuctionShareSetting.DELIMITER, 			// 	친자검사결과여부		DNA_YN
                 getIsNew().getValue(), AuctionShareSetting.DELIMITER,
-                getWeight().getValue() + "kg", AuctionShareSetting.DELIMITER,
+                getWeight().getValue() + "kg", AuctionShareSetting.DELIMITER,	// 중량, 보낼때만 KG 붙임.
                 getInitPrice().getValue(), AuctionShareSetting.DELIMITER,
                 getLowPrice().getValue(), AuctionShareSetting.DELIMITER, 
                 getNote().getValue(), AuctionShareSetting.DELIMITER,

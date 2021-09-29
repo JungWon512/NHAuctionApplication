@@ -74,7 +74,15 @@
 	-fx-text-fill: #111111;
 }
 
+*.date-picker {
+	-fx-primary-color: #008fff;
+	-fx-secondary-color: #008fff;
+	-fx-light-grey-color: #008fff;
+	-fx-focus-color: -fx-secondary-color;
+}
+
 .date-picker > .text-field {
+	-fx-font-family: "Noto Sans CJK KR Regular";
 	-fx-font-size: 22px;
     -fx-background-color:
         linear-gradient(to bottom, derive(-fx-text-box-border, -10.0%), -fx-text-box-border),
@@ -83,24 +91,56 @@
     -fx-background-radius: 2.0 0.0 0.0 2.0;
 }
 
-.date-picker{
-	-fx-font-size: 20px;
+.date-picker .arrow-button {
+	-fx-background-color: -fx-primary-color;
+	-fx-font-size: 18px;
+	-fx-background-radius: 0;
+}
+.date-picker .arrow-button:hover {
+	-fx-background-color: -fx-secondary-color;
+}
+.date-picker .arrow-button .arrow {
+	-fx-background-color: white;
+}
+.date-picker .cell {
+	-fx-font-size: 18px;
 	-fx-font-family: "Noto Sans CJK KR Regular";
 }
-.date-cell {
-    -fx-font-size: 20px;
-    -fx-font-family: "Noto Sans CJK KR Regular";
-}
 
-.date-picker:focused > .text-field,
-.date-picker > .text-field:focused {
-		-fx-font-size: 22px;
-    -fx-background-color:
-        -fx-control-inner-background,
-        -fx-faint-focus-color,
-        linear-gradient(from 0.0px 0.0px to 0.0px 5.0px, derive(-fx-control-inner-background, -9.0%), -fx-control-inner-background);
-    -fx-background-insets: 1.0 0.0 1.0 1.0, 1.0 0.0 1.0 1.0, 3.0 2.0 3.0 3.0;
-    -fx-background-radius: 2.0 0.0 0.0 2.0, 1.0 0.0 0.0 1.0, 0.0;
+.date-picker .cell:hover {
+	-fx-background-color: -fx-light-grey-color;
+	-fx-text-fill: white;
+}
+.date-picker .cell:focused {
+	-fx-background-color: -fx-light-grey-color;
+	-fx-text-fill: white;
+}
+.date-picker .selected {
+	-fx-background-color: -fx-primary-color;
+	-fx-text-fill: white;
+}
+.date-picker .selected:focused {
+	-fx-background-color: -fx-primary-color;
+	-fx-text-fill: white;
+}
+.date-picker-popup  {
+	-fx-border-color: transparent;
+}
+.date-picker-popup .month-year-pane {
+	-fx-background-color: -fx-primary-color;
+}
+.date-picker-popup .month-year-pane .label {
+	-fx-font-size: 25px;
+	-fx-text-fill: white;
+	-fx-font-family: "Noto Sans CJK KR Bold";
+}
+.date-picker-popup .week-number-cell {
+	-fx-text-fill: -fx-secondary-color;
+}
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+	-fx-background-color: white;
+	-fx-font-size: 22px;
 }
 
 /* 라디오버튼 */

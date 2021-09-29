@@ -76,6 +76,7 @@ public class GlobalDefine {
 
 //		public static final String AUCTION_HOST = "1.201.161.58"; // 운영 서버
 		public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
+//		public static final String AUCTION_HOST = "210.107.78.140"; // 출하안내 교수
 //		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
 //		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
 //		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민

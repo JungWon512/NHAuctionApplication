@@ -52,17 +52,26 @@
 
 .check-box .box {
     -fx-background-color: white;
-    -fx-border-color: #8e8e8e;
-    -fx-border-radius: 3px;
-    	-fx-font-family: "Noto Sans CJK KR Regular";
+    -fx-border-color: #cccccc;
+}
+
+.check-box .mark {
+    -fx-shape:"M14.596,2.055L12.455,0C9.687,2.884,6.011,6.714,5.158,7.602L2.055,4.624L0,6.765l5.242,5.037l0.003-0.004
+    l0.003,0.004L14.596,2.055z";
+    -fx-scale-x: 0.85;
+    -fx-scale-y: 0.85;
+    -fx-background-color: #cccccc;
+    
 }
 
 .check-box:selected .mark {
-    -fx-background-color: white;
+   -fx-shape:"M14.596,2.055L12.455,0C9.687,2.884,6.011,6.714,5.158,7.602L2.055,4.624L0,6.765l5.242,5.037l0.003-0.004
+    l0.003,0.004L14.596,2.055z";
+	-fx-background-color: #008fff;
 }
 
 .check-box:selected .box {
-    -fx-background-color: #0082e5;
+   -fx-border-color: #cccccc;
 }
 
 .check-box:pressed .box {

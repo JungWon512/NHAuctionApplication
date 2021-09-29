@@ -103,7 +103,7 @@ public class LoginController implements Initializable {
 	public void onLogin() {
 
 		if (!CommonUtils.getInstance().isValidString(mIdTextField.getText()) && !CommonUtils.getInstance().isValidString(mPwTextField.getText())) {
-			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.login.empty.user.info"), mResMsg.getString("popup.btn.close"));
+			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.login.empty.user.info"), mResMsg.getString("popup.btn.ok"));
 			return;
 		}
 		

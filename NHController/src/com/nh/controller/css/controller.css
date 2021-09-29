@@ -5,6 +5,14 @@
     -fx-border-color: #cccccc;
 	-fx-padding: 10;
 }
+
+.base-right-contents{
+	-fx-background-color : #ffffff;
+	 -fx-border-width: 1px;
+    -fx-border-color: #cccccc;
+	-fx-padding: 10;
+}
+
 .contents-auction-info-column-style-1{
 	-fx-font-size: 18px;
 	-fx-background-color : #008fff;
@@ -72,6 +80,15 @@
 	-fx-padding:0;
 }
 
+/*테이블 기본 */
+.base-right-contents .table-view{
+	-fx-background-color: transparent;
+	-fx-border-width: 0px 1px 1px 0px;
+	-fx-border-color: #ccc;
+	-fx-padding:0;
+}
+
+
 /*테이블 헤더 컬럼 */
 .base-contents .table-view .column-header{
 	-fx-background-color: #122a48;
@@ -80,6 +97,55 @@
 	-fx-pref-height: 40px;
 	-fx-font-family: "Noto Sans CJK KR Bold";
 }
+
+.base-contents .bidding-user-info .table-view{
+	-fx-background-color: transparent;
+	-fx-border-width: 0px 1px 1px 0px;
+	-fx-border-color: #ccc;
+	-fx-padding:0;
+}
+
+.base-right-contents .bidding-user-info .table-view{
+	-fx-background-color: transparent;
+	-fx-border-width:0px 0px 1px 0px;
+	-fx-border-color: #ccc;
+	-fx-padding:0;
+}
+
+.base-right-contents .bidding-user-info .table-view .column-header{
+	-fx-background-color: #122a48;
+	-fx-border-color: #122a48;
+	-fx-border-width: 1px;
+	-fx-pref-height: 40px;
+}
+
+/*테이블 헤더 컬럼 -> text */
+.base-right-contents .bidding-user-info .table-view .column-header .label {
+	-fx-text-fill: white;
+	-fx-font-size: 18px;
+	-fx-font-family: "Noto Sans CJK KR Bold";
+}
+
+/* 응찰자 정보 테이블 셀 크기 */
+.base-right-contents .bidding-user-info .table-view .table-row-cell{
+	-fx-cell-size: 45px;
+	-fx-background-color: #ffffff;
+	-fx-text-fill: red;
+	-fx-font-size: 20px;
+	-fx-border-color: #cccccc;
+	-fx-border-width: 1px 1px 0px 1px;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+/* 응찰자 정보 테이블 셀 셀렉트 */ 
+.base-right-contents .bidding-user-info .table-view .table-row-cell:selected {
+	-fx-cell-size: 54px;
+	-fx-background-color: #ffe135;
+	-fx-text-fill: #111111;
+	-fx-font-size: 28px;
+	-fx-font-family: "Noto Sans CJK KR Bold";
+}
+
 
 /*테이블 헤더 컬럼 -> text */
 .base-contents .table-view .column-header .label {
@@ -121,6 +187,10 @@
    -fx-alignment: CENTER;
 }
 
+.right-column  {
+	-fx-padding: 0px 6px 0px 0px;
+	-fx-alignment: CENTER-RIGHT;
+}
 
 /*세로 스크롤 - 공통
 .table-view *.scroll-bar:vertical *.increment-button,
@@ -218,17 +288,15 @@
 	-fx-background-color: #ffffff;
 }
 
-
 /*테이블 접속자 정보 */
-.base-contents .connection-user .table-view{
+.base-right-contents .connection-user .table-view{
 	-fx-background-color: transparent;
-	-fx-border-width: 0px 1px 1px 0px;
-	-fx-font-size: 12px;
-	-fx-border-color: #ccc;
+	-fx-border-width:0px 0px 1px 0px;
+	-fx-border-color: #cccccc;
 	-fx-padding:0;
 }
 /*테이블 접속자 정보 */
-.base-contents .connection-user .table-view .column-header{
+.base-right-contents .connection-user .table-view .column-header{
 	-fx-padding:0px;
 	-fx-max-height: 0;
 	-fx-pref-height: 0;
@@ -236,89 +304,66 @@
 	-fx-min-height: 0;
 }
 /*테이블 접속자 정보 */
-.base-contents .connection-user .table-view .column-header-background {
+.base-right-contents .connection-user .table-view .column-header-background {
 	-fx-max-height: 0;
 	-fx-pref-height: 0;
 	-fx-min-height: 0;
 }
 
 /*접속자 정보 테이블 셀 크기 */
-.connection-user .table-view .table-row-cell{
-	-fx-cell-size: 31.5px;
+.base-right-contents .connection-user .table-view .table-row-cell{
+	-fx-cell-size: 30px;
 	-fx-background-color: #ffffff;
-	-fx-border-width: 0px 0px 0px 0px;
+	-fx-border-width: 1px 1px 0px 1px;
 	-fx-border-color: #cccccc;
 }
 
-.connection-user .table-view .table-cell {
-  	-fx-font-size: 11px;
+.base-right-contents .connection-user .table-view .table-cell {
+  	-fx-font-size: 14px;
   	-fx-font-family: "Noto Sans CJK KR Regular";
-  	-fx-border-width:1px 0px 1px 1px;
 }
 
-.connection-user .table-view .table-cell:odd{
-	-fx-font-size: 11px;
+.base-right-contents .connection-user .table-view .table-cell:odd{
+	-fx-font-size: 14px;
 	-fx-font-family: "Noto Sans CJK KR Regular";
-	-fx-border-width:  0px 0px 0px 1px;
-}
-
-
-/*테이블 응찰자 정보 */
-.base-contents .bidding-user-info{
-	-fx-background-color: transparent;
-	-fx-padding:0;
-}
-
-.base-contents .bidding-user-info .table-view{
-	-fx-border-width: 0px 1px 1px 0px;
-	-fx-border-color: #cccccc;
-}
-
-/* 응찰자 정보 테이블 셀 크기 */
-.base-contents .bidding-user-info .table-row-cell{
-	-fx-cell-size: 45px;
-	-fx-background-color: #ffffff;
-	-fx-text-fill: #111111;
-	-fx-border-color: #cccccc;
-}
-
-/* 응찰자 정보 테이블 셀 셀렉트 */
-.base-contents .bidding-user-info .table-row-cell:selected {
-	-fx-cell-size: 54px;
-	-fx-background-color: #ffe135;
-	-fx-text-fill: #111111;
-	-fx-font-size: 20px;
-	-fx-font-weight: bold;
 }
 
 /*테이블 접속자 정보 */
-.base-contents .connection-user .table-view .column-header{
+.base-right-contents .connection-user .table-view .column-header{
 	-fx-padding:0px;
 	-fx-max-height: 0;
 	-fx-pref-height: 0;
 	-fx-min-height: 0;
 }
 
-/*
-.base-contents .bidding-user-info .table-view:disabled{
-	-fx-opacity: 1;
+/*테이블 응찰자 정보 
+.base-contents .bidding-user-info{
+	-fx-background-color: transparent;
+	-fx-padding:0;
 }
-.base-contents .bidding-user-info .table-view:disabled .table-row-cell{
-	-fx-cell-size: 45px;
-	-fx-background-color: red;
-	-fx-text-fill: #111111;
-	-fx-opacity: 1;
+
+.base-contents .bidding-user-info .table-view {
+	-fx-border-width: 0px 1px 1px 0px;
 	-fx-border-color: #cccccc;
 }
 
-.base-contents .bidding-user-info .table-view:disabled .table-row-cell:selected{
+/* 응찰자 정보 테이블 셀 크기
+.base-contents .bidding-user-info > .table-view .table-row-cell{
+	-fx-cell-size: 45px;
+	-fx-background-color: #ffffff;
+	-fx-text-fill: #111111;
+	-fx-border-color: #cccccc;
+}
+
+/* 응찰자 정보 테이블 셀 셀렉트 
+.base-contents .bidding-user-info > .table-view .table-row-cell:selected {
 	-fx-cell-size: 54px;
 	-fx-background-color: #ffe135;
 	-fx-text-fill: #111111;
 	-fx-font-size: 20px;
 	-fx-font-weight: bold;
-	-fx-opacity: 1;
-} */
+}
+*/
 
 /* 경매 진행 상태 라벨 */
 .label-status{
@@ -488,4 +533,42 @@
 	-fx-text-fill: #111111;
 	-fx-font-family: "Noto Sans CJK KR Regular";
 }
+
+
+/* 체크박스 */
+.check-box {
+    -fx-text-fill: #111;
+    -fx-font-size: 14px;
+    -fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+}
+
+.check-box .mark {
+    -fx-shape:"M14.596,2.055L12.455,0C9.687,2.884,6.011,6.714,5.158,7.602L2.055,4.624L0,6.765l5.242,5.037l0.003-0.004
+    l0.003,0.004L14.596,2.055z";
+    -fx-scale-x: 0.85;
+    -fx-scale-y: 0.85;
+    -fx-background-color: #cccccc;
+    
+}
+
+.check-box:selected .mark {
+   -fx-shape:"M14.596,2.055L12.455,0C9.687,2.884,6.011,6.714,5.158,7.602L2.055,4.624L0,6.765l5.242,5.037l0.003-0.004
+    l0.003,0.004L14.596,2.055z";
+	-fx-background-color: #008fff;
+}
+
+.check-box:selected .box {
+   -fx-border-color: #cccccc;
+}
+
+.check-box:pressed .box {
+    -fx-scale-y: 0.90;
+    -fx-scale-x: 0.90;
+}
+
 

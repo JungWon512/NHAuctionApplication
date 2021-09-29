@@ -56,46 +56,48 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 	public List<EntryInfo> getAllEntryData(AuctionRound auctionRound) {
 
 		List<EntryInfo> list;
+		
 		try (SqlSession session = DBSessionFactory.getSession()) {
+			//출품정보 조회
 			list = getDao().selectAllEntryInfo(auctionRound, session);
 		}
 
+		/**
+		 * 마지막 출품 여부
+		 * 계류대 번호 
+		 * 주소 => 2자로 자름.
+		 */
 		if (!list.isEmpty()) {
 
 			int standPosition = Integer.parseInt(SettingApplication.getInstance().getStandPosition());
 
-			// 마지막 출품정보 표기 (Y/N)
 			for (int i = 0; i < list.size(); i++) {
 				
+				//주소 자름.
 				String[] splitAddr = list.get(i).getRgnName().split("\\s+");
 				
 				if (splitAddr.length > 2) {
 
 					String tmpAddr = splitAddr[2].trim();
-
 					
 					if (tmpAddr.length() == 3) {
-
-						String subAddr = tmpAddr.substring(0, 2);
 						
+						String subAddr = tmpAddr.substring(0, 2);
+						//주소지 2자 
 						if (CommonUtils.getInstance().isValidString(subAddr)) {
 							list.get(i).setReRgnName(subAddr);
-						} else {
-							list.get(i).setReRgnName("");
-						}
-					}else {
-						list.get(i).setReRgnName("");
+						} 
 					}
-				}else {
-					list.get(i).setReRgnName("");
 				}
 
+				//마지막 출품 여부 Y or N
 				String flag = (i == list.size() - 1) ? "Y" : "N";
 
 				list.get(i).setIsLastEntry(flag);
 
+				//계류대 번호
 				if (standPosition > i) {
-					list.get(i).setStandPosition(list.get(i).getEntryNum());
+					list.get(i).setStandPosition(Integer.toString( i+1));
 					list.get(i).setIsExcessCow("N");
 				} else {
 					list.get(i).setIsExcessCow("Y");

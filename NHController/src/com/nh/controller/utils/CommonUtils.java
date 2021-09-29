@@ -354,7 +354,8 @@ public class CommonUtils {
 		mLoadingDialog.initStyle(StageStyle.UNDECORATED);
 		mLoadingDialog.setDialogPane(dialogPane);
 
-		dialogPane.setPrefWidth(340);
+		dialogPane.setPrefWidth(480);
+		dialogPane.setPrefHeight(320);
 
 		VBox vbox = new VBox();
 		vbox.setSpacing(15);
@@ -374,16 +375,16 @@ public class CommonUtils {
 		ImageView imageView = new ImageView();
 		imageView.preserveRatioProperty().set(true);
 		imageView.setPickOnBounds(true);
-		imageView.setFitWidth(80);
-		imageView.setFitHeight(80);
+		imageView.setFitWidth(120);
+		imageView.setFitHeight(120);
 		Image image = new Image("/com/nh/controller/resource/images/ic_logo.png");
 		imageView.setImage(image);
 
 		ImageView progressImageView = new ImageView();
 		progressImageView.preserveRatioProperty().set(true);
 		progressImageView.setPickOnBounds(true);
-		progressImageView.setFitWidth(40);
-		progressImageView.setFitHeight(40);
+		progressImageView.setFitWidth(55);
+		progressImageView.setFitHeight(55);
 		Image progressImage = new Image("/com/nh/controller/resource/images/ic_loading.gif");
 		progressImageView.setImage(progressImage);
 
@@ -672,6 +673,7 @@ public class CommonUtils {
 	 * @Description 팝업창 Layout 셋팅
 	 */
 	public Dialog<ButtonType> setAlertPopupStyle(Stage stage, String alertPopupType, String message, String leftButtonTitle, String rightButtonTitle) {
+		
 		Dialog<ButtonType> dialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane() {
 			@Override

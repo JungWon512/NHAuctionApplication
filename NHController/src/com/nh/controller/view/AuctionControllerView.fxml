@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRootPane" maxHeight="1024.0" maxWidth="1280.0" minHeight="1024.0" minWidth="1280.0" prefHeight="1024.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
+<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1280.0" minHeight="1024.0" minWidth="1280.0" prefHeight="1024.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
    <top>
       <GridPane maxHeight="71.0" minHeight="71.0" prefHeight="71.0" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -97,6 +97,7 @@
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
+                              <RowConstraints maxHeight="10.0" minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="ALWAYS" />
                               <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                            </rowConstraints>
                            <children>
@@ -114,7 +115,7 @@
                                     <CheckBox fx:id="mKpnCheckBox" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="KPN" userData="2" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
-                              <HBox prefHeight="80.0" prefWidth="200.0" spacing="6.0" styleClass="main-top-sound" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <HBox prefHeight="80.0" prefWidth="200.0" spacing="6.0" styleClass="main-top-sound" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
                                     <Button fx:id="mBtnIntroSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="경매전 인삿말" HBox.hgrow="ALWAYS">
                                        <font>
@@ -154,7 +155,7 @@
                                        </font></Button>
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="4.0" styleClass="main-top-setting" GridPane.columnIndex="3" GridPane.rowSpan="2">
+                              <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="4.0" styleClass="main-top-setting" GridPane.columnIndex="3" GridPane.rowSpan="2147483647">
                                  <children>
                                     <Button fx:id="mBtnSettingSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="음성설정" HBox.hgrow="ALWAYS">
                                        <font>
@@ -451,7 +452,7 @@
       </VBox>
    </center>
    <right>
-      <VBox minWidth="280.0" prefWidth="280.0" spacing="10.0" styleClass="base-contents" BorderPane.alignment="CENTER">
+      <VBox minWidth="280.0" prefWidth="280.0" spacing="10.0" styleClass="base-right-contents" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets right="10.0" />
          </BorderPane.margin>
@@ -493,7 +494,7 @@
                                     <Image url="@../resource/images/ic_con_off.png" />
                                  </image>
                               </ImageView>
-                              <Label text="표출">
+                              <Label text="출하">
                                  <font>
                                     <Font name="Noto Sans CJK KR Regular" size="15.0" />
                                  </font>
@@ -635,7 +636,7 @@
                   <Button fx:id="mBtnF6" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F6]강제낙찰" />
                   <Button fx:id="mBtnF8" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F8]환경설정" />
                   <Button fx:id="mBtnEnter" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[ENTER]경매시작" />
-                  <Button fx:id="mBtnSpace" alignment="CENTER" contentDisplay="CENTER" disable="true" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-bottom" text="[Space]음성경매시작" />
+                  <Button fx:id="mBtnSpace" alignment="CENTER" contentDisplay="CENTER" disable="true" maxWidth="180.0" minHeight="40.0" minWidth="180.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" styleClass="btn-bottom" text="[Space]음성경매시작" />
                   <Button fx:id="mBtnF7" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F7]강제유찰" visible="false" />
                </children>
                <padding>

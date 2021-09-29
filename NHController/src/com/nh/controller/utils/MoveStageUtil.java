@@ -28,7 +28,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import javafx.scene.input.KeyCombination;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
@@ -47,6 +47,9 @@ public class MoveStageUtil {
 	private static MoveStageUtil instance = null;
 	
 	private Dialog<Void> mDialog = null;
+	
+	private boolean isShowingAuctionStage = false;
+	
 	
 	public enum EntryDialogType{
 		ENTRY_LIST,
@@ -73,11 +76,10 @@ public class MoveStageUtil {
 		try {
 			
 			String fontFamily = "";
+			
 			fontFamily = Font.loadFont(getApplicationClass().getResource("/com/nh/controller/resource/fonts/NotoSansKR-Bold.otf").toString(), 16).getFamily();
 			 
 			System.out.println(fontFamily);
-
-			
 
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("LoginView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
@@ -90,6 +92,7 @@ public class MoveStageUtil {
 //			stage.setResizable(false);
 			stage.show();
 			centerOnScreen(stage);
+		
 			// show 후에 ..
 			controller.initConfiguration();
 
@@ -129,7 +132,11 @@ public class MoveStageUtil {
 			Scene scene = new Scene(parent);
 			stage.setScene(scene);
 			stage.show();
+			
 			centerOnScreen(stage);
+			
+			isShowingAuctionStage = false;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -153,6 +160,7 @@ public class MoveStageUtil {
 			Scene scene = new Scene(parent);
 			stage.setScene(scene);
 			stage.show();
+			
 			centerOnScreen(stage);
 			// show 후에 ..
 			controller.initConfiguration();
@@ -170,7 +178,7 @@ public class MoveStageUtil {
 	public synchronized void onConnectServer(Stage chooseAuctionStage, String ip, int port, String id) {
 
 		try {
-
+			isShowingAuctionStage = false;
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("AuctionControllerView.fxml"), getResourceBundle());
 			fxmlLoader.load();
 			AuctionController controller = fxmlLoader.getController();
@@ -191,6 +199,10 @@ public class MoveStageUtil {
 
 		try {
 
+			if(isShowingAuctionStage) {
+				return;
+			}
+			
 			loginStage.close();
 
 			AuctionController controller = fxmlLoader.getController();
@@ -201,6 +213,7 @@ public class MoveStageUtil {
 			Scene scene = new Scene(fxmlLoader.getRoot());
 			stage.setScene(scene);
 			stage.show();
+			isShowingAuctionStage = true;
 			// show 후에 ..
 			controller.initConfiguration(stage);
 			
@@ -579,6 +592,7 @@ public class MoveStageUtil {
 	 */
 	private void setWindowTitle(Stage stage, ResourceBundle resources) {
 		stage.setTitle(resources.getString("app.title"));
+		stage.getIcons().add(new Image(getApplicationClass().getResourceAsStream("resource/images/ic_logo.png")));
 	}
 	
 	/**

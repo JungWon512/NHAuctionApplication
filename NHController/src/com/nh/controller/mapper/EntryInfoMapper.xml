@@ -45,6 +45,7 @@
         <result property="mAuctionResult" column="SEL_STS_DSC"/>
         <result property="mAuctionSucBidder" column="LVST_AUC_PTC_MN_NO"/>
         <result property="mAuctionBidPrice" column="SRA_SBID_AM"/>
+        <result property="mAuctionBidDateTime" column="ATDR_DTM"/>
         <result property="mOslpNo" column="OSLP_NO"/>
         <result property="mTrmnAmnNo" column="TRMN_AMNNO"/>
         <result property="mLedSqno" column="LED_SQNO"/>
@@ -98,7 +99,18 @@
 		${alias}.SRA_PD_RGNNM,
 		${alias}.OSLP_NO,
 		${alias}.TRMN_AMNNO,
-		${alias}.LED_SQNO
+		${alias}.LED_SQNO,
+		(SELECT TOP 1 E.ATDR_DTM 
+			FROM TB_LA_IS_MH_ATDR_LOG E
+			WHERE E.NA_BZPLC = ${alias}.NA_BZPLC
+				AND E.AUC_OBJ_DSC = ${alias}.AUC_OBJ_DSC 
+				AND E.AUC_DT = ${alias}.AUC_DT
+				AND E.OSLP_NO = ${alias}.OSLP_NO
+				AND E.TRMN_AMNNO = ${alias}.TRMN_AMNNO
+				AND E.LVST_AUC_PTC_MN_NO = ${alias}.LVST_AUC_PTC_MN_NO
+				AND E.ATDR_AM = ${alias}.SRA_SBID_UPR
+		 ) AS ATDR_DTM
+		
 	</sql>
 		<!-- ${alias}.STAND_POSITION -->
 	<!-- tb_la_is_mm_fhs -->
