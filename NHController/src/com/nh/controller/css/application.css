@@ -80,7 +80,10 @@
 	-fx-light-grey-color: #008fff;
 	-fx-focus-color: -fx-secondary-color;
 }
-
+.date-picker .button{
+	-fx-font-size: 22px;
+	-fx-padding: 6px 10px 6px 10px;
+}
 .date-picker > .text-field {
 	-fx-font-family: "Noto Sans CJK KR Regular";
 	-fx-font-size: 22px;
