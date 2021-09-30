@@ -177,7 +177,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * setStage
-	 *
+	 * 
 	 * @param stage
 	 */
 	public void setStage(Stage stage) {
@@ -185,7 +185,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		Platform.runLater(() -> {
 			// 경매 데이터 set
-			requestAuctionInfo();
+//			requestAuctionInfo();
 			// 전광판 접속
 			Thread udpServer = new Thread("server") {
 				@Override
@@ -230,6 +230,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		// SoundUtil init.
 		SoundUtil.getInstance();
+		
+		Thread aucServer = new Thread("server") {
+			@Override
+			public void run() {
+				// 경매 데이터 set
+				requestAuctionInfo();
+			}
+		};
+		aucServer.setDaemon(true);
+		aucServer.start();
+		
 	}
 
 	/**
