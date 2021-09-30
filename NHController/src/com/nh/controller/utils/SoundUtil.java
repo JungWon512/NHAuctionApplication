@@ -111,10 +111,12 @@ public class SoundUtil {
      *                          }
      */
     public void initCertification(String googleServiceJson) {
+        // 유효성 검사.
         if (googleServiceJson == null || googleServiceJson.isEmpty()) {
             mTTSNowRunnable.setClient(null);
             mTTSDefineRunnable.setClient(null);
             SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, "");
+            return;
         }
         // 기존 인증값과 같고 TTS가 세팅 되어 있는 경우 패스.
         if (googleServiceJson.equals(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, "")) &&
