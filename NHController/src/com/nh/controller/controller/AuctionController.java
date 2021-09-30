@@ -43,8 +43,6 @@ import com.nh.controller.utils.SoundUtil;
 import com.nh.controller.utils.SoundUtil.LocalSoundDefineRunnable;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
-import com.nh.share.common.models.Bidding;
-import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.models.EditSetting;
@@ -243,8 +241,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 
-//		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
-//		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
+		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
 		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단 숨김.
 		// mBtnF7.setOnMouseClicked(event -> -());
@@ -262,70 +260,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		mBtnReStart.setOnMouseClicked(event -> onReStart());
 		mBtnPause.setOnMouseClicked(event -> checkAndOnPause());
-		
-		mBtnSettingSound.setOnMouseClicked(event -> test());
-		mBtnStopSound.setOnMouseClicked(event -> test2());
-		
+	
 	}	
-	
-	private int testIndex = 0;
-	private int testIndex2 = 0;
-	
-	private void test() {
-		
-		testIndex++;
-		
-		Bidding bidding = new Bidding();
-		
-		bidding.setAuctionHouseCode(GlobalDefine.AUCTION_INFO.auctionRoundData.getAuctionHouseCode());
-		bidding.setAuctionJoinNum("7");
-		bidding.setEntryNum("1");
-		bidding.setUserNo("7");
-		bidding.setBiddingTime("2021092612341278" + testIndex);
-		bidding.setPrice("40" + testIndex);
-		bidding.setCancelBidding(false);
-		bidding.setIsNewBid("N");
-		bidding.setChannel("ADMIN");
-		
-		
-		onBidding(bidding);
-	}
-
-
-	private void canTEst() {
-		
-		CancelBidding bidding = new CancelBidding();
-		
-		bidding.setAuctionHouseCode(GlobalDefine.AUCTION_INFO.auctionRoundData.getAuctionHouseCode());
-		bidding.setAuctionJoinNum("7");
-		bidding.setEntryNum("1");
-		bidding.setUserNo("7");
-		bidding.setCancelBiddingTime("2021092612341278" + testIndex);
-		bidding.setChannel("ADMIN");
-		
-		
-		onCancelBidding(bidding);
-	}
-	private void test2() {
-		
-		testIndex2++;
-		
-		Bidding bidding = new Bidding();
-		
-		bidding.setAuctionHouseCode(GlobalDefine.AUCTION_INFO.auctionRoundData.getAuctionHouseCode());
-		bidding.setAuctionJoinNum("9");
-		bidding.setUserNo("9");
-		bidding.setEntryNum("1");
-		bidding.setBiddingTime("2021092612341278" + testIndex2);
-		bidding.setPrice("40" + testIndex2);
-		bidding.setCancelBidding(false);
-		bidding.setIsNewBid("N");
-		bidding.setChannel("ADMIN");
-		
-		
-		onBidding(bidding);
-	}
-	
 	
 	/**
 	 * 테이블뷰 관련
