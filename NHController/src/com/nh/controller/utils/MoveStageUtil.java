@@ -74,13 +74,6 @@ public class MoveStageUtil {
 	public synchronized void moveLoginStage(Stage stage) {
 
 		try {
-			
-			String fontFamily = "";
-			
-			fontFamily = Font.loadFont(getApplicationClass().getResource("/com/nh/controller/resource/fonts/NotoSansKR-Bold.otf").toString(), 16).getFamily();
-			 
-			System.out.println(fontFamily);
-
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("LoginView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
 			LoginController controller = fxmlLoader.getController();
