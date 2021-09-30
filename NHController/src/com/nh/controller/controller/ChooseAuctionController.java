@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.model.AuctionRound;
+import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.service.AuctionRoundMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.setting.SettingApplication;
@@ -20,7 +21,9 @@ import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
 import com.sun.jdi.IntegerType;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,6 +36,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 /**
@@ -173,37 +177,53 @@ public class ChooseAuctionController implements Initializable {
 			return;
 		}
 
-		boolean isAuctionData = requestAuctionRound();
+		
+		PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
+		pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
 
-		if (isAuctionData) {
+				boolean isAuctionData = requestAuctionRound();
 
-			new Thread() {
-				public void run() {
-					try {
-						
-						if (!isTest) {
-							MoveStageUtil.getInstance().onConnectServer(mStage, GlobalDefine.AUCTION_INFO.AUCTION_HOST, GlobalDefine.AUCTION_INFO.AUCTION_PORT, GlobalDefine.ADMIN_INFO.adminData.getUserId());
-						} else {
-							if (CommonUtils.getInstance().isValidString(mTestIp.getText()) && CommonUtils.getInstance().isValidString(mTestPort.getText())) {
-								MoveStageUtil.getInstance().onConnectServer(mStage, mTestIp.getText().toString(), Integer.parseInt(mTestPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId());
-							} else {
-								CommonUtils.getInstance().showAlertPopupOneButton(mStage, "IP 또는 PORT 정보를 입력해주세요.", mResMsg.getString("popup.btn.ok"));
-								CommonUtils.getInstance().dismissLoadingDialog();
+				if (isAuctionData) {
+
+					new Thread() {
+						public void run() {
+							try {
+								
+								if (!isTest) {
+									MoveStageUtil.getInstance().onConnectServer(mStage, GlobalDefine.AUCTION_INFO.AUCTION_HOST, GlobalDefine.AUCTION_INFO.AUCTION_PORT, GlobalDefine.ADMIN_INFO.adminData.getUserId());
+								} else {
+									if (CommonUtils.getInstance().isValidString(mTestIp.getText()) && CommonUtils.getInstance().isValidString(mTestPort.getText())) {
+										MoveStageUtil.getInstance().onConnectServer(mStage, mTestIp.getText().toString(), Integer.parseInt(mTestPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId());
+									} else {
+										CommonUtils.getInstance().showAlertPopupOneButton(mStage, "IP 또는 PORT 정보를 입력해주세요.", mResMsg.getString("popup.btn.ok"));
+										CommonUtils.getInstance().dismissLoadingDialog();
+									}
+								}
+								
+							} catch (Exception e) {
+								e.printStackTrace();
+								Platform.runLater(() -> {
+									CommonUtils.getInstance().dismissLoadingDialog();
+									CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("msg.connection.fail"), mResMsg.getString("popup.btn.ok"));
+									
+								});
 							}
 						}
-						
-					} catch (Exception e) {
-						e.printStackTrace();
-						CommonUtils.getInstance().dismissLoadingDialog();
-					}
-				}
-			}.start();
+					}.start();
 
-		} else {
-			CommonUtils.getInstance().dismissLoadingDialog();
-			// 경매 데이터 없습니다. 팝업
-			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"), mResMsg.getString("popup.btn.ok"));
-		}
+				} else {
+					Platform.runLater(() -> {
+					CommonUtils.getInstance().dismissLoadingDialog();
+					// 경매 데이터 없습니다. 팝업
+					CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"), mResMsg.getString("popup.btn.ok"));
+					});
+				}
+				
+			}
+		});
+		pauseTransition.play();
 
 	}
 

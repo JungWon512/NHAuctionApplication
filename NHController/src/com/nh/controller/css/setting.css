@@ -165,3 +165,10 @@
 	-fx-border-color: #cccccc;
 	-fx-font-family: "Noto Sans CJK KR Regular";
 }
+
+.text-area .content  {
+   -fx-background-color: #ffffff;
+     -fx-background-radius: 0px;
+      -fx-background-insets: 0;
+}
+

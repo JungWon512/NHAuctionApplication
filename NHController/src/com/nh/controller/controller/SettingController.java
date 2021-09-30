@@ -34,6 +34,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -116,6 +117,9 @@ public class SettingController implements Initializable {
 
 	@FXML // 계류대 번호
 	private TextField mStandPositionTextField;
+	
+	@FXML
+	private TextArea mSoundValTextArea;
 
 	private final static String[] SHARED_MOBILE_ARRAY = new String[] { SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT,
 			SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, SharedPreference.PREFERENCE_SETTING_MOBILE_REGION,
@@ -202,7 +206,7 @@ public class SettingController implements Initializable {
 		getCountTextField();
 		getTextFields();
 		initKeyConfig();
-		addReAuctionCountTextFieldListener();
+		addTextFieldListener();
 		mBtnSave.setOnMouseClicked(event -> saveSettings());
 	}
 
@@ -269,41 +273,71 @@ public class SettingController implements Initializable {
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PDP_SUCBIDDER, mPdpSucBidderTextField.getText().trim());
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PDP_MATIME, mPdpMaTimeTextField.getText().trim());
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PDP_DNA, mPdpDNATextField.getText().trim());
-		// 상한가/하한가
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mUpperLimitCalfTextField.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, mUpperLimitFatteningCattleTextField.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, mUpperLimitBreedingCattleTextField.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, mLowerLimitCalfTextField.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, mLowerLimitFatteningCattleTextField.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, mLowerLimitBreedingCattleTextField.getText().trim());
+	
+		// 상한가,하한가
+		if(CommonUtils.getInstance().isValidString(mUpperLimitCalfTextField.getText().trim())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mUpperLimitCalfTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CALF_TEXT);
+		}
+		
+		if(CommonUtils.getInstance().isValidString(mUpperLimitFatteningCattleTextField.getText().trim())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mUpperLimitFatteningCattleTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_FATTENING_TEXT);
+		}
+		
+		if(CommonUtils.getInstance().isValidString(mUpperLimitBreedingCattleTextField.getText().trim())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mUpperLimitBreedingCattleTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_BREEDING_TEXT);
+		}
+		
+		if(CommonUtils.getInstance().isValidString(mLowerLimitCalfTextField.getText().trim())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mLowerLimitCalfTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT);
+		}
+		
+		if(CommonUtils.getInstance().isValidString(mLowerLimitFatteningCattleTextField.getText().trim())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mLowerLimitFatteningCattleTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_FATTENING_TEXT);
+		}
+		
+		if(CommonUtils.getInstance().isValidString(mLowerLimitBreedingCattleTextField.getText().trim())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mLowerLimitBreedingCattleTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_BREEDING_TEXT);
+		}
+		
 		// 동가재경매 횟수
-
 		String reAuctionCount = mReAuctionCountTextField.getText().trim();
 
 		if (reAuctionCount == null || reAuctionCount.equals("0") || reAuctionCount.isEmpty()) {
-			// default - 임의 정의
-			reAuctionCount = "1";
+			reAuctionCount = SettingApplication.getInstance().DEFAULT_SETTING_RE_AUCTION_COUNT;
 		}
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, reAuctionCount);
 
+		// 대기시간
 		String soundAuctionWaitTime = mSoundAuctionWaitTime.getText().trim();
 
 		if (soundAuctionWaitTime == null || soundAuctionWaitTime.equals("0") || soundAuctionWaitTime.isEmpty()) {
-			// default - 임의 정의
-			soundAuctionWaitTime = "3";
+			soundAuctionWaitTime = SettingApplication.getInstance().DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME;
 		}
-
 		// 음성경매 대기 시간
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, soundAuctionWaitTime);
 
 		if (mStandPositionTextField.getText() == null || !CommonUtils.getInstance().isValidString(mStandPositionTextField.getText().trim())) {
 			// 계류대 번호
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, "1");
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, SettingApplication.getInstance().DEFAULT_SETTING_STAND_POSITION);
 		} else {
 			// 계류대 번호
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, mStandPositionTextField.getText().trim());
 		}
-
+		
+		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, mSoundValTextArea.getText());
+	
 	}
 
 	/**
@@ -359,18 +393,21 @@ public class SettingController implements Initializable {
 		mPdpMaTimeTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PDP_MATIME, ""));
 		mPdpDNATextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PDP_DNA, ""));
 		// 상한가/하한가
-		mUpperLimitCalfTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, ""));
-		mUpperLimitFatteningCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, ""));
-		mUpperLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, ""));
-		mLowerLimitCalfTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, ""));
-		mLowerLimitFatteningCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, ""));
-		mLowerLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, ""));
+		mUpperLimitCalfTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CALF_TEXT));
+		mUpperLimitFatteningCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_FATTENING_TEXT));
+		mUpperLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_BREEDING_TEXT));
+		mLowerLimitCalfTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT));
+		mLowerLimitFatteningCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_FATTENING_TEXT));
+		mLowerLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_BREEDING_TEXT));
 		// 동가재경매 횟수
-		mReAuctionCountTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, "1"));
+		mReAuctionCountTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, SettingApplication.getInstance().DEFAULT_SETTING_RE_AUCTION_COUNT));
 		// 대기시간
-		mSoundAuctionWaitTime.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, "1"));
-
+		mSoundAuctionWaitTime.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME));
+		// 계류대 번호
 		mStandPositionTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, SettingApplication.getInstance().DEFAULT_SETTING_STAND_POSITION));
+		//음성 설정 파일
+		mSoundValTextArea.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, ""));
+	
 	}
 
 	/**
@@ -637,9 +674,10 @@ public class SettingController implements Initializable {
 	}
 
 	/**
-	 * 동가 재경매 횟수 1자릿수로 고정
+	 * valid listener
 	 */
-	private void addReAuctionCountTextFieldListener() {
+	private void addTextFieldListener() {
+		
 		mReAuctionCountTextField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
@@ -658,6 +696,164 @@ public class SettingController implements Initializable {
 				}
 			}
 		});
+		
+		mCountTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+				
+					String tmpStr = newValue;
+					String max = SettingApplication.getInstance().DEFAULT_SETTING_COUNTDOWN_MAX;
+		
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else 	if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_COUNTDOWN;
+					}
+						
+					mCountTextField.setText(tmpStr);		
+				}
+
+			}
+		});
+
+		mSoundAuctionWaitTime.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+					
+					String tmpStr = newValue;
+					String max = SettingApplication.getInstance().DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME_MAX;
+					
+					
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME;
+					}
+					mSoundAuctionWaitTime.setText(tmpStr);	
+				}
+			}
+		});
+		
+		mUpperLimitCalfTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+					
+					String tmpStr = newValue;
+					String max = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX;
+
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CALF_TEXT;
+					}
+					mUpperLimitCalfTextField.setText(tmpStr);	
+				}
+			}
+		});
+		
+		mUpperLimitFatteningCattleTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+					
+					String tmpStr = newValue;
+					String max = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX;
+
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_FATTENING_TEXT;
+					}
+					mUpperLimitFatteningCattleTextField.setText(tmpStr);	
+				}
+			}
+		});
+		
+		mUpperLimitBreedingCattleTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+					
+					String tmpStr = newValue;
+					String max = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX;
+
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_BREEDING_TEXT;
+					}
+					mUpperLimitBreedingCattleTextField.setText(tmpStr);	
+				}
+			}
+		});
+	
+		mLowerLimitCalfTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+					
+					String tmpStr = newValue;
+					String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
+
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT;
+					}
+					mLowerLimitCalfTextField.setText(tmpStr);	
+				}
+			}
+		});
+		
+		mLowerLimitFatteningCattleTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+					
+					String tmpStr = newValue;
+					String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
+
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_FATTENING_TEXT;
+					}
+					mLowerLimitFatteningCattleTextField.setText(tmpStr);	
+				}
+			}
+		});
+		
+		mLowerLimitBreedingCattleTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+					
+					String tmpStr = newValue;
+					String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
+
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_BREEDING_TEXT;
+					}
+					mLowerLimitBreedingCattleTextField.setText(tmpStr);	
+				}
+			}
+		});
+		
+		
+		
 	}
 
 	/**
@@ -782,6 +978,19 @@ public class SettingController implements Initializable {
 			showAlertCountDown();
 			return false;
 		}
+		
+		// 대기시간 설정 1 ~ 50 초
+		if (!mSoundAuctionWaitTime.getText().equals("") || !mSoundAuctionWaitTime.getText().isEmpty()) {
+			int second = Integer.parseInt(mSoundAuctionWaitTime.getText());
+			if (second < 1 || second > 50) {
+				showAlert(mResMsg.getString("dialog.setting.aucwaittime.validation.fail"));
+				return false;
+			}
+		} else {
+			showAlert(mResMsg.getString("dialog.setting.aucwaittime.validation.fail"));
+			return false;
+		}
+		
 		return true;
 	}
 
@@ -796,6 +1005,11 @@ public class SettingController implements Initializable {
 	private void showAlertCountDown() {
 		CommonUtils.getInstance().showAlertPopupOneButton(MoveStageUtil.getInstance().getDialog(), mResMsg.getString("dialog.setting.countdown.validation.fail"), mResMsg.getString("popup.btn.close"));
 	}
+	
+	private void showAlert(String msg) {
+		CommonUtils.getInstance().showAlertPopupOneButton(MoveStageUtil.getInstance().getDialog(), msg, mResMsg.getString("popup.btn.close"));
+	}
+	
 
 	private void showAlertSuccess() {
 

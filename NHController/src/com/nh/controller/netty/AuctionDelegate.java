@@ -196,11 +196,12 @@ public class AuctionDelegate {
      */
     public String sendMessage(NettySendable object) {
 
-        if (!isEmptyClient()) {
+        if (!isEmptyClient() && isActive()) {
             mClient.sendMessage(object.getEncodedMessage());
+            return object.getEncodedMessage();
         }
 
-        return object.getEncodedMessage();
+        return "[전송실패]" + object.getEncodedMessage();
     }
 
     // =======================================================================================================

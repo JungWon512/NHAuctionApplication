@@ -81,11 +81,13 @@ public class SettingApplication {
 	public final String DEFAULT_PDP_DNA = "1";
 
 	// 응찰 상한가 기본값
+	public final String DEFAULT_SETTING_UPPER_CFB_MAX = "99999999";
 	public final String DEFAULT_SETTING_UPPER_CALF_TEXT = "1500000";
 	public final String DEFAULT_SETTING_UPPER_FATTENING_TEXT = "5000";
 	public final String DEFAULT_SETTING_UPPER_BREEDING_TEXT = "2500000";
 
 	// 하한가 낮추기 기본값
+	public final String DEFAULT_SETTING_LOWER_CALF_TEXT_MAX = "10000000";
 	public final String DEFAULT_SETTING_LOWER_CALF_TEXT = "100000";
 	public final String DEFAULT_SETTING_LOWER_FATTENING_TEXT = "200";
 	public final String DEFAULT_SETTING_LOWER_BREEDING_TEXT = "100000";
@@ -95,7 +97,8 @@ public class SettingApplication {
 	// 비고 사용 기본값
 	public final boolean DEFAULT_SETTING_NOTE = false;
 	// 카운트 기본값
-	public final String DEFAULT_SETTING_COUNTDOWN = "3";
+	public final String DEFAULT_SETTING_COUNTDOWN = "1";
+	public final String DEFAULT_SETTING_COUNTDOWN_MAX = "9";
 	// 동가 재경매 횟수
 	public final String DEFAULT_SETTING_RE_AUCTION_COUNT = "3";
 	// 동가 재경매 기본값
@@ -105,7 +108,8 @@ public class SettingApplication {
 	// 음성경부여부 (음성경매) 기본값
 	public final boolean DEFAULT_SETTING_USE_SOUND_AUCTION = true;
 	// 대기시간 기본값
-	public final String DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME = "1";
+	public final String DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME_MAX = "50";
+	public final String DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME = "3";
 	
 	// 모바일 표출 기본값
 	public final String DEFAULT_SETTING_MOBILE_ENTRYNUM= "Y";

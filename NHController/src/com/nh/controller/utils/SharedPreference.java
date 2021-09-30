@@ -138,6 +138,8 @@ public class SharedPreference {
 	//계류대 번호
 	public static final String PREFERENCE_SETTING_STAND_POSITION = "PREFERENCE_SETTING_MOORING_SQ";
 	
+	public static final String PREFERENCE_SETTING_SOUND_CONFIG = "PREFERENCE_SETTING_SOUND_CONFIG";
+	
 	// --- 메인 출품 정보 음성 설정 체크박스
 	public static final String PREFERENCE_MAIN_SOUND_ENTRY_NUMBER = "PREFERENCE_MAIN_SOUND_ENTRY_NUMBER";
 	public static final String PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR = "PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR";

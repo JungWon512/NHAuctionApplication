@@ -1,12 +1,13 @@
 package com.nh.controller.controller;
 
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.json.Json;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.SharedPreference;
@@ -20,11 +21,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * 메세지 전송 팝업 Controller
