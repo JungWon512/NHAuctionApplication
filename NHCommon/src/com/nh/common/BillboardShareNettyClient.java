@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.common.handlers.UdpClientInboundHandler;
 import com.nh.common.interfaces.NettyClientShutDownListener;
-import com.nh.common.interfaces.UdpStatusListener;
+import com.nh.common.interfaces.UdpBillBoardStatusListener;
+import com.nh.common.interfaces.ExceptionListener;
 import com.nh.share.code.GlobalDefineCode;
 
 import io.netty.bootstrap.Bootstrap;
@@ -39,11 +40,11 @@ public class BillboardShareNettyClient {
 
 	private BillboardShareNettyClient(Builder builder) {
 		this.port = builder.port;
-		createNettyClient(builder.host, builder.port);
+		createNettyClient(builder.host, builder.port,builder.udpBillBoardStatusListener);
 	}
 	
 
-	private void createNettyClient(String host, int port) {
+	private void createNettyClient(String host, int port,UdpBillBoardStatusListener listener) {
 		group = new NioEventLoopGroup();
 		try {
 			Bootstrap b = new Bootstrap();
@@ -52,13 +53,16 @@ public class BillboardShareNettyClient {
 						@Override
 						public void initChannel(NioDatagramChannel ch) {
 							ChannelPipeline pipeline = ch.pipeline();
-							pipeline.addLast(new UdpClientInboundHandler(udpStatusListener));
+							pipeline.addLast(new UdpClientInboundHandler(listener,mExceptionListener));
 							pipeline.addLast(new DatagramPacketEncoder<>(new StringEncoder(CharsetUtil.UTF_8)));
 						}
 					});
 			channel = b.connect(host, port).sync().channel();
 			
 		} catch (Exception e) {
+			if(listener != null) {
+				listener.exceptionCaught();
+			}
 			e.printStackTrace();
 			stopClient();
 		}
@@ -141,10 +145,12 @@ public class BillboardShareNettyClient {
 	public static class Builder {
 		private final String host;
 		private final int port;
+		private UdpBillBoardStatusListener udpBillBoardStatusListener;
 
-		public Builder(String host, String port) {
+		public Builder(String host, String port,UdpBillBoardStatusListener listener) {
 			this.host = host;
 			this.port = Integer.parseInt(port);
+			this.udpBillBoardStatusListener = listener;
 		}
 
 		public BillboardShareNettyClient buildAndRun() {
@@ -152,7 +158,7 @@ public class BillboardShareNettyClient {
 		}
 	}
 
-	public UdpStatusListener udpStatusListener = new UdpStatusListener() {
+	public ExceptionListener mExceptionListener = new ExceptionListener() {
 		@Override
 		public void exceptionCaught() {
 			mLogger.info("[UDP] BillboardShareNettyClient exceptionCaught");

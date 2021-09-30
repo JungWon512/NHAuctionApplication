@@ -7,9 +7,10 @@ import java.nio.charset.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.nh.common.handlers.UdpClientInboundHandler;
+import com.nh.common.handlers.UdpPdpClientInboundHandler;
 import com.nh.common.interfaces.NettyClientShutDownListener;
-import com.nh.common.interfaces.UdpStatusListener;
+import com.nh.common.interfaces.UdpPdpBoardStatusListener;
+import com.nh.common.interfaces.ExceptionListener;
 import com.nh.share.code.GlobalDefineCode;
 
 import io.netty.bootstrap.Bootstrap;
@@ -39,10 +40,10 @@ public class PdpShareNettyClient {
 
 	private PdpShareNettyClient(Builder builder) {
 		this.port = builder.port;
-		createNettyClient(builder.host, builder.port);
+		createNettyClient(builder.host, builder.port, builder.udpPdpBoardStatusListener);
 	}
 
-	private void createNettyClient(String host, int port) {
+	private void createNettyClient(String host, int port , UdpPdpBoardStatusListener listener) {
 		group = new NioEventLoopGroup();
 		try {
 			Bootstrap b = new Bootstrap();
@@ -51,12 +52,15 @@ public class PdpShareNettyClient {
 						@Override
 						public void initChannel(NioDatagramChannel ch) {
 							ChannelPipeline pipeline = ch.pipeline();
-							pipeline.addLast(new UdpClientInboundHandler(udpStatusListener));
+							pipeline.addLast(new UdpPdpClientInboundHandler(listener,mExceptionListener));
 							pipeline.addLast(new DatagramPacketEncoder<>(new StringEncoder(CharsetUtil.UTF_8)));
 						}
 					});
 			channel = b.connect(host, port).sync().channel();
 		} catch (Exception e) {
+			if(listener != null) {
+				listener.exceptionCaught();
+			}
 			e.printStackTrace();
 			stopClient();
 		}
@@ -74,7 +78,6 @@ public class PdpShareNettyClient {
 		} catch (Exception e) {
 			stopClient();
 		}
-		
 		
 	}
 
@@ -141,10 +144,12 @@ public class PdpShareNettyClient {
 	public static class Builder {
 		private final String host;
 		private final int port;
+		private UdpPdpBoardStatusListener udpPdpBoardStatusListener;
 
-		public Builder(String host, String port) {
+		public Builder(String host, String port,UdpPdpBoardStatusListener listener) {
 			this.host = host;
 			this.port = Integer.parseInt(port);
+			this.udpPdpBoardStatusListener = listener;
 		}
 
 		public PdpShareNettyClient buildAndRun() {
@@ -152,7 +157,7 @@ public class PdpShareNettyClient {
 		}
 	}
 	
-	public UdpStatusListener udpStatusListener = new UdpStatusListener() {
+	public ExceptionListener mExceptionListener = new ExceptionListener() {
 		@Override
 		public void exceptionCaught() {
 			mLogger.info("[UDP] BillboardShareNettyClient exceptionCaught");

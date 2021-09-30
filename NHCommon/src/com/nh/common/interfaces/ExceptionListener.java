@@ -5,7 +5,7 @@ package com.nh.common.interfaces;
  * @author jhlee
  *
  */
-public interface UdpStatusListener {
+public interface ExceptionListener {
 
     public void exceptionCaught(); //연결 끊어졌을경우
 

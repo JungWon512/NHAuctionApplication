@@ -5,25 +5,25 @@ import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.common.interfaces.UdpPdpBoardStatusListener;
 import com.nh.common.interfaces.ExceptionListener;
-import com.nh.common.interfaces.UdpBillBoardStatusListener;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 
-public class UdpClientInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
-    private static final Logger mLogger = LoggerFactory.getLogger(UdpClientInboundHandler.class);
-    private final UdpBillBoardStatusListener mUdpStatusListener;
+public class UdpPdpClientInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+
+    private static final Logger mLogger = LoggerFactory.getLogger(UdpPdpClientInboundHandler.class);
+    private final UdpPdpBoardStatusListener mUdpStatusListener;
     private ExceptionListener mExceptionListener;
-    
 
-    public UdpClientInboundHandler() {
+    public UdpPdpClientInboundHandler() {
 		this.mUdpStatusListener = null;
     }
     
-    public UdpClientInboundHandler(UdpBillBoardStatusListener listener , ExceptionListener exceptionListener) {
+    public UdpPdpClientInboundHandler(UdpPdpBoardStatusListener listener,ExceptionListener exceptionListener) {
         this.mUdpStatusListener = listener;
         this.mExceptionListener = exceptionListener;
     }
@@ -38,7 +38,7 @@ public class UdpClientInboundHandler extends SimpleChannelInboundHandler<Datagra
         if(mUdpStatusListener != null) {
           	mUdpStatusListener.onActive();
           }else {
-        	  System.out.println("[전광판 Billboard listener] mUdpStatusListener is null");
+        	  System.out.println("[전광판 PDP listener] mUdpStatusListener is null");
           }
         mLogger.info("[UDP] " + ((InetSocketAddress) ctx.channel().remoteAddress()).getPort() + "번 포트 채널이 Active 되었습니다.");
     }
@@ -49,8 +49,8 @@ public class UdpClientInboundHandler extends SimpleChannelInboundHandler<Datagra
           	mUdpStatusListener.onInActive();
           }
     	  if(mExceptionListener != null) {
-            	mExceptionListener.exceptionCaught();
-            }
+          	mExceptionListener.exceptionCaught();
+          }
         InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
         mLogger.info("[UDP] " + ((InetSocketAddress) ctx.channel().remoteAddress()).getPort() + "번 포트 채널이 Inactive 되었습니다.");
         super.channelInactive(ctx);
@@ -60,14 +60,15 @@ public class UdpClientInboundHandler extends SimpleChannelInboundHandler<Datagra
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 
         mLogger.info("[UDP exceptionCaught] " + ((InetSocketAddress) ctx.channel().remoteAddress()).getPort() + "번 포트 채널 exceptionCaught");
-        
+
         InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
         if(mUdpStatusListener != null) {
         	mUdpStatusListener.exceptionCaught();
         }
+        
         if(mExceptionListener != null) {
-          	mExceptionListener.exceptionCaught();
-          }
+        	mExceptionListener.exceptionCaught();
+        }
         cause.printStackTrace();
         super.exceptionCaught(ctx, cause);
     }
