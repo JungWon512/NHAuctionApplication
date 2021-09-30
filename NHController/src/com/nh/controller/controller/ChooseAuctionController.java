@@ -250,6 +250,7 @@ public class ChooseAuctionController implements Initializable {
 		}
 
 		mLogger.debug("[경매 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
+		
 		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
 		auctionRound.setNaBzplc(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
 
@@ -315,7 +316,7 @@ public class ChooseAuctionController implements Initializable {
 					}
 				}
 			}
-		});
+		},null,null);
 	}
 
 	/**

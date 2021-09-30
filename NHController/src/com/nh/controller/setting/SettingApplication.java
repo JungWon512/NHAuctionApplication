@@ -327,6 +327,8 @@ public class SettingApplication {
 	 * 저장된 설정 데이터 가져옴.
 	 */
 	public void initSharedData() {
+		
+		mLogger.debug("환경설정값들 init");
 
 		upperLimitCalf = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, DEFAULT_SETTING_UPPER_CALF_TEXT);
 		upperLimitFatteningCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, DEFAULT_SETTING_UPPER_FATTENING_TEXT);

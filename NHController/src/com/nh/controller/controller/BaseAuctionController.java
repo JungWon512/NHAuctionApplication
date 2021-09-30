@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.common.interfaces.NettyControllable;
+import com.nh.common.interfaces.UdpBillBoardStatusListener;
+import com.nh.common.interfaces.UdpPdpBoardStatusListener;
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.BillboardData;
 import com.nh.controller.model.PdpData;
@@ -67,7 +69,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
@@ -152,18 +153,24 @@ public abstract class BaseAuctionController implements NettyControllable {
 	 */
 	protected void createClient(String host, int port, String userMemNum, String watchMode) {
 		AuctionDelegate.getInstance().createClients(host, port, userMemNum, watchMode, this);
+	}
+	
+	/**
+	 * 전광판, PDP 서버 접속
+	 * @param udpBillBoardStatusListener
+	 * @param udpPdpBoardStatusListener
+	 */
+	protected void createUdpClient(UdpBillBoardStatusListener udpBillBoardStatusListener, UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
 
 		try {
-
 			// UDP 전광판
 			if (SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, "") != null && !SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, "").isEmpty()) {
-				BillboardDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""));
+				BillboardDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""),udpBillBoardStatusListener);
 
 				if (BillboardDelegate.getInstance().isActive()) {
 					// 전광판 자릿수 셋팅
 					addLogItem(mResMsg.getString("msg.billboard.send.init.info") + BillboardDelegate.getInstance().initBillboard());
 				}
-
 				mLogger.debug("Billboard connection ip : " + SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""));
 				mLogger.debug("Billboard connection port : " + SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""));
 				mLogger.debug("Billboard connection status : " + BillboardDelegate.getInstance().isActive());
@@ -171,7 +178,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 			// UDP PDP
 			if (SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, "") != null && !SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, "").isEmpty()) {
-				PdpDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, ""));
+				PdpDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, ""),udpPdpBoardStatusListener);
 
 				if (PdpDelegate.getInstance().isActive()) {
 					// PDP 자릿수 셋팅
@@ -191,7 +198,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onActiveChannel(Channel channel) {
 		mLogger.debug("onActiveChannel");
-		updateDisplayBoardStatusUI();
 		// 제어프로그램 접속
 		addLogItem(mResMsg.getString("msg.auction.send.connection.info") + AuctionDelegate.getInstance().onSendConnectionInfo());
 	}
@@ -237,7 +243,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 					billboardData.setbPasgQcn(String.valueOf(mCurrentSpEntryInfo.getPasgQcn().getValue()));
 					billboardData.setbMatime(String.valueOf(mCurrentSpEntryInfo.getMatime().getValue()));
 					billboardData.setbKpn(String.valueOf(mCurrentSpEntryInfo.getKpn().getValue()));
-					billboardData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getRgnName().getValue()));
+					billboardData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getReRgnName().getValue()));
 					billboardData.setbNote(String.valueOf(mCurrentSpEntryInfo.getNote().getValue()));
 					billboardData.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
 					billboardData.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));
@@ -259,7 +265,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 					pdpData.setbPasgQcn(String.valueOf(mCurrentSpEntryInfo.getPasgQcn().getValue()));
 					pdpData.setbMatime(String.valueOf(mCurrentSpEntryInfo.getMatime().getValue()));
 					pdpData.setbKpn(String.valueOf(mCurrentSpEntryInfo.getKpn().getValue()));
-					pdpData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getRgnName().getValue()));
+					pdpData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getReRgnName().getValue()));
 					pdpData.setbNote(String.valueOf(mCurrentSpEntryInfo.getNote().getValue()));
 					pdpData.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
 					pdpData.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));
@@ -296,8 +302,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 				insertFinishLog();
 				break;
 			}
-
-			updateDisplayBoardStatusUI();
 
 		} catch (Exception e) {
 			mLogger.debug("[onAuctionStatus Exception] " + e);
@@ -339,7 +343,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 				return;
 			}
 			// 응찰자 ,가격 체크.
-			if (!CommonUtils.getInstance().isValidString(bidding.getAuctionJoinNum()) || !CommonUtils.getInstance().isValidString(bidding.getEntryNum()) || !CommonUtils.getInstance().isValidString(bidding.getPrice())) {
+			if (!CommonUtils.getInstance().isValidString(bidding.getUserNo()) || !CommonUtils.getInstance().isValidString(bidding.getAuctionJoinNum()) || !CommonUtils.getInstance().isValidString(bidding.getEntryNum()) || !CommonUtils.getInstance().isValidString(bidding.getPrice())) {
 				addLogItem("출품번호/응찰자/가격 비정상입니다.");
 				return;
 			}
@@ -383,6 +387,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 		} catch (Exception e) {
 			System.out.println("[onBidding Exception] : " + e.toString());
+			mCalculationRankCallBack.failed(e, null); // Error
 		}
 
 	}
@@ -541,14 +546,11 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	@Override
 	public void onChannelInactive(int port) {
-		updateDisplayBoardStatusUI();
 	}
 
 	@Override
 	public void exceptionCaught(int port) {
-		updateDisplayBoardStatusUI();
 		mLogger.debug("exceptionCaught : " + port);
-		addLogItem("exceptionCaught : " + port);
 	}
 
 	@Override
@@ -1082,11 +1084,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 	abstract void soundAuctionTimerTask();
 
 	/**
-	 * 전광판 접속 현황
-	 */
-	abstract void updateDisplayBoardStatusUI();
-
-	/**
 	 * ADD 로그
 	 *
 	 * @param str
@@ -1262,5 +1259,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 		return resultDataList;
 	}
-
+	
+	
 }

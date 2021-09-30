@@ -88,23 +88,24 @@
 	-fx-max-height: 0.0;
 }
 
-.header-button .button{
+.header-button > .button{
 	-fx-border-width: 1.0;
 	-fx-border-color: #008fff;
 	-fx-background-color : #008fff;
-	-fx-font-size: 16px;
+	-fx-font-size: 18px;
 	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
 	-fx-text-fill: #ffffff;
 	-fx-font-family: "Noto Sans CJK KR Regular";
 }
 
-.header-confirm-button .button:hover{
+.header-confirm-button > .button:hover{
 	-fx-border-width: 1.0;
 	-fx-border-color: #0082e5;
 	-fx-background-color : #0082e5;
-	-fx-font-size: 16px;
+	-fx-font-size: 18px;
 	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
 	-fx-text-fill: #ffffff;
+	-fx-font-family: "Noto Sans CJK KR Regular";
 }
 
 .text-field {

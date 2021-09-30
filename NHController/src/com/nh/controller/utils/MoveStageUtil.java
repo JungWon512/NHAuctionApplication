@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.nh.common.interfaces.UdpBillBoardStatusListener;
+import com.nh.common.interfaces.UdpPdpBoardStatusListener;
 import com.nh.controller.ControllerApplication;
 import com.nh.controller.controller.AuctionController;
 import com.nh.controller.controller.AuctionMessageController;
@@ -212,7 +214,7 @@ public class MoveStageUtil {
 	/**
 	 * @Description 환경설정 Dialog
 	 */
-	public void openSettingDialog(Stage stage,boolean isDisplayBordConnection,BooleanListener listener) {
+	public void openSettingDialog(Stage stage,boolean isDisplayBordConnection,BooleanListener listener , UdpBillBoardStatusListener udpStatusListener, UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
 
 		if(mDialog != null && mDialog.isShowing()) {
 			return;
@@ -226,7 +228,7 @@ public class MoveStageUtil {
 
 			SettingController controller = fxmlLoader.getController();
 
-			controller.setStage(stage,isDisplayBordConnection,listener);
+			controller.setStage(stage,isDisplayBordConnection,listener,udpStatusListener,udpPdpBoardStatusListener);
 
 			openDialog(stage, parent,getResourceBundle().getString("app.title.setting.config"));
 			setStageDisable(stage);
@@ -577,7 +579,7 @@ public class MoveStageUtil {
 	 * @param resources
 	 */
 	private void setWindowTitle(Stage stage, ResourceBundle resources) {
-		stage.setTitle(resources.getString("app.title"));
+		stage.setTitle(	String.format(resources.getString("app.title"), GlobalDefine.APPLICATION_INFO.RELEASE_VERION));
 		stage.getIcons().add(new Image(getApplicationClass().getResourceAsStream("resource/images/ic_logo.png")));
 	}
 	

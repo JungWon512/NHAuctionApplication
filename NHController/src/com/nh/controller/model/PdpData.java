@@ -183,13 +183,7 @@ public class PdpData implements NettySendable {
     }
 
     public void setbRegion(String bRegion) {
-    	String[] region = bRegion.trim().split(" ");
-    	
-    	if(region.length > 2) {
-    		this.bRegion = region[2];
-    	} else {
-    		this.bRegion = "";
-    	}
+    	this.bRegion = bRegion;
     }
 
     public String getbNote() {

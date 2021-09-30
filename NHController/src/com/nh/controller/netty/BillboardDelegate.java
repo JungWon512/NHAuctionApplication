@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.common.BillboardShareNettyClient;
 import com.nh.common.interfaces.NettyClientShutDownListener;
+import com.nh.common.interfaces.UdpBillBoardStatusListener;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.interfaces.NettySendable;
@@ -33,8 +34,8 @@ public class BillboardDelegate {
      * @param controllable
      * @Description 전광판 서버 접속
      */
-    public void createClients(String host_, String port_) {
-        this.mClient = new BillboardShareNettyClient.Builder(host_, port_).buildAndRun();
+    public void createClients(String host_, String port_, UdpBillBoardStatusListener udpBillBoardStatusListener_) {
+        this.mClient = new BillboardShareNettyClient.Builder(host_, port_,udpBillBoardStatusListener_).buildAndRun();
     }
 
     /**

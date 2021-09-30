@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.nh.common.PdpShareNettyClient;
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
+import com.nh.common.interfaces.UdpPdpBoardStatusListener;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.interfaces.NettySendable;
@@ -35,8 +36,8 @@ public class PdpDelegate {
 	 * @param controllable
 	 * @Description PDP 서버 접속
 	 */
-	public void createClients(String host_, String port_) {
-		this.mClient = new PdpShareNettyClient.Builder(host_, port_).buildAndRun();
+	public void createClients(String host_, String port_, UdpPdpBoardStatusListener udpPdpBoardStatusListener_) {
+		this.mClient = new PdpShareNettyClient.Builder(host_, port_,udpPdpBoardStatusListener_).buildAndRun();
 	}
 
 	/**
@@ -47,6 +48,7 @@ public class PdpDelegate {
 	public String sendMessage(NettySendable object) {
 		if (!isEmptyClient() && isActive()) {
 			mClient.sendMessage(object.getEncodedMessage());
+			mLogger.debug("PDP SEND MESSAGE : " + object.getEncodedMessage());
 		}
 		return object.getEncodedMessage();
 	}

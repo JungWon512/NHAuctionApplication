@@ -39,14 +39,14 @@
                   <Button fx:id="mBtnMessage" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="128.0" minHeight="40.0" minWidth="128.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="128.0" styleClass="btn-header" text="메시지 전송" />
                   <Button fx:id="mBtnUpPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="128.0" minHeight="40.0" minWidth="128.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="128.0" styleClass="btn-header" text="예정가 높이기" />
                   <Button fx:id="mBtnDownPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="128.0" minHeight="40.0" minWidth="128.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="128.0" styleClass="btn-header" text="예정가 낮추기" />
-                  <HBox minWidth="186.0" prefWidth="186.0" style="-fx-background-color: #ffffff;" styleClass="border-all">
+                  <HBox minWidth="188.0" style="-fx-background-color: #ffffff;" styleClass="border-all">
                      <children>
                         <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="감가액" HBox.hgrow="ALWAYS">
                            <font>
                               <Font name="Noto Sans CJK KR Regular" size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="mDeprePriceLabel" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="0" HBox.hgrow="ALWAYS">
+                        <Label fx:id="mDeprePriceLabel" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="10000000" HBox.hgrow="ALWAYS">
                            <graphic>
                               <Label contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="|" textFill="#cccccc">
                                  <graphic>
@@ -468,7 +468,7 @@
                                     <Image url="@../resource/images/ic_con_off.png" />
                                  </image>
                               </ImageView>
-                              <Label text="전광판">
+                              <Label text="종합안내">
                                  <font>
                                     <Font name="Noto Sans CJK KR Regular" size="15.0" />
                                  </font></Label>
@@ -481,7 +481,7 @@
                                     <Image url="@../resource/images/ic_con_off.png" />
                                  </image>
                               </ImageView>
-                              <Label text="PDP">
+                              <Label text="TV">
                                  <font>
                                     <Font name="Noto Sans CJK KR Regular" size="15.0" />
                                  </font></Label>
@@ -601,7 +601,7 @@
                         </Button>
                      </children>
                   </HBox>
-                  <TableView fx:id="mConnectionUserTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="mConnectionUserTableView" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                      <columns>
                         <TableColumn fx:id="mConnectionUserColumn_1" minWidth="-1.0" prefWidth="-1.0" />
                         <TableColumn fx:id="mConnectionUserColumn_2" minWidth="-1.0" prefWidth="-1.0" />
