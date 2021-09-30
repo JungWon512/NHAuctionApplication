@@ -22,7 +22,7 @@ import com.nh.share.setting.AuctionShareSetting;
  */
 public class ControllerMessageParser {
 	public static FromAuctionController parse(String message) {
-		String[] messages = message.split(AuctionShareSetting.DELIMITER_REGEX);
+		String[] messages = message.split(AuctionShareSetting.DELIMITER_REGEX, -1);
 		switch (messages[0].charAt(1)) {
 		case EditSetting.TYPE: // 경매 설정 변경 처리
 			return new EditSetting(messages);

@@ -37,13 +37,15 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
 	private Map<Object, ConnectionInfo> mConnectionInfoMap;
 	private Map<String, Object> mConnectionChannelInfoMap;
+	private Map<String, ChannelGroup> mStandChannelsMap = null;
 
-	public AuctionServerDecodedAuctionResponseConnectionInfoHandler(AuctionServer auctionServer,
-			Auctioneer auctionSchedule, Map<Object, ConnectionInfo> connectionInfoMap,
+	public AuctionServerDecodedAuctionResponseConnectionInfoHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
+			Map<Object, ConnectionInfo> connectionInfoMap,
 			Map<String, Object> connectionChannelInfoMap,
 			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
 			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
-			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
+			Map<String, ChannelGroup> connectionMonitorChannelsMap,
+			Map<String, ChannelGroup> connectionStandChannelsMap) {
 		mAuctionServer = auctionServer;
 		mConnectionInfoMap = connectionInfoMap;
 		mConnectionChannelInfoMap = connectionChannelInfoMap;
@@ -53,6 +55,7 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 		mWatcherChannelsMap = watcherChannelsMap;
 		mAuctionResultMonitorChannelsMap = auctionResultMonitorChannelsMap;
 		mConnectionMonitorChannelsMap = connectionMonitorChannelsMap;
+		mStandChannelsMap = connectionStandChannelsMap;
 	}
 
 	@SuppressWarnings("unlikely-arg-type")
@@ -104,7 +107,7 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 
 					if(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode()) != null) {
 						// 경매 유형코드 전송
-						clientChannelContext.writeAndFlush(new AuctionType(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode()).getAuctionHouseCode(), mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode()).getAuctionType()) + "\r\n");
+						clientChannelContext.writeAndFlush(new AuctionType(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode()).getAuctionHouseCode(), mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode()).getAuctionType()).getEncodedMessage() + "\r\n");
 						
 						// 현재 출품 정보 노출 설정 정보 전송
 						clientChannelContext.writeAndFlush(new ShowEntryInfo(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode())).getEncodedMessage() + "\r\n");
@@ -136,9 +139,9 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 //	    				}
 					}
 				} else {
-					ctx.channel().writeAndFlush(new ResponseConnectionInfo(responseConnectionInfo.getAuctionHouseCode(),
+					clientChannelContext.channel().writeAndFlush(new ResponseConnectionInfo(responseConnectionInfo.getAuctionHouseCode(),
 							GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage() + "\r\n");
-					ctx.channel().close();
+					clientChannelContext.channel().close();
 				}
 				
 			} else if (mConnectionChannelInfoMap

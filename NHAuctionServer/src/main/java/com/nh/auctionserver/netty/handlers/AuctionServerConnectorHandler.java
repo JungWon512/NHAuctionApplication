@@ -2,14 +2,11 @@ package com.nh.auctionserver.netty.handlers;
 
 import java.util.Map;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
-import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
@@ -18,19 +15,14 @@ import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
+import com.nh.share.server.models.StandEntryInfo;
 import com.nh.share.utils.JwtCertTokenUtils;
 
 import io.netty.channel.ChannelHandler.Sharable;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelId;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.handler.ssl.SslHandshakeCompletionEvent;
 import io.netty.util.concurrent.DefaultEventExecutor;
 
 @Sharable
@@ -47,13 +39,15 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
 	private Map<Object, ConnectionInfo> mConnectionInfoMap;
 	private Map<String, Object> mConnectionChannelInfoMap;
+	private Map<String, ChannelGroup> mStandChannelsMap = null;
 
 	public AuctionServerConnectorHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
 			Map<Object, ConnectionInfo> connectionInfoMap,
 			Map<String, Object> connectionChannelInfoMap,
 			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
 			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
-			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
+			Map<String, ChannelGroup> connectionMonitorChannelsMap,
+			Map<String, ChannelGroup> connectionStandChannelsMap) {
 		mAuctionServer = auctionServer;
 		mConnectionInfoMap = connectionInfoMap;
 		mConnectionChannelInfoMap = connectionChannelInfoMap;
@@ -63,6 +57,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 		mWatcherChannelsMap = watcherChannelsMap;
 		mAuctionResultMonitorChannelsMap = auctionResultMonitorChannelsMap;
 		mConnectionMonitorChannelsMap = connectionMonitorChannelsMap;
+		mStandChannelsMap = connectionStandChannelsMap;
 	}
 
 	@Override
@@ -98,7 +93,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 								.writeAndFlush(connectionInfo.getEncodedMessage() + "\r\n");
 
 						// Connector에 채널 아이디 등록 처리
-						if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
+						if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {	
 							mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
 
 							// Connector Channel Map 등록
@@ -114,7 +109,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					} else {
 						ctx.channel()
 								.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-										GlobalDefineCode.CONNECT_CONTROLLER_ERROR, null, null).getEncodedMessage()
+										GlobalDefineCode.CONNECT_CONTROLLER_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()
 										+ "\r\n");
 						ctx.channel().close();
 					}
@@ -122,103 +117,194 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					mLogger.info("Controller Channel Count : " + mControllerChannelsMap.size());
 
 					if (mConnectionInfoMap.size() > 0) {
-						for (Object key : mConnectionInfoMap.keySet()) {
-							if (mConnectionInfoMap.get(key).getChannel()
-									.equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
-								mLogger.info("이미 제어 프로그램이 실행 중인 상태로 추가 실행이 불가합니다.");
-								ctx.channel()
-										.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-												GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage()
-												+ "\r\n");
-								return;
-							} else {
-								// 접속 처리 결과 응답 처리
-								ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-										GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage() + "\r\n");
-
-								// Controller 채널 아이디 등록 처리
-								if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
-									mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
-
-									// Connector Channel Map 등록
-									mConnectionChannelInfoMap.put(
-											JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
-											ctx);
-								}
-
-								// 제어 프로그램 채널 등록 처리
-								if (!mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode())) {
-									mControllerChannelsMap.put(connectionInfo.getAuctionHouseCode(),
-											new DefaultChannelGroup(new DefaultEventExecutor()));
-								}
-
-								if (!mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode())
-										.contains(ctx.channel())) {
-									mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).add(ctx.channel());
-								}
-
-								// 현재 출품 정보 전송
-								if (mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
-										.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
-									ctx.writeAndFlush(new ResponseCode(connectionInfo.getAuctionHouseCode(),
-											GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage()
+						if (mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).contains(ctx.channel())) {
+							mLogger.info("이미 제어 프로그램이 실행 중인 상태로 추가 실행이 불가합니다.");
+							ctx.channel()
+									.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+											GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()
 											+ "\r\n");
-								} else {
-									if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
-										if (mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
-												.equals(GlobalDefineCode.AUCTION_STATUS_PASS)
-												|| mAuctionScheduler
-														.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
-														.equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+							return;
+						} else {
+							// 접속 처리 결과 응답 처리
+							ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+									GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
-											ctx.writeAndFlush(new CurrentEntryInfo(
-													mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
-															.getCurrentEntryInfo()).getEncodedMessage()
-													+ "\r\n");
+							// Controller 채널 아이디 등록 처리
+							if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
+								mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
 
-											// 정상 접속자 초기 경매 상태 정보 전달 처리
-											ctx.channel()
-													.writeAndFlush(mAuctionScheduler
-															.getAuctionState(connectionInfo.getAuctionHouseCode())
-															.getAuctionStatus().getEncodedMessage() + "\r\n");
+								// Connector Channel Map 등록
+								mConnectionChannelInfoMap.put(
+										JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
+										ctx);
+							}
 
-											// 낙유찰 정보 수신이 필요한 경우 확인
-											ctx.writeAndFlush(new RequestAuctionResult(connectionInfo.getAuctionHouseCode(),
-													mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
-															.getAuctionStatus().getEntryNum()).getEncodedMessage());
-										} else {
-											ctx.writeAndFlush(new CurrentEntryInfo(
-													mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
-															.getCurrentEntryInfo()).getEncodedMessage()
-													+ "\r\n");
+							// 제어 프로그램 채널 등록 처리
+							if (!mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode())) {
+								mControllerChannelsMap.put(connectionInfo.getAuctionHouseCode(),
+										new DefaultChannelGroup(new DefaultEventExecutor()));
+							}
 
-											// 정상 접속자 초기 경매 상태 정보 전달 처리
-											ctx.channel()
-													.writeAndFlush(mAuctionScheduler
-															.getAuctionState(connectionInfo.getAuctionHouseCode())
-															.getAuctionStatus().getEncodedMessage() + "\r\n");
-										}
-									}
-								}
-								
-								// 접속자 정보 최초 전송
-								for (Object mapKey : mConnectionInfoMap.keySet()) {
-									if (mConnectionInfoMap.get(mapKey).getAuctionHouseCode().equals(connectionInfo.getAuctionHouseCode())
-											&& mConnectionInfoMap.get(mapKey).getChannel()
-													.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+							if (!mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode())
+									.contains(ctx.channel())) {
+								mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).add(ctx.channel());
+							}
+
+							// 현재 출품 정보 전송
+							if (mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+									.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+								ctx.writeAndFlush(new ResponseCode(connectionInfo.getAuctionHouseCode(),
+										GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage()
+										+ "\r\n");
+							} else {
+								if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
+									if (mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+											.equals(GlobalDefineCode.AUCTION_STATUS_PASS)
+											|| mAuctionScheduler
+													.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+													.equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+
+										ctx.writeAndFlush(new CurrentEntryInfo(
+												mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+														.getCurrentEntryInfo()).getEncodedMessage()
+												+ "\r\n");
+
+										// 정상 접속자 초기 경매 상태 정보 전달 처리
 										ctx.channel()
-												.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(mapKey).getAuctionHouseCode(),
-														mConnectionInfoMap.get(mapKey).getAuctionJoinNum(),
-														mConnectionInfoMap.get(mapKey).getChannel(), mConnectionInfoMap.get(mapKey).getOS(),
-														"N", "0").getEncodedMessage() + "\r\n");
+												.writeAndFlush(mAuctionScheduler
+														.getAuctionState(connectionInfo.getAuctionHouseCode())
+														.getAuctionStatus().getEncodedMessage() + "\r\n");
+
+										// 낙유찰 정보 수신이 필요한 경우 확인
+										ctx.writeAndFlush(new RequestAuctionResult(connectionInfo.getAuctionHouseCode(),
+												mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+														.getAuctionStatus().getEntryNum()).getEncodedMessage());
+									} else {
+										ctx.writeAndFlush(new CurrentEntryInfo(
+												mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+														.getCurrentEntryInfo()).getEncodedMessage()
+												+ "\r\n");
+
+										// 정상 접속자 초기 경매 상태 정보 전달 처리
+										ctx.channel()
+												.writeAndFlush(mAuctionScheduler
+														.getAuctionState(connectionInfo.getAuctionHouseCode())
+														.getAuctionStatus().getEncodedMessage() + "\r\n");
 									}
 								}
 							}
+							
+							// 접속자 정보 최초 전송
+							for (Object mapKey : mConnectionInfoMap.keySet()) {
+								if (mConnectionInfoMap.get(mapKey).getAuctionHouseCode().equals(connectionInfo.getAuctionHouseCode())
+										&& mConnectionInfoMap.get(mapKey).getChannel()
+												.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+									ctx.channel()
+											.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(mapKey).getAuctionHouseCode(),
+													mConnectionInfoMap.get(mapKey).getAuctionJoinNum(),
+													mConnectionInfoMap.get(mapKey).getChannel(), mConnectionInfoMap.get(mapKey).getOS(),
+													"N", "0").getEncodedMessage() + "\r\n");
+								}
+							}
 						}
+						
+//						for (Object key : mConnectionInfoMap.keySet()) {
+//							if (mConnectionInfoMap.get(key).getChannel()
+//									.equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
+//								mLogger.info("이미 제어 프로그램이 실행 중인 상태로 추가 실행이 불가합니다.");
+//								ctx.channel()
+//										.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+//												GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()
+//												+ "\r\n");
+//								return;
+//							} else {
+//								// 접속 처리 결과 응답 처리
+//								ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+//										GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
+//
+//								// Controller 채널 아이디 등록 처리
+//								if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
+//									mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
+//
+//									// Connector Channel Map 등록
+//									mConnectionChannelInfoMap.put(
+//											JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
+//											ctx);
+//								}
+//
+//								// 제어 프로그램 채널 등록 처리
+//								if (!mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode())) {
+//									mControllerChannelsMap.put(connectionInfo.getAuctionHouseCode(),
+//											new DefaultChannelGroup(new DefaultEventExecutor()));
+//								}
+//
+//								if (!mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode())
+//										.contains(ctx.channel())) {
+//									mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).add(ctx.channel());
+//								}
+//
+//								// 현재 출품 정보 전송
+//								if (mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+//										.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+//									ctx.writeAndFlush(new ResponseCode(connectionInfo.getAuctionHouseCode(),
+//											GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage()
+//											+ "\r\n");
+//								} else {
+//									if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
+//										if (mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+//												.equals(GlobalDefineCode.AUCTION_STATUS_PASS)
+//												|| mAuctionScheduler
+//														.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+//														.equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+//
+//											ctx.writeAndFlush(new CurrentEntryInfo(
+//													mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+//															.getCurrentEntryInfo()).getEncodedMessage()
+//													+ "\r\n");
+//
+//											// 정상 접속자 초기 경매 상태 정보 전달 처리
+//											ctx.channel()
+//													.writeAndFlush(mAuctionScheduler
+//															.getAuctionState(connectionInfo.getAuctionHouseCode())
+//															.getAuctionStatus().getEncodedMessage() + "\r\n");
+//
+//											// 낙유찰 정보 수신이 필요한 경우 확인
+//											ctx.writeAndFlush(new RequestAuctionResult(connectionInfo.getAuctionHouseCode(),
+//													mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+//															.getAuctionStatus().getEntryNum()).getEncodedMessage());
+//										} else {
+//											ctx.writeAndFlush(new CurrentEntryInfo(
+//													mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+//															.getCurrentEntryInfo()).getEncodedMessage()
+//													+ "\r\n");
+//
+//											// 정상 접속자 초기 경매 상태 정보 전달 처리
+//											ctx.channel()
+//													.writeAndFlush(mAuctionScheduler
+//															.getAuctionState(connectionInfo.getAuctionHouseCode())
+//															.getAuctionStatus().getEncodedMessage() + "\r\n");
+//										}
+//									}
+//								}
+//								
+//								// 접속자 정보 최초 전송
+//								for (Object mapKey : mConnectionInfoMap.keySet()) {
+//									if (mConnectionInfoMap.get(mapKey).getAuctionHouseCode().equals(connectionInfo.getAuctionHouseCode())
+//											&& mConnectionInfoMap.get(mapKey).getChannel()
+//													.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+//										ctx.channel()
+//												.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(mapKey).getAuctionHouseCode(),
+//														mConnectionInfoMap.get(mapKey).getAuctionJoinNum(),
+//														mConnectionInfoMap.get(mapKey).getChannel(), mConnectionInfoMap.get(mapKey).getOS(),
+//														"N", "0").getEncodedMessage() + "\r\n");
+//									}
+//								}
+//							}
+//						}
 					} else {
 						// 접속 처리 결과 응답 처리
 						ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-								GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage() + "\r\n");
+								GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
 						// Controller 채널 아이디 등록 처리
 						if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
@@ -294,7 +380,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
 					// 접속 처리 결과 응답 처리
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-							GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage() + "\r\n");
+							GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
 					// Controller 채널 아이디 등록 처리
 					if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
@@ -336,7 +422,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_RESULT_MONITOR)) {
 					// 접속 처리 결과 응답 처리
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-							GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage() + "\r\n");
+							GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
 					// Controller 채널 아이디 등록 처리
 					if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
@@ -360,7 +446,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR)) {
 					// 접속 처리 결과 응답 처리
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-							GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage() + "\r\n");
+							GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
 					// Controller 채널 아이디 등록 처리
 					if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
@@ -393,26 +479,82 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 											"N", "0").getEncodedMessage() + "\r\n");
 						}
 					}
+				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+					
+					if (mStandChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mStandChannelsMap.get(connectionInfo.getAuctionHouseCode()).contains(ctx.channel())) {
+						mLogger.info("이미 출하 안내 시스템이 접속 중인 상태로 중복 접속이 불가합니다.");
+						ctx.channel()
+								.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+										GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()
+										+ "\r\n");
+						return;
+					} else {
+						// 접속 처리 결과 응답 처리
+						ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+								GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
+
+						// Controller 채널 아이디 등록 처리
+						if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
+							mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
+
+							// Connector Channel Map 등록
+							mConnectionChannelInfoMap
+									.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+						}
+
+						// 경매 출하 안내 시스템 채널 등록 처리
+						if (!mStandChannelsMap.containsKey(connectionInfo.getAuctionHouseCode())) {
+							mStandChannelsMap.put(connectionInfo.getAuctionHouseCode(),
+									new DefaultChannelGroup(new DefaultEventExecutor()));
+						}
+
+						if (!mStandChannelsMap.get(connectionInfo.getAuctionHouseCode()).contains(ctx.channel())) {
+							mStandChannelsMap.get(connectionInfo.getAuctionHouseCode()).add(ctx.channel());
+						}
+
+						// 현재 출품 정보 전송
+						if (mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+								.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+							if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
+								// 정상 접속자 초기 경매 상태 정보 전달 처리
+								ctx.channel()
+										.writeAndFlush(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+												.getAuctionStatus().getEncodedMessage() + "\r\n");
+							}
+						} else {
+							if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
+								ctx.writeAndFlush(new StandEntryInfo(mAuctionScheduler
+										.getAuctionState(connectionInfo.getAuctionHouseCode()).getCurrentEntryInfo())
+												.getEncodedMessage()
+										+ "\r\n");
+
+								// 정상 접속자 초기 경매 상태 정보 전달 처리
+								ctx.channel()
+										.writeAndFlush(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+												.getAuctionStatus().getEncodedMessage() + "\r\n");
+							}
+						}
+					}
 				}
 			} else {
 				if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 					// 중복 접속 불가 처리
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-							GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage() + "\r\n");
+							GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 					ctx.channel().close();
 
 					return;
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
 					// 중복 접속 불가 처리
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-							GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage() + "\r\n");
+							GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 					ctx.channel().close();
 
 					return;
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
 					// 접속 처리 결과 응답 처리
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-							GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage() + "\r\n");
+							GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
 					// Controller 채널 아이디 등록 처리
 					if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
@@ -445,7 +587,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_RESULT_MONITOR)) {
 					// 접속 처리 결과 응답 처리
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-							GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage() + "\r\n");
+							GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
 					// Controller 채널 아이디 등록 처리
 					if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
@@ -469,7 +611,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR)) {
 					// 접속 처리 결과 응답 처리
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-							GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage() + "\r\n");
+							GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
 					// Controller 채널 아이디 등록 처리
 					if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
@@ -502,12 +644,19 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 											"N", "0").getEncodedMessage() + "\r\n");
 						}
 					}
+				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+					// 중복 접속 불가 처리
+					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+							GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
+					ctx.channel().close();
+
+					return;
 				}
 			}
 		} else {
 			// 사용자 정보가 유효하지 않아 접속 불가
 			ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-					GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage() + "\r\n");
+					GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 			ctx.channel().close();
 		}
 	}

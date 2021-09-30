@@ -32,12 +32,15 @@ public final class AuctionServerDecodedAuctionResponseSessionHandler
 	private Map<String, ChannelGroup> mConnectionMonitorChannelsMap = null;
 	private Map<Object, ConnectionInfo> mConnectionInfoMap;
 	private Map<String, Object> mConnectionChannelInfoMap;
+	private Map<String, ChannelGroup> mStandChannelsMap = null;
 
 	public AuctionServerDecodedAuctionResponseSessionHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap, Map<String, ChannelGroup> controllerChannelsMap,
-			Map<String, ChannelGroup> bidderChannelsMap, Map<String, ChannelGroup> watcherChannelsMap,
-			Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
-			Map<String, ChannelGroup> connectionMonitorChannelsMap) {
+			Map<Object, ConnectionInfo> connectionInfoMap,
+			Map<String, Object> connectionChannelInfoMap,
+			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
+			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
+			Map<String, ChannelGroup> connectionMonitorChannelsMap,
+			Map<String, ChannelGroup> connectionStandChannelsMap) {
 		mAuctionServer = auctionServer;
 		mConnectionInfoMap = connectionInfoMap;
 		mConnectionChannelInfoMap = connectionChannelInfoMap;
@@ -47,6 +50,7 @@ public final class AuctionServerDecodedAuctionResponseSessionHandler
 		mWatcherChannelsMap = watcherChannelsMap;
 		mAuctionResultMonitorChannelsMap = auctionResultMonitorChannelsMap;
 		mConnectionMonitorChannelsMap = connectionMonitorChannelsMap;
+		mStandChannelsMap = connectionStandChannelsMap;
 	}
 
 	@Override

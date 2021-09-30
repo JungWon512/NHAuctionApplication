@@ -100,6 +100,7 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 					list.get(i).setStandPosition(Integer.toString( i+1));
 					list.get(i).setIsExcessCow("N");
 				} else {
+					list.get(i).setStandPosition("");
 					list.get(i).setIsExcessCow("Y");
 				}
 			}

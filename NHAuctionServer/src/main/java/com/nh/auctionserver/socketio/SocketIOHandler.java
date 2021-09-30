@@ -267,7 +267,7 @@ public class SocketIOHandler {
 							.containsKey(client.getSessionId()) || mConnectorInfoMap.containsValue(connectionInfo)) {
 						client.sendEvent("ResponseConnectionInfo",
 								new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-										GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage());
+										GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 
 						client.disconnect();
 
@@ -299,7 +299,7 @@ public class SocketIOHandler {
 				} else {
 					client.sendEvent("ResponseConnectionInfo",
 							new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-									GlobalDefineCode.CONNECT_CONTROLLER_ERROR, null, null).getEncodedMessage());
+									GlobalDefineCode.CONNECT_CONTROLLER_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 					client.disconnect();
 				}
 			} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
@@ -321,7 +321,7 @@ public class SocketIOHandler {
 
 						client.sendEvent("ResponseConnectionInfo",
 								new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-										GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
+										GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 
 						// 현재 출품 정보 전송
 						if (mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
@@ -343,7 +343,7 @@ public class SocketIOHandler {
 						}
 					} else {
 						client.sendEvent("ResponseConnectionInfo", new ResponseConnectionInfo(auctionHouseCode,
-								GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage());
+								GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 						client.disconnect();
 					}
 
@@ -369,7 +369,7 @@ public class SocketIOHandler {
 					 * 
 					 * client.sendEvent("ResponseConnectionInfo", new
 					 * ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-					 * GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
+					 * GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 					 * 
 					 * // 현재 출품 정보 전송 if
 					 * (mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
@@ -388,10 +388,10 @@ public class SocketIOHandler {
 					 * .getAuctionStatus().getEncodedMessage()); } } } else {
 					 * client.sendEvent("ResponseConnectionInfo", new
 					 * ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR,
-					 * null, null).getEncodedMessage()); client.disconnect(); } } else {
+					 * GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()); client.disconnect(); } } else {
 					 * client.sendEvent("ResponseConnectionInfo", new
 					 * ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-					 * GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage());
+					 * GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 					 * client.disconnect(); }
 					 */
 				} else {
@@ -414,7 +414,7 @@ public class SocketIOHandler {
 
 						client.sendEvent("ResponseConnectionInfo",
 								new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-										GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
+										GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 
 						// 현재 출품 정보 전송
 						if (mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
@@ -436,7 +436,7 @@ public class SocketIOHandler {
 						}
 					} else {
 						client.sendEvent("ResponseConnectionInfo", new ResponseConnectionInfo(auctionHouseCode,
-								GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage());
+								GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 						client.disconnect();
 					}
 				}
@@ -471,11 +471,11 @@ public class SocketIOHandler {
 
 					client.sendEvent("ResponseConnectionInfo",
 							new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-									GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
+									GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 
 				} else {
 					client.sendEvent("ResponseConnectionInfo",
-							new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR, null, null)
+							new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA)
 									.getEncodedMessage());
 					client.disconnect();
 				}
@@ -511,7 +511,7 @@ public class SocketIOHandler {
 
 					client.sendEvent("ResponseConnectionInfo",
 							new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-									GlobalDefineCode.CONNECT_SUCCESS, null, null).getEncodedMessage());
+									GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 
 					// 현재 출품 정보 전송
 					if (mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
@@ -549,7 +549,7 @@ public class SocketIOHandler {
 
 				} else {
 					client.sendEvent("ResponseConnectionInfo",
-							new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR, null, null)
+							new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA)
 									.getEncodedMessage());
 					client.disconnect();
 				}
@@ -562,12 +562,12 @@ public class SocketIOHandler {
 			} else {
 				client.sendEvent("ResponseConnectionInfo",
 						new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-								GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage());
+								GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 				client.disconnect();
 			}
 		} else {
 			client.sendEvent("ResponseConnectionInfo", new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-					GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage());
+					GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 			client.disconnect();
 		}
 	}
@@ -708,7 +708,7 @@ public class SocketIOHandler {
 	}
 
 	public Object messageParse(String message) {
-		String[] messages = replaceEventPrefix(message).split(AuctionShareSetting.DELIMITER_REGEX);
+		String[] messages = replaceEventPrefix(message).split(AuctionShareSetting.DELIMITER_REGEX, -1);
 		Object result = null;
 
 		if (messages[0].charAt(0) == 'S') {
@@ -829,13 +829,13 @@ public class SocketIOHandler {
 						}
 					} else {
 						client.sendEvent("ResponseConnectionInfo", new ResponseConnectionInfo(auctionHouseCode,
-								GlobalDefineCode.CONNECT_ETC_ERROR, null, null).getEncodedMessage());
+								GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 						client.disconnect();
 					}
 				} else {
 					client.sendEvent("ResponseConnectionInfo",
 							new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-									GlobalDefineCode.CONNECT_DUPLICATE, null, null).getEncodedMessage());
+									GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 
 					client.disconnect();
 				}
@@ -901,7 +901,7 @@ public class SocketIOHandler {
 					}
 				} else {
 					client.sendEvent("ResponseConnectionInfo",
-							new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR, null, null)
+							new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA)
 									.getEncodedMessage());
 					client.disconnect();
 				}
@@ -1059,6 +1059,15 @@ public class SocketIOHandler {
 							.get(((BidderConnectInfo) parseObject).getAuctionHouseCode()).keySet()) {
 						mConnectorChannelClientMap.get(((BidderConnectInfo) parseObject).getAuctionHouseCode())
 								.get(uuid).sendEvent("BidderConnectInfo", message);
+					}
+				}
+			}
+			
+			// Netty Broadcast
+			if (mControllerChannelsMap != null) {
+				if (mControllerChannelsMap.containsKey(((BidderConnectInfo) parseObject).getAuctionHouseCode())) {
+					if (mControllerChannelsMap.get(((BidderConnectInfo) parseObject).getAuctionHouseCode()).size() > 0) {
+						mControllerChannelsMap.get(((BidderConnectInfo) parseObject).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 					}
 				}
 			}
@@ -1377,7 +1386,7 @@ public class SocketIOHandler {
 					} else {
 						client.sendEvent("ResponseCode",
 								new ResponseConnectionInfo(((RequestBiddingInfo) parseObject).getAuctionHouseCode(),
-										GlobalDefineCode.CONNECT_CONTROLLER_ERROR, null, null).getEncodedMessage());
+										GlobalDefineCode.CONNECT_CONTROLLER_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 						client.disconnect();
 					}
 				} else {

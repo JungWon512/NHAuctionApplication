@@ -9,12 +9,13 @@ import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ShowEntryInfo;
+import com.nh.share.server.models.StandEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 
 public class ServerMessageParser {
 	public static FromAuctionServer parse(String message) {
-		String[] messages = message.split(AuctionShareSetting.DELIMITER_REGEX);
+		String[] messages = message.split(AuctionShareSetting.DELIMITER_REGEX, -1);
 		switch (messages[0].charAt(1)) {
 		case AuctionCountDown.TYPE: // 경매 시작 카운트 다운 정보 전송
 			return new AuctionCountDown(messages[1], messages[2], messages[3]);
@@ -28,8 +29,10 @@ public class ServerMessageParser {
 			return new AuctionCheckSession();
 		case BidderConnectInfo.TYPE: // 접속자 정보 전송
 			return new BidderConnectInfo(messages);
-		case CurrentEntryInfo.TYPE: // 접속 정보 전송
+		case CurrentEntryInfo.TYPE: // 출품 정보 전송
 			return new CurrentEntryInfo(messages);
+		case StandEntryInfo.TYPE: // 출하안내시스템 출품 정보 전송
+			return new StandEntryInfo(messages);
 		case RequestAuctionResult.TYPE: // 낙유찰 결과 전송 요청
 			return new RequestAuctionResult(messages[1], messages[2]);
 		case ShowEntryInfo.TYPE: // 출품 정보 노출 설정 요청

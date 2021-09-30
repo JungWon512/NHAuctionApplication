@@ -21,10 +21,10 @@ public class AuctionState {
 	// 경매 시작 카운트 다운 시간
 	private int mAuctionCountDownTime = 0;
 
-	private String mEntryNum; // 현재 진행 중인 출품번호
-	private String mAuctionQcn; // 현재 진행 중인 경매회차
-	private String mStartPrice; // 현재 응찰 가격
-	private String mCurrentBidderCount; // 현재 응찰자 수
+	private String mEntryNum = ""; // 현재 진행 중인 출품번호
+	private String mAuctionQcn = ""; // 현재 진행 중인 경매회차
+	private String mStartPrice = ""; // 현재 응찰 가격
+	private String mCurrentBidderCount = ""; // 현재 응찰자 수
 	private String mState = GlobalDefineCode.AUCTION_STATUS_NONE; // 경매상태
 	private String mRank1MemberNum = ""; // 1순위 회원번호
 	private String mRank2MemberNum = ""; // 2순위 회원번호
@@ -41,9 +41,9 @@ public class AuctionState {
 	private String mRank3BidPrice = ""; // 3순위 응찰가
 	private String mRank4BidPrice = ""; // 4순위 응찰가
 	private String mRank5BidPrice = ""; // 5순위 응찰가
-	private String mEntryPositionCode; // 출품 정보 거점 코드
-	private String mFinishEntryCount; // 경매 진행 완료 출품수
-	private String mRemainEntryCount; // 경매 잔여 출품수
+	private String mEntryPositionCode = ""; // 출품 정보 거점 코드
+	private String mFinishEntryCount = ""; // 경매 진행 완료 출품수
+	private String mRemainEntryCount = ""; // 경매 잔여 출품수
 
 	// 경매 시작 카운트 다운 상태 (R : 준비 / C : 카운트다운)
 	private String mAuctionCountDownStatus = GlobalDefineCode.AUCTION_COUNT_DOWN_READY;

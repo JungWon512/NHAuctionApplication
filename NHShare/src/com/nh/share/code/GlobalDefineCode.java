@@ -47,6 +47,8 @@ public class GlobalDefineCode {
 	public static final String CONNECT_CHANNEL_AUCTION_RESULT_MONITOR = "6004";
 	// 경매 접속자 모니터링 채널
 	public static final String CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR = "6005";
+	// 경매 출하 안내 시스템 채널
+	public static final String CONNECT_CHANNEL_AUCTION_STAND = "6006";
 
 	public static final String NAMESPACE_BIDDER = "/" + CONNECT_CHANNEL_BIDDER;
 	public static final String NAMESPACE_WATCH = "/" + CONNECT_CHANNEL_WATCHER;
@@ -118,4 +120,6 @@ public class GlobalDefineCode {
 	public static final String AUCTION_LOGIN_AUTH_TYPE_OTP = "ETCMEMBER"; // 일반(관전)회원
 
 	public static final String BILLBOARD_CHARSET = "EUC-KR"; // 전광판 character set
+	
+	public static final String EMPTY_DATA = "";
 }

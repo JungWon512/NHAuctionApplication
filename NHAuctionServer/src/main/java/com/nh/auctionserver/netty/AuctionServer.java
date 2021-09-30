@@ -71,6 +71,7 @@ import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ShowEntryInfo;
+import com.nh.share.server.models.StandEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 import com.nh.share.utils.JwtCertTokenUtils;
@@ -106,6 +107,7 @@ public class AuctionServer {
 	private ConcurrentHashMap<String, ChannelGroup> mWatcherChannelsMap = new ConcurrentHashMap<String, ChannelGroup>();
 	private ConcurrentHashMap<String, ChannelGroup> mAuctionResultMonitorChannelsMap = new ConcurrentHashMap<String, ChannelGroup>();
 	private ConcurrentHashMap<String, ChannelGroup> mConnectionMonitorChannelsMap = new ConcurrentHashMap<String, ChannelGroup>();
+	private ConcurrentHashMap<String, ChannelGroup> mStandChannelsMap = new ConcurrentHashMap<String, ChannelGroup>();
 
 	private static Auctioneer mAuctioneer;
 
@@ -216,64 +218,64 @@ public class AuctionServer {
 
 						pipeline.addLast(new AuctionServerConnectorHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedAuctionTypeInfoHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedAuctionResponseConnectionInfoHandler(
 								AuctionServer.this, mAuctioneer, mConnectorInfoMap, mConnectorChannelInfoMap,
 								mControllerChannelsMap, mBidderChannelsMap, mWatcherChannelsMap,
-								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedEntryInfoHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedBiddingHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedRetryTargetInfoHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedEditSettingHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedPassAuctionHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedPauseAuctionHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedStopAuctionHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedReadyEntryInfoHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedInitEntryInfoAuctionHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedStartAuctionHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedAuctionResultHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedCancelBiddingHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedToastMessageRequestHandler(AuctionServer.this,
 								mAuctioneer, mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap,
 								mBidderChannelsMap, mWatcherChannelsMap, mAuctionResultMonitorChannelsMap,
-								mConnectionMonitorChannelsMap));
+								mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedAuctionResponseSessionHandler(AuctionServer.this,
 								mAuctioneer, mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap,
 								mBidderChannelsMap, mWatcherChannelsMap, mAuctionResultMonitorChannelsMap,
-								mConnectionMonitorChannelsMap));
+								mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedRequestLogoutHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedRefreshConnectorHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
-								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap));
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 					}
 				})
 				/* Nagle 알고리즘 비활성화 여부 설정 */
@@ -522,6 +524,15 @@ public class AuctionServer {
 			if (controllerParsedMessage instanceof EntryInfo) {
 				mAuctioneer.addEntryInfo(((EntryInfo) controllerParsedMessage).getAuctionHouseCode(),
 						(EntryInfo) controllerParsedMessage);
+				
+				// 출품 이관 후 변경된 데이터 전송 처리
+				if (!mAuctioneer.getCurrentAuctionStatus(((EntryInfo) controllerParsedMessage).getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+					channelItemWriteAndFlush(new CurrentEntryInfo(((EntryInfo) controllerParsedMessage)));
+				}
+				
+				// 출하 안내 시스템에 출품 정보 전송 처리
+				channelItemWriteAndFlush(new StandEntryInfo(((EntryInfo) controllerParsedMessage)));
 			}
 
 			if (controllerParsedMessage instanceof SendAuctionResult) {
@@ -639,25 +650,25 @@ public class AuctionServer {
 
 				// Netty Broadcast
 				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mBidderChannelsMap.containsKey(((AuctionCountDown) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((AuctionCountDown) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((AuctionCountDown) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mControllerChannelsMap != null) {
-					for (String key : mControllerChannelsMap.keySet()) {
-						if (mControllerChannelsMap.get(key).size() > 0) {
-							mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mControllerChannelsMap.containsKey(((AuctionCountDown) event).getAuctionHouseCode())) {
+						if (mControllerChannelsMap.get(((AuctionCountDown) event).getAuctionHouseCode()).size() > 0) {
+							mControllerChannelsMap.get(((AuctionCountDown) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
-
+				
 				if (mWatcherChannelsMap != null) {
-					for (String key : mWatcherChannelsMap.keySet()) {
-						if (mWatcherChannelsMap.get(key).size() > 0) {
-							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mWatcherChannelsMap.containsKey(((AuctionCountDown) event).getAuctionHouseCode())) {
+						if (mWatcherChannelsMap.get(((AuctionCountDown) event).getAuctionHouseCode()).size() > 0) {
+							mWatcherChannelsMap.get(((AuctionCountDown) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -670,17 +681,17 @@ public class AuctionServer {
 
 				// Netty Broadcast
 				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mBidderChannelsMap.containsKey(((ToastMessage) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((ToastMessage) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((ToastMessage) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mWatcherChannelsMap != null) {
-					for (String key : mWatcherChannelsMap.keySet()) {
-						if (mWatcherChannelsMap.get(key).size() > 0) {
-							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mWatcherChannelsMap.containsKey(((ToastMessage) event).getAuctionHouseCode())) {
+						if (mWatcherChannelsMap.get(((ToastMessage) event).getAuctionHouseCode()).size() > 0) {
+							mWatcherChannelsMap.get(((ToastMessage) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -693,17 +704,17 @@ public class AuctionServer {
 
 				// Netty Broadcast
 				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mBidderChannelsMap.containsKey(((FavoriteEntryInfo) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((FavoriteEntryInfo) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((FavoriteEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mWatcherChannelsMap != null) {
-					for (String key : mWatcherChannelsMap.keySet()) {
-						if (mWatcherChannelsMap.get(key).size() > 0) {
-							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mWatcherChannelsMap.containsKey(((FavoriteEntryInfo) event).getAuctionHouseCode())) {
+						if (mWatcherChannelsMap.get(((FavoriteEntryInfo) event).getAuctionHouseCode()).size() > 0) {
+							mWatcherChannelsMap.get(((FavoriteEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -716,41 +727,49 @@ public class AuctionServer {
 
 				// Netty Broadcast
 				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mBidderChannelsMap.containsKey(((ResponseCode) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mWatcherChannelsMap != null) {
-					for (String key : mWatcherChannelsMap.keySet()) {
-						if (mWatcherChannelsMap.get(key).size() > 0) {
-							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mWatcherChannelsMap.containsKey(((ResponseCode) event).getAuctionHouseCode())) {
+						if (mWatcherChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).size() > 0) {
+							mWatcherChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mControllerChannelsMap != null) {
-					for (String key : mControllerChannelsMap.keySet()) {
-						if (mControllerChannelsMap.get(key).size() > 0) {
-							mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mControllerChannelsMap.containsKey(((ResponseCode) event).getAuctionHouseCode())) {
+						if (mControllerChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).size() > 0) {
+							mControllerChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
-
+				
 				if (mAuctionResultMonitorChannelsMap != null) {
-					for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
-						if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
-							mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mAuctionResultMonitorChannelsMap.containsKey(((ResponseCode) event).getAuctionHouseCode())) {
+						if (mAuctionResultMonitorChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).size() > 0) {
+							mAuctionResultMonitorChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mConnectionMonitorChannelsMap != null) {
-					for (String key : mConnectionMonitorChannelsMap.keySet()) {
-						if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
-							mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mConnectionMonitorChannelsMap.containsKey(((ResponseCode) event).getAuctionHouseCode())) {
+						if (mConnectionMonitorChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).size() > 0) {
+							mConnectionMonitorChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+
+				if (mStandChannelsMap != null) {
+					if (mStandChannelsMap.containsKey(((ResponseCode) event).getAuctionHouseCode())) {
+						if (mStandChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).size() > 0) {
+							mStandChannelsMap.get(((ResponseCode) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -763,34 +782,44 @@ public class AuctionServer {
 
 				// Netty Broadcast
 				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mBidderChannelsMap.containsKey(((CurrentEntryInfo) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((CurrentEntryInfo) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((CurrentEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mWatcherChannelsMap != null) {
-					for (String key : mWatcherChannelsMap.keySet()) {
-						if (mWatcherChannelsMap.get(key).size() > 0) {
-							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mWatcherChannelsMap.containsKey(((CurrentEntryInfo) event).getAuctionHouseCode())) {
+						if (mWatcherChannelsMap.get(((CurrentEntryInfo) event).getAuctionHouseCode()).size() > 0) {
+							mWatcherChannelsMap.get(((CurrentEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mControllerChannelsMap != null) {
-					for (String key : mControllerChannelsMap.keySet()) {
-						if (mControllerChannelsMap.get(key).size() > 0) {
-							mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mControllerChannelsMap.containsKey(((CurrentEntryInfo) event).getAuctionHouseCode())) {
+						if (mControllerChannelsMap.get(((CurrentEntryInfo) event).getAuctionHouseCode()).size() > 0) {
+							mControllerChannelsMap.get(((CurrentEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+				break;
+			case StandEntryInfo.TYPE: // 출하 안내 시스템 출품 정보 전송
+				// Netty Broadcast
+				if (mStandChannelsMap != null) {
+					if (mStandChannelsMap.containsKey(((StandEntryInfo) event).getAuctionHouseCode())) {
+						if (mStandChannelsMap.get(((StandEntryInfo) event).getAuctionHouseCode()).size() > 0) {
+							mStandChannelsMap.get(((StandEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 				break;
 			case RequestAuctionResult.TYPE: // 낙유찰 정보 전송 요청
 				if (mControllerChannelsMap != null) {
-					for (String key : mControllerChannelsMap.keySet()) {
-						if (mControllerChannelsMap.get(key).size() > 0) {
-							mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mControllerChannelsMap.containsKey(((RequestAuctionResult) event).getAuctionHouseCode())) {
+						if (mControllerChannelsMap.get(((RequestAuctionResult) event).getAuctionHouseCode()).size() > 0) {
+							mControllerChannelsMap.get(((RequestAuctionResult) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -835,6 +864,14 @@ public class AuctionServer {
 						}
 					}
 				}
+				
+				if (mStandChannelsMap != null) {
+					for (String key : mStandChannelsMap.keySet()) {
+						if (mStandChannelsMap.get(key).size() > 0) {
+							mStandChannelsMap.get(key).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
 				break;
 			case BidderConnectInfo.TYPE: // 접속자 정보 전송
 				// Web Socket Broadcast
@@ -844,17 +881,17 @@ public class AuctionServer {
 
 				// Netty Broadcast
 				if (mControllerChannelsMap != null) {
-					for (String key : mControllerChannelsMap.keySet()) {
-						if (mControllerChannelsMap.get(key).size() > 0) {
-							mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mControllerChannelsMap.containsKey(((BidderConnectInfo) event).getAuctionHouseCode())) {
+						if (mControllerChannelsMap.get(((BidderConnectInfo) event).getAuctionHouseCode()).size() > 0) {
+							mControllerChannelsMap.get(((BidderConnectInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 				
 				if (mConnectionMonitorChannelsMap != null) {
-					for (String key : mConnectionMonitorChannelsMap.keySet()) {
-						if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
-							mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mConnectionMonitorChannelsMap.containsKey(((BidderConnectInfo) event).getAuctionHouseCode())) {
+						if (mConnectionMonitorChannelsMap.get(((BidderConnectInfo) event).getAuctionHouseCode()).size() > 0) {
+							mConnectionMonitorChannelsMap.get(((BidderConnectInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -868,9 +905,9 @@ public class AuctionServer {
 				
 				// Netty Broadcast
 				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mBidderChannelsMap.containsKey(((ShowEntryInfo) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((ShowEntryInfo) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((ShowEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -895,61 +932,68 @@ public class AuctionServer {
 				}
 				
 				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mBidderChannelsMap.containsKey(((AuctionType) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((AuctionType) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((AuctionType) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 				break;
-			case ResponseConnectionInfo.TYPE: // 접속 인승 결과 전송
-				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
-						}
-					}
-				}
-
-				if (mConnectionMonitorChannelsMap != null) {
-					for (String key : mConnectionMonitorChannelsMap.keySet()) {
-						if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
-							mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
-						}
-					}
-				}
-
-				if (mWatcherChannelsMap != null) {
-					for (String key : mWatcherChannelsMap.keySet()) {
-						if (mWatcherChannelsMap.get(key).size() > 0) {
-							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
-						}
-					}
-				}
-
-				if (mAuctionResultMonitorChannelsMap != null) {
-					for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
-						if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
-							mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
-						}
-					}
-				}
-				break;
+//			case ResponseConnectionInfo.TYPE: // 접속 인승 결과 전송
+//				if (mBidderChannelsMap != null) {
+//					for (String key : mBidderChannelsMap.keySet()) {
+//						if (mBidderChannelsMap.get(key).size() > 0) {
+//							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+//						}
+//					}
+//				}
+//
+//				if (mConnectionMonitorChannelsMap != null) {
+//					for (String key : mConnectionMonitorChannelsMap.keySet()) {
+//						if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
+//							mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+//						}
+//					}
+//				}
+//
+//				if (mWatcherChannelsMap != null) {
+//					for (String key : mWatcherChannelsMap.keySet()) {
+//						if (mWatcherChannelsMap.get(key).size() > 0) {
+//							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+//						}
+//					}
+//				}
+//
+//				if (mAuctionResultMonitorChannelsMap != null) {
+//					for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
+//						if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
+//							mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+//						}
+//					}
+//				}
+//				
+//				if (mStandChannelsMap != null) {
+//					for (String key : mStandChannelsMap.keySet()) {
+//						if (mStandChannelsMap.get(key).size() > 0) {
+//							mStandChannelsMap.get(key).writeAndFlush(message + "\r\n");
+//						}
+//					}
+//				}
+//				break;
 			case Bidding.TYPE: // 응찰 정보 전송
 				// Netty Broadcast
 				if (mControllerChannelsMap != null) {
-					for (String key : mControllerChannelsMap.keySet()) {
-						if (mControllerChannelsMap.get(key).size() > 0) {
-							mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
-							mLogger.debug("Send Bidding Data : " + message);
+					if (mControllerChannelsMap.containsKey(((Bidding) event).getAuctionHouseCode())) {
+						if (mControllerChannelsMap.get(((Bidding) event).getAuctionHouseCode()).size() > 0) {
+							mControllerChannelsMap.get(((Bidding) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
-
+				
 				if (mConnectionMonitorChannelsMap != null) {
-					for (String key : mConnectionMonitorChannelsMap.keySet()) {
-						if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
-							mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mConnectionMonitorChannelsMap.containsKey(((Bidding) event).getAuctionHouseCode())) {
+						if (mConnectionMonitorChannelsMap.get(((Bidding) event).getAuctionHouseCode()).size() > 0) {
+							mConnectionMonitorChannelsMap.get(((Bidding) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -962,41 +1006,49 @@ public class AuctionServer {
 
 				// Netty Broadcast
 				if (mControllerChannelsMap != null) {
-					for (String key : mControllerChannelsMap.keySet()) {
-						if (mControllerChannelsMap.get(key).size() > 0) {
-							mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mControllerChannelsMap.containsKey(((AuctionStatus) event).getAuctionHouseCode())) {
+						if (mControllerChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).size() > 0) {
+							mControllerChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mBidderChannelsMap.containsKey(((AuctionStatus) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
-
+				
 				if (mConnectionMonitorChannelsMap != null) {
-					for (String key : mConnectionMonitorChannelsMap.keySet()) {
-						if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
-							mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mConnectionMonitorChannelsMap.containsKey(((AuctionStatus) event).getAuctionHouseCode())) {
+						if (mConnectionMonitorChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).size() > 0) {
+							mConnectionMonitorChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mWatcherChannelsMap != null) {
-					for (String key : mWatcherChannelsMap.keySet()) {
-						if (mWatcherChannelsMap.get(key).size() > 0) {
-							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mWatcherChannelsMap.containsKey(((AuctionStatus) event).getAuctionHouseCode())) {
+						if (mWatcherChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).size() > 0) {
+							mWatcherChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mAuctionResultMonitorChannelsMap != null) {
-					for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
-						if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
-							mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mAuctionResultMonitorChannelsMap.containsKey(((AuctionStatus) event).getAuctionHouseCode())) {
+						if (mAuctionResultMonitorChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).size() > 0) {
+							mAuctionResultMonitorChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+
+				if (mStandChannelsMap != null) {
+					if (mStandChannelsMap.containsKey(((AuctionStatus) event).getAuctionHouseCode())) {
+						if (mStandChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).size() > 0) {
+							mStandChannelsMap.get(((AuctionStatus) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -1010,17 +1062,17 @@ public class AuctionServer {
 
 				// Netty Broadcast
 				if (mControllerChannelsMap != null) {
-					for (String key : mControllerChannelsMap.keySet()) {
-						if (mControllerChannelsMap.get(key).size() > 0) {
-							mControllerChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mControllerChannelsMap.containsKey(((CancelBidding) event).getAuctionHouseCode())) {
+						if (mControllerChannelsMap.get(((CancelBidding) event).getAuctionHouseCode()).size() > 0) {
+							mControllerChannelsMap.get(((CancelBidding) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
-
+				
 				if (mConnectionMonitorChannelsMap != null) {
-					for (String key : mConnectionMonitorChannelsMap.keySet()) {
-						if (mConnectionMonitorChannelsMap.get(key).size() > 0) {
-							mConnectionMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mConnectionMonitorChannelsMap.containsKey(((CancelBidding) event).getAuctionHouseCode())) {
+						if (mConnectionMonitorChannelsMap.get(((CancelBidding) event).getAuctionHouseCode()).size() > 0) {
+							mConnectionMonitorChannelsMap.get(((CancelBidding) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -1034,25 +1086,33 @@ public class AuctionServer {
 
 				// Netty Broadcast
 				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mBidderChannelsMap.containsKey(((AuctionResult) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((AuctionResult) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((AuctionResult) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
-
+				
 				if (mWatcherChannelsMap != null) {
-					for (String key : mWatcherChannelsMap.keySet()) {
-						if (mWatcherChannelsMap.get(key).size() > 0) {
-							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mWatcherChannelsMap.containsKey(((AuctionResult) event).getAuctionHouseCode())) {
+						if (mWatcherChannelsMap.get(((AuctionResult) event).getAuctionHouseCode()).size() > 0) {
+							mWatcherChannelsMap.get(((AuctionResult) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
 
 				if (mAuctionResultMonitorChannelsMap != null) {
-					for (String key : mAuctionResultMonitorChannelsMap.keySet()) {
-						if (mAuctionResultMonitorChannelsMap.get(key).size() > 0) {
-							mAuctionResultMonitorChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mAuctionResultMonitorChannelsMap.containsKey(((AuctionResult) event).getAuctionHouseCode())) {
+						if (mAuctionResultMonitorChannelsMap.get(((AuctionResult) event).getAuctionHouseCode()).size() > 0) {
+							mAuctionResultMonitorChannelsMap.get(((AuctionResult) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+
+				if (mStandChannelsMap != null) {
+					if (mStandChannelsMap.containsKey(((AuctionResult) event).getAuctionHouseCode())) {
+						if (mStandChannelsMap.get(((AuctionResult) event).getAuctionHouseCode()).size() > 0) {
+							mStandChannelsMap.get(((AuctionResult) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -1065,17 +1125,17 @@ public class AuctionServer {
 
 				// Netty Broadcast
 				if (mBidderChannelsMap != null) {
-					for (String key : mBidderChannelsMap.keySet()) {
-						if (mBidderChannelsMap.get(key).size() > 0) {
-							mBidderChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mBidderChannelsMap.containsKey(((RetryTargetInfo) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((RetryTargetInfo) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((RetryTargetInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
-
+				
 				if (mWatcherChannelsMap != null) {
-					for (String key : mWatcherChannelsMap.keySet()) {
-						if (mWatcherChannelsMap.get(key).size() > 0) {
-							mWatcherChannelsMap.get(key).writeAndFlush(message + "\r\n");
+					if (mWatcherChannelsMap.containsKey(((RetryTargetInfo) event).getAuctionHouseCode())) {
+						if (mWatcherChannelsMap.get(((RetryTargetInfo) event).getAuctionHouseCode()).size() > 0) {
+							mWatcherChannelsMap.get(((RetryTargetInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -1195,6 +1255,14 @@ public class AuctionServer {
 					if (mConnectionMonitorChannelsMap.get(requestLogout.getAuctionHouseCode())
 							.find(channelId) != null) {
 						mConnectionMonitorChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
+					}
+				}
+			}
+			
+			if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+				if (mStandChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
+					if (mStandChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
+						mStandChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
 					}
 				}
 			}

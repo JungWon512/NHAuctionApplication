@@ -12,7 +12,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * <p>
  * AT | 조합구분코드 | 경매유형코드
  */
-public class AuctionType implements FromAuctionCommon, Serializable {
+public class AuctionType implements FromAuctionCommon {
 	public static final char TYPE = 'T';
 	private String mAuctionHouseCode; // 조합구분코드
 	private String mAuctionType; // 경매유형코드

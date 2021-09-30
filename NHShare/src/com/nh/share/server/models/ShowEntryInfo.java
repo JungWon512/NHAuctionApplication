@@ -31,20 +31,20 @@ public class ShowEntryInfo implements FromAuctionServer {
 	final private String ITEM_DNA = "12";
 	
 	private String mAuctionHouseCode; // 거점코드
-	private String mItem1; // 1번째 항목
-	private String mItem2; // 2번째 항목
-	private String mItem3; // 3번째 항목
-	private String mItem4; // 4번째 항목
-	private String mItem5; // 5번째 항목
-	private String mItem6; // 6번째 항목
-	private String mItem7; // 7번째 항목
-	private String mItem8; // 8번째 항목
-	private String mItem9; // 9번째 항목
-	private String mItem10; // 10번째 항목
+	private String mItem1 = ""; // 1번째 항목
+	private String mItem2 = ""; // 2번째 항목
+	private String mItem3 = ""; // 3번째 항목
+	private String mItem4 = ""; // 4번째 항목
+	private String mItem5 = ""; // 5번째 항목
+	private String mItem6 = ""; // 6번째 항목
+	private String mItem7 = ""; // 7번째 항목
+	private String mItem8 = ""; // 8번째 항목
+	private String mItem9 = ""; // 9번째 항목
+	private String mItem10 = ""; // 10번째 항목
 	private int currentItem = 0;
 
 	public ShowEntryInfo(EditSetting editSetting) {
-		currentItem = 0;
+		initData();
 		
 		mAuctionHouseCode = editSetting.getAuctionHouseCode();
 		
@@ -125,6 +125,21 @@ public class ShowEntryInfo implements FromAuctionServer {
 		mItem10 = item10;
 	}
 
+	private void initData() {
+		currentItem = 0;
+		
+		mItem1 = ""; // 1번째 항목
+		mItem2 = ""; // 2번째 항목
+		mItem3 = ""; // 3번째 항목
+		mItem4 = ""; // 4번째 항목
+		mItem5 = ""; // 5번째 항목
+		mItem6 = ""; // 6번째 항목
+		mItem7 = ""; // 7번째 항목
+		mItem8 = ""; // 8번째 항목
+		mItem9 = ""; // 9번째 항목
+		mItem10 = ""; // 10번째 항목
+	}
+	
 	private void setData(String item) {
 		switch(currentItem) {
 		case 1:

@@ -24,7 +24,7 @@ import com.nh.share.setting.AuctionShareSetting;
  */
 public class CommonMessageParser {
 	public static FromAuctionCommon parse(String message) {
-		String[] messages = message.split(AuctionShareSetting.DELIMITER_REGEX);
+		String[] messages = message.split(AuctionShareSetting.DELIMITER_REGEX, -1);
 		switch (messages[0].charAt(1)) {
 		case AuctionStatus.TYPE: // 경매 상태 정보 전송
 			return new AuctionStatus(messages);

@@ -1,22 +1,22 @@
-package com.nh.share.controller.models;
+package com.nh.share.server.models;
 
-import com.nh.share.controller.interfaces.FromAuctionController;
+import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.server.interfaces.FromAuctionServer;
 import com.nh.share.setting.AuctionShareSetting;
 
 /**
- * 출품 정보 전송 처리
+ * 출품 정보 전송
  * 
- * 제어프로그램 -> 경매서버
+ * 경매서버 -> 출하안내시스템
  * 
- * CI | 조합구분코드 | 출품번호 | 경매회차 | 경매대상구분코드 | 축산개체관리번호 | 축산축종구분코드 | 농가식별번호 | 농장관리번호
- * | 농가명 | 브랜드명 | 생년월일 | KPN번호 | 개체성별코드 | 어미소구분코드 | 어미소축산개체관리번호 | 산차 | 임신개월수 |
- * 계대 | 계체식별번호 | 축산개체종축등록번호 | 등록구분번호 | 출하생산지역 | 친자검사결과여부 | 신규여부 | 우출하중량 |
- * 최초최저낙찰한도금액 | 최저낙찰한도금액 | 비고내용 | 낙유찰결과 | 낙찰자 | 낙찰금액 | 응찰일시 | 마지막출품여부 | 계류대번호 | 초과출장우여부
+ * SV | 조합구분코드 | 출품번호 | 경매회차 | 경매대상구분코드 | 축산개체관리번호 | 축산축종구분코드 | 농가식별번호 | 농장관리번호 | 농가명 |
+ * 브랜드명 | 생년월일 | KPN번호 | 개체성별코드 | 어미소구분코드 | 어미소축산개체관리번호 | 산차 | 임신개월수 | 계대 |
+ * 계체식별번호 | 축산개체종축등록번호 | 등록구분번호 | 출하생산지역 | 친자검사결과여부 | 신규여부 | 우출하중량 | 최초최저낙찰한도금액
+ * | 최저낙찰한도금액 | 비고내용 | 낙유찰결과 | 낙찰자 | 낙찰금액 | 응찰일시 | 마지막출품여부 | 계류대번호 | 초과출장우여부
  *
  */
-public class EntryInfo implements FromAuctionController {
-	public static final char TYPE = 'I';
-
+public class StandEntryInfo implements FromAuctionServer {
+	public static final char TYPE = 'V';
 	private String mAuctionHouseCode; // 조합구분코드
 	private String mEntryNum; // 출품 번호
 	private String mAuctionQcn; // 경매회차
@@ -30,54 +30,36 @@ public class EntryInfo implements FromAuctionController {
 	private String mBirthday; // 생년월일
 	private String mKpn; // KPN
 	private String mGender; // 개체성별코드
-	private String mGenderName; // 개체성별코드 명
 	private String mMotherTypeCode; // 어미구분코드
 	private String mMotherObjNum; // 어미축산개체관리번호
-	private String mMotherCowName; // 혈통명
 	private String mMaTime; // 산차
-	private int mMaMonth; // 임신개월수
+	private String mMaMonth; // 임신개월수
 	private String mPasgQcn; // 계대
 	private String mObjIdNum; // 개체식별번호
 	private String mObjRegNum; // 축산개체종축등록번호
 	private String mObjRegTypeNum; // 등록구분번호
 	private String mRgnName; // 출하생산지역
-	private String mReRgnName; // 출하생산지역 split => ex) 경남 하동군 금남면  계천리 => 금남, 경상남도 하동군 악양면 상중대2길 22-3 => 악양
 	private String mDnaYn; // 친자검사결과여부
 	private String mIsNew; // 신규여부
 	private String mWeight; // 우출하중량
-	private int mInitPrice; // 최초최저낙찰한도금액
-	private int mLowPrice; // 최저낙찰한도금액
-	private int mSraSbidUpPrice; // 축산낙찰단가
+	private String mInitPrice; // 최초최저낙찰한도금액
+	private String mLowPrice; // 최저낙찰한도금액
+	private String mSraSbidUpPrice; // 축산낙찰단가
 	private String mNote; // 비고내용
-	private String mAucDt; // 경매일
-	private String mOslpNo; // 원표 번호
-	private String mLedSqno; // 원장 일련번호
-	private String mTrmnAmnNo; // 거래인 관리 번호
-
-	private String mAuctionResult; // 낙유찰결과 (11 대기 ,22 낙찰 ,23 보류)
+	private String mAuctionResult; // 낙유찰결과(22:낙찰/23:유찰)
 	private String mAuctionSucBidder; // 낙찰자
-	private int mAuctionBidPrice; // 응찰금액/낙찰금액
+	private String mAuctionBidPrice; // 응찰금액
 	private String mAuctionBidDateTime; // 응찰일시
-
-	private String mLsChgDtm; // 최종변경일시
-	private String mLsCmeNo; // 최종변경자개인번호
-	private int mLwprChgNt; // 최저가 변경 횟수
-
 	private String mIsLastEntry; // 마지막 출품 여부
-
 	private String mStandPosition; // 계류대 번호
 	private String mIsExcessCow; // 초과출장우여부
 
-	public EntryInfo() {
-	}
-
-	public EntryInfo(String auctionHouseCode, String entryNum, String auctionQcn, String entryType, String indNum,
-			String indMngCd, String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday,
-			String kpn, String gender, String motherTypeCode, String motherObjNum, String maTime, String maMonth,
-			String pasgQcn, String objIdNum, String objRegNum, String objRegTypeNum, String rgnName, String dnaYn,
-			String isNew, String weight, String initPrice, String lowPrice, String note, String auctionResult,
-			String auctionSucBidder, String auctionBidPrice, String auctionBidDateTime, String isLastEntry,
-			String standPosition, String isExcessCow) {
+	public StandEntryInfo(String auctionHouseCode, String entryNum, String auctionQcn, String entryType, String indNum, String indMngCd,
+			String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday, String kpn,
+			String gender, String motherTypeCode, String motherObjNum, String maTime, String maMonth, String pasgQcn,
+			String objIdNum, String objRegNum, String objRegTypeNum, String rgnName, String dnaYn, String isNew,
+			String weight, String initPrice, String lowPrice, String note, String auctionResult,
+			String auctionSucBidder, String auctionBidPrice, String auctionBidDateTime, String isLastEntry, String standPosition, String isExcessCow) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 		mAuctionQcn = auctionQcn;
@@ -94,7 +76,7 @@ public class EntryInfo implements FromAuctionController {
 		mMotherTypeCode = motherTypeCode;
 		mMotherObjNum = motherObjNum;
 		mMaTime = maTime;
-		mMaMonth = Integer.parseInt(maMonth);
+		mMaMonth = maMonth;
 		mPasgQcn = pasgQcn;
 		mObjIdNum = objIdNum;
 		mObjRegNum = objRegNum;
@@ -103,19 +85,19 @@ public class EntryInfo implements FromAuctionController {
 		mDnaYn = dnaYn;
 		mIsNew = isNew;
 		mWeight = weight;
-		mInitPrice = Integer.parseInt(initPrice);
-		mLowPrice = Integer.parseInt(lowPrice);
+		mInitPrice = initPrice;
+		mLowPrice = lowPrice;
 		mNote = note;
 		mAuctionResult = auctionResult;
 		mAuctionSucBidder = auctionSucBidder;
-		mAuctionBidPrice = Integer.parseInt(auctionBidPrice);
+		mAuctionBidPrice = auctionBidPrice;
 		mAuctionBidDateTime = auctionBidDateTime;
 		mIsLastEntry = isLastEntry;
 		mStandPosition = standPosition;
 		mIsExcessCow = isExcessCow;
 	}
 
-	public EntryInfo(String[] messages) {
+	public StandEntryInfo(String[] messages) {
 		mAuctionHouseCode = messages[1];
 		mEntryNum = messages[2];
 		mAuctionQcn = messages[3];
@@ -132,7 +114,7 @@ public class EntryInfo implements FromAuctionController {
 		mMotherTypeCode = messages[14];
 		mMotherObjNum = messages[15];
 		mMaTime = messages[16];
-		mMaMonth = Integer.parseInt(messages[17]);
+		mMaMonth = messages[17];
 		mPasgQcn = messages[18];
 		mObjIdNum = messages[19];
 		mObjRegNum = messages[20];
@@ -141,29 +123,63 @@ public class EntryInfo implements FromAuctionController {
 		mDnaYn = messages[23];
 		mIsNew = messages[24];
 		mWeight = messages[25];
-		mInitPrice = Integer.parseInt(messages[26]);
-		mLowPrice = Integer.parseInt(messages[27]);
+		mInitPrice = messages[26];
+		mLowPrice = messages[27];
 		mNote = messages[28];
 		mAuctionResult = messages[29];
 		mAuctionSucBidder = messages[30];
-		mAuctionBidPrice = Integer.parseInt(messages[31]);
+		mAuctionBidPrice = messages[31];
 		mAuctionBidDateTime = messages[32];
 		mIsLastEntry = messages[33];
 		mStandPosition = messages[34];
 		mIsExcessCow = messages[35];
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		return ((EntryInfo) obj).mEntryNum.equals(mEntryNum);
+	public StandEntryInfo(EntryInfo entryInfo) {
+		mAuctionHouseCode = entryInfo.getAuctionHouseCode();
+		mEntryNum = entryInfo.getEntryNum();
+		mAuctionQcn = entryInfo.getAuctionQcn();
+		mEntryType = entryInfo.getEntryType();
+		mIndNum = entryInfo.getIndNum();
+		mIndMngCd = entryInfo.getIndMngCd();
+		mFhsNum = entryInfo.getFhsNum();
+		mFarmMngNum = entryInfo.getFarmMngNum();
+		mExhibitor = entryInfo.getExhibitor();
+		mBrandName = entryInfo.getBrandName();
+		mBirthday = entryInfo.getBirthday();
+		mKpn = entryInfo.getKpn();
+		mGender = entryInfo.getGender();
+		mMotherTypeCode = entryInfo.getMotherTypeCode();
+		mMotherObjNum = entryInfo.getMotherObjNum();
+		mMaTime = entryInfo.getMaTime();
+		mMaMonth = Integer.toString(entryInfo.getMaMonth());
+		mPasgQcn = entryInfo.getPasgQcn();
+		mObjIdNum = entryInfo.getObjIdNum();
+		mObjRegNum = entryInfo.getObjRegNum();
+		mObjRegTypeNum = entryInfo.getObjRegTypeNum();
+		mRgnName = entryInfo.getRgnName();
+		mDnaYn = entryInfo.getDnaYn();
+		mIsNew = entryInfo.getIsNew();
+		mWeight = entryInfo.getWeight();
+		mInitPrice =  Integer.toString(entryInfo.getInitPrice());
+		mLowPrice = Integer.toString(entryInfo.getLowPrice());
+		mNote = entryInfo.getNote();
+		mAuctionResult = entryInfo.getAuctionResult();
+		mAuctionSucBidder = entryInfo.getAuctionSucBidder();
+		mAuctionBidPrice = Integer.toString(entryInfo.getAuctionBidPrice());
+		mAuctionBidDateTime = entryInfo.getAuctionBidDateTime();
+		mIsLastEntry = entryInfo.getIsLastEntry();
+		mStandPosition = entryInfo.getStandPosition();
+		mIsExcessCow = entryInfo.getIsExcessCow();
+		mSraSbidUpPrice = Integer.toString(entryInfo.getSraSbidUpPrice());
 	}
 
 	public String getAuctionHouseCode() {
 		return mAuctionHouseCode;
 	}
 
-	public void setAuctionHouseCode(String mAuctionHouseCode) {
-		this.mAuctionHouseCode = mAuctionHouseCode;
+	public void setAuctionHouseCode(String auctionHouseCode) {
+		this.mAuctionHouseCode = auctionHouseCode;
 	}
 
 	public String getEntryNum() {
@@ -181,7 +197,7 @@ public class EntryInfo implements FromAuctionController {
 	public void setAuctionQcn(String auctionQcn) {
 		this.mAuctionQcn = auctionQcn;
 	}
-
+	
 	public String getEntryType() {
 		return mEntryType;
 	}
@@ -278,20 +294,20 @@ public class EntryInfo implements FromAuctionController {
 		this.mMotherObjNum = mMotherObjNum;
 	}
 
-	public String getMaTime() {
+	public String getMatime() {
 		return mMaTime;
 	}
 
-	public void setMaTime(String maTime) {
-		this.mMaTime = maTime;
+	public void setMatime(String mMatime) {
+		this.mMaTime = mMatime;
 	}
-
-	public int getMaMonth() {
+	
+	public String getMaMonth() {
 		return mMaMonth;
 	}
 
-	public void setMatime(int maMonth) {
-		this.mMaMonth = maMonth;
+	public void setMaMonth(String mMaMonth) {
+		this.mMaMonth = mMaMonth;
 	}
 
 	public String getPasgQcn() {
@@ -358,19 +374,19 @@ public class EntryInfo implements FromAuctionController {
 		this.mWeight = mWeight;
 	}
 
-	public int getInitPrice() {
+	public String getInitPrice() {
 		return mInitPrice;
 	}
 
-	public void setInitPrice(int mInitPrice) {
+	public void setInitPrice(String mInitPrice) {
 		this.mInitPrice = mInitPrice;
 	}
 
-	public int getLowPrice() {
+	public String getLowPrice() {
 		return mLowPrice;
 	}
 
-	public void setLowPrice(int mLowPrice) {
+	public void setLowPrice(String mLowPrice) {
 		this.mLowPrice = mLowPrice;
 	}
 
@@ -398,11 +414,11 @@ public class EntryInfo implements FromAuctionController {
 		this.mAuctionSucBidder = auctionSucBidder;
 	}
 
-	public int getAuctionBidPrice() {
+	public String getAuctionBidPrice() {
 		return mAuctionBidPrice;
 	}
 
-	public void setAuctionBidPrice(int auctionBidPrice) {
+	public void setAuctionBidPrice(String auctionBidPrice) {
 		this.mAuctionBidPrice = auctionBidPrice;
 	}
 
@@ -422,84 +438,14 @@ public class EntryInfo implements FromAuctionController {
 		this.mIsLastEntry = mIsLastEntry;
 	}
 
-	public String getAucDt() {
-		return mAucDt;
-	}
-
-	public void setAucDt(String mAucDt) {
-		this.mAucDt = mAucDt;
-	}
-
-	public String getLsChgDtm() {
-		return mLsChgDtm;
-	}
-
-	public void setLsChgDtm(String mLsChgDtm) {
-		this.mLsChgDtm = mLsChgDtm;
-	}
-
-	public String getLsCmeNo() {
-		return mLsCmeNo;
-	}
-
-	public void setLsCmeNo(String mLsCmeNo) {
-		this.mLsCmeNo = mLsCmeNo;
-	}
-
-	public int getLwprChgNt() {
-		return mLwprChgNt;
-	}
-
-	public void setLwprChgNt(int mLwprChgNt) {
-		this.mLwprChgNt = mLwprChgNt;
-	}
-
-	public String getOslpNo() {
-		return mOslpNo;
-	}
-
-	public void setOslpNo(String mOslpNo) {
-		this.mOslpNo = mOslpNo;
-	}
-
-	public String getTrmnAmnNo() {
-		return mTrmnAmnNo;
-	}
-
-	public void setTrmnAmnNo(String mTrmnAmnNo) {
-		this.mTrmnAmnNo = mTrmnAmnNo;
-	}
-
-	public String getLedSqno() {
-		return mLedSqno;
-	}
-
-	public void setLedSqno(String mLedSqno) {
-		this.mLedSqno = mLedSqno;
-	}
-
-	public String getGenderName() {
-		return mGenderName;
-	}
-
-	public void setGenderName(String mGenderName) {
-		this.mGenderName = mGenderName;
-	}
-
-	public String getMotherCowName() {
-		return mMotherCowName;
-	}
-
-	public void setMotherCowName(String mMotherCowName) {
-		this.mMotherCowName = mMotherCowName;
-	}
-	public int getSraSbidUpPrice() {
+	public String getSraSbidUpPrice() {
 		return mSraSbidUpPrice;
 	}
-	public void setSraSbidUpPrice(int mSraSbidUpPrice) {
+
+	public void setSraSbidUpPrice(String mSraSbidUpPrice) {
 		this.mSraSbidUpPrice = mSraSbidUpPrice;
 	}
-
+	
 	public String getStandPosition() {
 		return mStandPosition;
 	}
@@ -516,27 +462,18 @@ public class EntryInfo implements FromAuctionController {
 		this.mIsExcessCow = isExcessCow;
 	}
 	
-	public String getReRgnName() {
-		return mReRgnName;
-	}
-
-	public void setReRgnName(String mReRgnName) {
-		this.mReRgnName = mReRgnName;
-	}
-
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
 				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
-				mEntryNum, AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mEntryType,
-				AuctionShareSetting.DELIMITER, mIndNum, AuctionShareSetting.DELIMITER, mIndMngCd,
-				AuctionShareSetting.DELIMITER, mFhsNum, AuctionShareSetting.DELIMITER, mFarmMngNum,
-				AuctionShareSetting.DELIMITER, mExhibitor, AuctionShareSetting.DELIMITER, mBrandName,
-				AuctionShareSetting.DELIMITER, mBirthday, AuctionShareSetting.DELIMITER, mKpn,
-				AuctionShareSetting.DELIMITER, mGender, AuctionShareSetting.DELIMITER, mMotherTypeCode,
-				AuctionShareSetting.DELIMITER, mMotherObjNum, AuctionShareSetting.DELIMITER, mMaTime,
-				AuctionShareSetting.DELIMITER, mMaMonth, AuctionShareSetting.DELIMITER, mPasgQcn,
+				mEntryNum, AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mEntryType, AuctionShareSetting.DELIMITER, mIndNum,
+				AuctionShareSetting.DELIMITER, mIndMngCd, AuctionShareSetting.DELIMITER, mFhsNum,
+				AuctionShareSetting.DELIMITER, mFarmMngNum, AuctionShareSetting.DELIMITER, mExhibitor,
+				AuctionShareSetting.DELIMITER, mBrandName, AuctionShareSetting.DELIMITER, mBirthday,
+				AuctionShareSetting.DELIMITER, mKpn, AuctionShareSetting.DELIMITER, mGender,
+				AuctionShareSetting.DELIMITER, mMotherTypeCode, AuctionShareSetting.DELIMITER, mMotherObjNum,
+				AuctionShareSetting.DELIMITER, mMaTime, AuctionShareSetting.DELIMITER, mMaMonth, AuctionShareSetting.DELIMITER, mPasgQcn,
 				AuctionShareSetting.DELIMITER, mObjIdNum, AuctionShareSetting.DELIMITER, mObjRegNum,
 				AuctionShareSetting.DELIMITER, mObjRegTypeNum, AuctionShareSetting.DELIMITER, mRgnName,
 				AuctionShareSetting.DELIMITER, mDnaYn, AuctionShareSetting.DELIMITER, mIsNew,
