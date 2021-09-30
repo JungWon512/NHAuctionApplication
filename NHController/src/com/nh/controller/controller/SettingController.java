@@ -282,33 +282,33 @@ public class SettingController implements Initializable {
 		}
 		
 		if(CommonUtils.getInstance().isValidString(mUpperLimitFatteningCattleTextField.getText().trim())) {
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mUpperLimitFatteningCattleTextField.getText().trim());
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, mUpperLimitFatteningCattleTextField.getText().trim());
 		}else {
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_FATTENING_TEXT);
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_FATTENING_TEXT);
 		}
 		
 		if(CommonUtils.getInstance().isValidString(mUpperLimitBreedingCattleTextField.getText().trim())) {
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mUpperLimitBreedingCattleTextField.getText().trim());
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, mUpperLimitBreedingCattleTextField.getText().trim());
 		}else {
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_BREEDING_TEXT);
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_BREEDING_TEXT);
 		}
 		
 		if(CommonUtils.getInstance().isValidString(mLowerLimitCalfTextField.getText().trim())) {
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mLowerLimitCalfTextField.getText().trim());
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, mLowerLimitCalfTextField.getText().trim());
 		}else {
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT);
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT);
 		}
 		
 		if(CommonUtils.getInstance().isValidString(mLowerLimitFatteningCattleTextField.getText().trim())) {
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mLowerLimitFatteningCattleTextField.getText().trim());
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, mLowerLimitFatteningCattleTextField.getText().trim());
 		}else {
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_FATTENING_TEXT);
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_FATTENING_TEXT);
 		}
 		
 		if(CommonUtils.getInstance().isValidString(mLowerLimitBreedingCattleTextField.getText().trim())) {
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, mLowerLimitBreedingCattleTextField.getText().trim());
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, mLowerLimitBreedingCattleTextField.getText().trim());
 		}else {
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_BREEDING_TEXT);
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_BREEDING_TEXT);
 		}
 		
 		// 동가재경매 횟수
@@ -862,7 +862,12 @@ public class SettingController implements Initializable {
 	 * @author dhKim
 	 */
 	private void saveSettings() {
+		
 		if (isValid()) {
+			
+
+			try {
+		
 			mLogger.debug("save Settings...");
 			setTextFields();
 			setAnnounceNoteCheckboxPreference();
@@ -890,7 +895,6 @@ public class SettingController implements Initializable {
 
 			if (this.isDisplayBordConnection) {
 
-				try {
 					// UDP 전광판
 					if (SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, "") != null && !SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, "").isEmpty()) {
 	
@@ -934,15 +938,16 @@ public class SettingController implements Initializable {
 							PdpDelegate.getInstance().initPdp();
 						}
 					}
-				} catch (Exception e) {
-					mLogger.debug("[onAuctionStatus Exception] " + e);
-				}
-				
 			}
-			// 환경설정 저장 후 값들 재설정
-			SettingApplication.getInstance().initSharedData();
-
-			showAlertSuccess();
+			
+			} catch (Exception e) {
+				mLogger.debug("[onAuctionStatus Exception] " + e);
+			}finally {
+				// 환경설정 저장 후 값들 재설정
+				SettingApplication.getInstance().initSharedData();
+				showAlertSuccess();
+			}
+				
 		} else {
 			mLogger.debug("validation failed!");
 //            showAlertFailure();
