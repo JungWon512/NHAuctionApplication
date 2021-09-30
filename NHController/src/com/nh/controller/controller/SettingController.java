@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.nh.controller.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +20,6 @@ import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.netty.BillboardDelegate;
 import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.setting.SettingApplication;
-import com.nh.controller.utils.CommonUtils;
-import com.nh.controller.utils.GlobalDefine;
-import com.nh.controller.utils.MoveStageUtil;
-import com.nh.controller.utils.SharedPreference;
 import com.nh.share.controller.models.EditSetting;
 
 import javafx.application.Platform;
@@ -335,9 +332,9 @@ public class SettingController implements Initializable {
 			// 계류대 번호
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, mStandPositionTextField.getText().trim());
 		}
-		
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, mSoundValTextArea.getText());
-	
+
+		// TTS 인증 처리
+		SoundUtil.getInstance().initCertification(mSoundValTextArea.getText());
 	}
 
 	/**

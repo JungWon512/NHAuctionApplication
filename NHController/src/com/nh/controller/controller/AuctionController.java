@@ -213,7 +213,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// Views
 		initViewConfiguration();
 
-		SoundUtil.getInstance().initSoundSetting();
+		// SoundUtil init.
+		SoundUtil.getInstance();
 	}
 
 	/**
