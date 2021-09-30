@@ -494,7 +494,7 @@
                                     <Image url="@../resource/images/ic_con_off.png" />
                                  </image>
                               </ImageView>
-                              <Label text="출하">
+                              <Label text="계류대">
                                  <font>
                                     <Font name="Noto Sans CJK KR Regular" size="15.0" />
                                  </font>
