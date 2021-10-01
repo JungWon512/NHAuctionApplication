@@ -459,46 +459,63 @@
          <children>
             <VBox maxHeight="140.0" minHeight="140.0" prefHeight="140.0" spacing="4.0">
                <children>
-                  <HBox alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" spacing="10.0">
+                  <HBox alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" spacing="2.0">
                      <children>
                         <HBox alignment="CENTER" spacing="4.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <ImageView fx:id="mDisplay_1_ImageView" disable="true" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" styleClass="display-board-status">
-                                 <image>
-                                    <Image url="@../resource/images/ic_con_off.png" />
-                                 </image>
-                              </ImageView>
-                              <Label text="종합안내">
-                                 <font>
-                                    <Font name="Noto Sans CJK KR Regular" size="15.0" />
-                                 </font></Label>
+                              <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <ImageView fx:id="mDisplay_1_ImageView" disable="true" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" styleClass="display-board-status">
+                                       <image>
+                                          <Image url="@../resource/images/ic_con_off.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="종합안내">
+                                       <font>
+                                          <Font name="Noto Sans CJK KR Regular" size="15.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
                            </children>
                         </HBox>
                         <HBox alignment="CENTER" spacing="4.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <ImageView fx:id="mDisplay_2_ImageView" disable="true" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" styleClass="display-board-status">
-                                 <image>
-                                    <Image url="@../resource/images/ic_con_off.png" />
-                                 </image>
-                              </ImageView>
-                              <Label text="TV">
-                                 <font>
-                                    <Font name="Noto Sans CJK KR Regular" size="15.0" />
-                                 </font></Label>
+                              <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <ImageView fx:id="mDisplay_2_ImageView" disable="true" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" styleClass="display-board-status">
+                                       <image>
+                                          <Image url="@../resource/images/ic_con_off.png" />
+                                       </image>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                    </ImageView>
+                                    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="TV">
+                                       <font>
+                                          <Font name="Noto Sans CJK KR Regular" size="15.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
                            </children>
                         </HBox>
                         <HBox alignment="CENTER" spacing="4.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <ImageView fx:id="mDisplay_3_ImageView" disable="true" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" styleClass="display-board-status">
-                                 <image>
-                                    <Image url="@../resource/images/ic_con_off.png" />
-                                 </image>
-                              </ImageView>
-                              <Label text="계류대">
-                                 <font>
-                                    <Font name="Noto Sans CJK KR Regular" size="15.0" />
-                                 </font>
-                              </Label>
+                              <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <ImageView fx:id="mDisplay_3_ImageView" disable="true" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" styleClass="display-board-status">
+                                       <image>
+                                          <Image url="@../resource/images/ic_con_off.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="계류대">
+                                       <font>
+                                          <Font name="Noto Sans CJK KR Regular" size="15.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
                            </children>
                         </HBox>
                      </children>
@@ -506,7 +523,7 @@
                         <Insets />
                      </VBox.margin>
                      <padding>
-                        <Insets bottom="12.0" top="12.0" />
+                        <Insets bottom="5.0" />
                      </padding>
                   </HBox>
                   <Label fx:id="mAuctionStateLabel" alignment="CENTER" maxHeight="100.0" maxWidth="1.7976931348623157E308" styleClass="label-status" text="경매대기" VBox.vgrow="ALWAYS" />
