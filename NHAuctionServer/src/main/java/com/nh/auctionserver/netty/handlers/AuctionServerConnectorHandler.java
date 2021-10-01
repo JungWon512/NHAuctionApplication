@@ -1,5 +1,6 @@
 package com.nh.auctionserver.netty.handlers;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
@@ -523,15 +525,21 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 							}
 						} else {
 							if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
-								ctx.writeAndFlush(new StandEntryInfo(mAuctionScheduler
-										.getAuctionState(connectionInfo.getAuctionHouseCode()).getCurrentEntryInfo())
-												.getEncodedMessage()
-										+ "\r\n");
-
 								// 정상 접속자 초기 경매 상태 정보 전달 처리
 								ctx.channel()
 										.writeAndFlush(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
 												.getAuctionStatus().getEncodedMessage() + "\r\n");
+								
+								List<EntryInfo> entryList = mAuctionScheduler.getAuctionEntryRepositoryMap(connectionInfo.getAuctionHouseCode()).getEntryList();
+								
+								if (entryList != null) {
+									if (entryList.size() > 0) {
+										for (EntryInfo entryInfo : entryList) {
+											ctx.writeAndFlush(
+													new StandEntryInfo(entryInfo).getEncodedMessage() + "\r\n");
+										}
+									}
+								}
 							}
 						}
 					}

@@ -814,6 +814,12 @@ public abstract class BaseAuctionController implements NettyControllable {
 			// 경매 결과 DB 저장
 			final int resultValue = EntryInfoMapperService.getInstance().updateAuctionResult(auctionResult);
 
+			// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
+			if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+				auctionResult.setSuccessBidder("");
+				auctionResult.setSuccessAuctionJoinNum("");
+			}
+				
 			// 성공시
 			if (resultValue > 0) {
 
@@ -863,8 +869,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 			break;
 		case GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL:
 			auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
-			auctionResult.setSuccessBidder(null);
-			auctionResult.setSuccessAuctionJoinNum(null);
+			auctionResult.setSuccessBidder("");
+			auctionResult.setSuccessAuctionJoinNum("");
 			auctionResult.setSuccessBidPrice("0");
 			auctionResult.setSuccessBidUpr("0");
 			addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));

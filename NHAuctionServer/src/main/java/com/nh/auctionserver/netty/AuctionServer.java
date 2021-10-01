@@ -130,6 +130,9 @@ public class AuctionServer {
 			mLogger.info("======= Auctoin Server Informations[Start] =======");
 			mLogger.info("Server Host : " + InetAddress.getLocalHost());
 			mLogger.info("Server Port : " + port);
+			mLogger.info("Server PRD MODE : " + GlobalDefineCode.FLAG_PRD);
+			mLogger.info("Server SSL MODE : " + GlobalDefineCode.FLAG_SSL);
+			mLogger.info("Server TEST MODE : " + GlobalDefineCode.FLAG_TEST_MODE);
 			mLogger.info("======= Auctoin Server Informations[End] =======");
 
 			createAuctioneer(this);

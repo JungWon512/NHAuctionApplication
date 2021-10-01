@@ -956,4 +956,8 @@ public class Auctioneer {
 
 		return result;
 	}
+	
+	public synchronized AuctionEntryRepository getAuctionEntryRepositoryMap(String auctionHouseCode) {
+		return mAuctionEntryRepositoryMap.get(auctionHouseCode);
+	}
 }
