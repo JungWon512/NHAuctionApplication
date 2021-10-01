@@ -12,7 +12,6 @@ import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.ApiUtils;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
-import com.nh.controller.utils.GlobalDefine.AUCTION_INFO;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.api.ActionResultListener;

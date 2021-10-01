@@ -22,6 +22,7 @@ import java.util.TimerTask;
 import java.util.function.UnaryOperator;
 
 import com.nh.controller.interfaces.BooleanListener;
+import com.nh.share.setting.AuctionShareSetting;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -1184,6 +1185,21 @@ public class CommonUtils {
 
 		TextFormatter<String> textFormatter = new TextFormatter<>(filter);
 		textField.setTextFormatter(textFormatter);
+	}
+	
+	/**
+	 * 문자열에 | 존재시 특수문자 ｜ 로 치환
+	 * @param str
+	 * @return
+	 */
+	public String replaceDelimiter(String str) {
+
+		if(isValidString(str)) {			
+			if(str.indexOf(AuctionShareSetting.DELIMITER) > 0) {
+				str = str.replace(String.valueOf(AuctionShareSetting.DELIMITER), "｜");
+			}
+		}
+		return str;
 	}
 
 }

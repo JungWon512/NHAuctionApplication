@@ -87,6 +87,10 @@ public class SpBidding implements FromAuctionCommon, Serializable, Comparable<Sp
     public StringProperty getBiddingTime() {
         return biddingTime;
     }
+    
+    public long getBiddingTimeValue() {
+        return Long.parseLong(biddingTime.getValue());
+    }
 
     public void setBiddingTime(StringProperty biddingTime) {
         this.biddingTime = biddingTime;

@@ -12,6 +12,10 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -190,7 +194,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			Thread udpServer = new Thread("server") {
 				@Override
 				public void run() {
-					createUdpClient(mUdpBillBoardStatusListener,mUdpPdpBoardStatusListener);
+					createUdpClient(mUdpBillBoardStatusListener, mUdpPdpBoardStatusListener);
 				}
 			};
 			udpServer.setDaemon(true);
@@ -230,7 +234,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		// SoundUtil init.
 		SoundUtil.getInstance();
-		
+
 		Thread aucServer = new Thread("server") {
 			@Override
 			public void run() {
@@ -240,7 +244,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		};
 		aucServer.setDaemon(true);
 		aucServer.start();
-		
+
 	}
 
 	/**
@@ -524,7 +528,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		};
 		aucServer.setDaemon(true);
 		aucServer.start();
-		
+
 	}
 
 	/**
@@ -1058,7 +1062,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					setBaseDownPrice(Integer.toString(BaselowPrice));
 				}
 			}
-		}, mUdpBillBoardStatusListener , mUdpPdpBoardStatusListener);
+		}, mUdpBillBoardStatusListener, mUdpPdpBoardStatusListener);
 	}
 
 	/**
@@ -1135,6 +1139,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				public void onShutDown(int port) {
 					Platform.runLater(() -> {
 						CommonUtils.getInstance().dismissLoadingDialog();
+						exeCalculationRankServiceShutDown();
 						MoveStageUtil.getInstance().moveAuctionType(mStage);
 					});
 				}
@@ -1142,6 +1147,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		} else {
 			Platform.runLater(() -> {
 				CommonUtils.getInstance().dismissLoadingDialog();
+				exeCalculationRankServiceShutDown();
 				MoveStageUtil.getInstance().moveAuctionType(mStage);
 			});
 		}
@@ -1367,7 +1373,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 			// 카운트 다운 중일 경우 실행 안 함
-			if (isCountDownRunning) {
+			// 정지상태인경우 실행 안함
+			if (isCountDownRunning || isPause) {
 				return;
 			}
 
@@ -1412,7 +1419,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //	}
 
 	public void checkAndOnPause() {
-		if (isCountDownRunning) {
+		if (!isPause) {
+
+			mBtnReStart.setDisable(false);
+			mBtnPause.setDisable(true);
+
+			// 자동경매 카운트다운중인경우 스케줄러 멈춤.
+			if (SettingApplication.getInstance().isUseSoundAuction()) {
+				stopAutoAuctionScheduler();
+				mBtnSpace.setUserData("");
+			}
+
 			isPause = true;
 			onPause();
 		}
@@ -1426,12 +1443,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
-			// 자동경매 카운트다운중인경우 스케줄러 멈춤.
-			if (SettingApplication.getInstance().isUseSoundAuction()) {
-				stopAutoAuctionScheduler();
-				mBtnSpace.setUserData("");
-			}
-
 			addLogItem("카운트 다운 정지 : " + AuctionDelegate.getInstance().onPause(new PauseAuction(mCurrentSpEntryInfo.getAuctionHouseCode().getValue(), mCurrentSpEntryInfo.getEntryNum().getValue())));
 
 		}
@@ -1444,6 +1455,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+
+			mBtnReStart.setDisable(true);
+			mBtnPause.setDisable(false);
+
 			isPause = false;
 			onStopAuction(mRemainingTimeCount);
 		}
@@ -1724,13 +1739,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		setAuctionVariableState(auctionStatus.getState());
 
 		switch (auctionStatus.getState()) {
+		case GlobalDefineCode.AUCTION_STATUS_READY:
+			// 타이머 초기화
+			stopAutoAuctionScheduler();
+			break;
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
 			// 사운드 경매인 경우 타이머 시작.
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
-				// 타이머 초기화
-				stopAutoAuctionScheduler();
 				// 음성 경매시 종료 타이머 시작.
 				soundAuctionTimerTask();
 			}
@@ -1762,9 +1779,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void startAutoAuctionScheduler(int countDown) {
 
+		if (isPause) {
+			return;
+		}
+
 		int waitingTime = SettingApplication.getInstance().getSoundAuctionWaitTime() * 1000;
 
 		if (mAutoStopScheduler != null) {
+			addLogItem("정지 타이머 NOT NULL");
 			return;
 		}
 
@@ -1781,7 +1803,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		mAutoStopScheduler = new Timer();
 		mAutoStopScheduler.schedule(timerTask, waitingTime);
-		addLogItem("타이머 시작");
+		addLogItem("정지 타이머 시작 : " + waitingTime);
 	}
 
 	/**
@@ -1799,17 +1821,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 사운드 경매시 응찰 금액에 따라 타이머 동작 제어
 	 */
 	@Override
-	protected void soundAuctionTimerTask() {
+	protected synchronized void soundAuctionTimerTask() {
 
 		// 응찰자가 있는경우
 		if (mCurrentBidderMap.size() > 0) {
 
+			mLogger.debug("[soundAuctionTimerTask] " + mCurrentBidderMap.size());
 			// 현재 1순위
 			SpBidding rank_1_user = mBiddingUserInfoDataList.get(0);
-
 			// 응찰 가격 조건 체크
 			// 최저가 + 상한가 상황이면 사운드 재생 , 경매 카운트 정지.
 			if (!checkOverPrice(rank_1_user)) {
+
+				if (isPause) {
+					playOverPriceSound(rank_1_user.getAuctionJoinNum().getValue());
+					return;
+				}
 
 				addLogItem("soundAuctionTimerTask ==== 사운드 경매 자동 종료");
 
@@ -1818,16 +1845,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					mCountDownLabel.setVisible(false);
 				}
 
+				// 자동경매 카운트다운중인경우 스케줄러 멈춤.
+				if (SettingApplication.getInstance().isUseSoundAuction()) {
+					stopAutoAuctionScheduler();
+					mBtnSpace.setUserData("");
+				}
 				// 타이머 멈춤.
 				onPause();
 
 				return;
 			} else {
+				mLogger.debug("[soundAuctionTimerTask 응찰가격 정상]");
 				// 응찰 가격이 정상인경우 설정 대기시간 기다린 후 경매 정지
 				startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
 			}
 		} else {
-			// 타이머 시작
+			mLogger.debug("[soundAuctionTimerTask BIDDER IS NULL]");
+			// 타이머 시작시
 			startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
 		}
 
@@ -1879,6 +1913,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 취소 눌린경우 카운트다운 완료가 후에 들어오기 때문에.. 아래 코드 실행 안 함.
 			// 정지인경우.
 			if (isCancel || isPause) {
+				addLogItem("==== isCancel " + isCancel + " / " + isPause);
 				return;
 			}
 
@@ -1919,83 +1954,111 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		}
 	}
+	
 
 	@Override
 	public void onBidderConnectInfo(BidderConnectInfo bidderConnectInfo) {
-		super.onBidderConnectInfo(bidderConnectInfo);
+//		super.onBidderConnectInfo(bidderConnectInfo);
+		mLogger.debug("[onBidderConnectInfo] " + bidderConnectInfo.getEncodedMessage());
+		
+		//미응찰,접속해제 상태만 받음.
+		if (!bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_N)
+				&& !bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_L)) {
+			return;
+		}
 
-		// connection server
-		Thread thread = new Thread("onBidderConnectInfo") {
-			@Override
-			public void run() {
-				synchronized (this) {
-					Platform.runLater(() -> {
+		CompletableFuture<Boolean> futurePrice = new CompletableFuture<>();
+		
+		new Thread(() -> {
+			try {
+				mLogger.debug("[onBidderConnectInfo result thread Start] ");
+				boolean isComplete = getConnectionBidderInfo(bidderConnectInfo);
+				futurePrice.complete(isComplete);
+			} catch (Exception e) {
+				futurePrice.completeExceptionally(e);
+			}
+		}).start();
+		
+		try {
+			
+			Boolean result = futurePrice.get(3000, TimeUnit.SECONDS);
+			
+			mLogger.debug("[onBidderConnectInfo result] " +result );
+			
+			if(result) {
 
-						if (!bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_L)) {
+				Platform.runLater(()->{
+					mConnectionUserCntLabel.setText(String.format(mResMsg.getString("str.connection.user.count"), mConnectionUserMap.size()));
+					// 갱신
+					mConnectionUserTableView.refresh();
+				});
+			}
+			
+		} catch (InterruptedException e) { // handle e
+			mLogger.debug("[onBidderConnectInfo] " + e);
+		} catch (ExecutionException e) { // handle e 
+			mLogger.debug("[onBidderConnectInfo] " + e);
+		} catch (TimeoutException e) { // handle e }
+			mLogger.debug("[onBidderConnectInfo] " + e);
+		}
+	}
+	
+	private boolean getConnectionBidderInfo(BidderConnectInfo bidderConnectInfo) {
 
-							// 상태가 접속해제(L)이 아니고 이미 맵에 있는경우 하위 실행 X
-							if (mConnectionUserMap.containsKey(bidderConnectInfo.getUserNo())) {
-								return;
-							}
+		if (!bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_L)) {
 
-							// 맵에 담음.
-							mConnectionUserMap.put(bidderConnectInfo.getUserNo(), bidderConnectInfo);
+			// 상태가 접속해제(L)이 아니고 이미 맵에 있는경우 하위 실행 X
+			if (!mConnectionUserMap.containsKey(bidderConnectInfo.getUserNo())) {
+				// 맵에 담음.
+				mConnectionUserMap.put(bidderConnectInfo.getUserNo(), bidderConnectInfo);
 
-							if (mConnectionUserDataList.size() <= 0) {
+				if (mConnectionUserDataList.size() <= 0) {
+					ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
+					observDataList.add(new SpBidderConnectInfo());
+					mConnectionUserDataList.addAll(observDataList);
+				}
+
+				Loop: for (SpBidderConnectInfo spBidderConnectInfo : mConnectionUserDataList) {
+
+					int len = spBidderConnectInfo.getUserNo().length;
+
+					for (int i = 0; len > i; i++) {
+						if (spBidderConnectInfo.getUserNo()[i] == null || !CommonUtils.getInstance().isValidString(spBidderConnectInfo.getUserNo()[i].getValue())) {
+
+							spBidderConnectInfo.getUserNo()[i] = new SimpleStringProperty(bidderConnectInfo.getUserNo());
+							// 부가 정보들 필요시 주석 해제
+							spBidderConnectInfo.getStatus()[i] = new SimpleStringProperty(bidderConnectInfo.getStatus());
+
+							if (i == 4) {
 								ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
 								observDataList.add(new SpBidderConnectInfo());
 								mConnectionUserDataList.addAll(observDataList);
 							}
 
-							Loop: for (SpBidderConnectInfo spBidderConnectInfo : mConnectionUserDataList) {
-
-								int len = spBidderConnectInfo.getUserNo().length;
-
-								for (int i = 0; len > i; i++) {
-									if (spBidderConnectInfo.getUserNo()[i] == null || !CommonUtils.getInstance().isValidString(spBidderConnectInfo.getUserNo()[i].getValue())) {
-
-										spBidderConnectInfo.getUserNo()[i] = new SimpleStringProperty(bidderConnectInfo.getUserNo());
-										// 부가 정보들 필요시 주석 해제
-										spBidderConnectInfo.getStatus()[i] = new SimpleStringProperty(bidderConnectInfo.getStatus());
-
-										if (i == 4) {
-											ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
-											observDataList.add(new SpBidderConnectInfo());
-											mConnectionUserDataList.addAll(observDataList);
-										}
-
-										break Loop;
-									}
-								}
-
-							}
-
-						} else {
-							// 접속 해제인경우.
-							// 지움.
-							mConnectionUserMap.remove(bidderConnectInfo.getUserNo());
-							// 찾아서 지움.
-							mConnectionUserDataList.stream().flatMap(a -> Arrays.stream(a.getUserNo())).filter(b -> b != null && b.getValue().equals(bidderConnectInfo.getUserNo())).map(item -> {
-								item.setValue("");
-								return item;
-							}).forEach(System.out::println);
-
-							if (mConnectionUserMap.size() <= 0) {
-								sortConnectionUserDataList();
-							}
+							break Loop;
 						}
-
-						// 갱신
-						mConnectionUserTableView.refresh();
-						Platform.runLater(() -> mConnectionUserCntLabel.setText(String.format(mResMsg.getString("str.connection.user.count"), mConnectionUserMap.size())));
-
-					});
+					}
 				}
+			}else {
+				return false;
 			}
-		};
-		thread.setDaemon(true);
-		thread.start();
 
+		} else {
+			// 접속 해제인경우.
+			// 지움.
+			mConnectionUserMap.remove(bidderConnectInfo.getUserNo());
+			// 찾아서 지움.
+			mConnectionUserDataList.stream().flatMap(a -> Arrays.stream(a.getUserNo())).filter(b -> b != null && b.getValue().equals(bidderConnectInfo.getUserNo())).map(item -> {
+				item.setValue("");
+				return item;
+			}).forEach(System.out::println);
+
+			if (mConnectionUserMap.size() <= 0) {
+				sortConnectionUserDataList();
+			}
+			
+		}
+		return true;
 	}
 
 	/**
@@ -2313,7 +2376,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			switch (code) {
 
 			case GlobalDefineCode.AUCTION_STATUS_READY:
+
 				System.out.println("#### GlobalDefineCode.AUCTION_STATUS_READY ####");
+
 				// 카운트다운 라벨 초기화
 				setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
 				// 카운트 시간 초기화
@@ -2368,6 +2433,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				isResultCompleteFlag = false;
 
 				mBiddingInfoTableView.refresh();
+				// 정지,다시시작 버튼
+				mBtnReStart.setDisable(true);
+				mBtnPause.setDisable(false);
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_START:
 			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -2385,7 +2453,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_PASS:
 			case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
-
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_FINISH:
 
@@ -2572,6 +2639,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			// 응찰자 갱신 후 완료 콜백
 			mCalculationRankCallBack.completed(true, null);
+
 		});
 	}
 
@@ -3067,12 +3135,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("str.auction.over.price.valid")));
 			} else {
 
-				// 응찰금액 확인 사운드 메세지
-				String overPriceSoundMessage = String.format(mResMsg.getString("str.sound.auction.over.price"), rank_1_user.getAuctionJoinNum().getValue());
-
-				System.out.println("[SOUND 응찰 금액 확인] : " + overPriceSoundMessage);
-				// 사운드 시작
-				SoundUtil.getInstance().playSound(overPriceSoundMessage, null);
+				// 응찰금액 확인 사운드
+				playOverPriceSound(rank_1_user.getAuctionJoinNum().getValue());
 				// 카운트 라벨 설정 시간 기준 초기화
 				setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), false);
 			}
@@ -3080,6 +3144,21 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 		return true;
+	}
+
+	/**
+	 * 응찰금액 확인 사운
+	 * 
+	 * @param joinNumber
+	 */
+	private void playOverPriceSound(String joinNumber) {
+
+		// 응찰금액 확인 사운드 메세지
+		String overPriceSoundMessage = String.format(mResMsg.getString("str.sound.auction.over.price"), joinNumber);
+
+		System.out.println("[SOUND 응찰 금액 확인] : " + overPriceSoundMessage);
+		// 사운드 시작
+		SoundUtil.getInstance().playSound(overPriceSoundMessage, null);
 	}
 
 	/**
@@ -3219,60 +3298,60 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		public void onActive() {
 			setDisplayBilboard(true);
 		}
-		
+
 		@Override
 		public void onInActive() {
 			setDisplayBilboard(false);
 		}
+
 		@Override
 		public void exceptionCaught() {
 			setDisplayBilboard(false);
 		}
 	};
-	
+
 	public UdpPdpBoardStatusListener mUdpPdpBoardStatusListener = new UdpPdpBoardStatusListener() {
 
 		@Override
 		public void onActive() {
 			setDisplayPdp(true);
 		}
-		
+
 		@Override
 		public void onInActive() {
 			setDisplayPdp(false);
 		}
-		
+
 		@Override
 		public void exceptionCaught() {
 			setDisplayPdp(false);
 		}
 	};
-	
 
 	private void setDisplayBilboard(boolean isOn) {
-		
-		Platform.runLater(()->{
-			if(isOn) {
+
+		Platform.runLater(() -> {
+			if (isOn) {
 				mLogger.debug("[전광판 Bilboard] onActive");
 				mDisplay_1_ImageView.setImage(mResDisplayOn);
-			}else {
+			} else {
 				mLogger.debug("[전광판 Bilboard] inActive");
 				mDisplay_1_ImageView.setImage(mResDisplayOff);
 			}
 		});
-		
+
 	}
+
 	private void setDisplayPdp(boolean isOn) {
-		Platform.runLater(()->{
-			if(isOn) {
+		Platform.runLater(() -> {
+			if (isOn) {
 				mLogger.debug("[전광판 PDP-TV] onActive");
 				mDisplay_2_ImageView.setImage(mResDisplayOn);
-			}else {
+			} else {
 				mLogger.debug("[전광판 PDP-TV] inActive");
 				mDisplay_2_ImageView.setImage(mResDisplayOff);
 			}
 		});
 	}
-
 
 }

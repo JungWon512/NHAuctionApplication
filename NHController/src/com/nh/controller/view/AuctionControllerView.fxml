@@ -522,12 +522,12 @@
                   </TableView>
                   <VBox layoutY="433.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <children>
-                        <Label fx:id="mCountDownLabel" alignment="CENTER" maxHeight="100.0" maxWidth="1.7976931348623157E308" minHeight="100.0" prefHeight="100.0" style="-fx-background-color: #0082e5;" textFill="WHITE" visible="false">
+                        <Label fx:id="mCountDownLabel" alignment="CENTER" maxHeight="100.0" maxWidth="1.7976931348623157E308" minHeight="100.0" prefHeight="100.0" style="-fx-background-color: #0082e5;" text="3" textFill="WHITE" visible="false">
                            <VBox.margin>
                               <Insets left="50.0" right="50.0" />
                            </VBox.margin>
                            <font>
-                              <Font size="27.0" />
+                              <Font name="Noto Sans CJK KR Bold" size="60.0" />
                            </font>
                         </Label>
                         <Label fx:id="mReAuctionLabel" alignment="CENTER" contentDisplay="RIGHT" maxHeight="60.0" maxWidth="1.7976931348623157E308" minHeight="60.0" prefHeight="60.0" style="-fx-background-color: #FF8040;" text="재 경매중!" visible="false">
@@ -538,22 +538,22 @@
                                        <graphic>
                                           <Label contentDisplay="RIGHT" text=")">
                                              <font>
-                                                <Font size="24.0" />
+                                                <Font name="Noto Sans CJK KR Bold" size="30.0" />
                                              </font>
                                           </Label>
                                        </graphic>
                                        <font>
-                                          <Font size="24.0" />
+                                          <Font name="Noto Sans CJK KR Bold" size="30.0" />
                                        </font>
                                     </Label>
                                  </graphic>
                                  <font>
-                                    <Font size="24.0" />
+                                    <Font name="Noto Sans CJK KR Bold" size="30.0" />
                                  </font>
                               </Label>
                            </graphic>
                            <font>
-                              <Font size="24.0" />
+                              <Font name="Noto Sans CJK KR Bold" size="30.0" />
                            </font>
                         </Label>
                      </children>
@@ -564,7 +564,7 @@
                <children>
                   <HBox styleClass="bg-color-0a1931">
                      <children>
-                        <Button fx:id="mBtnReStart" maxHeight="1.7976931348623157E308" maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" prefWidth="40.0">
+                        <Button fx:id="mBtnReStart" disable="true" maxHeight="1.7976931348623157E308" maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" prefWidth="40.0">
                            <graphic>
                               <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
