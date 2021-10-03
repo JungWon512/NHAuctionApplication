@@ -1778,7 +1778,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 사운드경매(자동경매) 일정 대기시간 후 경매 카운트
 	 */
 	public void startAutoAuctionScheduler(int countDown) {
-
 		if (isPause) {
 			return;
 		}
@@ -1796,8 +1795,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			@Override
 			public void run() {
 				addLogItem("Run Stop Scheduler.");
-				// 서버로 정지 전송
-				onStopAuction(countDown);
+				
+				SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), countDown), new PlaybackListener() {
+					@Override
+					public void playbackFinished(PlaybackEvent evt) {
+						// TODO Auto-generated method stub
+						super.playbackFinished(evt);
+						
+						// 서버로 정지 전송
+						onStopAuction(countDown);
+					}
+					
+				});
 			}
 		};
 
@@ -2685,6 +2694,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 
 	 * @param spEntryInfo
 	 */
+	@SuppressWarnings("unlikely-arg-type")
 	private void setCurrentEntrySoundData() {
 
 		StringBuffer entrySoundContent = new StringBuffer();
@@ -2704,7 +2714,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			if (mGenderCheckBox.isSelected() && CommonUtils.getInstance().isValidString(mCurGenterLabel.getText())) {
 				entrySoundContent.append(EMPTY_SPACE);
-				entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender"), mCurGenterLabel.getText()));
+				if (mCurGenterLabel.getText().equals("수")) {
+					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender"), mCurGenterLabel.getText() + "송아지"));
+				} else if (mCurGenterLabel.getText().equals("암")) {
+					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender"), mCurGenterLabel.getText() + "송아지"));
+				} else {
+					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender"), mCurGenterLabel.getText()));
+				}
 			}
 
 			if (mMotherObjNumCheckBox.isSelected() && CommonUtils.getInstance().isValidString(mCurMotherLabel.getText())) {
@@ -2727,7 +2743,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (mLowPriceCheckBox.isSelected() && CommonUtils.getInstance().isValidString(mCurLowPriceLabel.getText())) {
 				entrySoundContent.append(EMPTY_SPACE);
 				if (!Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()).equals(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2)) {
-					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.low.price.1000"), mCurLowPriceLabel.getText()));
+					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.low.price.10000"), mCurLowPriceLabel.getText()));
 				} else {
 					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.low.price.10000"), mCurLowPriceLabel.getText()));
 				}
@@ -2822,42 +2838,123 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //						}
 
 						if (ke.getCode() == KeyCode.DIGIT1) {
-							sendCountDown(1);
-							ke.consume();
+							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), 1), new PlaybackListener() {
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									// TODO Auto-generated method stub
+									super.playbackFinished(evt);
+
+									sendCountDown(1);
+									ke.consume();
+								}
+								
+							});
 						}
 
 						if (ke.getCode() == KeyCode.DIGIT2) {
-							sendCountDown(2);
-							ke.consume();
+							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), 2), new PlaybackListener() {
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									// TODO Auto-generated method stub
+									super.playbackFinished(evt);
+
+									sendCountDown(2);
+									ke.consume();
+								}
+								
+							});
 						}
 						if (ke.getCode() == KeyCode.DIGIT3) {
-							sendCountDown(3);
-							ke.consume();
+							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), 3), new PlaybackListener() {
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									// TODO Auto-generated method stub
+									super.playbackFinished(evt);
+
+									sendCountDown(3);
+									ke.consume();
+								}
+								
+							});
 						}
 
 						if (ke.getCode() == KeyCode.DIGIT4) {
-							sendCountDown(4);
-							ke.consume();
+							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), 4), new PlaybackListener() {
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									// TODO Auto-generated method stub
+									super.playbackFinished(evt);
+
+									sendCountDown(4);
+									ke.consume();
+								}
+								
+							});
 						}
 						if (ke.getCode() == KeyCode.DIGIT5) {
-							sendCountDown(5);
-							ke.consume();
+							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), 5), new PlaybackListener() {
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									// TODO Auto-generated method stub
+									super.playbackFinished(evt);
+
+									sendCountDown(5);
+									ke.consume();
+								}
+								
+							});
 						}
 						if (ke.getCode() == KeyCode.DIGIT6) {
-							sendCountDown(6);
-							ke.consume();
+							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), 6), new PlaybackListener() {
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									// TODO Auto-generated method stub
+									super.playbackFinished(evt);
+
+									sendCountDown(6);
+									ke.consume();
+								}
+								
+							});
 						}
 						if (ke.getCode() == KeyCode.DIGIT7) {
-							sendCountDown(7);
-							ke.consume();
+							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), 7), new PlaybackListener() {
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									// TODO Auto-generated method stub
+									super.playbackFinished(evt);
+
+									sendCountDown(7);
+									ke.consume();
+								}
+								
+							});
 						}
 						if (ke.getCode() == KeyCode.DIGIT8) {
-							sendCountDown(8);
-							ke.consume();
+							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), 8), new PlaybackListener() {
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									// TODO Auto-generated method stub
+									super.playbackFinished(evt);
+
+									sendCountDown(8);
+									ke.consume();
+								}
+								
+							});
 						}
 						if (ke.getCode() == KeyCode.DIGIT9) {
-							sendCountDown(9);
-							ke.consume();
+							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), 9), new PlaybackListener() {
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									// TODO Auto-generated method stub
+									super.playbackFinished(evt);
+									
+									sendCountDown(9);
+									ke.consume();
+								}
+								
+							});
 						}
 
 						break;
