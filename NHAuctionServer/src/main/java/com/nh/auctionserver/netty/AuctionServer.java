@@ -675,6 +675,14 @@ public class AuctionServer {
 						}
 					}
 				}
+				
+				if (mStandChannelsMap != null) {
+					if (mStandChannelsMap.containsKey(((AuctionCountDown) event).getAuctionHouseCode())) {
+						if (mStandChannelsMap.get(((AuctionCountDown) event).getAuctionHouseCode()).size() > 0) {
+							mStandChannelsMap.get(((AuctionCountDown) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
 				break;
 			case ToastMessage.TYPE: // 메시지 전송 처리
 				// Web Socket Broadcast

@@ -48,7 +48,7 @@ public class SendAuctionResult implements FromAuctionController {
 		mResultCode = messages[3];
 		mSuccessBidder = messages[4];
 		mSuccessAuctionJoinNum = messages[5];
-		mSuccessBidPrice = messages[6];
+		mSuccessBidUpr = messages[6];
 	}
 
     public String getAuctionHouseCode() {
@@ -101,7 +101,7 @@ public class SendAuctionResult implements FromAuctionController {
 
     public AuctionResult getConvertAuctionResult() {
         return new AuctionResult(mAuctionHouseCode, mEntryNum, mResultCode, mSuccessBidder, mSuccessAuctionJoinNum,
-                mSuccessBidPrice);
+        		mSuccessBidUpr);
     }
     
     public String getEntryType() {
@@ -157,6 +157,6 @@ public class SendAuctionResult implements FromAuctionController {
         return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
                 mAuctionHouseCode, AuctionShareSetting.DELIMITER, mEntryNum, AuctionShareSetting.DELIMITER, mResultCode,
                 AuctionShareSetting.DELIMITER, mSuccessBidder, AuctionShareSetting.DELIMITER, mSuccessAuctionJoinNum,
-                AuctionShareSetting.DELIMITER, mSuccessBidPrice);
+                AuctionShareSetting.DELIMITER, mSuccessBidUpr);
     }
 }
