@@ -71,6 +71,7 @@ import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ShowEntryInfo;
+import com.nh.share.server.models.StandConnectInfo;
 import com.nh.share.server.models.StandEntryInfo;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
@@ -420,6 +421,10 @@ public class AuctionServer {
 
 			if (serverParsedMessage instanceof ShowEntryInfo) {
 				channelItemWriteAndFlush(((ShowEntryInfo) serverParsedMessage));
+			}
+			
+			if (serverParsedMessage instanceof StandConnectInfo) {
+				channelItemWriteAndFlush(((StandConnectInfo) serverParsedMessage));
 			}
 			break;
 
@@ -910,7 +915,6 @@ public class AuctionServer {
 					}
 				}
 				break;
-
 			case ShowEntryInfo.TYPE: // 출품 정보 노출 설정 정보 전송
 				// Web Socket Broadcast
 				if (mSocketIOHandler != null) {
@@ -922,6 +926,16 @@ public class AuctionServer {
 					if (mBidderChannelsMap.containsKey(((ShowEntryInfo) event).getAuctionHouseCode())) {
 						if (mBidderChannelsMap.get(((ShowEntryInfo) event).getAuctionHouseCode()).size() > 0) {
 							mBidderChannelsMap.get(((ShowEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+				break;
+			case StandConnectInfo.TYPE: // 출하안내시스템 접속 상태 정보 전송
+				// Netty Broadcast
+				if (mControllerChannelsMap != null) {
+					if (mControllerChannelsMap.containsKey(((StandConnectInfo) event).getAuctionHouseCode())) {
+						if (mControllerChannelsMap.get(((StandConnectInfo) event).getAuctionHouseCode()).size() > 0) {
+							mControllerChannelsMap.get(((StandConnectInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -1218,10 +1232,15 @@ public class AuctionServer {
 
 		if (mConnectorInfoMap.containsKey(channelId)) {
 			// 사용자 접속 해제 상테 전송
-			if(mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+			if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 				itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), mConnectorInfoMap.get(channelId).getAuctionJoinNum(),
 						mConnectorInfoMap.get(channelId).getChannel(), mConnectorInfoMap.get(channelId).getOS(), "L", "0")
 								.getEncodedMessage());
+			}
+			
+			// 출하안내시스템 접속 해제 상테 전송
+			if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+				itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), "2001").getEncodedMessage());
 			}
 
 			mConnectorInfoMap.remove(channelId);

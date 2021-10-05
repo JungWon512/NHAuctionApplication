@@ -17,6 +17,7 @@ import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
+import com.nh.share.server.models.StandConnectInfo;
 import com.nh.share.server.models.StandEntryInfo;
 import com.nh.share.utils.JwtCertTokenUtils;
 
@@ -484,7 +485,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
 					
 					if (mStandChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mStandChannelsMap.get(connectionInfo.getAuctionHouseCode()).contains(ctx.channel())) {
-						mLogger.info("이미 출하 안내 시스템이 접속 중인 상태로 중복 접속이 불가합니다.");
+						mLogger.debug("이미 출하 안내 시스템이 접속 중인 상태로 중복 접속이 불가합니다.");
 						ctx.channel()
 								.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 										GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()
@@ -514,6 +515,10 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 							mStandChannelsMap.get(connectionInfo.getAuctionHouseCode()).add(ctx.channel());
 						}
 
+						// 출하안내시스템 접속 상태 정보 전송
+						mAuctionServer
+								.itemAdded(new StandConnectInfo(connectionInfo.getAuctionHouseCode(), "2000").getEncodedMessage());
+						
 						// 현재 출품 정보 전송
 						if (mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
 								.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {

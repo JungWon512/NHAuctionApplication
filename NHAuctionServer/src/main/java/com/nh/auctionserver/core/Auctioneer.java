@@ -101,14 +101,12 @@ public class Auctioneer {
 			mAuctionStateMap = new HashMap<String, AuctionState>();
 		}
 
-		if (!mAuctionStateMap.containsKey(auctionHouseCode)) {
-			mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
-		}
+		mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
 
 		// 경매 응찰 정보 Reset
 		resetAuctionData(auctionHouseCode);
 	}
-
+	
 	/**
 	 * 
 	 * @MethodName getCurrentAuctionStatus
