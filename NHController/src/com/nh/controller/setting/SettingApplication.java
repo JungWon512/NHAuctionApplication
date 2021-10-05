@@ -148,6 +148,7 @@ public class SettingApplication {
 	private boolean useOneAuction = false; // 연속경매 - 하나씩 진행 여부
 	private boolean useSoundAuction = false; // 음성경매 - 음성경부 여부
 	private boolean isSingleAuction = true;	//경매 타입
+	private boolean isNote = false; //비고
 
 	private int aucObjDsc = 0; // 경매 구분
 
@@ -351,6 +352,8 @@ public class SettingApplication {
 		}
 		
 		standPosition = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, DEFAULT_SETTING_STAND_POSITION);
+	
+		isNote = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, DEFAULT_SETTING_NOTE);
 	}
 
 	/**
@@ -527,5 +530,10 @@ public class SettingApplication {
 		return aucType;
 		
 	}
+
+	public boolean isNote() {
+		return isNote;
+	}
+
 
 }

@@ -110,7 +110,10 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected boolean isReAuction = false; // 재경매 여부
 
 	protected boolean isCountDownRunning = false; // 카운트다운 실행 여부
-
+	protected boolean isCountDownBtnPressed = false; // 카운트다운 버튼 눌림 여부
+	
+	protected boolean isStartSoundPlaying = false;
+	
 	protected boolean isCancel = false; // 취소 여부
 	protected boolean isPause = false; // 정지 여부
 
@@ -142,7 +145,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 		AuctionDelegate.getInstance().setClearVariable();
 		
 		mBiddingCompare = Comparator
-		.comparing(SpBidding::getPriceInt)
+		.comparing(SpBidding::getPriceInt).reversed()
 		.thenComparing(SpBidding::getBiddingTimeValue);
 		
 		initExecutorService();
@@ -230,6 +233,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onActiveChannel(Channel channel) {
 		mLogger.debug("onActiveChannel");
+		isApplicationClosePopup = true;
 		// 제어프로그램 접속
 		addLogItem(mResMsg.getString("msg.auction.send.connection.info") + AuctionDelegate.getInstance().onSendConnectionInfo());
 	}
@@ -242,6 +246,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onAuctionStatus(AuctionStatus auctionStatus) {
 
+		addLogItem("[onAuctionStatus]=> " + auctionStatus.getEncodedMessage());
+		
 		// AUCTION_STATUS_NONE = "8001" // 출품 자료 이관 전 상태
 		// AUCTION_STATUS_READY = "8002" // 경매 준비 상태
 		// AUCTION_STATUS_START = "8003" // 경매 시작 상태
@@ -966,7 +972,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	public List<SpBidding> getCurrentRankStream(List<SpBidding> list) {
 	
 		List<SpBidding> spList = list.parallelStream()
-				.sorted(mBiddingCompare.reversed())
+				.sorted(mBiddingCompare)
 				.collect(Collectors.toList());
 		
 		return spList;

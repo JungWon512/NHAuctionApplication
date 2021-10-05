@@ -16,8 +16,8 @@ import com.nh.controller.controller.MultipleAuctionController;
 import com.nh.controller.controller.SettingController;
 import com.nh.controller.controller.SettingSoundController;
 import com.nh.controller.interfaces.BooleanListener;
+import com.nh.controller.interfaces.MessageStringListener;
 import com.nh.controller.interfaces.SelectEntryListener;
-import com.nh.controller.interfaces.StringListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.setting.SettingApplication;
 
@@ -31,7 +31,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
-import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -437,7 +436,7 @@ public class MoveStageUtil {
 	 * 
 	 * @return
 	 */
-	public synchronized void loadMessageFXMLLoader(Stage parentStage, StringListener listener) {
+	public synchronized void loadMessageFXMLLoader(Stage parentStage, MessageStringListener listener) {
 
 		try {
 
@@ -449,7 +448,14 @@ public class MoveStageUtil {
 			Stage stage = new Stage();
 			setWindowTitle(stage, getResourceBundle().getString("app.title.message"));
 			stage.setScene(scene);
-			stage.showAndWait();
+			stage.show();
+			
+			if (stage != null) {
+				stage.setOnCloseRequest(e -> {
+					listener.onClose();
+				});
+			}
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();

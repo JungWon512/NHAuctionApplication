@@ -50,7 +50,7 @@
       		</VBox>
             <AnchorPane HBox.hgrow="NEVER">
                <children>
-                  <ImageView fx:id="btnClose" fitHeight="33.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                  <ImageView fx:id="btnClose" fitHeight="33.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                      <image>
                         <Image url="@../resource/images/ic_exit.png" />
                      </image>

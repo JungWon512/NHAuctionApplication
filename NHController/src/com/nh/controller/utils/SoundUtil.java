@@ -228,6 +228,19 @@ public class SoundUtil {
             mTTSNowRunnable.play(mCurrentEntryMessage);
         }
     }
+    
+    /**
+     * 출품 정보 메시지 재생 처리 함수
+     */
+    public void playCurrentEntryMessage(PlaybackListener playbackListener) {
+        if (CommonUtils.getInstance().isValidString(mCurrentEntryMessage)) {
+            stopSound();
+            mTTSNowRunnable.play(mCurrentEntryMessage,playbackListener);
+        }
+    }
+    
+    
+    
 
     /**
      * 일반 메시지 재생 처리 함수
