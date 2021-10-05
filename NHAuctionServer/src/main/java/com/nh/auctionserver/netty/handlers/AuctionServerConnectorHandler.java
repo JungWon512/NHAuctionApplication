@@ -483,14 +483,14 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					}
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
 					
-//					if (mStandChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mStandChannelsMap.get(connectionInfo.getAuctionHouseCode()).contains(ctx.channel())) {
-//						mLogger.info("이미 출하 안내 시스템이 접속 중인 상태로 중복 접속이 불가합니다.");
-//						ctx.channel()
-//								.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-//										GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()
-//										+ "\r\n");
-//						return;
-//					} else {
+					if (mStandChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mStandChannelsMap.get(connectionInfo.getAuctionHouseCode()).contains(ctx.channel())) {
+						mLogger.info("이미 출하 안내 시스템이 접속 중인 상태로 중복 접속이 불가합니다.");
+						ctx.channel()
+								.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+										GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()
+										+ "\r\n");
+						return;
+					} else {
 						// 접속 처리 결과 응답 처리
 						ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 								GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
@@ -541,7 +541,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 									}
 								}
 							}
-//						}
+						}
 					}
 				}
 			} else {

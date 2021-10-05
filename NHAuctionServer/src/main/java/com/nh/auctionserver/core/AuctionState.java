@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.models.EntryInfo;
 
 public class AuctionState {
@@ -44,6 +45,8 @@ public class AuctionState {
 	private String mEntryPositionCode = ""; // 출품 정보 거점 코드
 	private String mFinishEntryCount = ""; // 경매 진행 완료 출품수
 	private String mRemainEntryCount = ""; // 경매 잔여 출품수
+	
+	private RetryTargetInfo mRetryTargetInfo = null; // 재경매상태정보
 
 	// 경매 시작 카운트 다운 상태 (R : 준비 / C : 카운트다운)
 	private String mAuctionCountDownStatus = GlobalDefineCode.AUCTION_COUNT_DOWN_READY;
@@ -503,6 +506,10 @@ public class AuctionState {
 		this.mCurrentEntryInfo = entryInfo;
 
 		mLogger.debug("setCurrentEntryInfo : " + mCurrentEntryInfo.getEncodedMessage());
+		mLogger.debug("setIsRetryTargetAuctioin : " + false);
+		
+		// 재경매상태정보 초기화
+		setRetryTargetInfo(null);
 		
 		this.mEntryNum = mCurrentEntryInfo.getEntryNum();
 		this.mStartPrice = String.valueOf(mCurrentEntryInfo.getLowPrice());
@@ -511,5 +518,13 @@ public class AuctionState {
 		this.mRemainEntryCount = String.valueOf(AuctionServerSetting.AUCTION_ENTRY_TOTAL_COUNT
 				- Long.valueOf(AuctionServerSetting.AUCTION_ENTRY_FINISH_COUNT));
 		AuctionServerSetting.AUCTION_ENTRY_REMAIN_COUNT = Integer.valueOf(mRemainEntryCount);
+	}
+	
+	public RetryTargetInfo getRetryTargetInfo() {
+		return mRetryTargetInfo;
+	}
+
+	public void setRetryTargetInfo(RetryTargetInfo retryTargetInfo) {
+		mRetryTargetInfo = retryTargetInfo;
 	}
 }

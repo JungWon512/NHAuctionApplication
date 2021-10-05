@@ -26,6 +26,7 @@ import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.ToastMessageRequest;
@@ -435,6 +436,13 @@ public class Auctioneer {
 					+ mAuctionStateMap.get(auctionHouseCode));
 
 			mAuctionStateMap.get(auctionHouseCode).setAuctionStatus(auctionStatus);
+			
+			if (mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getState().equals(GlobalDefineCode.AUCTION_STATUS_PASS)
+					|| mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)
+					|| mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getState().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
+				// 재경매 진행 상태 정보 업데이트
+				getAuctionState(auctionHouseCode).setRetryTargetInfo(null);
+			}
 		}
 	}
 

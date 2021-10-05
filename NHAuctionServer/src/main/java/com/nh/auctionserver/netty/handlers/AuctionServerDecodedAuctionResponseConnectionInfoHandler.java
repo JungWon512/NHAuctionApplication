@@ -12,6 +12,7 @@ import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionType;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ResponseCode;
@@ -129,6 +130,10 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 							clientChannelContext.channel().writeAndFlush(
 									mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode())
 											.getAuctionStatus().getEncodedMessage() + "\r\n");
+							
+							if (mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getRetryTargetInfo() != null) {
+								clientChannelContext.channel().writeAndFlush(mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getRetryTargetInfo().getEncodedMessage() + "\r\n");
+							}
 						}
 
 //	    				// 관심 차량 정보 필요 대상 추출 및 관련 정보 전송 처리

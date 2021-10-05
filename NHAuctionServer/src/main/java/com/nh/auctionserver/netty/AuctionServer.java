@@ -525,14 +525,14 @@ public class AuctionServer {
 			}
 
 			if (controllerParsedMessage instanceof EntryInfo) {
-				mAuctioneer.addEntryInfo(((EntryInfo) controllerParsedMessage).getAuctionHouseCode(),
-						(EntryInfo) controllerParsedMessage);
-				
 				// 출품 이관 후 변경된 데이터 전송 처리
 				if (!mAuctioneer.getCurrentAuctionStatus(((EntryInfo) controllerParsedMessage).getAuctionHouseCode())
 						.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
 					channelItemWriteAndFlush(new CurrentEntryInfo(((EntryInfo) controllerParsedMessage)));
 				}
+				
+				mAuctioneer.addEntryInfo(((EntryInfo) controllerParsedMessage).getAuctionHouseCode(),
+						(EntryInfo) controllerParsedMessage);
 				
 				// 출하 안내 시스템에 출품 정보 전송 처리
 				channelItemWriteAndFlush(new StandEntryInfo(((EntryInfo) controllerParsedMessage)));
@@ -627,6 +627,9 @@ public class AuctionServer {
 			}
 			
 			if (commonParsedMessage instanceof RetryTargetInfo) {
+				// 재경매 진행 상태 정보 업데이트
+				mAuctioneer.getAuctionState(((RetryTargetInfo) commonParsedMessage).getAuctionHouseCode()).setRetryTargetInfo((RetryTargetInfo) commonParsedMessage);
+				
 				channelItemWriteAndFlush((RetryTargetInfo) commonParsedMessage);
 			}
 			
