@@ -902,6 +902,10 @@ public class SocketIOHandler {
 							client.sendEvent("AuctionStatus",
 									mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getAuctionStatus()
 											.getEncodedMessage());
+							
+							if (mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getRetryTargetInfo() != null) {
+								client.sendEvent("RetryTargetInfo", mAuctioneer.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getRetryTargetInfo().getEncodedMessage());
+							}
 						}
 					}
 				} else {
