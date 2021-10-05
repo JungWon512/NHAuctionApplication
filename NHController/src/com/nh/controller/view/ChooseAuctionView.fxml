@@ -55,7 +55,7 @@
                               <Font name="Noto Sans CJK KR Regular" size="28.0" />
                            </font>
                         </Label>
-                        <DatePicker fx:id="mAuctionDatePicker" editable="false" focusTraversable="false" minHeight="50.0" />
+                        <DatePicker fx:id="mAuctionDatePicker" editable="false" focusTraversable="false" minHeight="66.0" />
                      </children>
                      <padding>
                         <Insets left="30.0" right="30.0" />
