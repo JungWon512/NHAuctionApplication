@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.controller.interfaces.BooleanListener;
+import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.service.AuctionRoundMapperService;
@@ -68,9 +69,7 @@ public class ChooseAuctionController implements Initializable {
 	private Label mVersionLabel, mReleaseDateLabel;
 
 	@FXML
-	private TextField mTestIp, mTestPort;
-
-	private boolean isTest = true; // TEST 지울것
+	private TextField mIp, mPort;
 
 	/**
 	 * setStage
@@ -102,7 +101,7 @@ public class ChooseAuctionController implements Initializable {
 		mBtnClose.setOnMouseClicked(event -> onCloseApplication());
 		mBtnSetting.setOnMouseClicked(event -> openSettingDialog());
 
-		test();
+		setDefaultSetting();
 	}
 
 	private void setApplicationInfo() {
@@ -110,10 +109,32 @@ public class ChooseAuctionController implements Initializable {
 		mReleaseDateLabel.setText(GlobalDefine.APPLICATION_INFO.RELEASE_DATE);
 	}
 
-	private void test() {
-		mTestIp.setText(GlobalDefine.AUCTION_INFO.AUCTION_HOST);
-		mTestPort.setText(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_PORT));
-		mCalfToggleButton.setSelected(true);
+	/**
+	 * 내부 저장된 값들 셋팅
+	 */
+	private void setDefaultSetting() {
+
+		String ip = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SERVER_IP, GlobalDefine.AUCTION_INFO.AUCTION_HOST);
+		int port = SharedPreference.getInstance().getInt(SharedPreference.PREFERENCE_SERVER_PORT, GlobalDefine.AUCTION_INFO.AUCTION_PORT);
+		int obj = SharedPreference.getInstance().getInt(SharedPreference.PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1);
+
+		mIp.setText(ip);
+		mPort.setText(Integer.toString(port));
+
+		switch (obj) {
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1:
+			mCalfToggleButton.setSelected(true);
+			break;
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:
+			mFatteningCattleToggleButton.setSelected(true);
+			break;
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:
+			mBreedingCattleToggleButton.setSelected(true);
+			break;
+		default:
+			mCalfToggleButton.setSelected(true);
+		}
+
 	}
 
 	/**
@@ -168,8 +189,18 @@ public class ChooseAuctionController implements Initializable {
 	 */
 	public void onConnection() {
 		
-		CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
+		if (!CommonUtils.getInstance().isValidString(mIp.getText()) || !CommonUtils.getInstance().isValidString(mPort.getText())) {
+			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.check.ip.port"), mResMsg.getString("popup.btn.ok"));
+			return;
+		}
 		
+		if(!CommonUtils.getInstance().isValidIp(mIp.getText())) {
+			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.check.ip.port"), mResMsg.getString("popup.btn.ok"));
+			return;
+		}
+
+		CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
+
 		// 선택된 경매일
 		if (mAuctionDatePicker.getValue() == null) {
 			CommonUtils.getInstance().dismissLoadingDialog();
@@ -177,7 +208,6 @@ public class ChooseAuctionController implements Initializable {
 			return;
 		}
 
-		
 		PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
 		pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
@@ -190,24 +220,15 @@ public class ChooseAuctionController implements Initializable {
 					new Thread() {
 						public void run() {
 							try {
-								
-								if (!isTest) {
-									MoveStageUtil.getInstance().onConnectServer(mStage, GlobalDefine.AUCTION_INFO.AUCTION_HOST, GlobalDefine.AUCTION_INFO.AUCTION_PORT, GlobalDefine.ADMIN_INFO.adminData.getUserId());
-								} else {
-									if (CommonUtils.getInstance().isValidString(mTestIp.getText()) && CommonUtils.getInstance().isValidString(mTestPort.getText())) {
-										MoveStageUtil.getInstance().onConnectServer(mStage, mTestIp.getText().toString(), Integer.parseInt(mTestPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId());
-									} else {
-										CommonUtils.getInstance().showAlertPopupOneButton(mStage, "IP 또는 PORT 정보를 입력해주세요.", mResMsg.getString("popup.btn.ok"));
-										CommonUtils.getInstance().dismissLoadingDialog();
-									}
-								}
-								
+
+								MoveStageUtil.getInstance().onConnectServer(mStage, mIp.getText().toString(), Integer.parseInt(mPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId());
+
 							} catch (Exception e) {
 								e.printStackTrace();
 								Platform.runLater(() -> {
 									CommonUtils.getInstance().dismissLoadingDialog();
 									CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("msg.connection.fail"), mResMsg.getString("popup.btn.ok"));
-									
+
 								});
 							}
 						}
@@ -215,12 +236,12 @@ public class ChooseAuctionController implements Initializable {
 
 				} else {
 					Platform.runLater(() -> {
-					CommonUtils.getInstance().dismissLoadingDialog();
-					// 경매 데이터 없습니다. 팝업
-					CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"), mResMsg.getString("popup.btn.ok"));
+						CommonUtils.getInstance().dismissLoadingDialog();
+						// 경매 데이터 없습니다. 팝업
+						CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"), mResMsg.getString("popup.btn.ok"));
 					});
 				}
-				
+
 			}
 		});
 		pauseTransition.play();
@@ -250,7 +271,7 @@ public class ChooseAuctionController implements Initializable {
 		}
 
 		mLogger.debug("[경매 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
-		
+
 		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
 		auctionRound.setNaBzplc(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
 
@@ -300,7 +321,7 @@ public class ChooseAuctionController implements Initializable {
 			return;
 		}
 
-		MoveStageUtil.getInstance().openSettingDialog(mStage, false, new BooleanListener() {
+		MoveStageUtil.getInstance().openSettingDialog(mStage, false, new SettingListener() {
 
 			@Override
 			public void callBack(Boolean isClose) {
@@ -316,7 +337,12 @@ public class ChooseAuctionController implements Initializable {
 					}
 				}
 			}
-		},null,null);
+
+			@Override
+			public void initServer() {
+			}
+
+		}, null, null);
 	}
 
 	/**

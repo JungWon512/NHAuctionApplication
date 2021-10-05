@@ -18,6 +18,7 @@ import com.nh.controller.controller.SettingSoundController;
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.MessageStringListener;
 import com.nh.controller.interfaces.SelectEntryListener;
+import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.setting.SettingApplication;
 
@@ -213,7 +214,7 @@ public class MoveStageUtil {
 	/**
 	 * @Description 환경설정 Dialog
 	 */
-	public void openSettingDialog(Stage stage,boolean isDisplayBordConnection,BooleanListener listener , UdpBillBoardStatusListener udpStatusListener, UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
+	public void openSettingDialog(Stage stage,boolean isDisplayBordConnection,SettingListener listener , UdpBillBoardStatusListener udpStatusListener, UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
 
 		if(mDialog != null && mDialog.isShowing()) {
 			return;
@@ -436,8 +437,9 @@ public class MoveStageUtil {
 	 * 
 	 * @return
 	 */
-	public synchronized void loadMessageFXMLLoader(Stage parentStage, MessageStringListener listener) {
+	public synchronized Stage loadMessageFXMLLoader(Stage parentStage, MessageStringListener listener) {
 
+		Stage stage = null;
 		try {
 
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("AuctionMessageView.fxml"), getResourceBundle());
@@ -445,7 +447,7 @@ public class MoveStageUtil {
 			AuctionMessageController controller = fxmlLoader.getController();
 			controller.setCallBackListener(listener);
 			Scene scene = new Scene(parent);
-			Stage stage = new Stage();
+			stage = new Stage();
 			setWindowTitle(stage, getResourceBundle().getString("app.title.message"));
 			stage.setScene(scene);
 			stage.show();
@@ -456,11 +458,12 @@ public class MoveStageUtil {
 				});
 			}
 			
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
+		return stage;
 	}
 
 	/**

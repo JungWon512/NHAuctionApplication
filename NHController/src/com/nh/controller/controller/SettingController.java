@@ -18,11 +18,14 @@ import com.nh.common.interfaces.UdpBillBoardStatusListener;
 import com.nh.common.interfaces.UdpPdpBoardStatusListener;
 import com.nh.controller.controller.SettingController.AuctionToggle;
 import com.nh.controller.interfaces.BooleanListener;
+import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.netty.BillboardDelegate;
 import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.setting.SettingApplication;
+import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.controller.models.EditSetting;
+import com.nh.share.controller.models.InitEntryInfo;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -58,7 +61,7 @@ public class SettingController implements Initializable {
 	private BorderPane mRoot;
 	// F5 저장
 	@FXML
-	private Button mBtnSave;
+	private Button mBtnSave,mBtnInitServer;
 	// 전광판 설정 IP, PORT
 	@FXML
 	private TextField mIpBoardTextField1, mPortBoardTextField1, mIpBoardTextField2, mPortBoardTextField2, mIpBoardTextField3, mPortBoardTextField3;
@@ -129,7 +132,7 @@ public class SettingController implements Initializable {
 	private String boardToggleType = "None";
 	private String pdpToggleType = "BoardType";
 	private String auctionToggleType = "Single";
-	private BooleanListener mBooleanListener = null;
+	private SettingListener mSettingListener = null;
 	private UdpBillBoardStatusListener mUdpBillBoardStatusListener = null;
 	private UdpPdpBoardStatusListener mUdpPdpBoardStatusListener = null;
 	private boolean isDisplayBordConnection = false; //경매일선택 -> 전광판 접속 안함.
@@ -175,9 +178,9 @@ public class SettingController implements Initializable {
 	 *
 	 * @param stage
 	 */
-	public void setStage(Stage stage, boolean isDisplayBordConnection, BooleanListener listener , UdpBillBoardStatusListener udpStatusListener,UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
+	public void setStage(Stage stage, boolean isDisplayBordConnection, SettingListener listener , UdpBillBoardStatusListener udpStatusListener,UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
 		this.mStage = stage;
-		this.mBooleanListener = listener;
+		this.mSettingListener = listener;
 		this.mUdpBillBoardStatusListener = udpStatusListener;
 		this.mUdpPdpBoardStatusListener = udpPdpBoardStatusListener;
 		this.isDisplayBordConnection = isDisplayBordConnection;
@@ -211,6 +214,7 @@ public class SettingController implements Initializable {
 		initKeyConfig();
 		addTextFieldListener();
 		mBtnSave.setOnMouseClicked(event -> saveSettings());
+		mBtnInitServer.setOnMouseClicked(event -> initServer());
 	}
 
 	private void initKeyConfig() {
@@ -219,7 +223,7 @@ public class SettingController implements Initializable {
 				saveSettings();
 			}
 			if (ke.getCode() == KeyCode.ESCAPE) {
-				mBooleanListener.callBack(false);
+				mSettingListener.callBack(false);
 			}
 		}));
 	}
@@ -974,6 +978,19 @@ public class SettingController implements Initializable {
 	}
 
 	/**
+	 * 서버 초기화
+	 */
+	private void initServer() {
+		if(mSettingListener != null) {
+
+			Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(MoveStageUtil.getInstance().getDialog(), mResMsg.getString("str.init.server"), mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.cancel"));
+
+			if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+				mSettingListener.initServer();
+			} 
+		}
+	}
+	/**
 	 * 최종 검사
 	 *
 	 * @author dhKim
@@ -1039,8 +1056,8 @@ public class SettingController implements Initializable {
 
 		Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupOneButton(MoveStageUtil.getInstance().getDialog(), mResMsg.getString("dialog.setting.validation.success"), mResMsg.getString("popup.btn.close"));
 		if (btnResult.get().getButtonData() == ButtonData.LEFT) {
-			if (mBooleanListener != null) {
-				mBooleanListener.callBack(true);
+			if (mSettingListener != null) {
+				mSettingListener.callBack(true);
 			}
 		}
 

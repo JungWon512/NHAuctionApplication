@@ -663,6 +663,20 @@ public class CommonUtils {
 		Optional<ButtonType> result = dialog.showAndWait();
 		return result;
 	}
+	
+	/**
+	 * @param message
+	 * @param leftButtonTitle
+	 * @param rightButtonTitle
+	 * @return Optional<ButtonType>
+	 * @MethodName showAlertPopupTwoButton
+	 * @Description 버튼 2개 팝업창.
+	 */
+	public Optional<ButtonType> showAlertPopupTwoButton(Dialog<Void> showingDialog, String message, String leftButtonTitle, String rightButtonTitle) {
+		Dialog<ButtonType> dialog = setAlertPopupStyle(showingDialog, ALERTPOPUP_TWO_BUTTON, message, leftButtonTitle, rightButtonTitle);
+		Optional<ButtonType> result = dialog.showAndWait();
+		return result;
+	}
 
 	/**
 	 * @param alertPopupType
@@ -1167,6 +1181,32 @@ public class CommonUtils {
 
 		return true;
 	}
+	
+	/**
+	 * 문자열 Null, Empty, Length 유효성 확인 
+	 * IP 유효성 확인
+	 *
+	 * @param str 확인 문자열
+	 */
+	public synchronized boolean isValidIp(String str) {
+		if (str == null || str.equals("") || str.isEmpty()) {
+			return false;
+		}
+
+		if (str.trim().length() <= 0) {
+			return false;
+		}
+		
+		
+		String ipRegex = "(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])";
+		
+		if(!str.matches(ipRegex)) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 
 	/**
 	 * 텍스트 필드 숫자만 입력

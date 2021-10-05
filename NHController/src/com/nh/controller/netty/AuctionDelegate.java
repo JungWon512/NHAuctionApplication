@@ -248,5 +248,22 @@ public class AuctionDelegate {
         this.mWatchMode = null;
         this.mClient = null;
     }
+    
+    public String getHost() {
+    	if(isActive()) {
+    		return this.mClient.getHost();
+    	}else {
+    		return null;
+    	}
+    }
+    
+    public int getPort() {
+    	if(isActive()) {
+    		return this.mClient.getPort();
+    	}else {
+    		return -1;
+    	}
+    
+    }
 
 }

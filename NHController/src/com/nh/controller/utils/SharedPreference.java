@@ -157,6 +157,10 @@ public class SharedPreference {
 	
 	//로그인 아이디 저장
 	public static final String PREFERENCE_LOGIN_SAVE_ID = "PREFERENCE_LOGIN_SAVE_ID";
+	
+	public static final String PREFERENCE_SERVER_IP = "PREFERENCE_SERVER_IP";
+	public static final String PREFERENCE_SERVER_PORT = "PREFERENCE_SERVER_PORT";
+	public static final String PREFERENCE_SELECTED_OBJ = "PREFERENCE_SELECTED_OBJ";
 
 	public final Preferences prefs;
 

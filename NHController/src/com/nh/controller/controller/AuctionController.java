@@ -31,6 +31,7 @@ import com.nh.controller.controller.SettingController.AuctionToggle;
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.MessageStringListener;
 import com.nh.controller.interfaces.SelectEntryListener;
+import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.SpBidderConnectInfo;
 import com.nh.controller.model.SpBidding;
@@ -204,6 +205,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private FadeTransition mAnimationFadeOut; // 토스트 애니메이션 END
 
 	private Queue<String> mMsgQueue = new PriorityQueue();	//메세지 전송 queue
+	
+	private Stage mMessageStage = null;
 
 	
 	/**
@@ -1103,7 +1106,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		MoveStageUtil.getInstance().openSettingDialog(mStage, true, new BooleanListener() {
+		MoveStageUtil.getInstance().openSettingDialog(mStage, true, new SettingListener() {
 
 			@Override
 			public void callBack(Boolean isClose) {
@@ -1141,6 +1144,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					}
 				}
 			}
+
+			@Override
+			public void initServer() {
+				dismissShowingDialog();
+				
+				mLogger.debug("[CLEAR INIT SERVER]" + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
+				isApplicationClosePopup = true;
+				onServerAndClose();
+			}
+			
 		}, mUdpBillBoardStatusListener, mUdpPdpBoardStatusListener);
 	}
 
@@ -1212,6 +1225,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.app.closeing"));
 
+		if(mMessageStage != null) {
+			if(mMessageStage.isShowing()) {
+				mMessageStage.close();
+			}
+		}
+		
 		if (AuctionDelegate.getInstance().isActive()) {
 			AuctionDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
 				@Override
@@ -1566,7 +1585,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		Node node = (Node) event.getSource();
 		Stage stage = (Stage) node.getScene().getWindow();
 		mBtnMessage.setDisable(true);
-		MoveStageUtil.getInstance().loadMessageFXMLLoader(stage, new MessageStringListener() {
+		mMessageStage = MoveStageUtil.getInstance().loadMessageFXMLLoader(stage, new MessageStringListener() {
 			@Override
 			public void callBack(String str) {
 			
@@ -1580,6 +1599,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			@Override
 			public void onClose() {
 				mBtnMessage.setDisable(false);
+				mMessageStage = null;
 			}
 		});
 	}
@@ -1742,6 +1762,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// Setting 정보 전송
 				onSendSettingInfo();
 				MoveStageUtil.getInstance().moveAuctionStage(mStage, mFxmlLoader);
+				
+				//내부 저장 port ip obj
+				SharedPreference.getInstance().setString(SharedPreference.getInstance().PREFERENCE_SERVER_IP, AuctionDelegate.getInstance().getHost());
+				
+				if(AuctionDelegate.getInstance().getPort() > 0) {
+					SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SERVER_PORT,AuctionDelegate.getInstance().getPort());
+				}else {
+					SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SERVER_PORT,GlobalDefine.AUCTION_INFO.AUCTION_PORT);
+				}
+				
+				SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+
 				break;
 			case GlobalDefineCode.CONNECT_FAIL:
 

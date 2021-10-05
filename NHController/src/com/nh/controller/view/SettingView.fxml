@@ -635,7 +635,7 @@
                     </GridPane.margin>
                 </VBox>
                 <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="카운트 설정" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.rowIndex="18" />
-                <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="18">
+                <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="5" GridPane.rowIndex="18">
                     <children>
                         <TextField fx:id="mCountTextField" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
                         <Label alignment="CENTER" styleClass="font-s" text="1 ~ 9 (초)" />
@@ -703,12 +703,12 @@
                   <Insets left="10.0" />
                </GridPane.margin>
             </CheckBox>
-            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="대기시간" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="6" GridPane.rowIndex="20">
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="대기시간" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="6" GridPane.rowIndex="18">
                <font>
                   <Font size="12.0" />
                </font>
             </Label>
-            <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="7" GridPane.rowIndex="20">
+            <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="7" GridPane.rowIndex="18">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
@@ -748,6 +748,16 @@
                   <TextArea fx:id="mSoundValTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="text-area" />
                </children>
             </HBox>
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="서버초기화" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="6" GridPane.rowIndex="20">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </Label>
+            <Button fx:id="mBtnInitServer" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-init-submit" text="초기화" GridPane.columnIndex="7" GridPane.rowIndex="20">
+               <GridPane.margin>
+                  <Insets left="10.0" right="10.0" />
+               </GridPane.margin>
+            </Button>
             </children>
             <opaqueInsets>
                 <Insets />

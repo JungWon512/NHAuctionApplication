@@ -15,6 +15,7 @@ import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
 import com.nh.controller.controller.SettingController.AuctionToggle;
 import com.nh.controller.interfaces.BooleanListener;
+import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.AuctionStnData;
 import com.nh.controller.model.SelStsCountData;
@@ -695,7 +696,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			return;
 		}
 
-		MoveStageUtil.getInstance().openSettingDialog(mStage,true, new BooleanListener() {
+		MoveStageUtil.getInstance().openSettingDialog(mStage,true, new SettingListener() {
 
 			@Override
 			public void callBack(Boolean isClose) {
@@ -710,6 +711,11 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						return;
 					}
 				}
+			}
+
+			@Override
+			public void initServer() {
+				
 			}
 		},null,null);
 	}
