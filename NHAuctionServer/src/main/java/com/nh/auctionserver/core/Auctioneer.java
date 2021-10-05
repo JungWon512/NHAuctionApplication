@@ -380,6 +380,8 @@ public class Auctioneer {
 	 * @return
 	 */
 	public void initEntryInfo(String auctionHouseCode) {
+		initAuction(auctionHouseCode);
+		
 		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)) {
 			mAuctionEntryRepositoryMap.get(auctionHouseCode).removeAllEntryList();
 		}

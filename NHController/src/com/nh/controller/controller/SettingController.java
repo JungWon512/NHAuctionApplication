@@ -918,6 +918,14 @@ public class SettingController implements Initializable {
 							// 전광판 셋팅
 							BillboardDelegate.getInstance().initBillboard();
 						}
+					} else {
+						BillboardDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+							
+							@Override
+							public void onShutDown(int port) {
+								mLogger.debug("Billboard UDP Disconnect");
+							}
+						});
 					}
 	
 					// UDP PDP
@@ -940,6 +948,14 @@ public class SettingController implements Initializable {
 							// PDP 셋팅
 							PdpDelegate.getInstance().initPdp();
 						}
+					} else {
+						PdpDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+							
+							@Override
+							public void onShutDown(int port) {
+								mLogger.debug("PDP UDP Disconnect");
+							}
+						});
 					}
 			}
 			
