@@ -2,9 +2,6 @@ package com.nh.common;
 
 import java.lang.invoke.MethodHandles;
 
-import javax.net.ssl.SSLEngine;
-
-import io.netty.handler.ssl.SslHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +41,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
@@ -64,7 +62,8 @@ import io.netty.util.concurrent.GenericFutureListener;
 public class AuctionShareNettyClient {
 	private Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	private int port; // 테스트를 위해 port 확인용 변수, 운영 환경에서는 이용하지 않는다.
+	private String host;
+	private int port;
 	private EventLoopGroup group;
 	private Channel channel;
 
@@ -72,6 +71,7 @@ public class AuctionShareNettyClient {
 	private SslHandler mSslHandler;
 
 	private AuctionShareNettyClient(Builder builder) {
+		this.host = builder.host;
 		this.port = builder.port;
 		createNettyClient(builder.host, builder.port, builder.controller);
 	}
@@ -178,7 +178,11 @@ public class AuctionShareNettyClient {
 		});
 	}
 
-	public int getPort() { // 테스트를 위해 port 확인용 변수, 운영 환경에서는 이용하지 않는다.
+	public String getHost() { 
+		return host;
+	}
+
+	public int getPort() {
 		return port;
 	}
 
