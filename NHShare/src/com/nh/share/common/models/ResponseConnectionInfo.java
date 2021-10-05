@@ -24,6 +24,14 @@ public class ResponseConnectionInfo implements FromAuctionCommon {
 		mResult = result;
 		mAuctionJoinNum = auctionJoinNum;
 	}
+	
+	public ResponseConnectionInfo(String auctionHouseCode, String result) {
+		mAuctionHouseCode = auctionHouseCode;
+		mResult = result;
+		mUserMemNum = null;
+		mAuctionJoinNum = null;
+	}
+	
 
 	public String getAuctionHouseCode() {
 		return mAuctionHouseCode;
