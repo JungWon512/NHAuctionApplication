@@ -12,7 +12,7 @@ public class RequestAuctionResultBody extends HashMap<String, String> {
 
 	public RequestAuctionResultBody(String naBzPlc, String aucObjDsc, String aucDt, String oslpNo, String ledSqno
 			,String trmnAmnno, String lvstAucPtcMnNo, String sraSbidAm, String sraSbidUpr, String selStsDsc,
-			String lschgDtm,String lsCmeno) {
+			String lschgDtm,String lsCmeno,String lowsSbidLmtAm) {
 
 		this.put("naBzPlc", naBzPlc); // 조합코드
 		this.put("aucObjDsc", aucObjDsc); // 경매대상 구분코드
@@ -26,5 +26,6 @@ public class RequestAuctionResultBody extends HashMap<String, String> {
 		this.put("selStsDsc", selStsDsc); // 판매상태 구분 코드
 		this.put("lschgDtm", lschgDtm); // 최종 변경일시
 		this.put("lsCmeno", lsCmeno); // 최종 변경자
+		this.put("lowsSbidLmtAm", lowsSbidLmtAm); // 최저낙찰한도금액
 	}
 }
