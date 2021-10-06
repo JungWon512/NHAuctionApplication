@@ -46,6 +46,7 @@ import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.RefreshConnector;
+import com.nh.share.common.models.RequestLogout;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.ControllerMessageParser;
@@ -56,7 +57,6 @@ import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PassAuction;
 import com.nh.share.controller.models.PauseAuction;
 import com.nh.share.controller.models.ReadyEntryInfo;
-import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.controller.models.StartAuction;
 import com.nh.share.controller.models.StopAuction;
@@ -153,7 +153,7 @@ public class AuctionServer {
 		mSocketIOHandler.setNettyConnectionChannelInfoMap(mConnectorChannelInfoMap);
 		mSocketIOHandler.setNettyControllerChannelGroupMap(mControllerChannelsMap);
 
-		mLogger.debug("Register SocketIOHandler Completed" + this.mSocketIOHandler);
+		mLogger.info("Register SocketIOHandler Completed" + this.mSocketIOHandler);
 	}
 
 	private void createAuctioneer(AuctionServer auctionServer) {
@@ -292,8 +292,8 @@ public class AuctionServer {
 	}
 
 	public void stopServer() {
-		mLogger.debug("Auction server stop!!");
-		mLogger.debug("Auction server disconnect all channel!!");
+		mLogger.info("Auction server stop!!");
+		mLogger.info("Auction server disconnect all channel!!");
 		if (mBidderChannelsMap.size() > 0) {
 			for (String key : mBidderChannelsMap.keySet()) {
 				mBidderChannelsMap.get(key).close();
@@ -340,20 +340,20 @@ public class AuctionServer {
 
 //	public void entryAdded(Object event) {
 //		if (event instanceof Bidding) {
-//			mLogger.debug("EntryAdded : " + ((Bidding) event).getEncodedMessage());
+//			mLogger.info("EntryAdded : " + ((Bidding) event).getEncodedMessage());
 //			if (mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)
 //					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_SUCCESS)
 //					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FAIL)
 //					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
-//				mLogger.debug("경매 출품 단위 완료/낙찰/유찰/종료 상태, skip setBidding");
+//				mLogger.info("경매 출품 단위 완료/낙찰/유찰/종료 상태, skip setBidding");
 //			} else {
 //				mAuctioneer.setBidding((Bidding) event);
 //			}
 //		}
 //
 //		if (event instanceof ConnectionInfo) {
-//			mLogger.debug("ConnectionInfo entryAdded : " + ((ConnectionInfo) event).getEncodedMessage());
-//			mLogger.debug("ConnectorInfoMap size : " + mConnectorInfoMap.size());
+//			mLogger.info("ConnectionInfo entryAdded : " + ((ConnectionInfo) event).getEncodedMessage());
+//			mLogger.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());
 //
 //			if (((ConnectionInfo) event).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 //				if (mConnectionMonitorChannelsMap != null && mConnectionMonitorChannelsMap.size() > 0) {
@@ -368,13 +368,13 @@ public class AuctionServer {
 //	}
 //
 //	public void entryUpdated(Object event) {
-//		mLogger.debug("EntryUpdated : " + ((Bidding) event).getEncodedMessage());
+//		mLogger.info("EntryUpdated : " + ((Bidding) event).getEncodedMessage());
 //		if (event instanceof Bidding) {
 //			if (mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)
 //					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_SUCCESS)
 //					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FAIL)
 //					|| mAuctioneer.getCurrentAuctionStatus().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
-//				mLogger.debug("경매 출품 단위 완료/낙찰/유찰/종료 상태, skip setBidding");
+//				mLogger.info("경매 출품 단위 완료/낙찰/유찰/종료 상태, skip setBidding");
 //			} else {
 //				mAuctioneer.setBidding((Bidding) event);
 //			}
@@ -382,7 +382,7 @@ public class AuctionServer {
 //	}
 
 	public void itemAdded(String event) {
-		// mLogger.debug("HazelcastBiddings itemAdded : " + event.getItem());
+		// mLogger.info("HazelcastBiddings itemAdded : " + event.getItem());
 		switch (event.charAt(0)) {
 		case FromAuctionServer.ORIGIN:
 			FromAuctionServer serverParsedMessage = ServerMessageParser.parse(event);
@@ -525,10 +525,6 @@ public class AuctionServer {
 				mAuctioneer.broadcastToastMessage((ToastMessageRequest) controllerParsedMessage);
 			}
 
-			if (controllerParsedMessage instanceof RequestLogout) {
-				logoutMember((RequestLogout) controllerParsedMessage);
-			}
-
 			if (controllerParsedMessage instanceof EntryInfo) {
 				// 출품 이관 후 변경된 데이터 전송 처리
 				if (!mAuctioneer.getCurrentAuctionStatus(((EntryInfo) controllerParsedMessage).getAuctionHouseCode())
@@ -584,7 +580,7 @@ public class AuctionServer {
 
 					channelItemWriteAndFlush(((Bidding) commonParsedMessage));
 
-					mLogger.debug("Bidding Data : " + ((Bidding) commonParsedMessage).getEncodedMessage());
+					mLogger.info("Bidding Data : " + ((Bidding) commonParsedMessage).getEncodedMessage());
 
 					channelItemWriteAndFlush(
 							(new BidderConnectInfo(((Bidding) commonParsedMessage).getAuctionHouseCode(),
@@ -641,6 +637,10 @@ public class AuctionServer {
 			if (commonParsedMessage instanceof AuctionType) {
 				channelItemWriteAndFlush((AuctionType) commonParsedMessage);
 			}
+			
+			if (commonParsedMessage instanceof RequestLogout) {
+				logoutMember((RequestLogout) commonParsedMessage);
+			}
 			break;
 		default:
 			break;
@@ -651,7 +651,11 @@ public class AuctionServer {
 		if (event instanceof FromAuctionServer) {
 			String message = ((FromAuctionServer) event).getEncodedMessage();
 			String[] splitMessages = message.split(AuctionShareSetting.DELIMITER_REGEX);
-
+			
+			if (!message.equals("SS")) {
+				mLogger.info("channelItemWriteAndFlush : " + message);
+			}
+			
 			switch (splitMessages[0].charAt(1)) {
 			case AuctionCountDown.TYPE: // 경매 시작 카운트 다운 정보 전송
 				// Web Socket Broadcast
@@ -1201,7 +1205,7 @@ public class AuctionServer {
 
 	public void logoutMember(RequestLogout requestLogout) {
 		ChannelId channelId = null;
-		String closeMember = requestLogout.getUserNo();
+		String closeMember = requestLogout.getUserJoinNum();
 
 		for (Object key : mConnectorInfoMap.keySet()) {
 			try {
@@ -1304,7 +1308,7 @@ public class AuctionServer {
 				mLogger.info("정상적으로 " + closeMember + "회원 정보가 Close 처리되었습니다.");
 			}
 
-			mLogger.debug("ConnectorInfoMap size : " + mConnectorInfoMap.size());
+			mLogger.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());
 			
 			Iterator<Object> iter = mConnectorInfoMap.keySet().iterator();
 
@@ -1326,8 +1330,8 @@ public class AuctionServer {
 	}
 	
 	public void responseWebSocketConnection(SocketIOClient client, ConnectionInfo connectionInfo, ResponseConnectionInfo responseConnectionInfo) {
-		mLogger.debug("responseWebSocketConnection ConnectionInfo : " + connectionInfo.getEncodedMessage());
-		mLogger.debug("responseWebSocketConnection ResponseConnectionInfo : " + responseConnectionInfo.getEncodedMessage());
+		mLogger.info("responseWebSocketConnection ConnectionInfo : " + connectionInfo.getEncodedMessage());
+		mLogger.info("responseWebSocketConnection ResponseConnectionInfo : " + responseConnectionInfo.getEncodedMessage());
 		
 		mSocketIOHandler.connectWebBidderClient(client, connectionInfo, responseConnectionInfo);
 	}

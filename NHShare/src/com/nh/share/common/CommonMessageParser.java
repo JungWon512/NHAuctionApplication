@@ -11,6 +11,7 @@ import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.RefreshConnector;
 import com.nh.share.common.models.RequestBiddingInfo;
 import com.nh.share.common.models.RequestEntryInfo;
+import com.nh.share.common.models.RequestLogout;
 import com.nh.share.common.models.ResponseBiddingInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
@@ -53,6 +54,8 @@ public class CommonMessageParser {
 			return new RetryTargetInfo(messages[1], messages[2], messages[3]); // 재경매 대상 참여자번호
 		case AuctionType.TYPE:
 			return new AuctionType(messages[1], messages[2]); // 경매 유형 코드 전송
+		case RequestLogout.TYPE: // 로그아웃 처리 요청
+			return new RequestLogout(messages[1], messages[2], messages[3]);
 		default:
 			return null;
 		}

@@ -139,8 +139,6 @@ public class JwtCertTokenUtils {
 			Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(NH_AUCTION_CERT_CREATE_KEY))
 					.parseClaimsJws(certToken).getBody();
 
-			System.out.println("userMemNum :" + claims.get(JWT_CLAIM_USER_MEM_NUM));
-
 			return claims.get(JWT_CLAIM_USER_MEM_NUM).toString();
 		} catch (ExpiredJwtException exception) {
 			System.out.println("Cert Token Expired!");

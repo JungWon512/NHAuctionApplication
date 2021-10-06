@@ -7,7 +7,6 @@ import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PassAuction;
 import com.nh.share.controller.models.PauseAuction;
 import com.nh.share.controller.models.ReadyEntryInfo;
-import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.controller.models.StartAuction;
 import com.nh.share.controller.models.StopAuction;
@@ -38,8 +37,6 @@ public class ControllerMessageParser {
 			return new InitEntryInfo(messages[1], messages[2]);
 		case ToastMessageRequest.TYPE: // 메시지 전송 요청
 			return new ToastMessageRequest(messages[1], messages[2]);
-		case RequestLogout.TYPE: // 로그아웃 처리 요청
-			return new RequestLogout(messages[1], messages[2], messages[3]);
 		case EntryInfo.TYPE: // 출품 정보 전송
 			return new EntryInfo(messages);
 		case ReadyEntryInfo.TYPE: // 출품 정보 경매 준비 요청

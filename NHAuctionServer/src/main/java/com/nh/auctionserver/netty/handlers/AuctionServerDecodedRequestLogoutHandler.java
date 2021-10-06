@@ -8,12 +8,10 @@ import org.slf4j.LoggerFactory;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.common.models.ConnectionInfo;
-import com.nh.share.controller.models.RequestLogout;
+import com.nh.share.common.models.RequestLogout;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelId;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 
@@ -55,10 +53,10 @@ public final class AuctionServerDecodedRequestLogoutHandler extends SimpleChanne
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, RequestLogout requestLogout) throws Exception {
 		if (mConnectionMonitorChannelsMap.get(requestLogout.getAuctionHouseCode()).contains(ctx.channel()) == true) {
-			mLogger.info("정상 채널에서 회원번호 " + requestLogout.getUserNo() + "을(를) 로그아웃 처리 요청하였습니다.");
+			mLogger.info("정상 채널에서 회원번호 " + requestLogout.getUserJoinNum() + "을(를) 로그아웃 처리 요청하였습니다.");
 			mAuctionServer.itemAdded(requestLogout.getEncodedMessage());
 		} else {
-			mLogger.info("비정상 채널에서 회원번호 " + requestLogout.getUserNo() + "을(를) 로그아웃 처리 요청하였으나, 요청이 거부되었습니다.");
+			mLogger.info("비정상 채널에서 회원번호 " + requestLogout.getUserJoinNum() + "을(를) 로그아웃 처리 요청하였으나, 요청이 거부되었습니다.");
 		}
 	}
 }

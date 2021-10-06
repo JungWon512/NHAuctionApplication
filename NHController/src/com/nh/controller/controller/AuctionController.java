@@ -2135,7 +2135,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //		super.onBidderConnectInfo(bidderConnectInfo);
 		mLogger.debug("[SI 응찰자 접속] " + bidderConnectInfo.getEncodedMessage());
 
-		if(bidderConnectInfo == null || !CommonUtils.getInstance().isValidString(bidderConnectInfo.getUserNo())) {
+		if(bidderConnectInfo == null || !CommonUtils.getInstance().isValidString(bidderConnectInfo.getUserJoinNum())) {
 			mLogger.debug("[SI 응찰자 정보 없음.]"); 
 			return;
 		}
@@ -2185,9 +2185,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		if (!bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_L)) {
 
 			// 상태가 접속해제(L)이 아니고 이미 맵에 있는경우 하위 실행 X
-			if (!mConnectionUserMap.containsKey(bidderConnectInfo.getUserNo())) {
+			if (!mConnectionUserMap.containsKey(bidderConnectInfo.getUserJoinNum())) {
 				// 맵에 담음.
-				mConnectionUserMap.put(bidderConnectInfo.getUserNo(), bidderConnectInfo);
+				mConnectionUserMap.put(bidderConnectInfo.getUserJoinNum(), bidderConnectInfo);
 
 				if (mConnectionUserDataList.size() <= 0) {
 					ObservableList<SpBidderConnectInfo> observDataList = FXCollections.observableArrayList();
@@ -2202,7 +2202,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					for (int i = 0; len > i; i++) {
 						if (spBidderConnectInfo.getUserNo()[i] == null || !CommonUtils.getInstance().isValidString(spBidderConnectInfo.getUserNo()[i].getValue())) {
 
-							spBidderConnectInfo.getUserNo()[i] = new SimpleStringProperty(bidderConnectInfo.getUserNo());
+							spBidderConnectInfo.getUserNo()[i] = new SimpleStringProperty(bidderConnectInfo.getUserJoinNum());
 							// 부가 정보들 필요시 주석 해제
 							spBidderConnectInfo.getStatus()[i] = new SimpleStringProperty(bidderConnectInfo.getStatus());
 
@@ -2223,9 +2223,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		} else {
 			// 접속 해제인경우.
 			// 지움.
-			mConnectionUserMap.remove(bidderConnectInfo.getUserNo());
+			mConnectionUserMap.remove(bidderConnectInfo.getUserJoinNum());
 			// 찾아서 지움.
-			mConnectionUserDataList.stream().flatMap(a -> Arrays.stream(a.getUserNo())).filter(b -> b != null && b.getValue().equals(bidderConnectInfo.getUserNo())).map(item -> {
+			mConnectionUserDataList.stream().flatMap(a -> Arrays.stream(a.getUserNo())).filter(b -> b != null && b.getValue().equals(bidderConnectInfo.getUserJoinNum())).map(item -> {
 				item.setValue("");
 				return item;
 			}).forEach(System.out::println);

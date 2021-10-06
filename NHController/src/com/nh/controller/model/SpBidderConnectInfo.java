@@ -33,7 +33,7 @@ public class SpBidderConnectInfo {
 		for(int i= 0; bidderList.size() > i ; i++) {
 			auctionHouseCode[i] = new SimpleStringProperty(bidderList.get(i).getAuctionHouseCode());
 			channel[i] = new SimpleStringProperty(bidderList.get(i).getChannel());
-			userNo[i] = new SimpleStringProperty(bidderList.get(i).getUserNo());
+			userNo[i] = new SimpleStringProperty(bidderList.get(i).getUserJoinNum());
 			os[i] = new SimpleStringProperty(bidderList.get(i).getOS());
 			status[i] = new SimpleStringProperty(bidderList.get(i).getStatus());
 			bidPrice[i] = new SimpleStringProperty(bidderList.get(i).getBidPrice());		

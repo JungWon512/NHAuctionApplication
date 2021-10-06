@@ -17,8 +17,8 @@ public class ListComparator implements Comparator {
 
 		if (o1 instanceof BidderConnectInfo && o2 instanceof BidderConnectInfo) {
 
-			int userNo1 = Integer.parseInt(((BidderConnectInfo) o1).getUserNo());
-			int userNo2 = Integer.parseInt(((BidderConnectInfo) o2).getUserNo());
+			int userNo1 = Integer.parseInt(((BidderConnectInfo) o1).getUserJoinNum());
+			int userNo2 = Integer.parseInt(((BidderConnectInfo) o2).getUserJoinNum());
 
 			if (userNo1 > userNo2) {
 				return 1;

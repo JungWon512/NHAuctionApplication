@@ -18,7 +18,7 @@ public class ConnectionInfo implements FromAuctionCommon, Serializable {
 	private static final long serialVersionUID = 4703227204913480236L;
 	public static final char TYPE = 'I';
 	private String mAuctionHouseCode; // 조합구분코드
-	private String mUserMemNum; // 거래인관리번호
+	private String mUserMemNum; // 경매참가번호(거래인관리번호)
 	private String mAuthToken; // 인증토큰
 	private String mChannel; // 접속 요청 채널
 	private String mOS; // 사용 채널

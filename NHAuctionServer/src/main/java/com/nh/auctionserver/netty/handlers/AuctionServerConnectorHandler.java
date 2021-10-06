@@ -10,9 +10,9 @@ import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.ConnectionInfo;
+import com.nh.share.common.models.RequestLogout;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.models.EntryInfo;
-import com.nh.share.controller.models.RequestLogout;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
@@ -87,7 +87,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 			if (!mConnectionInfoMap.containsKey(ctx.channel().id()) && !mConnectionInfoMap.containsValue(connectionInfo)
 					&& !mConnectionChannelInfoMap.containsKey(userMemNum)) {
 				if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
-					mLogger.debug("CONNECT_CHANNEL_BIDDER SIZE : " + mBidderChannelsMap.size());
+					mLogger.info("CONNECT_CHANNEL_BIDDER SIZE : " + mBidderChannelsMap.size());
 
 					if (mControllerChannelsMap != null
 							&& mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode())
@@ -485,7 +485,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
 					
 					if (mStandChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mStandChannelsMap.get(connectionInfo.getAuctionHouseCode()).contains(ctx.channel())) {
-						mLogger.debug("이미 출하 안내 시스템이 접속 중인 상태로 중복 접속이 불가합니다.");
+						mLogger.info("이미 출하 안내 시스템이 접속 중인 상태로 중복 접속이 불가합니다.");
 						ctx.channel()
 								.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 										GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()
@@ -539,9 +539,14 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 								
 								if (entryList != null) {
 									if (entryList.size() > 0) {
+										int i = 0;
 										for (EntryInfo entryInfo : entryList) {
-											ctx.writeAndFlush(
-													new StandEntryInfo(entryInfo).getEncodedMessage() + "\r\n");
+											i++;
+											StandEntryInfo standEntryInfo = new StandEntryInfo(entryInfo);
+											
+											ctx.channel().writeAndFlush(standEntryInfo.getEncodedMessage() + "\r\n");
+											
+											mLogger.info("StandEntryInfo[" + i + "] : " + standEntryInfo.getEncodedMessage());
 										}
 									}
 								}
@@ -709,7 +714,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				mLogger.info("정상적으로 " + closeMember + "회원 정보가 Close 처리되었습니다.");
 			}
 
-			mLogger.debug("ConnectorInfoMap size : " + mConnectionInfoMap.size());
+			mLogger.info("ConnectorInfoMap size : " + mConnectionInfoMap.size());
 
 		}
 

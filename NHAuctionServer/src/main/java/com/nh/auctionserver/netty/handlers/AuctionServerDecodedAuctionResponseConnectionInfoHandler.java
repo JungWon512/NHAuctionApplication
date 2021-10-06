@@ -17,6 +17,7 @@ import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ShowEntryInfo;
+import com.nh.share.utils.JwtCertTokenUtils;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -63,7 +64,7 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, ResponseConnectionInfo responseConnectionInfo)
 			throws Exception {
-		mLogger.debug("AuctionServerDecodedAuctionResponseConnectionInfoHandler channelRead0 : " +  responseConnectionInfo.getEncodedMessage());
+		mLogger.info("AuctionServerDecodedAuctionResponseConnectionInfoHandler channelRead0 : " +  responseConnectionInfo.getEncodedMessage());
 		if (mConnectionChannelInfoMap.containsKey(responseConnectionInfo.getUserMemNum())) {
 			if (mConnectionChannelInfoMap
 					.get(responseConnectionInfo.getUserMemNum()) instanceof ChannelHandlerContext) {
