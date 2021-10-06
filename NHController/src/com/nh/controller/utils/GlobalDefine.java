@@ -116,6 +116,9 @@ public class GlobalDefine {
 		
 		public static final String AUCTION_TYPE_MULTI = "10"; // 환경설정 전송 경매 타입 = 일괄
 		public static final String AUCTION_TYPE_SINGLE = "20"; // 환경설정 전송 경매 타입 = 단일
+		
+		public static final String AUCTION_STAND_CONNECTION_ON = "2000";	//계류대 모니터링 접속
+		public static final String AUCTION_STAND_CONNECTION_OFF = "2001";	//계류대 모니터링 미접속	
 	}
 
 	/**
