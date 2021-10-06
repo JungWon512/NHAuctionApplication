@@ -47,6 +47,7 @@ import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
+import com.nh.share.server.models.StandConnectInfo;
 import com.nh.share.server.models.ToastMessage;
 
 import io.netty.channel.Channel;
@@ -772,6 +773,12 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 	@Override
 	public void onBidderConnectInfo(BidderConnectInfo bidderConnectInfo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStandConnectInfo(StandConnectInfo standConnectInfo) {
 		// TODO Auto-generated method stub
 		
 	}

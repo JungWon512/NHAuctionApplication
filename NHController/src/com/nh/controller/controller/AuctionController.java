@@ -61,6 +61,7 @@ import com.nh.share.controller.models.PauseAuction;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
+import com.nh.share.server.models.StandConnectInfo;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -148,7 +149,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private Label cnt_5, cnt_4, cnt_3, cnt_2, cnt_1;
 
 	@FXML // 경매 상단 아이콘 메세지보내기,전광판 1 상태, 전광판 2 상태
-	private ImageView mDisplay_1_ImageView, mDisplay_2_ImageView;
+	private ImageView mDisplay_1_ImageView, mDisplay_2_ImageView, mDisplay_3_ImageView;
 
 	@FXML // 감가 기준 금액 / 횟수
 	private Label mDeprePriceLabel, mLowPriceChgNtLabel;
@@ -1793,6 +1794,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		});
 	}
+
+	@Override
+	public void onStandConnectInfo(StandConnectInfo standConnectInfo) {
+
+		//계류대 모니터링 On/Off
+		if(standConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.AUCTION_STAND_CONNECTION_ON)) {
+			setDisplayStand(true);
+		}else {
+			setDisplayStand(false);
+		}
+	}
+	
 
 	private void onSendSettingInfo() {
 
@@ -3562,6 +3575,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		});
 	}
 	
+	/**
+	 * 전광판-계류대 On/Off
+	 * @param isOn
+	 */
+	private void setDisplayStand(boolean isOn) {
+		Platform.runLater(() -> {
+			if (isOn) {
+				mLogger.debug("[전광판 계류대] onActive");
+				mDisplay_3_ImageView.setImage(mResDisplayOn);
+			} else {
+				mLogger.debug("[전광판 계류대] inActive");
+				mDisplay_3_ImageView.setImage(mResDisplayOff);
+			}
+		});
+	}
+	
 
 	/**
 	 * 
@@ -3618,5 +3647,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mMessageText.setText(message);
 		});
 	}
+
 
 }

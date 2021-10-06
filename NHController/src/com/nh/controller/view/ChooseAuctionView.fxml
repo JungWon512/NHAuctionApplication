@@ -78,10 +78,15 @@
                         <Insets left="20.0" right="20.0" />
                      </padding>
                   </HBox>
-                  <HBox maxHeight="50.0" prefHeight="50.0" prefWidth="20.0" spacing="1.0" style="-fx-background-color: #000000;" styleClass="hbox-ip">
+                  <HBox maxHeight="50.0" minHeight="50.0" prefHeight="50.0" spacing="1.0" style="-fx-background-color: #cccccc;" styleClass="hbox-ip">
                      <children>
-                        <TextField fx:id="mIp" maxHeight="1.7976931348623157E308" promptText="IP를 입력해주세요. ex) 0.0.0.0 ~ 255.255.255.255" styleClass="text-field" HBox.hgrow="ALWAYS" />
-                        <TextField fx:id="mPort" maxHeight="1.7976931348623157E308" promptText="PORT를 입력해주세요.ex) 5001" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="mIp" disable="true" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" promptText="IP를 입력해주세요. ex) 0.0.0.0 ~ 255.255.255.255" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="mPort" disable="true" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" promptText="PORT를 입력해주세요.ex) 5001" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="mBtnConnectionInfoModify" maxHeight="50.0" minHeight="50.0" minWidth="100.0" mnemonicParsing="false" prefHeight="50.0" styleClass="btn-ip-modify" text="수정">
+                           <font>
+                              <Font name="Noto Sans CJK KR Regular" size="22.0" />
+                           </font>
+                        </Button>
                      </children>
                   </HBox>
                </children>

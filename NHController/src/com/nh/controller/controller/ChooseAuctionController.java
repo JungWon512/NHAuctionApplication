@@ -70,6 +70,9 @@ public class ChooseAuctionController implements Initializable {
 
 	@FXML
 	private TextField mIp, mPort;
+	
+	@FXML
+	private Button mBtnConnectionInfoModify;
 
 	/**
 	 * setStage
@@ -100,6 +103,7 @@ public class ChooseAuctionController implements Initializable {
 		mBtnConnect.setOnMouseClicked(event -> onConnection());
 		mBtnClose.setOnMouseClicked(event -> onCloseApplication());
 		mBtnSetting.setOnMouseClicked(event -> openSettingDialog());
+		mBtnConnectionInfoModify.setOnMouseClicked(event -> modifyConnectionInfo());
 
 		setDefaultSetting();
 	}
@@ -184,6 +188,19 @@ public class ChooseAuctionController implements Initializable {
 		mAuctionDatePicker.setValue(LocalDate.now());
 	}
 
+	private void modifyConnectionInfo() {
+		
+		if(mIp.isDisabled() && mPort.isDisabled()) {
+			mIp.setDisable(false);
+			mPort.setDisable(false);
+			mBtnConnectionInfoModify.setText(mResMsg.getString("str.modify.cancel"));
+		}else {
+			mIp.setDisable(true);
+			mPort.setDisable(true);
+			mBtnConnectionInfoModify.setText(mResMsg.getString("str.modify"));
+		}
+	}
+	
 	/**
 	 * 경매 접속
 	 */
