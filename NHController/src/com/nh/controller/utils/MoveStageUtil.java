@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.UdpBillBoardStatusListener;
 import com.nh.common.interfaces.UdpPdpBoardStatusListener;
 import com.nh.controller.ControllerApplication;
@@ -20,8 +21,10 @@ import com.nh.controller.interfaces.MessageStringListener;
 import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AuctionRound;
+import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.setting.SettingApplication;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -90,6 +93,8 @@ public class MoveStageUtil {
 		
 			// show 후에 ..
 			controller.initConfiguration();
+			
+			setWindowClose(stage);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -132,10 +137,32 @@ public class MoveStageUtil {
 			
 			isShowingAuctionStage = false;
 			
+			setWindowClose(stage);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	/**
+	 * 윈도우 X 버튼 
+	 * @param stage
+	 */
+	private void setWindowClose(Stage stage) {
+		
+		if (stage != null) {
+			
+			stage.setOnCloseRequest(e -> {
+
+				if (AuctionDelegate.getInstance().isActive()) {
+					AuctionDelegate.getInstance().onDisconnect(null);
+				}
+				
+				Platform.exit();
+				System.exit(0);
+			});
+		}
 	}
 	
 	/**

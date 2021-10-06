@@ -479,7 +479,7 @@ public class SpEntryInfo implements FromAuctionController {
 	}
 	
 	public StringProperty getGenderName() {
-		return mGenderName;
+		return returnValue(mGenderName);
 	}
 
 	public void setGenderName(StringProperty mGenderName) {
@@ -487,7 +487,7 @@ public class SpEntryInfo implements FromAuctionController {
 	}
 	
 	public StringProperty getMotherCowName() {
-		return mMotherCowName;
+		return returnValue(mMotherCowName);
 	}
 
 	public void setMotherCowName(StringProperty mMotherCowName) {
@@ -620,7 +620,7 @@ public class SpEntryInfo implements FromAuctionController {
                 CommonUtils.getInstance().replaceDelimiter(getReRgnName().getValue()), AuctionShareSetting.DELIMITER, 		// 출하생산지역			SRA_PD_RGNNM
                 CommonUtils.getInstance().replaceDelimiter(getDnaYn().getValue()), AuctionShareSetting.DELIMITER, 			// 	친자검사결과여부		DNA_YN
                 CommonUtils.getInstance().replaceDelimiter(getIsNew().getValue()), AuctionShareSetting.DELIMITER,
-                getWeight().getValue() + "kg", AuctionShareSetting.DELIMITER,	// 중량, 보낼때만 KG 붙임.
+                getWeight().getValue(), AuctionShareSetting.DELIMITER,	// 중량, 보낼때만 KG 붙임.
                 getInitPrice().getValue(), AuctionShareSetting.DELIMITER,
                 getLowPrice().getValue(), AuctionShareSetting.DELIMITER, 
                 CommonUtils.getInstance().replaceDelimiter(getNote().getValue()), AuctionShareSetting.DELIMITER,

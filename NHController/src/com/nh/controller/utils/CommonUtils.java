@@ -1236,7 +1236,7 @@ public class CommonUtils {
 
 		if(isValidString(str)) {			
 			if(str.indexOf(AuctionShareSetting.DELIMITER) > 0) {
-				str = str.replace(String.valueOf(AuctionShareSetting.DELIMITER), "｜");
+				str = str.replace(String.valueOf(AuctionShareSetting.DELIMITER), ",");
 			}
 		}
 		return str;

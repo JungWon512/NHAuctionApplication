@@ -567,6 +567,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 				// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
 				if (SettingApplication.getInstance().isUseSoundAuction()) {
+					addLogItem("[응찰 취소 정지 타이머 실행]");
 					soundAuctionTimerTask();
 				}
 
@@ -696,7 +697,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 			// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
-				addLogItem("[순위 산정 완료]");
+				addLogItem("[순위 산정 완료 정지 타이머 실행]");
 				soundAuctionTimerTask();
 			}
 		}
@@ -793,7 +794,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	protected void saveAuctionResult(boolean isSuccess, SpEntryInfo spEntryInfo, SpBidding bidder, String code) {
 
-		addLogItem("sendAuctionResult");
+		addLogItem("[낙유찰 결과 전송 + 결과 DB 저장]");
 
 		SendAuctionResult auctionResult = new SendAuctionResult();
 
@@ -898,8 +899,16 @@ public abstract class BaseAuctionController implements NettyControllable {
 				// 한건 가져옴.
 				EntryInfo entryInfo = EntryInfoMapperService.getInstance().obtainEntryInfo(entryInfoParam);
 
+				//최저가
+				long resultLowPrice = 0;
+				
+				//최저가는 원단위로
+				if(CommonUtils.getInstance().isValidString(spEntryInfo.getLowPrice().getValue())) {
+					resultLowPrice = Integer.parseInt(spEntryInfo.getLowPrice().getValue()) * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000;
+				}
+				
 				RequestAuctionResultBody requestAuctionResultBody = new RequestAuctionResultBody(entryInfo.getAuctionHouseCode(), entryInfo.getEntryType(), entryInfo.getAucDt(), entryInfo.getOslpNo(), entryInfo.getLedSqno(), entryInfo.getTrmnAmnNo(), entryInfo.getAuctionSucBidder(),
-						Integer.toString(entryInfo.getAuctionBidPrice()), Integer.toString(entryInfo.getSraSbidUpPrice()), entryInfo.getAuctionResult(), entryInfo.getLsChgDtm(), entryInfo.getLsCmeNo());
+						Integer.toString(entryInfo.getAuctionBidPrice()), Integer.toString(entryInfo.getSraSbidUpPrice()), entryInfo.getAuctionResult(), entryInfo.getLsChgDtm(), entryInfo.getLsCmeNo(),Long.toString(resultLowPrice));
 
 				ApiUtils.getInstance().requestAuctionResult(requestAuctionResultBody, new ActionResultListener<BaseResponse>() {
 					@Override
