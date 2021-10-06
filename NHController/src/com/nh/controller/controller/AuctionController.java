@@ -1794,7 +1794,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		});
 	}
-
+	
 	@Override
 	public void onStandConnectInfo(StandConnectInfo standConnectInfo) {
 
@@ -1805,7 +1805,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			setDisplayStand(false);
 		}
 	}
-	
 
 	private void onSendSettingInfo() {
 
