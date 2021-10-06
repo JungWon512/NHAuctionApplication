@@ -14,6 +14,7 @@ import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
+import com.nh.share.server.models.StandConnectInfo;
 import com.nh.share.server.models.ToastMessage;
 
 import io.netty.channel.Channel;
@@ -75,4 +76,6 @@ public interface NettyControllable {
     public void onCheckSession(ChannelHandlerContext ctx, AuctionCheckSession auctionCheckSession); // 경매 서버 접속 유효 확인 요청
     
     public void onBidderConnectInfo(BidderConnectInfo bidderConnectInfo); // 경매 서버 접속 유효 확인 요청
+    
+    public void onStandConnectInfo(StandConnectInfo standConnectInfo); // 계류대 경매 서버 접속 유효 확인 요청
 }
