@@ -5,7 +5,7 @@ public class AuctionServerSetting {
     public static final String RELEASE_VERSION_NAME = "1.0.0";
     public static final String RELEASE_VERSION_DATE = "2021.06.11";
     
-    public static final String DEFAULT_CONNECT_PORT = "5002";
+    public static final String DEFAULT_CONNECT_PORT = "5001";
 
     // Log 파일 정보
     //public static final String AUCTION_LOG_FILE_PATH = "/auctserver/nh_auction/FileUpDown/LogFile/";

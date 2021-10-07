@@ -1,5 +1,7 @@
 package com.nh.auctionserver;
 
+import java.nio.charset.Charset;
+
 import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.auctionserver.socketio.SocketIOServer;
+import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.setting.AuctionShareSetting;
 
 import io.netty.handler.ssl.SslContext;
@@ -65,7 +68,7 @@ public class AuctionServerApplication implements CommandLineRunner, ApplicationL
 //		PipeSignalHandler pipeSignalHandler = new PipeSignalHandler();
 //		Signal.handle(new Signal("PIPE"), pipeSignalHandler); // SignalHandler.SIG_IGN;
 	}
-
+	
 	@Override
 	public void onApplicationEvent(ApplicationStartedEvent event) {
 		runServer(new String[] { "start", AuctionServerSetting.DEFAULT_CONNECT_PORT });
@@ -113,7 +116,7 @@ public class AuctionServerApplication implements CommandLineRunner, ApplicationL
 	private static void runServer(String[] args) {
 		mLogger.info(
 				"************************************ Hello Auction World! **************************************");
-		int port = AuctionShareSetting.SERVER_PORT;
+		int port = Integer.valueOf(AuctionServerSetting.DEFAULT_CONNECT_PORT);
 
 		if (args.length > 0) {
 			try {

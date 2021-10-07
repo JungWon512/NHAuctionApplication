@@ -276,7 +276,7 @@ public class BillboardData implements NettySendable {
         System.out.println("비고 메시지 Byte수 : " + count);
         System.out.println("비고 메시지 길이 : " + s.length());
         System.out.println("비고 메시지 Byte : " + stringToByteSize);
-        System.out.println("비고 메시지 : " + substringByBytes(s, 0, count));
+        //System.out.println("비고 메시지 : " + substringByBytes(s, 0, count));
         
         if (s.length() < doubleCount) {
             return s + " ".repeat(count - stringToByteSize);
