@@ -317,7 +317,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 				addLogItem(String.format(mResMsg.getString("msg.auction.status.start"), auctionStatus.getEntryNum()));
 
 				// 시작 로그
-				insertStartLog();
+				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
+					insertStartLog();
+				}
 
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -333,13 +335,17 @@ public abstract class BaseAuctionController implements NettyControllable {
 				addLogItem(String.format(mResMsg.getString("msg.auction.status.completed"), auctionStatus.getEntryNum()));
 				BillboardDelegate.getInstance().completeBillboard();
 				PdpDelegate.getInstance().completePdp();
-				insertFinishLog();
+				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
+					insertFinishLog();
+				}
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_FINISH:
 				addLogItem(mResMsg.getString("msg.auction.status.finish"));
 				BillboardDelegate.getInstance().finishBillboard();
 				PdpDelegate.getInstance().finishPdp();
-				insertFinishLog();
+				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
+					insertFinishLog();
+				}
 				break;
 			}
 
@@ -580,7 +586,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 				bidding.setPriceInt(0);
 				bidding.setBiddingTime(cancelBidding.getCancelBiddingTime());
 
-				if (!GlobalDefineCode.FLAG_TEST_MODE) {
+				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
 					insertBiddingLog(bidding, false);
 				}
 			} else {
@@ -659,9 +665,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 		calculationRanking();
 //
 //		// 응찰 로그 저장
-//		if (!GlobalDefineCode.FLAG_TEST_MODE) {
-//			insertBiddingLog(bidding, false);
-//		}
+		if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
+			insertBiddingLog(bidding, false);
+		}
 	}
 
 	/**

@@ -245,6 +245,10 @@ public class SoundUtil {
         			playbackListener.playbackFinished(null);
         		}
         	}
+        }else {
+        	if(playbackListener != null) {
+    			playbackListener.playbackFinished(null);
+    		}
         }
     }
     
@@ -267,6 +271,10 @@ public class SoundUtil {
         		}
         	}
          
+        }else {
+        	if(listener != null) {
+        		listener.playbackFinished(null);
+    		}
         }
     }
 

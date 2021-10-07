@@ -194,8 +194,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private EntryDialogType mCurPageType; // 전체or보류목록 타입
 
 	private Map<String, BidderConnectInfo> mConnectionUserMap = new HashMap<>(); // 접속 현황
-
-	private boolean isChangePricePlaySound = false;	//가격낮춤 사운드 플래그 (중복사운드 방지)
 	
 	private boolean isOverPricePlaySound = false;	//높은가 사운드 플래그 (중복사운드 방지)
 	
@@ -1368,6 +1366,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		
 		// 결과 전송~ 다음 경매 준비 까지 방어 플래그
 		isResultCompleteFlag = true;
+		mBtnF6.setDisable(true);
 
 		// 사운드 경매 타이머 정지
 		mLogger.debug("[sendAuctionResultInfo 경매 결과 전송, DB 저장 사운드 초기화]");
@@ -1417,8 +1416,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			// 음성경매인 경우 사운드
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
-
-
 				// 사운드 시작
 				isStartSoundPlaying = true;
 
@@ -1734,18 +1731,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			if (!isUp) {
 				price = price * -1;
-
-				if (!isChangePricePlaySound) {
-
-					isChangePricePlaySound = true;
-
-					SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.change.low.price"), price), new PlaybackListener() {
-						@Override
-						public void playbackFinished(PlaybackEvent evt) {
-							isChangePricePlaySound = false;
-						}
-					});
-				}
+				SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.change.low.price"), price), null);	
 			}
 
 		} else {
@@ -2553,6 +2539,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void setAuctionVariableState(String code) {
 
+		if(isResultCompleteFlag) {
+			return;
+		}
+		
 		Platform.runLater(() -> {
 
 			// 버튼들
@@ -2624,7 +2614,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnReStart.setDisable(true);
 				mBtnPause.setDisable(false);
 				
-				isChangePricePlaySound = false;
 				isOverPricePlaySound = false;
 				
 				break;
@@ -2689,7 +2678,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		Platform.runLater(() -> {
 			// REFACTOR: 경매완료 후, 경매시작 - server가 아닌 controller에서 진행하도록 변경 됨. (21.07.27)
 			SpEntryInfo spEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
-
+			mLogger.debug("[updateAuctionStateInfo]");
 			// 낙유찰 사운드 메세지
 			StringBuffer resultStringBuffer = new StringBuffer();
 
@@ -2720,7 +2709,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
 				
-
 				SoundUtil.getInstance().playLocalSound(LocalSoundDefineRunnable.LocalSoundType.END, new LineListener() {
 
 					@Override
@@ -2730,6 +2718,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							SoundUtil.getInstance().playSound(resultStringBuffer.toString(), new PlaybackListener() {
 								@Override
 								public void playbackFinished(PlaybackEvent evt) {
+							
 									nextEntryInfo(spEntryInfo);
 								}
 							});
@@ -2755,6 +2744,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+
+				isResultCompleteFlag = false;
 
 				// 경매 완료 테이블에 데이터 넣음
 				addFinishedTableViewItem(spEntryInfo);
