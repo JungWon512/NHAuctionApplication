@@ -12,8 +12,10 @@ public class GlobalDefineCode {
 	public static final boolean FLAG_SSL = true;
 	// 개발,운영 여부
 	public static final boolean FLAG_PRD = true;
-	// 부하 테스트 모드
-	public static final boolean FLAG_TEST_MODE = false;
+	// 응찰자 테스트 모드
+	public static final boolean FLAG_TEST_MODE = true;
+	// 응찰 로그 테스트 모드
+	public static final boolean FLAG_TEST_MODE_BIDDING_LOG = true;
 	
 	// 경매장 거점 코드
 	public enum AUCTION_HOUSE {
