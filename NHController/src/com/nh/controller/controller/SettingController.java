@@ -413,7 +413,7 @@ public class SettingController implements Initializable {
 		// 계류대 번호
 		mStandPositionTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, SettingApplication.getInstance().DEFAULT_SETTING_STAND_POSITION));
 		//음성 설정 파일
-		mSoundValTextArea.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, ""));
+		mSoundValTextArea.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_CONFIG));
 	
 	}
 
@@ -1030,6 +1030,18 @@ public class SettingController implements Initializable {
 		} else {
 			showAlert(mResMsg.getString("dialog.setting.aucwaittime.validation.fail"));
 			return false;
+		}
+		
+		// 대기시간 설정 1 ~ 50 초
+		if (mUseSoundAuction.isSelected() && !CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())) {
+			showAlert(mResMsg.getString("dialog.sound.empty.value"));
+			return false;
+		}else {
+			
+			if(CommonUtils.getInstance().isValidString(mSoundValTextArea.getText()) && !mSoundValTextArea.getText().contains("private_key")) {
+				showAlert(mResMsg.getString("dialog.sound.no.value"));
+				return false;
+			}
 		}
 		
 		return true;

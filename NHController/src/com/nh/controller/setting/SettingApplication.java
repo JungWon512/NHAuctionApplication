@@ -106,7 +106,7 @@ public class SettingApplication {
 	// 하나씩 진행 기본값
 	public final boolean DEFAULT_SETTING_USE_ONE_AUCTION = false;
 	// 음성경부여부 (음성경매) 기본값
-	public final boolean DEFAULT_SETTING_USE_SOUND_AUCTION = true;
+	public final boolean DEFAULT_SETTING_USE_SOUND_AUCTION = false;
 	// 대기시간 기본값
 	public final String DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME_MAX = "50";
 	public final String DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME = "3";
@@ -124,6 +124,7 @@ public class SettingApplication {
 	public final String DEFAULT_SETTING_MOBILE_LOWPRICE= "N";
 	public final String DEFAULT_SETTING_MOBILE_PASSAGE= "N";
 	public final String DEFAULT_SETTING_MOBILE_DNA="N";
+	public final String DEFAULT_SETTING_SOUND_CONFIG="";
 
 	//경매 타입
 	public final String DEFAULT_SETTING_AUCTION_TOGGLE_TYPE =  AuctionToggle.SINGLE.toString();
@@ -318,6 +319,9 @@ public class SettingApplication {
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, DEFAULT_SETTING_STAND_POSITION);
 			// 첫실행 후 false
 			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, false);
+			//음성설정 
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, DEFAULT_SETTING_SOUND_CONFIG);
+			
 		} else {
 			mLogger.debug("설치 후 첫 실행 아님.");
 		}

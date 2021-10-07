@@ -116,6 +116,7 @@ public class SoundUtil {
             mTTSNowRunnable.setClient(null);
             mTTSDefineRunnable.setClient(null);
             SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, "");
+            SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, false);
             return;
         }
         // 기존 인증값과 같고 TTS가 세팅 되어 있는 경우 패스.
