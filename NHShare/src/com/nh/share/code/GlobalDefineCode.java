@@ -13,9 +13,9 @@ public class GlobalDefineCode {
 	// 개발,운영 여부
 	public static final boolean FLAG_PRD = true;
 	// 응찰자 테스트 모드
-	public static final boolean FLAG_TEST_MODE = true;
+	public static final boolean FLAG_TEST_MODE = false;
 	// 응찰 로그 테스트 모드
-	public static final boolean FLAG_TEST_MODE_BIDDING_LOG = true;
+	public static final boolean FLAG_TEST_MODE_BIDDING_LOG = false;
 	
 	// 경매장 거점 코드
 	public enum AUCTION_HOUSE {

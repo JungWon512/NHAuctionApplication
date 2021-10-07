@@ -9,9 +9,11 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 응찰단말
  * 
- * SH | 조합구분코드 | 노출항목1 | 노출항목2 | 노출항목3 | 노출항목4 | 노출항목5 | 노출항목6 | 노출항목7 | 노출항목8
+ * SH | 조합구분코드 | 노출항목1 | 노출항목2 | 노출항목3 | 노출항목4 | 노출항목5 | 노출항목6 | 노출항목7 | 노출항목8 |
+ * 노출항목9 | 노출항목10
  * 
- * 1.출품번호 / 2.출하주 / 3.성별 / 4.중량 / 5.어미 / 6.계대 / 7.산차 / 8.KPN / 9.지역명 / 10.비고 / 11.최처가 / 12.친자여부
+ * 1.출품번호 / 2.출하주 / 3.성별 / 4.어미 / 5.친자 / 6.지역명 / 7.산차 / 8.계대 / 9.KPN / 10.중량 /
+ * 11.최처가 / 12.비고
  *
  */
 public class ShowEntryInfo implements FromAuctionServer {
@@ -29,7 +31,7 @@ public class ShowEntryInfo implements FromAuctionServer {
 	final private String ITEM_NOTE = "10";
 	final private String ITEM_LOW_PRICE = "11";
 	final private String ITEM_DNA = "12";
-	
+
 	private String mAuctionHouseCode; // 거점코드
 	private String mItem1 = ""; // 1번째 항목
 	private String mItem2 = ""; // 2번째 항목
@@ -45,68 +47,68 @@ public class ShowEntryInfo implements FromAuctionServer {
 
 	public ShowEntryInfo(EditSetting editSetting) {
 		initData();
-		
+
 		mAuctionHouseCode = editSetting.getAuctionHouseCode();
-		
-		if(editSetting.getIsShowEntryNum().equals("Y")) {
+
+		if (editSetting.getIsShowEntryNum().equals("Y")) {
 			currentItem++;
 			setData(ITEM_ENTRY_NUM);
 		}
-		
-		if(editSetting.getIsShowExhUser().equals("Y")) {
+
+		if (editSetting.getIsShowExhUser().equals("Y")) {
 			currentItem++;
 			setData(ITEM_EXH_USER);
 		}
-		
-		if(editSetting.getIsShowGender().equals("Y")) {
+
+		if (editSetting.getIsShowGender().equals("Y")) {
 			currentItem++;
 			setData(ITEM_GENDER);
 		}
-		
-		if(editSetting.getIsShowWeight().equals("Y")) {
-			currentItem++;
-			setData(ITEM_WEIGHT);
-		}
-		
-		if(editSetting.getIsShowMother().equals("Y")) {
+
+		if (editSetting.getIsShowMother().equals("Y")) {
 			currentItem++;
 			setData(ITEM_MOTHER);
-		
+
 		}
-		
-		if(editSetting.getIsShowPasg().equals("Y")) {
+
+		if (editSetting.getIsShowDna().equals("Y")) {
 			currentItem++;
-			setData(ITEM_PASG);
+			setData(ITEM_DNA);
 		}
-		
-		if(editSetting.getIsShowCaving().equals("Y")) {
-			currentItem++;
-			setData(ITEM_CAVING);
-		}
-		
-		if(editSetting.getIsShowKpn().equals("Y")) {
-			currentItem++;
-			setData(ITEM_KPN);
-		}
-		
-		if(editSetting.getIsShowLocation().equals("Y")) {
+
+		if (editSetting.getIsShowLocation().equals("Y")) {
 			currentItem++;
 			setData(ITEM_LOCATION);
 		}
-		
-		if(editSetting.getIsShowNote().equals("Y")) {
+
+		if (editSetting.getIsShowCaving().equals("Y")) {
 			currentItem++;
-			setData(ITEM_NOTE);
+			setData(ITEM_CAVING);
 		}
-		
-		if(editSetting.getIsShowLowPrice().equals("Y")) {
+
+		if (editSetting.getIsShowPasg().equals("Y")) {
+			currentItem++;
+			setData(ITEM_PASG);
+		}
+
+		if (editSetting.getIsShowKpn().equals("Y")) {
+			currentItem++;
+			setData(ITEM_KPN);
+		}
+
+		if (editSetting.getIsShowWeight().equals("Y")) {
+			currentItem++;
+			setData(ITEM_WEIGHT);
+		}
+
+		if (editSetting.getIsShowLowPrice().equals("Y")) {
 			currentItem++;
 			setData(ITEM_LOW_PRICE);
 		}
-		
-		if(editSetting.getIsShowDna().equals("Y")) {
+
+		if (editSetting.getIsShowNote().equals("Y")) {
 			currentItem++;
-			setData(ITEM_DNA);
+			setData(ITEM_NOTE);
 		}
 	}
 
@@ -127,7 +129,7 @@ public class ShowEntryInfo implements FromAuctionServer {
 
 	private void initData() {
 		currentItem = 0;
-		
+
 		mItem1 = ""; // 1번째 항목
 		mItem2 = ""; // 2번째 항목
 		mItem3 = ""; // 3번째 항목
@@ -139,9 +141,9 @@ public class ShowEntryInfo implements FromAuctionServer {
 		mItem9 = ""; // 9번째 항목
 		mItem10 = ""; // 10번째 항목
 	}
-	
+
 	private void setData(String item) {
-		switch(currentItem) {
+		switch (currentItem) {
 		case 1:
 			mItem1 = item;
 			break;
@@ -174,7 +176,7 @@ public class ShowEntryInfo implements FromAuctionServer {
 			break;
 		}
 	}
-	
+
 	public String getAuctionHouseCode() {
 		return mAuctionHouseCode;
 	}
@@ -246,7 +248,7 @@ public class ShowEntryInfo implements FromAuctionServer {
 	public void setItem8(String item8) {
 		this.mItem8 = item8;
 	}
-	
+
 	public String getItem9() {
 		return mItem9;
 	}
@@ -262,15 +264,16 @@ public class ShowEntryInfo implements FromAuctionServer {
 	public void setItem10(String item10) {
 		this.mItem10 = item10;
 	}
-	
+
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
-				mAuctionHouseCode, AuctionShareSetting.DELIMITER, mItem1, AuctionShareSetting.DELIMITER, mItem2,
-				AuctionShareSetting.DELIMITER, mItem3, AuctionShareSetting.DELIMITER, mItem4,
-				AuctionShareSetting.DELIMITER, mItem5, AuctionShareSetting.DELIMITER, mItem6,
-				AuctionShareSetting.DELIMITER, mItem7, AuctionShareSetting.DELIMITER, mItem8,
-				AuctionShareSetting.DELIMITER, mItem9, AuctionShareSetting.DELIMITER, mItem10);
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
+				AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mItem1,
+				AuctionShareSetting.DELIMITER, mItem2, AuctionShareSetting.DELIMITER, mItem3,
+				AuctionShareSetting.DELIMITER, mItem4, AuctionShareSetting.DELIMITER, mItem5,
+				AuctionShareSetting.DELIMITER, mItem6, AuctionShareSetting.DELIMITER, mItem7,
+				AuctionShareSetting.DELIMITER, mItem8, AuctionShareSetting.DELIMITER, mItem9,
+				AuctionShareSetting.DELIMITER, mItem10);
 	}
 
 }
