@@ -181,7 +181,7 @@ public class SettingApplication {
 	public void initDefaultConfigration(ResourceBundle resMsg) {
 
 		boolean isFirstApplication = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, true);
-
+	
 		if (isFirstApplication) {
 			mLogger.debug("설치 후 첫 실행");
 
@@ -321,6 +321,8 @@ public class SettingApplication {
 			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_IS_FIRST_APPLICATION, false);
 			//음성설정 
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, DEFAULT_SETTING_SOUND_CONFIG);
+			//아이디
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_LOGIN_SAVE_ID, "");
 			
 		} else {
 			mLogger.debug("설치 후 첫 실행 아님.");
