@@ -234,8 +234,16 @@ public class SoundUtil {
      */
     public void playCurrentEntryMessage(PlaybackListener playbackListener) {
         if (CommonUtils.getInstance().isValidString(mCurrentEntryMessage)) {
+        	if(mTTSNowRunnable.isClient()) {
+     
             stopSound();
             mTTSNowRunnable.play(mCurrentEntryMessage,playbackListener);
+       		
+        	}else {
+        		if(playbackListener != null) {
+        			playbackListener.playbackFinished(null);
+        		}
+        	}
         }
     }
     
@@ -249,8 +257,15 @@ public class SoundUtil {
      */
     public void playSound(String msg, PlaybackListener listener) {
         if (CommonUtils.getInstance().isValidString(msg)) {
-            stopSound();
-            mTTSNowRunnable.play(msg, listener);
+        	if(mTTSNowRunnable.isClient()) {
+        		   stopSound();
+                   mTTSNowRunnable.play(msg, listener);
+        	}else {
+        		if(listener != null) {
+        			listener.playbackFinished(null);
+        		}
+        	}
+         
         }
     }
 

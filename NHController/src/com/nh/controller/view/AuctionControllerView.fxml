@@ -671,7 +671,7 @@
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.hgrow="ALWAYS">
                <children>
                   <Button fx:id="mBtnEsc" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[ESC]종료" />
-                  <Button fx:id="mBtnF1" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F1]출품전송" />
+                  <Button fx:id="mBtnF1" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" styleClass="btn-bottom" text="[F1]출장우전송" />
                   <Button fx:id="mBtnF3" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F3]보류" />
                   <Button fx:id="mBtnF4" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F4]전체보기" />
                   <Button fx:id="mBtnF5" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F5]보류보기" />

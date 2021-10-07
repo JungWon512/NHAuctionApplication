@@ -1998,7 +1998,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// 응찰자가 있는경우
 		if (mCurrentBidderMap.size() > 0) {
 
-			mLogger.debug("[soundAuctionTimerTask] " + mCurrentBidderMap.size());
+			mLogger.debug("[soundAuctionTimerTask 응찰자 맵 카운트] " + mCurrentBidderMap.size());
 			// 현재 1순위
 			SpBidding rank_1_user = mBiddingUserInfoDataList.get(0);
 			// 응찰 가격 조건 체크
@@ -2133,18 +2133,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@Override
 	public void onBidderConnectInfo(BidderConnectInfo bidderConnectInfo) {
 //		super.onBidderConnectInfo(bidderConnectInfo);
-		mLogger.debug("[SI 응찰자 접속] " + bidderConnectInfo.getEncodedMessage());
 
 		if(bidderConnectInfo == null || !CommonUtils.getInstance().isValidString(bidderConnectInfo.getUserJoinNum())) {
 			mLogger.debug("[SI 응찰자 정보 없음.]"); 
 			return;
 		}
-		
 		// 미응찰,접속해제 상태만 받음.
 		if (!bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_N) && !bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_L)) {
 			return;
 		}
-
+		mLogger.debug("[SI 응찰자 접속] " + bidderConnectInfo.getEncodedMessage());
+		
 		CompletableFuture<Boolean> futurePrice = new CompletableFuture<>();
 
 		new Thread(() -> {
