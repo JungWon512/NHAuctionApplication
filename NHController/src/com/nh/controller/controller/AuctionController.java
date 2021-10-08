@@ -1167,50 +1167,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 경매 진행중 => 취소 경매 진행중 아님 => 종료
 	 */
-	public void onCancelOrClose() {
-		
-		if (SettingApplication.getInstance().isUseSoundAuction()) {
-			
-			if(!isStartSoundPlaying) {
-				return;
-			}
-			// 사운드 중지
-			SoundUtil.getInstance().setCurrentEntryInfoMessage(null);
-			SoundUtil.getInstance().stopSound();
-			SoundUtil.getInstance().stopLocalSound();
-		}
-		
 	
-	
-		// 경매 진행중인 경우 취소처리
-		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
-			
-			mLogger.debug("[출품 취소 처리]");
-			isCancel = true;
-			onPause();
-			saveAuctionResult(false, mCurrentSpEntryInfo, null, GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
-			mBiddingInfoTableView.setDisable(false);
-			BillboardDelegate.getInstance().completeBillboard();
-			PdpDelegate.getInstance().completePdp();
-		} else {
-
-			if (SettingApplication.getInstance().isUseSoundAuction()) {
-
-				if (mBtnSpace.getUserData() != null && !mBtnSpace.getUserData().toString().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
-					// 경매 진행중 아니면.. 프로그램 종료
-					onCloseApplication();
-				} else {
-					onCloseApplication();
-				}
-
-			} else {
-				// 경매 진행중 아니면.. 프로그램 종료
-				onCloseApplication();
-			}
-
-		}
-
-	}
 
 	/**
 	 * 프로그램 종료
@@ -1236,7 +1193,52 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				}
 			}
 		});
+	}
 
+	@Override
+	void onCancelOrClose() {
+		
+		if (SettingApplication.getInstance().isUseSoundAuction()) {
+			
+			mLogger.debug("[출품 취소 처리 체크 ] " + isStartSoundPlaying);
+		
+			// 사운드 중지
+			SoundUtil.getInstance().setCurrentEntryInfoMessage(null);
+			SoundUtil.getInstance().stopSound();
+			SoundUtil.getInstance().stopLocalSound();
+		}
+		
+		// 경매 진행중인 경우 취소처리
+		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+			
+			if(isCancel) {
+				return;
+			}
+			
+			mLogger.debug("[출품 취소 처리 시작]");
+			isCancel = true;
+			onPause();
+			saveAuctionResult(false, mCurrentSpEntryInfo, null, GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
+			mBiddingInfoTableView.setDisable(false);
+			BillboardDelegate.getInstance().completeBillboard();
+			PdpDelegate.getInstance().completePdp();
+		} else {
+
+			if (SettingApplication.getInstance().isUseSoundAuction()) {
+
+				if (mBtnSpace.getUserData() != null && !mBtnSpace.getUserData().toString().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+					// 경매 진행중 아니면.. 프로그램 종료
+					onCloseApplication();
+				} else {
+					onCloseApplication();
+				}
+
+			} else {
+				// 경매 진행중 아니면.. 프로그램 종료
+				onCloseApplication();
+			}
+
+		}
 	}
 
 	private void onServerAndClose() {
@@ -1428,36 +1430,44 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			// 경매 시작 플래그
 			isStartedAuction = true;
+			
+			mLogger.debug("1111111111111111");
 
 			// 음성경매인 경우 사운드
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
 	
+				mLogger.debug("22222222222");
+				
 				// 출품번호 사운드 set
 				setCurrentEntrySoundData();
 
+				isStartSoundPlaying = true;
+				
+				mLogger.debug("33333333333");
 				SoundUtil.getInstance().playLocalSound(LocalSoundDefineRunnable.LocalSoundType.START, new LineListener() {
 					@Override
 					public void update(LineEvent event) {
 						
 						if (event.getType() == LineEvent.Type.STOP) {
 							
-							// 사운드 시작
-							isStartSoundPlaying = true;
+							mLogger.debug("4444444444444");
+								// 사운드 시작
+								
 
-							// 출품 정보 읽음.
-							SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
-								@Override
-								public void playbackFinished(PlaybackEvent evt) {
-									isStartSoundPlaying = false;
-									// 음성 경매시 종료 타이머 시작.
-									System.out.println("[출품정보 음성 읽음. 정지 타이머 실행]");
-									soundAuctionTimerTask();
-								}
-							});
+								// 출품 정보 읽음.
+								SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
+									@Override
+									public void playbackFinished(PlaybackEvent evt) {
+										isStartSoundPlaying = false;
+										// 음성 경매시 종료 타이머 시작.
+										System.out.println("[출품정보 음성 읽음. 정지 타이머 실행]");
+										soundAuctionTimerTask();
+									}
+								});
 						}
 						
 						if (event.getType() == LineEvent.Type.CLOSE) {
-							System.out.println("[출품정보 취소]");
+							System.out.println("[LineEvent.Type.CLOSE 출품정보 취소]");
 						}
 					}
 				});
@@ -1583,7 +1593,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 경매 진행 -> 카운트 다운 일시 정지.
 	 */
 	public void onPause() {
-
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -1931,6 +1940,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	public void startAutoAuctionScheduler(int countDown) {
 
 		if (isPause || isCountDownRunning || isCountDownBtnPressed || isResultCompleteFlag) {
+			addLogItem("정지 타이머 실행 안함. isPause : " + isPause
+					+ " / isCountDownRunning : " + isCountDownRunning
+					+ " / isCountDownBtnPressed : " + isCountDownBtnPressed
+					+ " / isResultCompleteFlag : " + isResultCompleteFlag);
 			return;
 		}
 
@@ -2065,6 +2078,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			PdpDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
 
 			// 카운트다운 효과음
+			mLogger.debug("카운트다운 isStartSoundPlaying : " + isStartSoundPlaying);
 			if (SettingApplication.getInstance().isUseSoundAuction() && !isStartSoundPlaying) {
 				SoundUtil.getInstance().playLocalSound(LocalSoundDefineRunnable.LocalSoundType.DING, null);
 			}
@@ -2082,6 +2096,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 정지인경우.
 			if (isCancel || isPause) {
 				addLogItem("==== isCancel " + isCancel + " / " + isPause);
+				isCancel = false;
 				return;
 			}
 
@@ -2489,6 +2504,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param rank_1_user
 	 */
 	private void setSuccessUser(SpBidding rank_1_user) {
+		
+		setCountDownLabelState(0, false);
+		
 		// 1순위자
 		mRank_1_User = rank_1_user;
 		// 1순위 낙찰 예정자 플래그
@@ -2510,7 +2528,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		// 낙찰 예정자 확인용 로그.
 		if (rank_1_user != null) {
-			addLogItem("[낙찰 예정자 번호] : " + rank_1_user.getAuctionJoinNum().getValue());
+			if(rank_1_user.getAuctionJoinNum() != null) {
+				addLogItem("[낙찰 예정자 번호] : " + rank_1_user.getAuctionJoinNum().getValue());
+			}else {
+				addLogItem("[낙찰 예정자 없음]");
+			}
 		} else {
 			addLogItem("[낙찰 예정자 없음]");
 		}
@@ -2545,7 +2567,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 경매 준비 뷰 초기화
 	 */
-	private void setAuctionVariableState(String code) {
+	private  void setAuctionVariableState(String code) {
 
 		if(isResultCompleteFlag) {
 			return;
@@ -2625,6 +2647,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnPause.setDisable(false);
 				
 				isOverPricePlaySound = false;
+				
 				
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_START:
@@ -2979,6 +3002,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 		SoundUtil.getInstance().setCurrentEntryInfoMessage(entrySoundContent.toString());
+		
+		mLogger.debug("[출품정보 사운드 메세지] " +  entrySoundContent.toString());
 	}
 
 	/**
@@ -3009,9 +3034,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					// 종료
 					if (ke.getCode() == KeyCode.ESCAPE) {
-
 						onCancelOrClose();
-
 						ke.consume(); // 다음 노드로 이벤트를 전달하지 않는다.
 					}
 
@@ -3131,9 +3154,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						}
 						
 						// 음성경매<=>단일경매 전환
-						if (ke.getCode() == KeyCode.PLUS) {
+						if (ke.getCode() == KeyCode.BACK_SLASH) {
 							
-							
+							mLogger.debug("PLUS !!");
 							if(SettingApplication.getInstance().isUseSoundAuction()) {
 								mBtnEnter.setDisable(false);
 								mBtnSpace.setDisable(true);
@@ -3148,6 +3171,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							ke.consume();
 						}
 						
+				
 						break;
 					}
 
