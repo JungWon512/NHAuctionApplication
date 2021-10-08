@@ -297,8 +297,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnF3.setOnMouseClicked(event -> onPending());
 		mBtnF4.setOnMouseClicked(event -> openEntryListPopUp());
 		mBtnF5.setOnMouseClicked(event -> openEntryPendingListPopUp());
-		mBtnEnter.setOnMouseClicked(event -> onStartAndStopAuction(0));
-		mBtnSpace.setOnMouseClicked(event -> onStartSoundAuction());
+		mBtnEnter.setOnMouseClicked(event -> normalEnterStartAuction());
+		mBtnSpace.setOnMouseClicked(event -> normalSpaceStartAuction());
 		mBtnF6.setOnMouseClicked(event -> onSuccessAuction());
 		mBtnF8.setOnMouseClicked(event -> openSettingDialog());
 
@@ -1221,8 +1221,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			onPause();
 			
 			if(isPlusKeyStartAuction) {
-				toggleAuctionType();
-				isPlusKeyStartAuction= false;	
+				toggleAuctionType();	
 			}
 			
 			saveAuctionResult(false, mCurrentSpEntryInfo, null, GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
@@ -2589,7 +2588,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				stopAutoAuctionScheduler();
 				//응찰 쓰레드폴 init
 				initExecutorService();
-				
 				// 카운트다운 라벨 초기화
 				setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
 				// 카운트 시간 초기화
@@ -2797,8 +2795,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				addFinishedTableViewItem(spEntryInfo);
 			
 				if(isPlusKeyStartAuction) {
-					toggleAuctionType();
-					isPlusKeyStartAuction= false;	
+					toggleAuctionType();	
 				}
 
 				// 경매 준비 상태로 뷰들 초기화
@@ -3198,26 +3195,31 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					// 경매 시작
 					if (ke.getCode() == KeyCode.ENTER) {
-
 						System.out.println("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
-
-						onStartAndStopAuction(0);
-
+						normalEnterStartAuction();
 						ke.consume();
 					}
 					// 음성 경매 시작
 					if (ke.getCode() == KeyCode.SPACE) {
-
 						System.out.println("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
-						
-						onStartSoundAuction();
-
+						normalSpaceStartAuction();
 						ke.consume();
 					}
 				}
 			});
 		});
 	}
+	
+	private void normalEnterStartAuction() {
+		isPlusKeyStartAuction = false;
+		onStartAndStopAuction(0);
+	}
+	
+	private void normalSpaceStartAuction() {
+		isPlusKeyStartAuction = false;
+		onStartSoundAuction();
+	}
+	
 
 	private void toggleAuctionType() {
 		
