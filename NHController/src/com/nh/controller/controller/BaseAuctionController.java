@@ -373,11 +373,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onBidding(Bidding bidding) {
 		// 응찰 쓰레드풀 실행
-		if (mExeCalculationRankService != null) {
-			mExeCalculationRankService.submit(getBiddingRunnable(bidding));
-		} else {
-			mLogger.debug("mExeCalculationRankService is null");
-		}
+		initExecutorService();
+		mExeCalculationRankService.submit(getBiddingRunnable(bidding));
 	}
 
 	/**
@@ -547,6 +544,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	public void onCancelBidding(CancelBidding cancelBidding) {
 
 		addLogItem(mResMsg.getString("msg.auction.get.bidding.cancel") + cancelBidding.getEncodedMessage());
+		initExecutorService();
 		// 응찰취소 쓰레드풀 실행
 		mExeCalculationRankService.submit(getCancelBiddingRunnable(cancelBidding));
 
@@ -586,13 +584,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 				// 랭킹 재계산
 				calculationRanking();
-
-				// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
-				if (SettingApplication.getInstance().isUseSoundAuction()) {
-					addLogItem("[응찰 취소 정지 타이머 실행]");
-					soundAuctionTimerTask();
-				}
-
+				
 				Bidding bidding = new Bidding();
 				bidding.setAuctionHouseCode(cancelBidding.getAuctionHouseCode());
 				bidding.setEntryNum(cancelBidding.getEntryNum());
