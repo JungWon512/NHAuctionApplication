@@ -1220,11 +1220,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			isCancel = true;
 			onPause();
 			
-//			mLogger.debug("[isStartedAuction]" + isStartedAuction + " / " + isPlusKeyStartAuction);
-//			if(isStartedAuction && isPlusKeyStartAuction) {
-//				toggleAuctionType();
-//				isPlusKeyStartAuction= false;	
-//			}
+			if(isPlusKeyStartAuction) {
+				toggleAuctionType();
+				isPlusKeyStartAuction= false;	
+			}
+			
 			saveAuctionResult(false, mCurrentSpEntryInfo, null, GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
 			mBiddingInfoTableView.setDisable(false);
 			BillboardDelegate.getInstance().completeBillboard();
@@ -2587,6 +2587,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				System.out.println("#### AUCTION_STATUS_READY ####");
 				// 타이머 초기화
 				stopAutoAuctionScheduler();
+				//응찰 쓰레드폴 init
+				initExecutorService();
 				
 				// 카운트다운 라벨 초기화
 				setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
@@ -2793,11 +2795,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				// 경매 완료 테이블에 데이터 넣음
 				addFinishedTableViewItem(spEntryInfo);
-//				mLogger.debug("[isStartedAuction]" + isStartedAuction + " / " + isPlusKeyStartAuction);
-//				if(isStartedAuction && isPlusKeyStartAuction) {
-//					toggleAuctionType();
-//					isPlusKeyStartAuction= false;	
-//				}
+			
+				if(isPlusKeyStartAuction) {
+					toggleAuctionType();
+					isPlusKeyStartAuction= false;	
+				}
 
 				// 경매 준비 상태로 뷰들 초기화
 				setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
@@ -3219,7 +3221,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	private void toggleAuctionType() {
 		
-		Platform.runLater(()->{
+//		Platform.runLater(()->{
 			if(SettingApplication.getInstance().isUseSoundAuction()) {
 				mLogger.debug("토글 => 단일 경매 전환");
 				mBtnEnter.setDisable(false);
@@ -3233,7 +3235,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 			
 			SettingApplication.getInstance().initSharedData();
-		});
+//		});
 	}
 	
 	/**
@@ -3506,6 +3508,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		Platform.runLater(() -> {
 
+			mLogger.debug("######################### "  + SettingApplication.getInstance().isUseSoundAuction() + " / " + mAuctionStatus.getState());
 			// 모든 상태 정보. 출품 정보 보내기 버튼 비활성화
 			mBtnF1.setDisable(true);
 			// 경매 시작 버튼 활성화
@@ -3557,9 +3560,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					// ENTER 경매 시작으로.
 					mBtnEnter.setText(mResMsg.getString("str.btn.start"));
 					CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
+					
+					if(isPlusKeyStartAuction) {
+						mBtnSpace.setText(mResMsg.getString("str.btn.sound.auction.ready"));
+						CommonUtils.getInstance().removeStyleClass(mBtnSpace, "bg-color-04cf5c");
+					}
+					
 				} else {
 					mBtnSpace.setText(mResMsg.getString("str.btn.sound.auction.ready"));
 					CommonUtils.getInstance().removeStyleClass(mBtnSpace, "bg-color-04cf5c");
+					
+					if(isPlusKeyStartAuction) {
+						mBtnEnter.setText(mResMsg.getString("str.btn.start"));
+						CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
+					}
 				}
 				// 강제 유찰 버튼 활성화
 				mBtnF3.setDisable(false);
