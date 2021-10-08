@@ -37,7 +37,13 @@ public class ConnectionInfo implements FromAuctionCommon, Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		return ((ConnectionInfo)obj).mUserMemNum.equals(mUserMemNum);
+		boolean result = false;
+		
+		if (((ConnectionInfo)obj).mAuctionHouseCode.equals(mAuctionHouseCode) && ((ConnectionInfo)obj).mUserMemNum.equals(mUserMemNum)) {
+			result = true;
+		}
+		
+		return result;
 	}
 
 	public String getAuctionHouseCode() {

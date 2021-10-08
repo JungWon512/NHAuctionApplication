@@ -373,7 +373,11 @@ public abstract class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onBidding(Bidding bidding) {
 		// 응찰 쓰레드풀 실행
-		mExeCalculationRankService.submit(getBiddingRunnable(bidding));
+		if (mExeCalculationRankService != null) {
+			mExeCalculationRankService.submit(getBiddingRunnable(bidding));
+		} else {
+			mLogger.debug("mExeCalculationRankService is null");
+		}
 	}
 
 	/**

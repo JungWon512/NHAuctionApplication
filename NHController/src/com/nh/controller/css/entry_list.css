@@ -78,7 +78,7 @@
 	-fx-max-height: 0.0;
 }
 
-/*가로 스크롤 - 공통 */
+/*가로 스크롤 - 공통
 .table-view .scroll-bar:vertical * {
 	-fx-min-width: 0.0;
 	-fx-pref-width: 0.0;
@@ -86,7 +86,7 @@
 	-fx-min-height: 0.0;
 	-fx-pref-height: 0.0;
 	-fx-max-height: 0.0;
-}
+} */
 
 .header-button > .button{
 	-fx-border-width: 1.0;

@@ -1,24 +1,10 @@
 package com.nh.controller.utils;
 
-import com.google.api.client.util.PemReader;
-import com.google.api.client.util.SecurityUtils;
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.texttospeech.v1.*;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.nh.controller.model.SettingSound;
-import javazoom.jl.player.Player;
-import javazoom.jl.player.advanced.AdvancedPlayer;
-import javazoom.jl.player.advanced.PlaybackListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineListener;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.security.KeyFactory;
@@ -29,6 +15,36 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.api.client.util.PemReader;
+import com.google.api.client.util.SecurityUtils;
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.cloud.texttospeech.v1.AudioConfig;
+import com.google.cloud.texttospeech.v1.AudioEncoding;
+import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
+import com.google.cloud.texttospeech.v1.SynthesisInput;
+import com.google.cloud.texttospeech.v1.SynthesizeSpeechResponse;
+import com.google.cloud.texttospeech.v1.TextToSpeechClient;
+import com.google.cloud.texttospeech.v1.TextToSpeechSettings;
+import com.google.cloud.texttospeech.v1.VoiceSelectionParams;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.nh.controller.model.SettingSound;
+
+import javazoom.jl.player.Player;
+import javazoom.jl.player.advanced.AdvancedPlayer;
+import javazoom.jl.player.advanced.PlaybackListener;
 
 /**
  * 음성 실행 클래스
@@ -125,8 +141,10 @@ public class SoundUtil {
             return;
 
         try {
-            JsonObject json = new JsonParser().parse(googleServiceJson).getAsJsonObject();
-            if (!json.has("client_id") ||
+        	JsonElement element = JsonParser.parseString(googleServiceJson);
+        	JsonObject json = element.getAsJsonObject();
+
+        	if (!json.has("client_id") ||
                     !json.has("client_email") ||
                     !json.has("private_key") ||
                     !json.has("private_key_id") ||
@@ -138,7 +156,8 @@ public class SoundUtil {
                 SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, googleServiceJson);
                 throw new NullPointerException("인증에 필요한 키값이 없습니다.");
             }
-            TextToSpeechClient client = TextToSpeechClient.create(
+            
+        	TextToSpeechClient client = TextToSpeechClient.create(
                     TextToSpeechSettings.newBuilder()
                             .setCredentialsProvider(FixedCredentialsProvider
                                     .create(
@@ -235,8 +254,7 @@ public class SoundUtil {
      */
     public void playCurrentEntryMessage(PlaybackListener playbackListener) {
         if (CommonUtils.getInstance().isValidString(mCurrentEntryMessage)) {
-        	if(mTTSNowRunnable.isClient()) {
-     
+        	if(mTTSNowRunnable.isClient()) {	
             stopSound();
             mTTSNowRunnable.play(mCurrentEntryMessage,playbackListener);
        		
@@ -286,6 +304,8 @@ public class SoundUtil {
      * @param lineListener
      */
     public void playLocalSound(LocalSoundDefineRunnable.LocalSoundType type, LineListener lineListener) {
+    	mLogger.debug("mLocalSoundDefineRunnable : " + mLocalSoundDefineRunnable);
+    	
         stopSound();
         mLocalSoundDefineRunnable.play(type, lineListener);
     }
@@ -441,7 +461,9 @@ public class SoundUtil {
                 try {
                     // 메시지가 변경이 된 경우에만 TTS 가져오기
                     if (data.isChanged()) {
-                        data.setStream(getTextToSpeechStream(data.getMessage()));
+                    	if (mClient != null) {
+                            data.setStream(getTextToSpeechStream(data.getMessage()));
+                    	}
                     }
                 } catch (Exception ex) {
                     mLogger.error(ex.getMessage());
@@ -456,8 +478,7 @@ public class SoundUtil {
          * @return TTS ByteArray
          * @author hmju
          */
-        private InputStream getTextToSpeechStream(String msg) throws NullPointerException {
-            if (mClient == null) throw new NullPointerException("TextToSpeechClient is Null");
+        private InputStream getTextToSpeechStream(String msg) {
             SynthesisInput input = SynthesisInput.newBuilder().setText(msg).build();
             SynthesizeSpeechResponse response = mClient.synthesizeSpeech(input, mParams, mAudioConfig);
             return new ByteArrayInputStream(response.getAudioContent().toByteArray());
@@ -535,10 +556,13 @@ public class SoundUtil {
                     }
                 }
                 long prevTime = System.currentTimeMillis();
-                mPlayer = new AdvancedPlayer(getTextToSpeechStream(mMessage));
-                mLogger.debug("Diff Time " + (System.currentTimeMillis() - prevTime));
-                mPlayer.setPlayBackListener(mPlayBackListener);
-                mPlayer.play();
+
+                if (mClient != null) {
+                    mPlayer = new AdvancedPlayer(getTextToSpeechStream(mMessage));
+                    mLogger.debug("Diff Time " + (System.currentTimeMillis() - prevTime));
+                    mPlayer.setPlayBackListener(mPlayBackListener);
+                    mPlayer.play();
+                }
             } catch (Exception ex) {
                 mLogger.error("Run " + ex);
             }
@@ -562,8 +586,7 @@ public class SoundUtil {
          * @return TTS ByteArray
          * @author hmju
          */
-        private InputStream getTextToSpeechStream(String msg) throws NullPointerException {
-            if (mClient == null) throw new NullPointerException("TextToSpeechClient is Null");
+        private InputStream getTextToSpeechStream(String msg) {
             SynthesisInput input = SynthesisInput.newBuilder().setText(msg).build();
             SynthesizeSpeechResponse response = mClient.synthesizeSpeech(input, mParams, mAudioConfig);
             return new ByteArrayInputStream(response.getAudioContent().toByteArray());

@@ -106,6 +106,8 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 						mBidderChannelsMap.get(responseConnectionInfo.getAuctionHouseCode())
 								.add(clientChannelContext.channel());
 					}
+					
+					mLogger.info("Bidder Channel Size : " + mBidderChannelsMap.get(responseConnectionInfo.getAuctionHouseCode()).size());
 
 					if(mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode()) != null) {
 						// 경매 유형코드 전송
@@ -157,6 +159,14 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 						.get(responseConnectionInfo.getUserMemNum());
 
 				mAuctionServer.responseWebSocketConnection(socketIOClient, mConnectionInfoMap.get(socketIOClient.getSessionId()), responseConnectionInfo);
+			}
+		} else {
+			mLogger.info(responseConnectionInfo.getUserMemNum() + " 사용자 정보가 없습니다. ");
+			
+			mLogger.info("mConnectionChannelInfoMap Size : " + mConnectionChannelInfoMap.size());
+			
+			if (!mBidderChannelsMap.containsKey(responseConnectionInfo.getAuctionHouseCode())) {
+				mLogger.info("Bidder Channel Size : " + mBidderChannelsMap.get(responseConnectionInfo.getAuctionHouseCode()).size());
 			}
 		}
 	}

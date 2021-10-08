@@ -2080,6 +2080,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			PdpDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
 
 			// 카운트다운 효과음
+			if (isStartSoundPlaying) {
+				isStartSoundPlaying = false;
+			}
+			
 			mLogger.debug("카운트다운 isStartSoundPlaying : " + isStartSoundPlaying);
 			
 			if (SettingApplication.getInstance().isUseSoundAuction()) {

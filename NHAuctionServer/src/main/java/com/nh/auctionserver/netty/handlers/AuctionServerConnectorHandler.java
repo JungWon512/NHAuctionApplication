@@ -87,8 +87,6 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 			if (!mConnectionInfoMap.containsKey(ctx.channel().id()) && !mConnectionInfoMap.containsValue(connectionInfo)
 					&& !mConnectionChannelInfoMap.containsKey(userMemNum)) {
 				if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
-					mLogger.info("CONNECT_CHANNEL_BIDDER SIZE : " + mBidderChannelsMap.size());
-
 					if (mControllerChannelsMap != null
 							&& mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode())
 							&& mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {
@@ -120,7 +118,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					mLogger.info("Controller Channel Count : " + mControllerChannelsMap.size());
 
 					if (mConnectionInfoMap.size() > 0) {
-						if (mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).contains(ctx.channel())) {
+						if (mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {
 							mLogger.info("이미 제어 프로그램이 실행 중인 상태로 추가 실행이 불가합니다.");
 							ctx.channel()
 									.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
@@ -202,11 +200,15 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 								if (mConnectionInfoMap.get(mapKey).getAuctionHouseCode().equals(connectionInfo.getAuctionHouseCode())
 										&& mConnectionInfoMap.get(mapKey).getChannel()
 												.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+									BidderConnectInfo bidderConnectInfo = new BidderConnectInfo(mConnectionInfoMap.get(mapKey).getAuctionHouseCode(),
+											mConnectionInfoMap.get(mapKey).getAuctionJoinNum(),
+											mConnectionInfoMap.get(mapKey).getChannel(), mConnectionInfoMap.get(mapKey).getOS(),
+											"N", "0");
+									
+									mLogger.info("진행프로그램 접속자 정보 전달 : " + bidderConnectInfo.getEncodedMessage());
+									
 									ctx.channel()
-											.writeAndFlush(new BidderConnectInfo(mConnectionInfoMap.get(mapKey).getAuctionHouseCode(),
-													mConnectionInfoMap.get(mapKey).getAuctionJoinNum(),
-													mConnectionInfoMap.get(mapKey).getChannel(), mConnectionInfoMap.get(mapKey).getOS(),
-													"N", "0").getEncodedMessage() + "\r\n");
+											.writeAndFlush(bidderConnectInfo.getEncodedMessage() + "\r\n");
 								}
 							}
 						}
@@ -706,19 +708,19 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					.logoutMember(new RequestLogout(mConnectionInfoMap.get(ctx.channel().id()).getAuctionHouseCode(),
 							closeMember, mConnectionInfoMap.get(ctx.channel().id()).getChannel()));
 
-			mConnectionInfoMap.remove(ctx.channel().id());
-			mConnectionChannelInfoMap.remove(closeMember);
-
-			if (!mConnectionInfoMap.containsKey(ctx.channel().id())
-					&& !mConnectionChannelInfoMap.containsKey(closeMember)) {
-				mLogger.info("정상적으로 " + closeMember + "회원 정보가 Close 처리되었습니다.");
-			}
-
-			mLogger.info("ConnectorInfoMap size : " + mConnectionInfoMap.size());
+//			mConnectionInfoMap.remove(ctx.channel().id());
+//			mConnectionChannelInfoMap.remove(closeMember);
+//
+//			if (!mConnectionInfoMap.containsKey(ctx.channel().id())
+//					&& !mConnectionChannelInfoMap.containsKey(closeMember)) {
+//				mLogger.info("정상적으로 " + closeMember + "회원 정보가 Close 처리되었습니다.");
+//			}
+//
+//			mLogger.info("ConnectorInfoMap size : " + mConnectionInfoMap.size());
 
 		}
 
-		ctx.channel().close();
+//		ctx.channel().close();
 	}
 
 	@Override
