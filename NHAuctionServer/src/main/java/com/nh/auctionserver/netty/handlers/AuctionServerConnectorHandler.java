@@ -122,8 +122,9 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 							mLogger.info("이미 제어 프로그램이 실행 중인 상태로 추가 실행이 불가합니다.");
 							ctx.channel()
 									.writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-											GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()
+											GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage()
 											+ "\r\n");
+							ctx.close();
 							return;
 						} else {
 							// 접속 처리 결과 응답 처리
