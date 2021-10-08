@@ -2025,7 +2025,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					playOverPriceSound(rank_1_user.getAuctionJoinNum().getValue());
 					return;
 				}
-
+				
 				addLogItem("soundAuctionTimerTask ==== 사운드 경매 자동 종료");
 
 				// 응찰영역 카운트다운 라벨 숨김.
@@ -2053,7 +2053,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 타이머 시작시
 			startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
 		}
+	}
+	
+	
 
+	@Override
+	void stopSoundAuctionTimerTask() {
+		stopAutoAuctionScheduler();
 	}
 
 	@Override
@@ -3510,7 +3516,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (!SettingApplication.getInstance().isUseSoundAuction()) {
 				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("str.auction.over.price.valid")));
 			} else {
-
 				// 응찰금액 확인 사운드
 				playOverPriceSound(rank_1_user.getAuctionJoinNum().getValue());
 				// 카운트 라벨 설정 시간 기준 초기화
@@ -3522,6 +3527,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		return true;
 	}
 
+	
 	/**
 	 * 응찰금액 확인 사운
 	 * 

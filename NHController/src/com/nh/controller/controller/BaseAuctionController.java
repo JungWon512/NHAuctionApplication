@@ -129,6 +129,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	private Comparator<SpBidding> mBiddingCompare =null;	//응찰금액,응찰시간 정렬
 			
+	protected boolean isReAuctionAndOverPrice = false; 
 
 	public BaseAuctionController() {
 		init();
@@ -705,11 +706,19 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected CompletionHandler<Boolean, Void> mCalculationRankCallBack = new CompletionHandler<Boolean, Void>() {
 		@Override
 		public void completed(Boolean result, Void attachment) {
-
+			addLogItem("[순위 산정 완료 정지 타이머 실행_000]" + isReAuction);
 			// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
 			if (SettingApplication.getInstance().isUseSoundAuction() && !isReAuction && !isStartSoundPlaying) {
 				addLogItem("[순위 산정 완료 정지 타이머 실행]");
 				soundAuctionTimerTask();
+			}else {
+				addLogItem("[순위 산정 완료 정지 타이머 실행]" + isReAuction);
+				if(isReAuction) {
+					if(checkOverPrice(mBiddingUserInfoDataList.get(0))) {
+						stopSoundAuctionTimerTask();
+						soundAuctionTimerTask();
+					}
+				}
 			}
 		}
 
@@ -1209,6 +1218,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 	 * @param spBiddingDataList
 	 */
 	abstract void soundAuctionTimerTask();
+	
+	abstract void stopSoundAuctionTimerTask();
+
 
 	/**
 	 * ADD 로그
