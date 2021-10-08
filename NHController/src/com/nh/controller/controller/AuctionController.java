@@ -3213,7 +3213,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					}
 					
 					// 경매 시작
-					if (ke.getCode() == KeyCode.PLUS) {
+					if (ke.getCode() == KeyCode.ADD) {
 
 						if(isStartedAuction) {
 							return;
@@ -3256,8 +3256,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	}
 	
 	private void normalSpaceStartAuction() {
-		isPlusKeyStartAuction = false;
-		onStartSoundAuction();
+		
+		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+			onCancelOrClose();
+		}else {
+			isPlusKeyStartAuction = false;
+			onStartSoundAuction();
+		}
 	}
 	
 
