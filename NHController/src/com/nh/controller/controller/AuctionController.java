@@ -209,6 +209,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	
 	private Stage mMessageStage = null;
 
+	private boolean isPlusKeyStartAuction = false;
 	
 	/**
 	 * setStage
@@ -1218,10 +1219,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mLogger.debug("[출품 취소 처리 시작]");
 			isCancel = true;
 			onPause();
+			
+//			mLogger.debug("[isStartedAuction]" + isStartedAuction + " / " + isPlusKeyStartAuction);
+//			if(isStartedAuction && isPlusKeyStartAuction) {
+//				toggleAuctionType();
+//				isPlusKeyStartAuction= false;	
+//			}
 			saveAuctionResult(false, mCurrentSpEntryInfo, null, GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
 			mBiddingInfoTableView.setDisable(false);
 			BillboardDelegate.getInstance().completeBillboard();
 			PdpDelegate.getInstance().completePdp();
+		
 		} else {
 
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
@@ -1404,6 +1412,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 	}
 
+
+	
 	/**
 	 * 1.준비 2.시작
 	 */
@@ -1431,29 +1441,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 경매 시작 플래그
 			isStartedAuction = true;
 			
-			mLogger.debug("1111111111111111");
-
 			// 음성경매인 경우 사운드
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
 	
-				mLogger.debug("22222222222");
-				
-				// 출품번호 사운드 set
 				setCurrentEntrySoundData();
 
 				isStartSoundPlaying = true;
 				
-				mLogger.debug("33333333333");
 				SoundUtil.getInstance().playLocalSound(LocalSoundDefineRunnable.LocalSoundType.START, new LineListener() {
 					@Override
 					public void update(LineEvent event) {
 						
 						if (event.getType() == LineEvent.Type.STOP) {
 							
-							mLogger.debug("4444444444444");
 								// 사운드 시작
-								
-
 								// 출품 정보 읽음.
 								SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
 									@Override
@@ -1464,6 +1465,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 										soundAuctionTimerTask();
 									}
 								});
+								
 						}
 						
 						if (event.getType() == LineEvent.Type.CLOSE) {
@@ -2581,7 +2583,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			switch (code) {
 
 			case GlobalDefineCode.AUCTION_STATUS_READY:
-
+				
 				System.out.println("#### AUCTION_STATUS_READY ####");
 				// 타이머 초기화
 				stopAutoAuctionScheduler();
@@ -2761,7 +2763,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							SoundUtil.getInstance().playSound(resultStringBuffer.toString(), new PlaybackListener() {
 								@Override
 								public void playbackFinished(PlaybackEvent evt) {
-							
 									nextEntryInfo(spEntryInfo);
 								}
 							});
@@ -2792,6 +2793,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				// 경매 완료 테이블에 데이터 넣음
 				addFinishedTableViewItem(spEntryInfo);
+//				mLogger.debug("[isStartedAuction]" + isStartedAuction + " / " + isPlusKeyStartAuction);
+//				if(isStartedAuction && isPlusKeyStartAuction) {
+//					toggleAuctionType();
+//					isPlusKeyStartAuction= false;	
+//				}
+
 				// 경매 준비 상태로 뷰들 초기화
 				setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 
@@ -2922,6 +2929,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	@SuppressWarnings("unlikely-arg-type")
 	private void setCurrentEntrySoundData() {
+		
+		boolean isSkipCowSound = false;
+		
+		if(mCurrentSpEntryInfo.getAuctionResult() != null && CommonUtils.getInstance().isValidString(mCurrentSpEntryInfo.getAuctionResult().getValue())) {
+			if(mCurrentSpEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+				isSkipCowSound = true;
+				SoundUtil.getInstance().setCurrentEntryInfoMessage(null);
+				System.out.println("[보류. 사운드 재생 안 함]");
+			}
+		}
+		
+		if(isSkipCowSound) {
+			return;
+		}
 
 		StringBuffer entrySoundContent = new StringBuffer();
 
@@ -3157,21 +3178,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						if (ke.getCode() == KeyCode.BACK_SLASH) {
 							
 							mLogger.debug("PLUS !!");
-							if(SettingApplication.getInstance().isUseSoundAuction()) {
-								mBtnEnter.setDisable(false);
-								mBtnSpace.setDisable(true);
-								SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, true);
-							}else {
-								mBtnEnter.setDisable(true);
-								mBtnSpace.setDisable(false);
-								SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, false);
-							}
 							
-							SettingApplication.getInstance().initSharedData();
+							toggleAuctionType();
+							
+							isPlusKeyStartAuction = true;
+							
+							if(!SettingApplication.getInstance().isUseSoundAuction()) {
+								onStartAndStopAuction(0);
+							}else {
+								onStartSoundAuction();
+							}
+
 							ke.consume();
 						}
-						
-				
 						break;
 					}
 
@@ -3188,7 +3207,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					if (ke.getCode() == KeyCode.SPACE) {
 
 						System.out.println("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
-
+						
 						onStartSoundAuction();
 
 						ke.consume();
@@ -3198,6 +3217,25 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		});
 	}
 
+	private void toggleAuctionType() {
+		
+		Platform.runLater(()->{
+			if(SettingApplication.getInstance().isUseSoundAuction()) {
+				mLogger.debug("토글 => 단일 경매 전환");
+				mBtnEnter.setDisable(false);
+				mBtnSpace.setDisable(true);
+				SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, false);
+			}else {
+				mLogger.debug("토글 => 음성경매 전환");
+				mBtnEnter.setDisable(true);
+				mBtnSpace.setDisable(false);
+				SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, true);
+			}
+			
+			SettingApplication.getInstance().initSharedData();
+		});
+	}
+	
 	/**
 	 * 키패드 카운트 다운
 	 *
