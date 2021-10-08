@@ -2817,7 +2817,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				if(!SettingApplication.getInstance().isUseSoundAuction() && isPlusKeyStartAuction) {
 					toggleAuctionType();
-					isPlusKeyStartAuction = false;
 					// ENTER 경매 시작으로.
 					mBtnEnter.setText(mResMsg.getString("str.btn.start"));
 					CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
@@ -2852,8 +2851,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						});
 						start.play();
 					} else {
-		
-						
 						// 단일건 경매 준비 상태로 뷰들 초기화
 						setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 					}
@@ -2867,6 +2864,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				// 현재 선택된 row 갱신
 				setCurrentEntryInfo();
+				
+				//음성경매중에 + 키로 단일로 진행한경우 
+				if(isPlusKeyStartAuction) {
+					isPlusKeyStartAuction = false;
+				}
+					
 
 			}
 		});
@@ -3249,7 +3252,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	}
 	
 	private void normalEnterStartAuction() {
-		isPlusKeyStartAuction = false;
 		onStartAndStopAuction(0);
 	}
 	
