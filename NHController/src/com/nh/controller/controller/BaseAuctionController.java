@@ -388,7 +388,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 		return (() -> {
 
 			try {
-
 				// 시작.진행시 응찰 받음.
 				if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) && !mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 					addLogItem("경매 시작/진행중일때만 응찰아 가능합니다. " + mAuctionStatus.getState());
@@ -542,12 +541,10 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	@Override
 	public void onCancelBidding(CancelBidding cancelBidding) {
-
 		addLogItem(mResMsg.getString("msg.auction.get.bidding.cancel") + cancelBidding.getEncodedMessage());
 		initExecutorService();
 		// 응찰취소 쓰레드풀 실행
 		mExeCalculationRankService.submit(getCancelBiddingRunnable(cancelBidding));
-
 	}
 
 	/**

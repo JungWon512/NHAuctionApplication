@@ -1444,11 +1444,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 경매 시작 플래그
 			isStartedAuction = true;
 			
-			// 음성경매인 경우 사운드
-			if (SettingApplication.getInstance().isUseSoundAuction()) {
-	
-				setCurrentEntrySoundData();
-
+			setCurrentEntrySoundData();
+			
 				isStartSoundPlaying = true;
 				
 				SoundUtil.getInstance().playLocalSound(LocalSoundDefineRunnable.LocalSoundType.START, new LineListener() {
@@ -1456,6 +1453,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					public void update(LineEvent event) {
 						
 						if (event.getType() == LineEvent.Type.STOP) {
+							
+							
+							// 음성경매인 경우 사운드
+							if (SettingApplication.getInstance().isUseSoundAuction()) {
 								// 사운드 시작
 								// 출품 정보 읽음.
 								SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
@@ -1469,6 +1470,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 									}
 								});
 								
+							}else {
+								isStartSoundPlaying = false;
+							}
 						}
 						
 						if (event.getType() == LineEvent.Type.CLOSE) {
@@ -1476,7 +1480,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						}
 					}
 				});
-			}
+			
 
 			break;
 		}
@@ -2089,9 +2093,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			
 			mLogger.debug("카운트다운 isStartSoundPlaying : " + isStartSoundPlaying);
 			
-			if (SettingApplication.getInstance().isUseSoundAuction()) {
-				SoundUtil.getInstance().playLocalSound(LocalSoundDefineRunnable.LocalSoundType.DING, null);
-			}
+			SoundUtil.getInstance().playLocalSound(LocalSoundDefineRunnable.LocalSoundType.DING, null);
+
 		}
 
 		if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN_COMPLETED)) {
@@ -2768,28 +2771,29 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 상단 경매 상태 라벨 낙/유찰 에 따라 표시
 			auctionStateLabelToggle(spEntryInfo.getAuctionResult().getValue());
 
-			if (SettingApplication.getInstance().isUseSoundAuction()) {
-				
 				SoundUtil.getInstance().playLocalSound(LocalSoundDefineRunnable.LocalSoundType.END, new LineListener() {
 
 					@Override
 					public void update(LineEvent event) {
 						if (event.getType() == LineEvent.Type.STOP || event.getType() == LineEvent.Type.CLOSE) {
-							// 낙유찰 사운드 메세지 사운드 시작
-							SoundUtil.getInstance().playSound(resultStringBuffer.toString(), new PlaybackListener() {
-								@Override
-								public void playbackFinished(PlaybackEvent evt) {
-									nextEntryInfo(spEntryInfo);
-								}
-							});
+
+							if (SettingApplication.getInstance().isUseSoundAuction()) {
+								
+								// 낙유찰 사운드 메세지 사운드 시작
+								SoundUtil.getInstance().playSound(resultStringBuffer.toString(), new PlaybackListener() {
+									@Override
+									public void playbackFinished(PlaybackEvent evt) {
+										nextEntryInfo(spEntryInfo);
+									}
+								});
+								
+							} else {
+								nextEntryInfo(spEntryInfo);
+							}
+
 						}
 					}
 				});
-
-			} else {
-				nextEntryInfo(spEntryInfo);
-			}
-
 		});
 	}
 
@@ -2953,6 +2957,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	@SuppressWarnings("unlikely-arg-type")
 	private void setCurrentEntrySoundData() {
+		
+		if (!SettingApplication.getInstance().isUseSoundAuction()) {
+			return;
+		}
 		
 		boolean isSkipCowSound = false;
 		
