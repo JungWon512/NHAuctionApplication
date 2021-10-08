@@ -1458,6 +1458,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 								SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
 									@Override
 									public void playbackFinished(PlaybackEvent evt) {
+										
 										isStartSoundPlaying = false;
 										// 음성 경매시 종료 타이머 시작.
 										System.out.println("[출품정보 음성 읽음. 정지 타이머 실행]");
@@ -2080,7 +2081,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			// 카운트다운 효과음
 			mLogger.debug("카운트다운 isStartSoundPlaying : " + isStartSoundPlaying);
-			if (SettingApplication.getInstance().isUseSoundAuction() && !isStartSoundPlaying) {
+			
+			if (SettingApplication.getInstance().isUseSoundAuction()) {
 				SoundUtil.getInstance().playLocalSound(LocalSoundDefineRunnable.LocalSoundType.DING, null);
 			}
 		}
@@ -2463,9 +2465,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							stringBuffer.append(mResMsg.getString("str.sound.user.sam.price"));
 							stringBuffer.append(stringBuffer.toString());
 							stringBuffer.append(mResMsg.getString("str.sound.user.re.auction"));
-							SoundUtil.getInstance().playSound(stringBuffer.toString(), null);
+							
 							addLogItem("[재경매 중 타이머 초기화]");
 							stopAutoAuctionScheduler();
+							
+							SoundUtil.getInstance().playSound(stringBuffer.toString(),  new PlaybackListener() {
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+								
+										// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
+										if (SettingApplication.getInstance().isUseSoundAuction()) {
+											// 응찰 가격이 정상인경우 설정 대기시간 기다린 후 경매 정지
+											addLogItem("[카운트다운 완료 정지 타이머 실행]");
+											startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
+										}
+									
+								
+								}
+							});
 						}
 //					});
 						
@@ -2474,19 +2491,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							if (!mReAuctionLabel.isVisible()) {
 								mReAuctionLabel.setVisible(true);
 							}
-							
 							// 재경매 카운트 라벨
 							mReAuctionCountLabel.setText(Integer.toString(mReAuctionCount));
 						});
 						
 						addLogItem("[재경매자 체크 끝]");
-				}
-
-				// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
-				if (SettingApplication.getInstance().isUseSoundAuction()) {
-					// 응찰 가격이 정상인경우 설정 대기시간 기다린 후 경매 정지
-					addLogItem("[카운트다운 완료 정지 타이머 실행]");
-					startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
 				}
 
 			} else {

@@ -557,8 +557,11 @@ public abstract class BaseAuctionController implements NettyControllable {
 	private Runnable getCancelBiddingRunnable(CancelBidding cancelBidding) {
 		return (() -> {
 
+			if(isReAuction) {
+				return;
+			}
 			// 재경매 상황인경우 응찰 취소 불가
-			if (isReAuction && SettingApplication.getInstance().isUseReAuction() && mReAuctionCount > 0 && !CommonUtils.getInstance().isListEmpty(mReAuctionBidderDataList)) {
+			if (SettingApplication.getInstance().isUseReAuction() && mReAuctionCount > 0 && !CommonUtils.getInstance().isListEmpty(mReAuctionBidderDataList)) {
 				addLogItem("[재경매중 응찰 취소 불가]");
 				return;
 			}
@@ -711,7 +714,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 		public void completed(Boolean result, Void attachment) {
 
 			// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
-			if (SettingApplication.getInstance().isUseSoundAuction()) {
+			if (SettingApplication.getInstance().isUseSoundAuction() && !isReAuction && !isStartSoundPlaying) {
 				addLogItem("[순위 산정 완료 정지 타이머 실행]");
 				soundAuctionTimerTask();
 			}
