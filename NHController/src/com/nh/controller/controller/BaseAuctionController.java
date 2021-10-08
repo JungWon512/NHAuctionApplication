@@ -265,7 +265,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 				addLogItem(mResMsg.getString("msg.auction.status.none"));
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_READY:
-				initExecutorService();
 				addLogItem(String.format(mResMsg.getString("msg.auction.status.ready"), auctionStatus.getEntryNum()));
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_START:
@@ -465,38 +464,48 @@ public abstract class BaseAuctionController implements NettyControllable {
 	}
 
 	@Override
-	public void onConnectionInfo(ConnectionInfo connectionInfo) {
+	public void onConnectionInfo(final ConnectionInfo connectionInfo) {
 		mLogger.debug("onConnectionInfo : " + connectionInfo.getEncodedMessage());
-		String auctionHouseCode = connectionInfo.getAuctionHouseCode();
-		String userMemNum = connectionInfo.getUserMemNum();
-		String userNum;
+		
+		Thread thread = new Thread("onBidderConnectInfo") {
+			@Override
+			public void run() {
 
-		// 테스트 접속
-		if (GlobalDefineCode.FLAG_TEST_MODE) {
-			// 성공or실패 서버 전송
-			mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_SUCCESS, userMemNum, userMemNum)));
-			return;
-		}
+				String auctionHouseCode = connectionInfo.getAuctionHouseCode();
+				String userMemNum = connectionInfo.getUserMemNum();
+				String userJoinNum;
 
-		// 접속자 정보
-		ConnectionInfoMapperService service = new ConnectionInfoMapperService();
+				// 테스트 접속
+				if (GlobalDefineCode.FLAG_TEST_MODE) {
+					// 성공or실패 서버 전송
+					mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, GlobalDefineCode.CONNECT_SUCCESS, userMemNum, userMemNum)));
+					return;
+				}
 
-		userNum = service.selectConnectionInfo(auctionHouseCode, GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt(), String.valueOf(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()), userMemNum); // 실세사용
+				// 접속자 정보
+				ConnectionInfoMapperService service = new ConnectionInfoMapperService();
 
-		mLogger.debug("onConnectionInfo - userNum :\t" + userNum);
+				userJoinNum = service.selectConnectionInfo(auctionHouseCode, GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt(), String.valueOf(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()), userMemNum); // 실세사용
 
-		String resultCode = "";
+				mLogger.debug("onConnectionInfo - userNum :\t" + userJoinNum);
 
-		if (userNum == null || userNum.isEmpty()) {
-			// 실패
-			resultCode = GlobalDefineCode.CONNECT_FAIL;
-		} else {
-			// 성공
-			resultCode = GlobalDefineCode.CONNECT_SUCCESS;
-		}
+				String resultCode = "";
 
-		// 성공or실패 서버 전송
-		mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, resultCode, userMemNum, userNum)));
+				if (userJoinNum == null || userJoinNum.isEmpty()) {
+					// 실패
+					resultCode = GlobalDefineCode.CONNECT_FAIL;
+				} else {
+					// 성공
+					resultCode = GlobalDefineCode.CONNECT_SUCCESS;
+				}
+
+				// 성공or실패 서버 전송
+				mLogger.debug(AuctionDelegate.getInstance().onSendConnectionInfo(new ResponseConnectionInfo(auctionHouseCode, resultCode, userMemNum, userJoinNum)));
+
+			}
+		};
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	@Override
@@ -899,14 +908,14 @@ public abstract class BaseAuctionController implements NettyControllable {
 			}
 
 			// 경매 결과 DB 저장
-			final int resultValue = EntryInfoMapperService.getInstance().updateAuctionResult(auctionResult);
+			 int resultValue = EntryInfoMapperService.getInstance().updateAuctionResult(auctionResult);
 
 			// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
 			if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
 				auctionResult.setSuccessBidder("");
 				auctionResult.setSuccessAuctionJoinNum("");
 			}
-				
+			
 			// 성공시
 			if (resultValue > 0) {
 
@@ -936,15 +945,15 @@ public abstract class BaseAuctionController implements NettyControllable {
 					@Override
 					public void onResponseResult(BaseResponse result) {
 						if (result.getSuccess()) {
-							System.out.println("[API 낙유찰 결과 전송 성공 : " + auctionResult.getEntryNum());
+							mLogger.debug("[API 낙유찰 결과 전송 성공 : " + auctionResult.getEntryNum());
 						} else {
-							System.out.println("[API 낙유찰 결과 전송 실패 : " + auctionResult.getEntryNum());
+							mLogger.debug("[API 낙유찰 결과 전송 실패 : " + auctionResult.getEntryNum());
 						}
 					}
 
 					@Override
 					public void onResponseError(String message) {
-						System.out.println("[E] 낙유찰 결과 전송 실패 : " + message);
+						mLogger.debug("[E] 낙유찰 결과 전송 실패 : " + message);
 					}
 				});
 
@@ -959,6 +968,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 				updateAuctionStateInfo(isSuccess, bidder);
 				// 낙유찰 결과 전송
 				addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+			}else {
+				mLogger.debug("DB 업데이트 실패 . 취소처리");
+				onCancelOrClose();
 			}
 
 			break;
@@ -971,8 +983,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 			addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
 			break;
 		}
-
 	}
+	
+	abstract void onCancelOrClose();
 
 	/**
 	 * run Log

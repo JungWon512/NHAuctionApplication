@@ -145,11 +145,16 @@ public class AuctionMessageController implements Initializable {
 			
 			String getJson = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SEND_MESSAGE, null);
 			
-			ObjectMapper mapper = new ObjectMapper();
-			
-			List<String> msgDataList = mapper.readValue(getJson, List.class);
+			if(CommonUtils.getInstance().isValidString(getJson)) {
+				
+				ObjectMapper mapper = new ObjectMapper();
+				
+				List<String> msgDataList = mapper.readValue(getJson, List.class);
 
-			return msgDataList;
+				return msgDataList;
+			}else {
+				return null;
+			}
 			
 		} catch (JsonMappingException e) {
 			e.printStackTrace();

@@ -289,6 +289,17 @@ public class SoundUtil {
         stopSound();
         mLocalSoundDefineRunnable.play(type, lineListener);
     }
+    
+    /**
+     * 경매 시작,카운트다운,정지 정지 처리 함수
+     *
+     * @param type
+     * @param lineListener
+     */
+    public void stopLocalSound() {
+    	mLocalSoundDefineRunnable.stop();
+    }
+    
 
     /**
      * 음성 정지
@@ -593,7 +604,7 @@ public class SoundUtil {
                     mClip.open(mDing);
                 }
 
-                if (listener != null) {
+                if (mClip != null && listener != null) {
                     mClip.addLineListener(listener);
                 }
 

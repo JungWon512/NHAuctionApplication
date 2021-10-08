@@ -1032,7 +1032,7 @@ public class SettingController implements Initializable {
 			return false;
 		}
 		
-		// 대기시간 설정 1 ~ 50 초
+		// 음성경매 체크
 		if (mUseSoundAuction.isSelected() && !CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())) {
 			showAlert(mResMsg.getString("dialog.sound.empty.value"));
 			return false;
