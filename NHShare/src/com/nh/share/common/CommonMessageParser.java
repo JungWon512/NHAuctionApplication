@@ -55,7 +55,7 @@ public class CommonMessageParser {
 		case AuctionType.TYPE:
 			return new AuctionType(messages[1], messages[2]); // 경매 유형 코드 전송
 		case RequestLogout.TYPE: // 로그아웃 처리 요청
-			return new RequestLogout(messages[1], messages[2], messages[3]);
+			return new RequestLogout(messages[1], messages[2], messages[3], messages[4]);
 		default:
 			return null;
 		}

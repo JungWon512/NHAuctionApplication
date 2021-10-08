@@ -31,6 +31,7 @@ import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.RefreshConnector;
 import com.nh.share.common.models.RequestBiddingInfo;
 import com.nh.share.common.models.RequestEntryInfo;
+import com.nh.share.common.models.RequestLogout;
 import com.nh.share.common.models.ResponseBiddingInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
@@ -572,7 +573,7 @@ public class SocketIOHandler {
 		}
 	}
 
-	private void unRegisterConnectChannelGroup(SocketIOClient client) {
+	public void unRegisterConnectChannelGroup(SocketIOClient client) {
 		boolean isFindClient = false;
 		String closeMember = null;
 
@@ -694,6 +695,131 @@ public class SocketIOHandler {
 		}
 	}
 
+	public void unRegisterConnectChannelGroup(UUID client) {
+		boolean isFindClient = false;
+		String closeMember = null;
+
+		log.info("DisconnectListener client : " + client);
+
+		if (mConnectorInfoMap.containsKey(client)) {
+			try {
+				closeMember = JwtCertTokenUtils.getInstance()
+						.getUserMemNum(mConnectorInfoMap.get(client).getAuthToken());
+
+				// 사용자 접속 해제 상테 전송
+				if (mConnectorInfoMap.get(client).getChannel()
+						.equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+					mAuctionServer.itemAdded(
+							new BidderConnectInfo(mConnectorInfoMap.get(client).getAuctionHouseCode(),
+									mConnectorInfoMap.get(client).getAuctionJoinNum(),
+									mConnectorInfoMap.get(client).getChannel(),
+									mConnectorInfoMap.get(client).getOS(), "L", "0")
+											.getEncodedMessage());
+				}
+
+				mConnectorInfoMap.remove(client);
+				mConnectorChannelInfoMap.remove(closeMember);
+
+				if (!mConnectorInfoMap.containsKey(client)
+						&& !mConnectorChannelInfoMap.containsKey(closeMember)) {
+					log.info("정상적으로 " + closeMember + "회원 정보가 Close 처리되었습니다.");
+				}
+
+				log.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		for (String key : mConnectorChannelClientMap.keySet()) {
+			if (mConnectorChannelClientMap.get(key).size() > 0) {
+				for (UUID uuid : mConnectorChannelClientMap.get(key).keySet()) {
+					if (uuid.equals(client)) {
+						mConnectorChannelClientMap.get(key).get(uuid).disconnect();
+						mConnectorChannelClientMap.get(key).remove(uuid);
+						isFindClient = true;
+
+						log.info("mConnectorChannelClientMap remove SessionID : " + uuid);
+						log.info("mConnectorChannelClientMap Current Size : "
+								+ mConnectorChannelClientMap.get(key).size());
+
+						break;
+					}
+				}
+
+				if (isFindClient) {
+					break;
+				}
+			}
+		}
+
+		for (String key : mAuctionResultChannelClientMap.keySet()) {
+			if (mAuctionResultChannelClientMap.get(key).size() > 0) {
+				for (UUID uuid : mAuctionResultChannelClientMap.get(key).keySet()) {
+					if (uuid.equals(client)) {
+						mAuctionResultChannelClientMap.get(key).get(uuid).disconnect();
+						mAuctionResultChannelClientMap.get(key).remove(uuid);
+						isFindClient = true;
+
+						log.info("mAuctionResultChannelClientMap remove SessionID : " + uuid);
+						log.info("mAuctionResultChannelClientMap Current Size : "
+								+ mAuctionResultChannelClientMap.get(key).size());
+
+						break;
+					}
+				}
+
+				if (isFindClient) {
+					break;
+				}
+			}
+		}
+
+		for (String key : mWatchChannelClientMap.keySet()) {
+			if (mWatchChannelClientMap.get(key).size() > 0) {
+				for (UUID uuid : mWatchChannelClientMap.get(key).keySet()) {
+					if (uuid.equals(client)) {
+						mWatchChannelClientMap.get(key).get(uuid).disconnect();
+						mWatchChannelClientMap.get(key).remove(uuid);
+						isFindClient = true;
+
+						log.info("mWatchChannelClientMap remove SessionID : " + uuid);
+						log.info("mWatchChannelClientMap Current Size : " + mWatchChannelClientMap.get(key).size());
+
+						break;
+					}
+				}
+
+				if (isFindClient) {
+					break;
+				}
+			}
+		}
+
+		for (String key : mBidderChannelClientMap.keySet()) {
+			if (mBidderChannelClientMap.get(key).size() > 0) {
+				for (UUID uuid : mBidderChannelClientMap.get(key).keySet()) {
+					if (uuid.equals(client)) {
+						mBidderChannelClientMap.get(key).get(uuid).disconnect();
+						mBidderChannelClientMap.get(key).remove(uuid);
+						isFindClient = true;
+
+						log.info("mBidderChannelClientMap remove SessionID : " + uuid);
+						log.info("mBidderChannelClientMap Current Size : " + mBidderChannelClientMap.get(key).size());
+
+						break;
+					}
+				}
+
+				if (isFindClient) {
+					break;
+				}
+			}
+		}
+	}
+	
 	public String replaceEventPrefix(String eventMessage) {
 		String result = null;
 
@@ -1269,6 +1395,9 @@ public class SocketIOHandler {
 			case RequestBiddingInfo.TYPE:
 				parseObject = new RequestBiddingInfo(messages[1], messages[2], messages[3], messages[4]);
 				break;
+			case RequestLogout.TYPE:
+				parseObject = new RequestLogout(messages[1], messages[2], messages[3], messages[4]);
+				break;
 			default:
 				parseObject = null;
 				break;
@@ -1407,6 +1536,21 @@ public class SocketIOHandler {
 							new ResponseCode(((RequestBiddingInfo) parseObject).getAuctionHouseCode(),
 									GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage());
 				}
+			} else if (parseObject instanceof RequestLogout) {
+				if (mConnectorChannelClientMap.get(((RequestLogout) parseObject).getAuctionHouseCode())
+								.containsKey(client.getSessionId())) {
+					
+					mAuctionServer.logoutMember(((RequestLogout) parseObject), true);
+				} else {
+					log.info("=============================================");
+					log.info("유효하지 않은 채널에서 강제 로그아웃을 요청하였습니다. : " + client.getSessionId());
+					log.info("=============================================");
+
+					client.sendEvent("ResponseCode",
+							new ResponseCode(((RequestBiddingInfo) parseObject).getAuctionHouseCode(),
+									GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage());
+				}
+				
 			}
 		}
 	};

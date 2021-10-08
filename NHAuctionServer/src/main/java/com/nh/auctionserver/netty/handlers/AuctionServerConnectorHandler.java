@@ -707,7 +707,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 			mAuctionServer
 					.logoutMember(new RequestLogout(mConnectionInfoMap.get(ctx.channel().id()).getAuctionHouseCode(),
-							closeMember, mConnectionInfoMap.get(ctx.channel().id()).getChannel()));
+							closeMember, mConnectionInfoMap.get(ctx.channel().id()).getChannel(), mConnectionInfoMap.get(ctx.channel().id()).getOS()), false);
 
 //			mConnectionInfoMap.remove(ctx.channel().id());
 //			mConnectionChannelInfoMap.remove(closeMember);
