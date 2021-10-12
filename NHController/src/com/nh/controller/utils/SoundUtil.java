@@ -306,7 +306,8 @@ public class SoundUtil {
     public void playLocalSound(LocalSoundDefineRunnable.LocalSoundType type, LineListener lineListener) {
     	mLogger.debug("mLocalSoundDefineRunnable : " + mLocalSoundDefineRunnable);
     	
-        stopSound();
+    	// 경매 시작음은 다른 TTS음성과 겹치도록 수정 적용(AS-IS 동일 적용)
+        //stopSound();
         mLocalSoundDefineRunnable.play(type, lineListener);
     }
     
@@ -327,6 +328,14 @@ public class SoundUtil {
     public void stopSound() {
         mTTSNowRunnable.stop();
         mTTSDefineRunnable.stop();
+    }
+    
+    /**
+     * 음성 송출 쓰레드 종료
+     */
+    public void stopSoundThread() {
+        mTTSNowRunnable.closeThread();
+        mTTSDefineRunnable.closeThread();
     }
 
     public String getDefinePrevKey() {
@@ -471,6 +480,17 @@ public class SoundUtil {
             });
         }
 
+        /**
+         * Close Thread
+         */
+        public void closeThread() {
+            try {
+                mThreadService.shutdownNow();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        
         /**
          * Network 통신을 통해서 Google TTS Stream 가져오기 함수
          *

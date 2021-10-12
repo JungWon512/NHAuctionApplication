@@ -1199,19 +1199,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@Override
 	void onCancelOrClose() {
 		
-		if (SettingApplication.getInstance().isUseSoundAuction()) {
-
-			mLogger.debug("[출품 취소 처리 체크 ] " + isStartSoundPlaying);
-
-			// 사운드 중지
-			SoundUtil.getInstance().setCurrentEntryInfoMessage(null);
-			SoundUtil.getInstance().stopSound();
-			SoundUtil.getInstance().stopLocalSound();
-		}
-		
 		// 경매 진행중인 경우 취소처리
 		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 			
+			if (SettingApplication.getInstance().isUseSoundAuction()) {
+
+				mLogger.debug("[출품 취소 처리 체크 ] " + isStartSoundPlaying);
+
+				// 사운드 중지
+				SoundUtil.getInstance().setCurrentEntryInfoMessage(null);
+				SoundUtil.getInstance().stopSound();
+				SoundUtil.getInstance().stopLocalSound();
+			}
+			
+			mLogger.debug("[경매취소 상태] " + isCancel);
 			if(isCancel) {
 				return;
 			}
@@ -1236,7 +1237,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		} else {
 
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
-
+				
 				if (mBtnSpace.getUserData() != null && !mBtnSpace.getUserData().toString().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 					// 경매 진행중 아니면.. 프로그램 종료
 					onCloseApplication();
@@ -1430,8 +1431,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 결장 응찰가 없음.
 			if (isEmptyProperty(mCurrentSpEntryInfo.getLowPrice()) || mCurrentSpEntryInfo.getLowPriceInt() <= 0) {
 				// 결장 사운드 시작
-				SoundUtil.getInstance().playCurrentEntryMessage();
-				setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+				SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
+					@Override
+					public void playbackFinished(PlaybackEvent evt) {
+						setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+						// 다음 번호 이동
+						selectIndexWaitTable(1, false);
+					}
+				});
 				return;
 			}
 
@@ -1499,10 +1506,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 		// 카운트다운 중에는 막음.
-		if (isCountDownRunning) {
-			return;
-		}
-
+		// 카운트다운 안내 멘트 송출 중에 숫자키로 카운트다운 재실행 시 중복 실행 방지를 위해 제거
+//		if (isCountDownRunning) {
+//			return;
+//		}
+ 
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -1947,7 +1955,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 사운드경매(자동경매) 일정 대기시간 후 경매 카운트
 	 */
 	public void startAutoAuctionScheduler(int countDown) {
-
+		
 		if (isPause || isCountDownRunning || isCountDownBtnPressed || isResultCompleteFlag) {
 			addLogItem("정지 타이머 실행 안함. isPause : " + isPause
 					+ " / isCountDownRunning : " + isCountDownRunning
@@ -1975,6 +1983,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					return;
 				}
 
+				// 카운트다운 안내 멘트 송출 중에 숫자키로 카운트다운 재실행 시 중복 실행 방지 코드
+				if (!isCountDownRunning) {
+					isCountDownRunning = true;
+				}
+				
 				SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), countDown), new PlaybackListener() {
 					@Override
 					public void playbackFinished(PlaybackEvent evt) {
@@ -3128,41 +3141,50 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //							ke.consume();
 //						}
 
-						if (ke.getCode() == KeyCode.DIGIT1) {
+						if (ke.getCode() == KeyCode.DIGIT1
+								|| ke.getCode() == KeyCode.NUMPAD1) {
 							sendCountDown(1);
 							ke.consume();
 						}
 
-						if (ke.getCode() == KeyCode.DIGIT2) {
+						if (ke.getCode() == KeyCode.DIGIT2
+								|| ke.getCode() == KeyCode.NUMPAD2) {
 							sendCountDown(2);
 							ke.consume();
 						}
-						if (ke.getCode() == KeyCode.DIGIT3) {
+						if (ke.getCode() == KeyCode.DIGIT3
+								|| ke.getCode() == KeyCode.NUMPAD3) {
 							sendCountDown(3);
 							ke.consume();
 						}
 
-						if (ke.getCode() == KeyCode.DIGIT4) {
+						if (ke.getCode() == KeyCode.DIGIT4
+								|| ke.getCode() == KeyCode.NUMPAD4) {
 							sendCountDown(4);
 							ke.consume();
 						}
-						if (ke.getCode() == KeyCode.DIGIT5) {
+						if (ke.getCode() == KeyCode.DIGIT5
+								|| ke.getCode() == KeyCode.NUMPAD5) {
 							sendCountDown(5);
 							ke.consume();
 						}
-						if (ke.getCode() == KeyCode.DIGIT6) {
+						if (ke.getCode() == KeyCode.DIGIT6
+								|| ke.getCode() == KeyCode.NUMPAD6) {
 							sendCountDown(6);
 							ke.consume();
 						}
-						if (ke.getCode() == KeyCode.DIGIT7) {
+						if (ke.getCode() == KeyCode.DIGIT7
+								|| ke.getCode() == KeyCode.NUMPAD7) {
 							sendCountDown(7);
 							ke.consume();
 						}
-						if (ke.getCode() == KeyCode.DIGIT8) {
+						if (ke.getCode() == KeyCode.DIGIT8
+								|| ke.getCode() == KeyCode.NUMPAD8) {
 							sendCountDown(8);
 							ke.consume();
 						}
-						if (ke.getCode() == KeyCode.DIGIT9) {
+						if (ke.getCode() == KeyCode.DIGIT9
+								|| ke.getCode() == KeyCode.NUMPAD9) {
 							sendCountDown(9);
 							ke.consume();
 						}
@@ -3310,6 +3332,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			isCountDownBtnPressed = true;
 
+			// 카운트다운 안내 멘트 송출 중에 숫자키로 카운트다운 재실행 시 중복 실행 방지 코드
+			if (!isCountDownRunning) {
+				isCountDownRunning = true;
+			}
+			
 			SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), countDown), new PlaybackListener() {
 				@Override
 				public void playbackFinished(PlaybackEvent evt) {
