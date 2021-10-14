@@ -263,8 +263,6 @@ public class Auctioneer {
 
 		if (entryInfo != null) {
 			mLogger.info("readyEntryInfo : " + entryInfo.getEncodedMessage());
-		} else {
-			mLogger.info("readyEntryInfo is null");
 		}
 
 		mLogger.info("mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() : "

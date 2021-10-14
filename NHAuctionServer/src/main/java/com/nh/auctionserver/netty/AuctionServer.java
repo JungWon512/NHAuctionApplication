@@ -1348,13 +1348,15 @@ public class AuctionServer {
 											.getEncodedMessage());
 						}
 						
-						// 출하안내시스템 접속 상태 저장
-						if (mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()) != null) {
-							mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()).setIsStandConnect(true);
+						if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+							// 출하안내시스템 접속 상태 저장
+							if (mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()) != null) {
+								mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()).setIsStandConnect(true);
 
-							// 출하안내시스템 접속 해제 상테 전송
-							if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
-								itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), GlobalDefineCode.CONNECT_FAIL).getEncodedMessage());
+								// 출하안내시스템 접속 해제 상테 전송
+								if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+									itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), GlobalDefineCode.CONNECT_FAIL).getEncodedMessage());
+								}
 							}
 						}
 
