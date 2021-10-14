@@ -132,9 +132,9 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 									GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
 							// 출하안내시스템 접속 상태 전송
-							if (mAuctionScheduler.getAuctionState(mConnectionInfoMap.get(ctx.channel().id()).getAuctionHouseCode()) != null) {
+							if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
 
-								if (mAuctionScheduler.getAuctionState(mConnectionInfoMap.get(ctx.channel().id()).getAuctionHouseCode()).getIsStandConnect()) {
+								if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()).getIsStandConnect()) {
 									ctx.writeAndFlush(new StandConnectInfo(connectionInfo.getAuctionHouseCode(), GlobalDefineCode.CONNECT_SUCCESS).getEncodedMessage());
 								} else {
 									ctx.writeAndFlush(new StandConnectInfo(connectionInfo.getAuctionHouseCode(), GlobalDefineCode.CONNECT_FAIL).getEncodedMessage());
