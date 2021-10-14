@@ -9,10 +9,8 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AuctionRound;
-import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.service.AuctionRoundMapperService;
 import com.nh.controller.service.EntryInfoMapperService;
 import com.nh.controller.setting.SettingApplication;
@@ -20,7 +18,6 @@ import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
-import com.sun.jdi.IntegerType;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -279,6 +276,7 @@ public class ChooseAuctionController implements Initializable {
 		auctionRound.setNaBzplc(GlobalDefine.ADMIN_INFO.adminData.getNabzplc());
 
 		GlobalDefine.AUCTION_INFO.auctionRoundData = null;
+		GlobalDefine.AUCTION_INFO.feeData = null;
 		GlobalDefine.AUCTION_INFO.auctionRoundData = AuctionRoundMapperService.getInstance().obtainAuctionRoundData(auctionRound);
 
 		if (GlobalDefine.AUCTION_INFO.auctionRoundData == null) {

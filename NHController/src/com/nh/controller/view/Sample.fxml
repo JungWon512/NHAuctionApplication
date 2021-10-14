@@ -105,7 +105,7 @@
       								<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
       							</rowConstraints>
       							<children>
-      								<Button fx:id="btnSendEntryInfo" contentDisplay="RIGHT" disable="true" graphicTextGap="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="46.0" text="출품자료전송" GridPane.columnSpan="2">
+      								<Button fx:id="btnSendEntryInfo" contentDisplay="RIGHT" disable="true" graphicTextGap="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="46.0" text="출장우자료전송" GridPane.columnSpan="2">
       									<opaqueInsets>
       										<Insets />
       									</opaqueInsets>

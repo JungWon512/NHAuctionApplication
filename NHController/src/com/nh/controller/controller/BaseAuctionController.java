@@ -26,6 +26,8 @@ import com.nh.common.interfaces.UdpBillBoardStatusListener;
 import com.nh.common.interfaces.UdpPdpBoardStatusListener;
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.BillboardData;
+import com.nh.controller.model.FeeData;
+import com.nh.controller.model.FeeImpsData;
 import com.nh.controller.model.PdpData;
 import com.nh.controller.model.SpBidderConnectInfo;
 import com.nh.controller.model.SpBidding;
@@ -111,9 +113,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	protected boolean isCountDownRunning = false; // 카운트다운 실행 여부
 	protected boolean isCountDownBtnPressed = false; // 카운트다운 버튼 눌림 여부
-	
+
 	protected boolean isStartSoundPlaying = false;
-	
+
 	protected boolean isCancel = false; // 취소 여부
 	protected boolean isPause = false; // 정지 여부
 
@@ -127,9 +129,11 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	public ExecutorService mExeCalculationRankService = null;
 
-	private Comparator<SpBidding> mBiddingCompare =null;	//응찰금액,응찰시간 정렬
-			
-	protected boolean isReAuctionAndOverPrice = false; 
+	private Comparator<SpBidding> mBiddingCompare = null; // 응찰금액,응찰시간 정렬
+
+	protected boolean isReAuctionAndOverPrice = false;
+	
+	protected boolean isOverPricePlaySound = false; // 높은가 사운드 플래그 (중복사운드 방지)
 
 	public BaseAuctionController() {
 		init();
@@ -144,11 +148,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 		mCurrentBidderMap = new LinkedHashMap<String, SpBidding>();
 		mReAuctionBidderDataList = new ArrayList<SpBidding>();
 		AuctionDelegate.getInstance().setClearVariable();
-		
-		mBiddingCompare = Comparator
-		.comparing(SpBidding::getPriceInt).reversed()
-		.thenComparing(SpBidding::getBiddingTimeValue);
-		
+
+		mBiddingCompare = Comparator.comparing(SpBidding::getPriceInt).reversed().thenComparing(SpBidding::getBiddingTimeValue);
+
 		initExecutorService();
 	}
 
@@ -248,7 +250,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	public void onAuctionStatus(AuctionStatus auctionStatus) {
 
 		addLogItem("[onAuctionStatus]=> " + auctionStatus.getEncodedMessage());
-		
+
 		// AUCTION_STATUS_NONE = "8001" // 출품 자료 이관 전 상태
 		// AUCTION_STATUS_READY = "8002" // 경매 준비 상태
 		// AUCTION_STATUS_START = "8003" // 경매 시작 상태
@@ -370,7 +372,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 		}
 	}
 
-
 	@Override
 	public void onBidding(Bidding bidding) {
 		// 응찰 쓰레드풀 실행
@@ -467,7 +468,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	@Override
 	public void onConnectionInfo(final ConnectionInfo connectionInfo) {
 		mLogger.debug("onConnectionInfo : " + connectionInfo.getEncodedMessage());
-		
+
 		Thread thread = new Thread("onBidderConnectInfo") {
 			@Override
 			public void run() {
@@ -557,7 +558,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	private Runnable getCancelBiddingRunnable(CancelBidding cancelBidding) {
 		return (() -> {
 
-			if(isReAuction) {
+			if (isReAuction) {
 				return;
 			}
 			// 재경매 상황인경우 응찰 취소 불가
@@ -582,7 +583,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 				// 랭킹 재계산
 				calculationRanking();
-				
+
 				Bidding bidding = new Bidding();
 				bidding.setAuctionHouseCode(cancelBidding.getAuctionHouseCode());
 				bidding.setEntryNum(cancelBidding.getEntryNum());
@@ -688,10 +689,10 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 				list.addAll(mCurrentBidderMap.values());
 
-				mRankBiddingDataList =	getCurrentRankStream(list);
+				mRankBiddingDataList = getCurrentRankStream(list);
 
 				updateBidderList(mRankBiddingDataList);
-				
+
 			} else {
 				updateBidderList(null);
 			}
@@ -706,17 +707,21 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected CompletionHandler<Boolean, Void> mCalculationRankCallBack = new CompletionHandler<Boolean, Void>() {
 		@Override
 		public void completed(Boolean result, Void attachment) {
-			addLogItem("[순위 산정 완료 정지 타이머 실행_000]" + isReAuction);
+
 			// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
 			if (SettingApplication.getInstance().isUseSoundAuction() && !isReAuction && !isStartSoundPlaying) {
-				addLogItem("[순위 산정 완료 정지 타이머 실행]");
+				addLogItem("[순위 산정 완료 정지 타이머 실행] isReAuction 1111 : " + isReAuction + " / isStartSoundPlaying : " + isStartSoundPlaying);
 				soundAuctionTimerTask();
-			}else {
-				addLogItem("[순위 산정 완료 정지 타이머 실행]" + isReAuction);
-				if(isReAuction) {
-					if(checkOverPrice(mBiddingUserInfoDataList.get(0))) {
+			} else {
+				if (isReAuction && SettingApplication.getInstance().isUseSoundAuction()) {
+					addLogItem("[순위 산정 완료 정지 타이머 실행] isReAuction 2222 : " + isReAuction + " / isStartSoundPlaying : " + isStartSoundPlaying);
+					if (checkOverPrice(mBiddingUserInfoDataList.get(0))) {
 						stopSoundAuctionTimerTask();
 						soundAuctionTimerTask();
+					}else {
+						addLogItem("[순위 산정 완료 정지 타이머 실행] isReAuction 3333 : " + isReAuction + " / isStartSoundPlaying : " + isStartSoundPlaying);
+						stopSoundAuctionTimerTask();
+						checkBiddingUserPlaySound();
 					}
 				}
 			}
@@ -797,6 +802,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 		if (curPrice <= targetPrice) {
 			result = true;
+			isOverPricePlaySound = false;
 		}
 
 		mLogger.debug("[최저가+상한가=응찰가 비교] : " + result + " / 최저가+상한가 : " + lowPrice + "(" + targetPrice + ")" + " / 응찰가 : " + curPrice + "(" + curPrice + ")" + " / 회원번호 : " + spBidding.getAuctionJoinNum());
@@ -844,10 +850,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 				bidder.setSraSbidAm(new SimpleStringProperty(Integer.toString(sraSbidAm)));
 
 				try {
-					
-				
+
 					if (!BillboardDelegate.getInstance().isEmptyClient() && BillboardDelegate.getInstance().isActive()) {
-	//					// 전광판 전송
+						// // 전광판 전송
 						BillboardData billboardData = new BillboardData();
 						billboardData.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
 						billboardData.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
@@ -863,19 +868,18 @@ public abstract class BaseAuctionController implements NettyControllable {
 						billboardData.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
 						billboardData.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
 						billboardData.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
-						
+
 						addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData.getEncodedMessage());
 						BillboardDelegate.getInstance().sendBillboardData(billboardData);
 					}
-					
-				}catch (Exception e) {
+
+				} catch (Exception e) {
 					mLogger.debug("BillboardDelegate error " + e);
 				}
-				
 
 				try {
 					if (!PdpDelegate.getInstance().isEmptyClient() && PdpDelegate.getInstance().isActive()) {
-	//					// PDP 전송
+						// // PDP 전송
 						PdpData pdpData = new PdpData();
 						pdpData.setbEntryType(String.valueOf(spEntryInfo.getEntryType().getValue()));
 						pdpData.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
@@ -892,17 +896,15 @@ public abstract class BaseAuctionController implements NettyControllable {
 						pdpData.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
 						pdpData.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
 						pdpData.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
-						
+
 						addLogItem(mResMsg.getString("log.pdp.auction.result.success") + pdpData.getEncodedMessage());
 						PdpDelegate.getInstance().sendPdpData(pdpData);
 					}
-				
-				}catch (Exception e) {
+
+				} catch (Exception e) {
 					mLogger.debug("BillboardDelegate error " + e);
 				}
-				
-				
-				
+
 			} else {
 				// 유찰&보류
 				auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
@@ -913,14 +915,14 @@ public abstract class BaseAuctionController implements NettyControllable {
 			}
 
 			// 경매 결과 DB 저장
-			 int resultValue = EntryInfoMapperService.getInstance().updateAuctionResult(auctionResult);
+			int resultValue = EntryInfoMapperService.getInstance().updateAuctionResult(auctionResult);
 
 			// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
 			if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
 				auctionResult.setSuccessBidder("");
 				auctionResult.setSuccessAuctionJoinNum("");
 			}
-			
+
 			// 성공시
 			if (resultValue > 0) {
 
@@ -935,17 +937,18 @@ public abstract class BaseAuctionController implements NettyControllable {
 				// 한건 가져옴.
 				EntryInfo entryInfo = EntryInfoMapperService.getInstance().obtainEntryInfo(entryInfoParam);
 
-				//최저가
+				// 최저가
 				long resultLowPrice = 0;
-				
-				//최저가는 원단위로
-				if(CommonUtils.getInstance().isValidString(spEntryInfo.getLowPrice().getValue())) {
+
+				// 최저가는 원단위로
+				if (CommonUtils.getInstance().isValidString(spEntryInfo.getLowPrice().getValue())) {
 					resultLowPrice = Integer.parseInt(spEntryInfo.getLowPrice().getValue()) * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000;
 				}
-				
-				RequestAuctionResultBody requestAuctionResultBody = new RequestAuctionResultBody(entryInfo.getAuctionHouseCode(), entryInfo.getEntryType(), entryInfo.getAucDt(), entryInfo.getOslpNo(), entryInfo.getLedSqno(), entryInfo.getTrmnAmnNo(), entryInfo.getAuctionSucBidder(),
-						Integer.toString(entryInfo.getAuctionBidPrice()), Integer.toString(entryInfo.getSraSbidUpPrice()), entryInfo.getAuctionResult(), entryInfo.getLsChgDtm(), entryInfo.getLsCmeNo(),Long.toString(resultLowPrice));
 
+				// 경매 결과 파라미터
+				RequestAuctionResultBody requestAuctionResultBody = new RequestAuctionResultBody(entryInfo.getAuctionHouseCode(), entryInfo.getEntryType(), entryInfo.getAucDt(), entryInfo.getOslpNo(), entryInfo.getLedSqno(), entryInfo.getTrmnAmnNo(), entryInfo.getAuctionSucBidder(),
+						Integer.toString(entryInfo.getAuctionBidPrice()), Integer.toString(entryInfo.getSraSbidUpPrice()), entryInfo.getAuctionResult(), entryInfo.getLsChgDtm(), entryInfo.getLsCmeNo(), Long.toString(resultLowPrice));
+				// 경매 결과 API 전송
 				ApiUtils.getInstance().requestAuctionResult(requestAuctionResultBody, new ActionResultListener<BaseResponse>() {
 					@Override
 					public void onResponseResult(BaseResponse result) {
@@ -969,11 +972,194 @@ public abstract class BaseAuctionController implements NettyControllable {
 					runWriteLogFile(mAuctionStatus, isSuccess, "");
 				}
 
-				// 낙유찰 결과 UI 업데이트
-				updateAuctionStateInfo(isSuccess, bidder);
 				// 낙유찰 결과 전송
 				addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
-			}else {
+
+				// 수수료 삭제
+				FeeImpsData deleteFeeImpsData = new FeeImpsData();
+				deleteFeeImpsData.setNaBzplc(auctionResult.getAuctionHouseCode());
+				deleteFeeImpsData.setAucObjDsc(auctionResult.getEntryType());
+				deleteFeeImpsData.setAucDt(auctionResult.getAucDt());
+				deleteFeeImpsData.setOslpNo(auctionResult.getOslpNo());
+				deleteFeeImpsData.setLedSqNo(auctionResult.getLedSqno());
+				
+				// 수수료 내역 삭제
+				int deleteResult = EntryInfoMapperService.getInstance().deleteFeeImps(deleteFeeImpsData);
+				mLogger.debug("[수수료 삭제] " + deleteResult);
+
+				if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
+					// 낙찰자 조합 확인.
+					String macoYn = ConnectionInfoMapperService.getInstance().selectMacoYn(bidder.getUserNo().getValue());
+
+					List<FeeImpsData> feeImpsDataList = new ArrayList<FeeImpsData>();
+
+					// 수수료
+					for (FeeData objFee : GlobalDefine.AUCTION_INFO.feeData) {
+
+						FeeImpsData feeData = new FeeImpsData();
+						feeData.setNaBzplc(auctionResult.getAuctionHouseCode());
+						feeData.setAucObjDsc(auctionResult.getEntryType());
+						feeData.setAucDt(auctionResult.getAucDt());
+						feeData.setOslpNo(auctionResult.getOslpNo());
+						feeData.setLedSqNo(auctionResult.getLedSqno());
+
+						feeData.setFeeRgSqno(objFee.getFeeRgSqno());
+						feeData.setAplDt(objFee.getAplDt());
+						feeData.setNaFee_c(objFee.getNaFee_c());
+						feeData.setFeeAplObj_c(objFee.getFeeAplObj_c());
+						feeData.setAnsDsc(objFee.getAnsDsc());
+						feeData.setsBidYn(objFee.getSbidYn());
+						feeData.setTmsYn("0");
+
+						//송아지
+						if (auctionResult.getEntryType().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))
+								|| auctionResult.getEntryType().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+
+							if (objFee.getNaFee_c().equals(GlobalDefine.AUCTION_INFO.AUCTION_FEE_CODE_120)) {
+								
+								// 낙찰자 조합원/비조합원
+								if (macoYn.equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+									feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+								} else {
+									feeData.setSraTrFee(objFee.getMacoFeeUpr());
+								}
+
+							} else {
+								//운송비 불낙
+								if(objFee.getFeeRgSqno().equals("3") && objFee.getSbidYn().equals("0")) {
+									feeData.setSraTrFee(0);
+								}else {
+									
+									//운솓비 - 낙찰
+									if(objFee.getFeeRgSqno().equals("4") && objFee.getSbidYn().equals("1")) {
+										
+										if(spEntryInfo.getTrpcsPyYn().getValue().equals("0")) {
+											// 출하주 조합원/비조합원
+											if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+												feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+											} else {
+												// 조합원
+												feeData.setSraTrFee(objFee.getMacoFeeUpr());
+											}
+										}else {
+											mLogger.debug("[@@@@@@@@@ TrpcsPyYn ] ");
+											feeData.setSraTrFee(0);
+										}
+										
+									}else {
+										//운송비 제외 코드
+										if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+											feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+										} else {
+											// 조합원
+											feeData.setSraTrFee(objFee.getMacoFeeUpr());
+										}
+									}
+								}
+							}
+							
+						} else {
+							//번식우 --------------------------------------------------------------------------------------------------------
+
+							//낙찰자 
+							if (objFee.getNaFee_c().equals(GlobalDefine.AUCTION_INFO.AUCTION_FEE_CODE_OJB_3_011)) {
+
+								if(spEntryInfo.getPpgcowFeeDsc().getValue().equals(objFee.getPpgcowFeeDsc())) {
+									// 조합원/비조합원
+									if (macoYn.equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+										feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+									}else {
+										feeData.setSraTrFee(objFee.getMacoFeeUpr());
+									}
+								}else {
+									feeData.setSraTrFee(0);
+								}
+								
+							}else {
+								//출하자
+
+								if(objFee.getFeeRgSqno().equals("4") && objFee.getSbidYn().equals("0")) {
+									feeData.setSraTrFee(0);
+								}else {
+									
+									if(objFee.getFeeRgSqno().equals("3") && objFee.getSbidYn().equals("1")) {
+										
+										if(spEntryInfo.getTrpcsPyYn().getValue().equals("0")) {
+											// 출하주 조합원/비조합원
+											if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+												feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+											} else {
+												// 조합원
+												feeData.setSraTrFee(objFee.getMacoFeeUpr());
+											}
+										}else {
+											feeData.setSraTrFee(0);
+										}
+										
+									}else {
+										//운송비 외
+										if(feeData.getNaFee_c().equals("020")){
+											// 조합원/비조합원
+											if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+												feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+											}else {
+												feeData.setSraTrFee(objFee.getMacoFeeUpr());
+											}
+										}else {
+											if(spEntryInfo.getPpgcowFeeDsc().getValue().equals(objFee.getPpgcowFeeDsc())) {
+												// 조합원/비조합원
+												if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+													feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+												}else {
+													feeData.setSraTrFee(objFee.getMacoFeeUpr());
+												}
+											}else {
+												feeData.setSraTrFee(0);
+											}
+										}
+									}
+								}
+							}
+						}
+
+						feeImpsDataList.add(feeData);
+					}
+					// 수수료 저장
+					int resultFeeImps = EntryInfoMapperService.getInstance().insertFeeImpsList(feeImpsDataList);
+				 	mLogger.debug("[낙찰 수수료 저장] " + resultFeeImps);
+				}else {
+					List<FeeImpsData> feeImpsDataList = new ArrayList<FeeImpsData>();
+
+					// 수수료
+					for (FeeData objFee : GlobalDefine.AUCTION_INFO.feeData) {
+
+						FeeImpsData feeData = new FeeImpsData();
+						feeData.setNaBzplc(auctionResult.getAuctionHouseCode());
+						feeData.setAucObjDsc(auctionResult.getEntryType());
+						feeData.setAucDt(auctionResult.getAucDt());
+						feeData.setOslpNo(auctionResult.getOslpNo());
+						feeData.setLedSqNo(auctionResult.getLedSqno());
+						feeData.setFeeRgSqno(objFee.getFeeRgSqno());
+						feeData.setAplDt(objFee.getAplDt());
+						feeData.setNaFee_c(objFee.getNaFee_c());
+						feeData.setFeeAplObj_c(objFee.getFeeAplObj_c());
+						feeData.setAnsDsc(objFee.getAnsDsc());
+						feeData.setsBidYn(objFee.getSbidYn());
+						feeData.setTmsYn("0");
+						feeData.setSraTrFee(0);
+						feeImpsDataList.add(feeData);
+					}
+
+					//유찰 수수료 저장
+					int resultFeeImps = EntryInfoMapperService.getInstance().insertFeeImpsList(feeImpsDataList);
+				 	mLogger.debug("[유찰 수수료 저장] " + resultFeeImps);
+					
+				}
+
+				// 낙유찰 결과 UI 업데이트
+				updateAuctionStateInfo(isSuccess, bidder);
+
+			} else {
 				mLogger.debug("DB 업데이트 실패 . 취소처리");
 				onCancelOrClose();
 			}
@@ -989,8 +1175,10 @@ public abstract class BaseAuctionController implements NettyControllable {
 			break;
 		}
 	}
-	
+
 	abstract void onCancelOrClose();
+	
+	abstract void checkBiddingUserPlaySound();
 
 	/**
 	 * run Log
@@ -1013,17 +1201,15 @@ public abstract class BaseAuctionController implements NettyControllable {
 		thread.start();
 
 	}
-	
+
 	/**
 	 * @MethodName getCurrentRankStream
 	 * @Description 현재 응찰 가격 기준 우선순위 확인 처리
 	 */
 	public List<SpBidding> getCurrentRankStream(List<SpBidding> list) {
-	
-		List<SpBidding> spList = list.parallelStream()
-				.sorted(mBiddingCompare)
-				.collect(Collectors.toList());
-		
+
+		List<SpBidding> spList = list.parallelStream().sorted(mBiddingCompare).collect(Collectors.toList());
+
 		return spList;
 	}
 
@@ -1218,9 +1404,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 	 * @param spBiddingDataList
 	 */
 	abstract void soundAuctionTimerTask();
-	
-	abstract void stopSoundAuctionTimerTask();
 
+	abstract void stopSoundAuctionTimerTask();
 
 	/**
 	 * ADD 로그

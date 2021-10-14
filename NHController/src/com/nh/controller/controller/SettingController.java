@@ -9,23 +9,23 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import com.nh.controller.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.UdpBillBoardStatusListener;
 import com.nh.common.interfaces.UdpPdpBoardStatusListener;
-import com.nh.controller.controller.SettingController.AuctionToggle;
-import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.netty.BillboardDelegate;
 import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.setting.SettingApplication;
-import com.nh.share.code.GlobalDefineCode;
+import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.GlobalDefine;
+import com.nh.controller.utils.MoveStageUtil;
+import com.nh.controller.utils.SharedPreference;
+import com.nh.controller.utils.SoundUtil;
 import com.nh.share.controller.models.EditSetting;
-import com.nh.share.controller.models.InitEntryInfo;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -184,6 +184,11 @@ public class SettingController implements Initializable {
 		this.mUdpBillBoardStatusListener = udpStatusListener;
 		this.mUdpPdpBoardStatusListener = udpPdpBoardStatusListener;
 		this.isDisplayBordConnection = isDisplayBordConnection;
+
+		if(!isDisplayBordConnection) {
+			mBtnInitServer.setDisable(true);
+		}
+
 	}
 
 	/**

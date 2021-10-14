@@ -5,6 +5,8 @@ import java.util.List;
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.AuctionStnData;
+import com.nh.controller.model.FeeData;
+import com.nh.controller.model.FeeImpsData;
 import com.nh.controller.model.SelStsCountData;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
@@ -71,5 +73,15 @@ public interface EntryInfoMapper {
      * @return
      */
     int insertBiddingHistory(AucEntrData aucEntrData); 
+   
+    List<FeeData> selectFee(FeeData fee);
+    
+    int deleteFeeImps(FeeImpsData fee);
+    
+    int insertFeeImps(FeeImpsData fee);
+    
+    int insertFeeImpsList(List<FeeImpsData> feeImpsList);
+    
+    
     
 }

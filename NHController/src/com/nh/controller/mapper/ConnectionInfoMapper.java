@@ -48,4 +48,13 @@ public interface ConnectionInfoMapper {
      * @param info 참여자 정보
      */
     void insertConnectionInfo(List<UserInfo> info);
+    
+    
+    /**
+     * 사용자 조합원/비조합원 구분
+     * @param userMemNum
+     * @return
+     */
+    String selectMacoYn(@Param("userMemNum") String userMemNum);
+    
 }

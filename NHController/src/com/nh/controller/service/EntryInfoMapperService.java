@@ -11,8 +11,9 @@ import com.nh.controller.mapper.EntryInfoMapper;
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.AuctionStnData;
+import com.nh.controller.model.FeeData;
+import com.nh.controller.model.FeeImpsData;
 import com.nh.controller.model.SelStsCountData;
-import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
@@ -69,8 +70,6 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 		 */
 		if (!list.isEmpty()) {
 
-			int standPosition = Integer.parseInt(SettingApplication.getInstance().getStandPosition());
-
 			for (int i = 0; i < list.size(); i++) {
 				
 				//주소 자름.
@@ -92,19 +91,8 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 				//마지막 출품 여부 Y or N
 				String flag = (i == list.size() - 1) ? "Y" : "N";
-
 				list.get(i).setIsLastEntry(flag);
-
-				//계류대 번호
-				if (standPosition > i) {
-					list.get(i).setStandPosition(Integer.toString( i+1));
-					list.get(i).setIsExcessCow("N");
-				} else {
-					list.get(i).setStandPosition("");
-					list.get(i).setIsExcessCow("Y");
-				}
 			}
-
 		}
 		return list;
 	}
@@ -322,4 +310,88 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 
 		return resultValue;
 	}
+	
+	@Override
+	public List<FeeData> selectFee(FeeData fee) {
+
+		List<FeeData>  feeDataList = null;
+
+		try (SqlSession session = DBSessionFactory.getSession()) {
+			feeDataList = getDao().selectFee(fee, session);
+		}catch (Exception e) {
+			return new ArrayList<FeeData>();
+		}
+		return feeDataList;
+	}
+	
+
+	@Override
+	public int deleteFeeImps(FeeImpsData fee) {
+		
+		int resultValue = 0;
+
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultValue = getDao().deleteFeeImps(fee, session);
+
+			if (resultValue > 0) {
+				session.commit();
+			} else {
+				session.rollback();
+			}
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
+			resultValue = -1;
+		}
+
+		return resultValue;
+	}
+
+	@Override
+	public int insertFeeImps(FeeImpsData fee) {
+		
+		int resultValue = 0;
+
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultValue = getDao().insertFeeImps(fee, session);
+
+			if (resultValue > 0) {
+				session.commit();
+			} else {
+				session.rollback();
+			}
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
+			resultValue = -1;
+		}
+
+		return resultValue;
+	}
+	
+	@Override
+	public int insertFeeImpsList(List<FeeImpsData> feeImpsList) {
+
+		int resultValue = 0;
+
+		try (SqlSession session = DBSessionFactory.getSession()) {
+
+			resultValue = getDao().insertFeeImpsList(feeImpsList, session);
+
+			if (resultValue > 0) {
+				session.commit();
+			} else {
+				session.rollback();
+			}
+
+		} catch (Exception e) {
+			// exception에 대한 처리 시 사용
+			resultValue = -1;
+		}
+
+		return resultValue;
+	}
+	
 }

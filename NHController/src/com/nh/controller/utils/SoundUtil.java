@@ -515,7 +515,7 @@ public class SoundUtil {
     private static class TTSNowRunnable implements Runnable {
 
         private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-        private final ExecutorService mThreadService = Executors.newCachedThreadPool();
+        private final ExecutorService mThreadService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         private final VoiceSelectionParams mParams;
         private final AudioConfig mAudioConfig;
         private TextToSpeechClient mClient = null;
@@ -565,7 +565,7 @@ public class SoundUtil {
         public void run() {
             try {
                 synchronized (this) {
-                    release();
+//                    release();
                     if(mClient != null) {
                         mPlayer = new AdvancedPlayer(getTextToSpeechStream(mMessage));
                         mPlayer.setPlayBackListener(mPlayBackListener);

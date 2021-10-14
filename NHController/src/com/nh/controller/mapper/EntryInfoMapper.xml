@@ -50,7 +50,35 @@
         <result property="mTrmnAmnNo" column="TRMN_AMNNO"/>
         <result property="mLedSqno" column="LED_SQNO"/>
         <result property="mStandPosition" column="STAND_POSITION"/>
+        <result property="mMacoYn" column="MACO_YN"/>
+        <result property="mTrpcsPyYn" column="TRPCS_PY_YN"/>
+        <result property="mPpgcowFeeDsc" column="PPGCOW_FEE_DSC"/>
+        <result property="mIsExcessCow" column="IS_EXCESS_COW"/>
 
+    </resultMap>
+    
+    <resultMap type="FeeData" id="FeeResultMap">
+		<result property="naBzplc" column="NA_BZPLC"/>
+		<result property="aplDt" column="APL_DT"/>
+		<result property="aucObjDsc" column="AUC_OBJ_DSC"/>
+		<result property="feeRgSqno" column="FEE_RG_SQNO"/>
+		<result property="naFee_c" column="NA_FEE_C"/>
+		<result property="sraFeenm" column="SRA_FEENM"/>
+		<result property="jnlzBsnDsc" column="JNLZ_BSN_DSC"/>
+		<result property="sraNaFee_c" column="SRA_NA_FEE_C"/>
+		<result property="feeAplObj_c" column="FEE_APL_OBJ_C"/>
+		<result property="amRtoDsc" column="AM_RTO_DSC"/>
+		<result property="sgnoPrcDsc" column="SGNO_PRC_DSC"/>
+		<result property="macoFeeUpr" column="MACO_FEE_UPR"/>
+		<result property="nmacoFeeUpr" column="NMACO_FEE_UPR"/>
+		<result property="ansDsc" column="ANS_DSC"/>
+		<result property="sbidYn" column="SBID_YN"/>
+		<result property="ppgcowFeeDsc" column="PPGCOW_FEE_DSC"/>
+		<result property="delYn" column="DEL_YN"/>
+		<result property="fsrgDtm" column="FSRG_DTM"/>
+		<result property="fsrgmnEno" column="FSRGMN_ENO"/>
+		<result property="lschgDtm" column="LSCHG_DTM"/>
+		<result property="lsCmeno" column="LS_CMENO"/>
     </resultMap>
   
 	<!-- tb_la_is_mm_indv -->
@@ -109,13 +137,17 @@
 				AND E.TRMN_AMNNO = ${alias}.TRMN_AMNNO
 				AND E.LVST_AUC_PTC_MN_NO = ${alias}.LVST_AUC_PTC_MN_NO
 				AND E.ATDR_AM = ${alias}.SRA_SBID_UPR
-		 ) AS ATDR_DTM
-		
+		 ) AS ATDR_DTM,
+		 ${alias}.TRPCS_PY_YN,
+		${alias}.PPGCOW_FEE_DSC,
+		${alias}.AUC_PRG_SQ as STAND_POSITION,
+		'N' as IS_EXCESS_COW
 	</sql>
-		<!-- ${alias}.STAND_POSITION -->
+
 	<!-- tb_la_is_mm_fhs -->
 	<sql id="fhsColumn">
-		${alias}.FTSNM
+		${alias}.FTSNM,
+		${alias}.MACO_YN
 	</sql>
 
 	<sql id="aplColumn">
@@ -145,8 +177,9 @@
 													 WHERE SIMP_TPC = 'SRA_INDV_BRDSRA_RG_DSC') E ON C.MCOW_DSC = E.SIMP_C
 								 JOIN TB_LA_IS_MH_AUC_QCN AS F
 															ON
-															A.NA_BZPLC = F.NA_BZPLC AND
-															A.AUC_DT = F.AUC_DT
+															A.NA_BZPLC = F.NA_BZPLC
+															AND A.AUC_DT = F.AUC_DT
+															AND A.AUC_OBJ_DSC = F.AUC_OBJ_DSC
 	WHERE A.NA_BZPLC	= #{naBzplc}
 	AND A.AUC_DT		= #{aucDt}
 	AND A.AUC_OBJ_DSC	= CASE WHEN #{aucObjDsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{aucObjDsc} END
@@ -175,7 +208,8 @@
 									JOIN TB_LA_IS_MH_AUC_QCN AS F
 																ON
 																A.NA_BZPLC = F.NA_BZPLC AND
-																A.AUC_DT = F.AUC_DT
+																A.AUC_DT = F.AUC_DT AND
+																A.AUC_OBJ_DSC = F.AUC_OBJ_DSC
 		WHERE A.NA_BZPLC	= #{naBzplc}
 		AND A.AUC_DT		= #{aucDt}
 		AND A.AUC_OBJ_DSC	= CASE WHEN #{aucObjDsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{aucObjDsc} END
@@ -319,7 +353,6 @@
 
 	<!-- 응찰 내역 카운트-->
 	<select id="selectBiddingHistoryCount" resultType="int">
-	
 		SELECT COUNT(*)
 		FROM TB_LA_IS_MH_ATDR_LOG
 		WHERE NA_BZPLC = #{naBzplc}
@@ -379,32 +412,72 @@
 	</insert>
 
 	<!--  수수료 부과내역 삭제  -->
-	<delete id="deleteFee" parameterType="AuctionResult">
+	<delete id="deleteFeeImps" parameterType="FeeImpsData">
 		DELETE FROM TB_LA_IS_MH_FEE_IMPS
-		WHERE		NA_BZPLC		= #{mAuctionHouseCode}
-			AND		AUC_DT			= #{mAucDt}
-			AND		AUC_OBJ_DSC		= #{mEntryType}
-			AND		OSLP_NO			= #{mOslpNo}
-			AND		LED_SQNO		= #{mLedSqno}
+		WHERE		NA_BZPLC		= #{naBzplc}
+			AND		AUC_DT			= #{aucDt}
+			AND		AUC_OBJ_DSC		= #{aucObjDsc}
+			AND		OSLP_NO			= #{oslpNo}
+			AND		LED_SQNO		= #{ledSqNo}
 	</delete>
 
-	<!-- 다시 계산 하여 수수료 부과내역 저장  일단 주석..
-	<insert id="insertFee" parameterType="AuctionResult">
+	<!-- 다시 계산 하여 수수료 부과내역 저장-->
+	<insert id="insertFeeImps" parameterType="FeeImpsData">
 	
-		INSERT INTO TB_LA_IS_MH_ATDR_LOG VALUES (
+		INSERT INTO TB_LA_IS_MH_FEE_IMPS VALUES (
 			#{naBzplc},
 			#{aucObjDsc},
 			#{aucDt},
 			#{oslpNo},
-			#{mLedSqno},
-			#{rgSqno},
-			#{trmnAmnno},
-			#{lvstAucPtcMnNo},
-			#{atdrAm},
-			#{atdrDtm},
-			#{aucPrgSq}
+			#{ledSqNo},
+			#{feeRgSqno},
+			#{aplDt},
+			#{naFee_c},
+			#{feeAplObj_c},
+			#{ansDsc},
+			#{sBidYn},
+			#{sraTrFee},
+			#{tmsYn}
 		)
 	
-	</insert>-->
+	</insert>
+	
+	<insert id="insertFeeImpsList" parameterType="FeeImpsData">
+	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		INSERT INTO TB_LA_IS_MH_FEE_IMPS VALUES (
+			#{item.naBzplc},
+			#{item.aucObjDsc},
+			#{item.aucDt},
+			#{item.oslpNo},
+			#{item.ledSqNo},
+			#{item.feeRgSqno},
+			#{item.aplDt},
+			#{item.naFee_c},
+			#{item.feeAplObj_c},
+			#{item.ansDsc},
+			#{item.sBidYn},
+			#{item.sraTrFee},
+			#{item.tmsYn}
+		)
+		</foreach>
+	</insert>
 
+	<!-- 수수료 기준 데이터 -->
+	<select id="selectFee" resultMap="FeeResultMap">
+		SELECT A.* 
+				,B.FEE_CHK_DNA_YN_FEE 
+				,B.SELFEE_CHK_DNA_YN_FEE
+		FROM TB_LA_IS_MH_FEE  A LEFT JOIN TB_LA_IS_MM_ENV_EST B
+		                      ON A.NA_BZPLC = B.NA_BZPLC
+		WHERE  A.APL_DT = (SELECT MAX(APL_DT) FROM TB_LA_IS_MH_FEE
+		                   WHERE AUC_OBJ_DSC = #{aucObjDsc}
+		                     AND NA_BZPLC    = #{naBzplc}
+		                     AND DEL_YN      = '0'
+		                     AND APL_DT <![CDATA[<=]]> #{aplDt})
+		                   
+		AND A.AUC_OBJ_DSC = #{aucObjDsc}
+		AND A.DEL_YN      = '0'
+		AND A.NA_BZPLC    = #{naBzplc}
+	</select>
+	
 </mapper>

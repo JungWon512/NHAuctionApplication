@@ -1,7 +1,11 @@
 package com.nh.controller.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.nh.controller.model.AdminData;
 import com.nh.controller.model.AuctionRound;
+import com.nh.controller.model.FeeData;
 
 /**
  * 공통 Define
@@ -86,6 +90,7 @@ public class GlobalDefine {
 		public static final int AUCTION_PORT = 5001; // Server Port
 
 		public static AuctionRound auctionRoundData = null;	//경매 회차 데이터
+		public static List<FeeData> feeData = new ArrayList<FeeData>();	//경매 수수료
 		
 		// 경매 진행 상태
 		public static final String AUCTION_STATUS_NONE = "8000";
@@ -119,6 +124,27 @@ public class GlobalDefine {
 		
 		public static final String AUCTION_STAND_CONNECTION_ON = "2000";	//계류대 모니터링 접속
 		public static final String AUCTION_STAND_CONNECTION_OFF = "2001";	//계류대 모니터링 미접속	
+		
+		public static final String AUCTION_MACO_0 = "0";	// 비조합원
+		public static final String AUCTION_MACO_1 = "1";	// 조합원
+		
+		//[S] 수수료 - 송아지 코드
+		public static final String AUCTION_FEE_CODE_120 = "120";  // 낙찰자 - 위탁수수료
+		public static final String AUCTION_FEE_CODE_040  = "040"; // 운송비
+		public static final String AUCTION_FEE_CODE_020  = "020"; // 조합출자금
+		public static final String AUCTION_FEE_CODE_010  = "010"; // 출하수수료
+		//[E] 수수료 - 송아지 코드
+		
+		public static final String AUCTION_FEE_CODE_OJB_3_010_ = "010"; // 출하수수료
+		public static final String AUCTION_FEE_CODE_OJB_3_020  = "020"; // 조합출자금
+		public static final String AUCTION_FEE_CODE_OJB_3_040  = "040"; // 운송비 불낙/낙찰
+		public static final String AUCTION_FEE_CODE_OJB_3_011  = "011"; // 낙찰자 - 임신우,비임신우,임신우+송아지,비임신우_송아지
+		
+		
+		
+		public static final String AUCTION_BID_STATUS_P  = "P"; // 카운트 다운 완료 후 응찰 상태 : 응찰 진행
+		public static final String AUCTION_BID_STATUS_F  = "F"; // 카운트 다운 완료 후 응찰 상태 : 응찰 종료
+
 	}
 
 	/**

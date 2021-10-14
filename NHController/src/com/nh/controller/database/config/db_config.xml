@@ -22,6 +22,8 @@
 		<typeAlias alias="EntryData" type="com.nh.controller.model.AucEntrData" />
 		<typeAlias alias="AuctionStnData" type="com.nh.controller.model.AuctionStnData" />
 		<typeAlias alias="SelStsCountData" type="com.nh.controller.model.SelStsCountData" />
+		<typeAlias alias="FeeData" type="com.nh.controller.model.FeeData" />
+		<typeAlias alias="FeeImpsData" type="com.nh.controller.model.FeeImpsData" />
 	</typeAliases>
 
 	<environments default="development">

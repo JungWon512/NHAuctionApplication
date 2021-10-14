@@ -28,5 +28,9 @@ public class ConnectionInfoDao {
     public void insertUserInfo(List<UserInfo> user, SqlSession session) {
         session.insert("insertConnectionInfo", user);
     }
+    
+    public String selectMacoYn(Map<String, String> userInfo, SqlSession session) {
+    	return session.selectOne ("selectMacoYn", userInfo);
+    }
 
 }

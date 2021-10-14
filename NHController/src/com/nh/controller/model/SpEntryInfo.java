@@ -79,6 +79,9 @@ public class SpEntryInfo implements FromAuctionController {
     
 	private StringProperty mStandPosition; // 계류대 번호
 	private StringProperty mIsExcessCow; // 초과출장우여부
+	private StringProperty mMacoYn; // 조합원/비조합원 여부 
+	private StringProperty mTrpcsPyYn; // 자가운송여부
+	private StringProperty mPpgcowFeeDsc; // 번식우 - 임신,비임신 구분 코드
 
 
     public SpEntryInfo() {
@@ -132,6 +135,9 @@ public class SpEntryInfo implements FromAuctionController {
         this.mStandPosition = new SimpleStringProperty(entryInfo.getStandPosition());
         this.mIsExcessCow = new SimpleStringProperty(entryInfo.getIsExcessCow());
         this.mReRgnName = new SimpleStringProperty(entryInfo.getReRgnName());
+        this.mMacoYn = new SimpleStringProperty(entryInfo.getMacoYn());
+        this.mTrpcsPyYn = new SimpleStringProperty(entryInfo.getTrpcsPyYn());
+        this.mPpgcowFeeDsc = new SimpleStringProperty(entryInfo.getPpgcowFeeDsc());
     }
 
     public StringProperty getAuctionHouseCode() {
@@ -524,6 +530,31 @@ public class SpEntryInfo implements FromAuctionController {
 
 	public void setReRgnName(StringProperty mReRgnName) {
 		this.mReRgnName = mReRgnName;
+	}
+	
+
+	public StringProperty getMacoYn() {
+		return mMacoYn;
+	}
+
+	public void setMacoYn(StringProperty mMacoYn) {
+		this.mMacoYn = mMacoYn;
+	}
+	
+	public StringProperty getTrpcsPyYn() {
+		return mTrpcsPyYn;
+	}
+
+	public void setTrpcsPyYn(StringProperty mTrpcsPyYn) {
+		this.mTrpcsPyYn = mTrpcsPyYn;
+	}
+
+	public StringProperty getPpgcowFeeDsc() {
+		return mPpgcowFeeDsc;
+	}
+
+	public void setPpgcowFeeDsc(StringProperty mPpgcowFeeDsc) {
+		this.mPpgcowFeeDsc = mPpgcowFeeDsc;
 	}
 
 	public String getConvertBirthDay() {

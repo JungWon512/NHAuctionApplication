@@ -7,6 +7,8 @@ import org.apache.ibatis.session.SqlSession;
 import com.nh.controller.model.AucEntrData;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.model.AuctionStnData;
+import com.nh.controller.model.FeeData;
+import com.nh.controller.model.FeeImpsData;
 import com.nh.controller.model.SelStsCountData;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
@@ -34,6 +36,10 @@ public class EntryInfoDao {
         return session.selectOne("obtainEntryInfo", entryInfo);
     }
     
+    public List<FeeData> selectFee(FeeData fee, SqlSession session) {
+        return session.selectList("selectFee", fee);
+    }
+
     public SelStsCountData selectSelStsCount(AuctionStnData auctionStnData, SqlSession session) {
         return session.selectOne("selectSelStsCount", auctionStnData);
     }
@@ -107,5 +113,38 @@ public class EntryInfoDao {
     public int selectNextBiddingHistoryCount(AucEntrData aucEntrData,SqlSession session) {
         return session.selectOne("selectNextBiddingHistoryCount", aucEntrData);
     }
+    
+
+    /**
+     * 수수료 데이터 제거
+     * @param feeData
+     * @param session
+     * @return
+     */
+    public int deleteFeeImps(FeeImpsData feeData,SqlSession session) {
+        return session.delete("deleteFeeImps", feeData);
+    }
+    
+    
+    /**
+     * 수수료 데이터 저장
+     * @param feeData
+     * @param session
+     * @return
+     */
+    public int insertFeeImps(FeeImpsData feeData,SqlSession session) {
+        return session.insert("insertFeeImps", feeData);
+    }
+    
+    /**
+     * 수수료 데이터 저장
+     * @param feeData
+     * @param session
+     * @return
+     */
+    public int insertFeeImpsList(List<FeeImpsData> feeDataList,SqlSession session) {
+        return session.insert("insertFeeImpsList", feeDataList);
+    }
+    
     
 }
