@@ -434,8 +434,9 @@ public class SoundUtil {
          * @author hmju
          */
         public void play(final String msg) {
-            Executors.newSingleThreadExecutor().submit(() -> {
+            mThreadService.submit(() -> {
                 try {
+                    release();
                     if (mSoundSettingMap.containsKey(msg)) {
                         mCurrentPlayer = new Player(mSoundSettingMap.get(msg).getStream());
                         mCurrentPlayer.play();
@@ -453,15 +454,7 @@ public class SoundUtil {
          * @author hmju
          */
         public void stop() {
-            try {
-                if (mCurrentPlayer != null) {
-                    mCurrentPlayer.close();
-                    mCurrentPlayer = null;
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                mLogger.error("Stop Error " + ex.getMessage());
-            }
+            release();
         }
 
         @Override
@@ -478,6 +471,17 @@ public class SoundUtil {
                     mLogger.error(ex.getMessage());
                 }
             });
+        }
+
+        private synchronized void release(){
+            try {
+                if (mCurrentPlayer != null) {
+                    mCurrentPlayer.close();
+                    mCurrentPlayer = null;
+                }
+            } catch (Exception ex) {
+                mLogger.error("Stop Error " + ex.getMessage());
+            }
         }
 
         /**
@@ -522,7 +526,6 @@ public class SoundUtil {
         TTSNowRunnable(VoiceSelectionParams params, AudioConfig config) {
             mParams = params;
             mAudioConfig = config;
-            mThreadService.execute(this);
         }
 
         public void setClient(TextToSpeechClient client) {
@@ -534,13 +537,7 @@ public class SoundUtil {
         }
 
         public void stop() {
-            if (mPlayer != null) {
-                mLogger.debug("Player Complete " + " HashCode " + mPlayer.hashCode());
-                mPlayer.setPlayBackListener(null);
-                mPlayer.close();
-                mPlayer = null;
-                mPlayBackListener = null;
-            }
+            release();
         }
 
         public void play(String text) {
@@ -568,23 +565,37 @@ public class SoundUtil {
         public void run() {
             try {
                 synchronized (this) {
-                    if (mPlayer != null) {
-                        mPlayer.close();
-                        mPlayer = null;
-                        mLogger.debug(" ");
-                        mPlayBackListener = null;
+                    release();
+                    if(mClient != null) {
+                        mPlayer = new AdvancedPlayer(getTextToSpeechStream(mMessage));
+                        mPlayer.setPlayBackListener(mPlayBackListener);
+                        mThreadService.submit(() -> {
+                            try {
+                                mPlayer.play();
+                            } catch (Exception ex) {
+                                mLogger.error("NowPlayer Error " + ex.getMessage());
+                            }
+
+                        });
                     }
                 }
-                long prevTime = System.currentTimeMillis();
-
-                if (mClient != null) {
-                    mPlayer = new AdvancedPlayer(getTextToSpeechStream(mMessage));
-                    mLogger.debug("Diff Time " + (System.currentTimeMillis() - prevTime));
-                    mPlayer.setPlayBackListener(mPlayBackListener);
-                    mPlayer.play();
-                }
             } catch (Exception ex) {
-                mLogger.error("Run " + ex);
+                mLogger.error("RunException " + ex);
+            }
+        }
+
+        /**
+         * 메모리 해제 처리 함수
+         */
+        private synchronized void release() {
+
+            if (mPlayBackListener != null) {
+                mPlayBackListener = null;
+            }
+
+            if (mPlayer != null) {
+                mPlayer.close();
+                mPlayer = null;
             }
         }
 
@@ -622,6 +633,7 @@ public class SoundUtil {
     public static class LocalSoundDefineRunnable {
 
         private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+        private final ExecutorService mWorkThread = Executors.newCachedThreadPool();
         private Clip mClip;
 
         public enum LocalSoundType {
@@ -651,12 +663,17 @@ public class SoundUtil {
                     mClip.addLineListener(listener);
                 }
 
-                mClip.start();
+                mWorkThread.submit(() -> {
+                    try {
+                        mClip.start();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
 
             } catch (Exception ex) {
                 mLogger.error("Run " + ex);
             }
-
         }
 
         /**
@@ -664,7 +681,7 @@ public class SoundUtil {
          *
          * @author jhlee
          */
-        public void stop() {
+        public synchronized void stop() {
             try {
                 if (mClip != null) {
                     mClip.close();
