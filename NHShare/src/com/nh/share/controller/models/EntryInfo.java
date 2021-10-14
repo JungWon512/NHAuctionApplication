@@ -67,6 +67,10 @@ public class EntryInfo implements FromAuctionController {
 
 	private String mStandPosition; // 계류대 번호
 	private String mIsExcessCow; // 초과출장우여부
+	private String mMacoYn; // 조합원/비조합원 여부 
+	private String mTrpcsPyYn; // 자가운송여부
+	private String mPpgcowFeeDsc; // 번식우 - 임신,비임신 구분 코드
+	
 
 	public EntryInfo() {
 	}
@@ -522,6 +526,29 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setReRgnName(String mReRgnName) {
 		this.mReRgnName = mReRgnName;
+	}
+	public String getMacoYn() {
+		return mMacoYn;
+	}
+
+	public void setMacoYn(String mMacoYn) {
+		this.mMacoYn = mMacoYn;
+	}
+	
+	public String getTrpcsPyYn() {
+		return mTrpcsPyYn;
+	}
+
+	public void setTrpcsPyYn(String mTrpcsPyYn) {
+		this.mTrpcsPyYn = mTrpcsPyYn;
+	}
+
+	public String getPpgcowFeeDsc() {
+		return mPpgcowFeeDsc;
+	}
+
+	public void setPpgcowFeeDsc(String mPpgcowFeeDsc) {
+		this.mPpgcowFeeDsc = mPpgcowFeeDsc;
 	}
 
 	@Override

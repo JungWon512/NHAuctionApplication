@@ -1,7 +1,5 @@
 package com.nh.share.server.models;
 
-import java.util.Comparator;
-
 import com.nh.share.server.interfaces.FromAuctionServer;
 import com.nh.share.setting.AuctionShareSetting;
 
