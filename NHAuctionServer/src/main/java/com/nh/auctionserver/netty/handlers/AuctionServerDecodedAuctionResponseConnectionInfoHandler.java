@@ -137,6 +137,11 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 							if (mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getRetryTargetInfo() != null) {
 								clientChannelContext.channel().writeAndFlush(mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getRetryTargetInfo().getEncodedMessage() + "\r\n");
 							}
+							
+							if (!mAuctionScheduler.getCurrentAuctionStatus(responseConnectionInfo.getAuctionHouseCode())
+									.equals(GlobalDefineCode.AUCTION_STATUS_READY) && mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getAuctionBidStatus() != null) {
+								clientChannelContext.channel().writeAndFlush(mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getAuctionBidStatus().getEncodedMessage() + "\r\n");
+							}
 						}
 
 //	    				// 관심 차량 정보 필요 대상 추출 및 관련 정보 전송 처리

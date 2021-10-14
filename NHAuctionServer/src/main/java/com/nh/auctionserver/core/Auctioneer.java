@@ -383,6 +383,9 @@ public class Auctioneer {
 		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)) {
 			mAuctionEntryRepositoryMap.get(auctionHouseCode).removeAllEntryList();
 		}
+		
+		// 출하 안내 시스템 경매 상태 변경 정보 전송
+		mAuctionServer.initAuctionStatusTransmit(getAuctionState(auctionHouseCode).getAuctionStatus());
 	}
 
 	/**

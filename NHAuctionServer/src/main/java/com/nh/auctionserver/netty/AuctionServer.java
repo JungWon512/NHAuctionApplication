@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.handlers.AuctionServerConnectorHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionBidStatusHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionResponseConnectionInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionResponseSessionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionResultHandler;
@@ -63,6 +64,7 @@ import com.nh.share.controller.models.StopAuction;
 import com.nh.share.controller.models.ToastMessageRequest;
 import com.nh.share.server.ServerMessageParser;
 import com.nh.share.server.interfaces.FromAuctionServer;
+import com.nh.share.server.models.AuctionBidStatus;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
@@ -278,6 +280,9 @@ public class AuctionServer {
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedRefreshConnectorHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedAuctionBidStatusHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 					}
@@ -637,6 +642,11 @@ public class AuctionServer {
 			if (commonParsedMessage instanceof AuctionType) {
 				channelItemWriteAndFlush((AuctionType) commonParsedMessage);
 			}
+			
+			if (commonParsedMessage instanceof AuctionBidStatus) {
+				mAuctioneer.getAuctionState(((AuctionBidStatus) commonParsedMessage).getAuctionHouseCode()).setAuctionBidStatus((AuctionBidStatus) commonParsedMessage);
+				channelItemWriteAndFlush((AuctionBidStatus) commonParsedMessage);
+			}
 			break;
 		default:
 			break;
@@ -816,13 +826,13 @@ public class AuctionServer {
 					}
 				}
 
-				if (mControllerChannelsMap != null) {
-					if (mControllerChannelsMap.containsKey(((CurrentEntryInfo) event).getAuctionHouseCode())) {
-						if (mControllerChannelsMap.get(((CurrentEntryInfo) event).getAuctionHouseCode()).size() > 0) {
-							mControllerChannelsMap.get(((CurrentEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
-						}
-					}
-				}
+//				if (mControllerChannelsMap != null) {
+//					if (mControllerChannelsMap.containsKey(((CurrentEntryInfo) event).getAuctionHouseCode())) {
+//						if (mControllerChannelsMap.get(((CurrentEntryInfo) event).getAuctionHouseCode()).size() > 0) {
+//							mControllerChannelsMap.get(((CurrentEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+//						}
+//					}
+//				}
 				break;
 			case StandEntryInfo.TYPE: // 출하 안내 시스템 출품 정보 전송
 				// Netty Broadcast
@@ -1168,6 +1178,30 @@ public class AuctionServer {
 					}
 				}
 				break;
+				
+			case AuctionBidStatus.TYPE: // 경매 응찰 종료 상태 전송
+				// Web Socket Broadcast
+				if (mSocketIOHandler != null) {
+					mSocketIOHandler.sendPacketData(message);
+				}
+
+				// Netty Broadcast
+				if (mBidderChannelsMap != null) {
+					if (mBidderChannelsMap.containsKey(((AuctionBidStatus) event).getAuctionHouseCode())) {
+						if (mBidderChannelsMap.get(((AuctionBidStatus) event).getAuctionHouseCode()).size() > 0) {
+							mBidderChannelsMap.get(((AuctionBidStatus) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+				
+				if (mWatcherChannelsMap != null) {
+					if (mWatcherChannelsMap.containsKey(((AuctionBidStatus) event).getAuctionHouseCode())) {
+						if (mWatcherChannelsMap.get(((AuctionBidStatus) event).getAuctionHouseCode()).size() > 0) {
+							mWatcherChannelsMap.get(((AuctionBidStatus) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+				break;
 			}
 			/*
 			 * Thread thread = new Thread() {
@@ -1228,9 +1262,14 @@ public class AuctionServer {
 											.getEncodedMessage());
 						}
 						
-						// 출하안내시스템 접속 해제 상테 전송
-						if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
-							itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), "2001").getEncodedMessage());
+						// 출하안내시스템 접속 상태 저장
+						if (mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()) != null) {
+							mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()).setIsStandConnect(false);
+
+							// 출하안내시스템 접속 해제 상테 전송
+							if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+								itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), GlobalDefineCode.CONNECT_FAIL).getEncodedMessage());
+							}
 						}
 
 						mConnectorInfoMap.remove(channelId);
@@ -1309,9 +1348,14 @@ public class AuctionServer {
 											.getEncodedMessage());
 						}
 						
-						// 출하안내시스템 접속 해제 상테 전송
-						if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
-							itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), "2001").getEncodedMessage());
+						// 출하안내시스템 접속 상태 저장
+						if (mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()) != null) {
+							mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()).setIsStandConnect(true);
+
+							// 출하안내시스템 접속 해제 상테 전송
+							if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+								itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), GlobalDefineCode.CONNECT_FAIL).getEncodedMessage());
+							}
 						}
 
 						mConnectorInfoMap.remove(channelId);
@@ -1403,5 +1447,15 @@ public class AuctionServer {
 		mLogger.info("responseWebSocketConnection ResponseConnectionInfo : " + responseConnectionInfo.getEncodedMessage());
 		
 		mSocketIOHandler.connectWebBidderClient(client, connectionInfo, responseConnectionInfo);
+	}
+	
+	public void initAuctionStatusTransmit(AuctionStatus auctionStatus) {
+		if (mStandChannelsMap != null) {
+			if (mStandChannelsMap.containsKey(auctionStatus.getAuctionHouseCode())) {
+				if (mStandChannelsMap.get(auctionStatus.getAuctionHouseCode()).size() > 0) {
+					mStandChannelsMap.get(auctionStatus.getAuctionHouseCode()).writeAndFlush(auctionStatus.getEncodedMessage() + "\r\n");
+				}
+			}
+		}
 	}
 }

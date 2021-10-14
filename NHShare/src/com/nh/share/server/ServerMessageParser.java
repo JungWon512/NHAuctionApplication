@@ -1,6 +1,7 @@
 package com.nh.share.server;
 
 import com.nh.share.server.interfaces.FromAuctionServer;
+import com.nh.share.server.models.AuctionBidStatus;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;

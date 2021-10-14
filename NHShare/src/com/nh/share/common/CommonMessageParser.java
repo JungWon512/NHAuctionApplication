@@ -15,6 +15,7 @@ import com.nh.share.common.models.RequestLogout;
 import com.nh.share.common.models.ResponseBiddingInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
+import com.nh.share.server.models.AuctionBidStatus;
 import com.nh.share.setting.AuctionShareSetting;
 
 /**
@@ -56,6 +57,8 @@ public class CommonMessageParser {
 			return new AuctionType(messages[1], messages[2]); // 경매 유형 코드 전송
 		case RequestLogout.TYPE: // 로그아웃 처리 요청
 			return new RequestLogout(messages[1], messages[2], messages[3], messages[4]);
+		case AuctionBidStatus.TYPE: // 경매 응찰 상태 전송
+			return new AuctionBidStatus(messages[1], messages[2], messages[3]);
 		default:
 			return null;
 		}

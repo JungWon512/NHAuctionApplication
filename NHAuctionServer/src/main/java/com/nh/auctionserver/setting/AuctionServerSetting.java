@@ -15,7 +15,7 @@ public class AuctionServerSetting {
     // 경매 서버 접속 세션 확인 간
     // public static final int AUCTION_SERVER_READ_CHECK_SESSION_TIME = 600; //
     // 600초(10분)(관전자에 한해서 Read Time 적용)
-    public static final int AUCTION_SERVER_READ_CHECK_SESSION_TIME = 60; // 10초(모든 접속자에 한해서 Read Time 적용)
+    public static final int AUCTION_SERVER_READ_CHECK_SESSION_TIME = 10; // 10초(모든 접속자에 한해서 Read Time 적용)
     public static final int AUCTION_SERVER_WRITE_CHECK_SESSION_TIME = 30; // 30초
 
     public static long COUNT_DOWN_DELAY_TIME = 1000; // 경매 카운트 다운 간격 시간(ms)

@@ -8,6 +8,7 @@ import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.server.models.AuctionBidStatus;
 
 public class AuctionState {
 	private final Logger mLogger = LoggerFactory.getLogger(AuctionState.class);
@@ -54,8 +55,13 @@ public class AuctionState {
 	// 현재 출품 차량 정보
 	private EntryInfo mCurrentEntryInfo;
 
+	// 현재 응찰 종료 상태
+	private AuctionBidStatus mAuctionBidStatus;
 	// 거점코드
 	private String mAuctionHouseCode;
+	
+	// 출하안내시스템접속상태
+	private boolean mIsStandConnect = false;
 
 	public AuctionState(String auctionHouseCode) {
 		mAuctionHouseCode = auctionHouseCode;
@@ -526,5 +532,21 @@ public class AuctionState {
 
 	public void setRetryTargetInfo(RetryTargetInfo retryTargetInfo) {
 		mRetryTargetInfo = retryTargetInfo;
+	}
+	
+	public AuctionBidStatus getAuctionBidStatus() {
+		return mAuctionBidStatus;
+	}
+	
+	public void setAuctionBidStatus(AuctionBidStatus auctionBidStatus) {
+		mAuctionBidStatus = auctionBidStatus;
+	}
+	
+	public boolean getIsStandConnect() {
+		return mIsStandConnect;
+	}
+	
+	public void setIsStandConnect(boolean isStandConnect) {
+		mIsStandConnect = isStandConnect;
 	}
 }

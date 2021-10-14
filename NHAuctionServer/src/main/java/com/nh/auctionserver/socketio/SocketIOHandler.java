@@ -35,6 +35,7 @@ import com.nh.share.common.models.RequestLogout;
 import com.nh.share.common.models.ResponseBiddingInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
+import com.nh.share.server.models.AuctionBidStatus;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
@@ -45,6 +46,7 @@ import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 import com.nh.share.utils.JwtCertTokenUtils;
 
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -266,13 +268,77 @@ public class SocketIOHandler {
 				if (mBidderChannelClientMap.get(connectionInfo.getAuctionHouseCode()) != null) {
 					if (mBidderChannelClientMap.get(connectionInfo.getAuctionHouseCode())
 							.containsKey(client.getSessionId()) || mConnectorInfoMap.containsValue(connectionInfo)) {
-						client.sendEvent("ResponseConnectionInfo",
-								new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-										GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
+						
+						try {
+							// 이미 접속한 사용자 있을 경우 먼저 로그인 된 사용자를 접속 해제 처리하고 후에 로그인 한 사용자를 등록 처리
+							if (mConnectorChannelInfoMap.containsKey(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()))) {
+								Object clientObject = mConnectorChannelInfoMap.get(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()));
+								if (clientObject instanceof SocketIOClient) {
+									SocketIOClient disconnectClient = (SocketIOClient) clientObject;
+									
+									if (mConnectorInfoMap.containsKey(disconnectClient.getSessionId())) {
+										mConnectorInfoMap.remove(disconnectClient.getSessionId());
+									}
+									
+									if (mBidderChannelClientMap.containsKey(connectionInfo.getAuctionHouseCode())) {
+										if (mBidderChannelClientMap.get(connectionInfo.getAuctionHouseCode()).containsKey(disconnectClient.getSessionId())) {
+											mBidderChannelClientMap.get(connectionInfo.getAuctionHouseCode()).remove(disconnectClient.getSessionId());
+										}
+									}
+									
+									mConnectorChannelInfoMap.remove(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()));
+									
+									disconnectClient.disconnect();
+									
+									if (mControllerChannelsMap != null
+											&& mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode())
+											&& mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {
+										mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode())
+												.writeAndFlush(connectionInfo.getEncodedMessage() + "\r\n");
 
-						client.disconnect();
+										// Connector에 채널 아이디 등록 처리
+										if (!mConnectorInfoMap.containsKey(client.getSessionId())
+												&& !mConnectorInfoMap.containsValue(connectionInfo)) {
+											mConnectorInfoMap.put(client.getSessionId(), connectionInfo);
 
-						return;
+											// Connector Channel Map 등록
+											try {
+												mConnectorChannelInfoMap.put(
+														JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
+														client);
+											} catch (Exception e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+										}
+									} else if (clientObject instanceof ChannelHandlerContext) {
+										client.sendEvent("ResponseConnectionInfo",
+												new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+														GlobalDefineCode.CONNECT_CONTROLLER_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
+										client.disconnect();
+									}
+								} else {
+									client.sendEvent("ResponseConnectionInfo",
+											new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+													GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA,
+													GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
+
+									client.disconnect();
+
+									return;
+								}
+							}
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
+						
+//						client.sendEvent("ResponseConnectionInfo",
+//								new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+//										GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
+//
+//						client.disconnect();
+//
+//						return;
 					}
 				}
 
@@ -340,6 +406,15 @@ public class SocketIOHandler {
 								client.sendEvent("AuctionStatus",
 										mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
 												.getAuctionStatus().getEncodedMessage());
+								
+								if (mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getRetryTargetInfo() != null) {
+									client.sendEvent("RetryTargetInfo",mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getRetryTargetInfo().getEncodedMessage() + "\r\n");
+								}
+								
+								if (!mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+										.equals(GlobalDefineCode.AUCTION_STATUS_READY) && mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getAuctionBidStatus() != null) {
+									client.sendEvent("AuctionBidStatus", mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getAuctionBidStatus().getEncodedMessage() + "\r\n");
+								}
 							}
 						}
 					} else {
@@ -879,6 +954,9 @@ public class SocketIOHandler {
 			case RetryTargetInfo.TYPE: // 재경매 대상 정보 전송
 				result = new RetryTargetInfo(messages[1], messages[2], messages[3]);
 				break;
+			case AuctionBidStatus.TYPE: // 경매 응찰 종료 상태 전송
+				result = new AuctionBidStatus(messages[1], messages[2], messages[3]);
+				break;
 			default:
 				result = null;
 				break;
@@ -956,6 +1034,11 @@ public class SocketIOHandler {
 								if (mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getRetryTargetInfo() != null) {
 									client.sendEvent("RetryTargetInfo", mAuctioneer.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getRetryTargetInfo().getEncodedMessage());
 								}
+								
+								if (!mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+										.equals(GlobalDefineCode.AUCTION_STATUS_READY) && mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getAuctionBidStatus() != null) {
+									client.sendEvent("AuctionBidStatus", mAuctioneer.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getAuctionBidStatus().getEncodedMessage());
+								}
 							}
 						}
 					} else {
@@ -963,13 +1046,14 @@ public class SocketIOHandler {
 								GlobalDefineCode.CONNECT_ETC_ERROR, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
 						client.disconnect();
 					}
-				} else {
-					client.sendEvent("ResponseConnectionInfo",
-							new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
-									GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
-
-					client.disconnect();
-				}
+				} /*
+					 * else { client.sendEvent("ResponseConnectionInfo", new
+					 * ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
+					 * GlobalDefineCode.CONNECT_DUPLICATE, GlobalDefineCode.EMPTY_DATA,
+					 * GlobalDefineCode.EMPTY_DATA).getEncodedMessage());
+					 * 
+					 * client.disconnect(); }
+					 */
 			} else {
 				Map<UUID, SocketIOClient> clientMap = new ConcurrentHashMap<>();
 				clientMap.put(client.getSessionId(), client);
@@ -1345,6 +1429,26 @@ public class SocketIOHandler {
 							.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).keySet()) {
 						mConnectorChannelClientMap.get(((RetryTargetInfo) parseObject).getAuctionHouseCode()).get(uuid)
 								.sendEvent("RetryTargetInfo", message);
+					}
+				}
+			}
+		} else if (parseObject instanceof AuctionBidStatus) {
+			if (mBidderChannelClientMap.containsKey(((AuctionBidStatus) parseObject).getAuctionHouseCode())) {
+				if (mBidderChannelClientMap.get(((AuctionBidStatus) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mBidderChannelClientMap.get(((AuctionBidStatus) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mBidderChannelClientMap.get(((AuctionBidStatus) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("AuctionBidStatus", message);
+					}
+				}
+			}
+			
+			if (mWatchChannelClientMap.containsKey(((AuctionBidStatus) parseObject).getAuctionHouseCode())) {
+				if (mWatchChannelClientMap.get(((AuctionBidStatus) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mWatchChannelClientMap.get(((AuctionBidStatus) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mWatchChannelClientMap.get(((AuctionBidStatus) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("AuctionBidStatus", message);
 					}
 				}
 			}
