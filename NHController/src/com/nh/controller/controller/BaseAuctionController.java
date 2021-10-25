@@ -914,8 +914,21 @@ public abstract class BaseAuctionController implements NettyControllable {
 				auctionResult.setSuccessBidUpr("0");
 			}
 
+			EntryInfo entryInfoResult = new EntryInfo();
+			entryInfoResult.setAuctionHouseCode(auctionResult.getAuctionHouseCode());
+			entryInfoResult.setAucDt(auctionResult.getAucDt());
+			entryInfoResult.setEntryType(auctionResult.getEntryType());
+			entryInfoResult.setOslpNo(auctionResult.getOslpNo());
+			entryInfoResult.setLedSqno(auctionResult.getLedSqno());
+			entryInfoResult.setAuctionBidPrice(Integer.parseInt(auctionResult.getSuccessBidPrice()));
+			entryInfoResult.setSraSbidUpPrice(Integer.parseInt(auctionResult.getSuccessBidUpr()));
+			entryInfoResult.setAuctionSucBidder(auctionResult.getSuccessAuctionJoinNum());
+			entryInfoResult.setTrmnAmnNo(auctionResult.getSuccessBidder());
+			entryInfoResult.setAuctionResult(auctionResult.getResultCode());
+			entryInfoResult.setLsCmeNo(auctionResult.getLsCmeNo());
+
 			// 경매 결과 DB 저장
-			int resultValue = EntryInfoMapperService.getInstance().updateAuctionResult(auctionResult);
+			int resultValue = EntryInfoMapperService.getInstance().updateAuctionResult(entryInfoResult);
 
 			// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
 			if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
@@ -965,196 +978,18 @@ public abstract class BaseAuctionController implements NettyControllable {
 					}
 				});
 
-				// 로그 파일 저장
+				/* 로그 파일 저장 - 사용 안함
 				if (bidder != null && bidder.getAuctionJoinNum() != null) {
 					runWriteLogFile(mAuctionStatus, isSuccess, bidder.getAuctionJoinNum().getValue());
 				} else {
 					runWriteLogFile(mAuctionStatus, isSuccess, "");
-				}
+				}*/
 
 				// 낙유찰 결과 전송
 				addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
 
-				// 수수료 삭제
-				FeeImpsData deleteFeeImpsData = new FeeImpsData();
-				deleteFeeImpsData.setNaBzplc(auctionResult.getAuctionHouseCode());
-				deleteFeeImpsData.setAucObjDsc(auctionResult.getEntryType());
-				deleteFeeImpsData.setAucDt(auctionResult.getAucDt());
-				deleteFeeImpsData.setOslpNo(auctionResult.getOslpNo());
-				deleteFeeImpsData.setLedSqNo(auctionResult.getLedSqno());
-				
-				// 수수료 내역 삭제
-				int deleteResult = EntryInfoMapperService.getInstance().deleteFeeImps(deleteFeeImpsData);
-				mLogger.debug("[수수료 삭제] " + deleteResult);
-
-				if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
-					// 낙찰자 조합 확인.
-					String macoYn = ConnectionInfoMapperService.getInstance().selectMacoYn(bidder.getUserNo().getValue());
-
-					List<FeeImpsData> feeImpsDataList = new ArrayList<FeeImpsData>();
-
-					// 수수료
-					for (FeeData objFee : GlobalDefine.AUCTION_INFO.feeData) {
-
-						FeeImpsData feeData = new FeeImpsData();
-						feeData.setNaBzplc(auctionResult.getAuctionHouseCode());
-						feeData.setAucObjDsc(auctionResult.getEntryType());
-						feeData.setAucDt(auctionResult.getAucDt());
-						feeData.setOslpNo(auctionResult.getOslpNo());
-						feeData.setLedSqNo(auctionResult.getLedSqno());
-
-						feeData.setFeeRgSqno(objFee.getFeeRgSqno());
-						feeData.setAplDt(objFee.getAplDt());
-						feeData.setNaFee_c(objFee.getNaFee_c());
-						feeData.setFeeAplObj_c(objFee.getFeeAplObj_c());
-						feeData.setAnsDsc(objFee.getAnsDsc());
-						feeData.setsBidYn(objFee.getSbidYn());
-						feeData.setTmsYn("0");
-
-						//송아지
-						if (auctionResult.getEntryType().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))
-								|| auctionResult.getEntryType().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
-
-							if (objFee.getNaFee_c().equals(GlobalDefine.AUCTION_INFO.AUCTION_FEE_CODE_120)) {
-								
-								// 낙찰자 조합원/비조합원
-								if (macoYn.equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
-									feeData.setSraTrFee(objFee.getNmacoFeeUpr());
-								} else {
-									feeData.setSraTrFee(objFee.getMacoFeeUpr());
-								}
-
-							} else {
-								//운송비 불낙
-								if(objFee.getFeeRgSqno().equals("3") && objFee.getSbidYn().equals("0")) {
-									feeData.setSraTrFee(0);
-								}else {
-									
-									//운솓비 - 낙찰
-									if(objFee.getFeeRgSqno().equals("4") && objFee.getSbidYn().equals("1")) {
-										
-										if(spEntryInfo.getTrpcsPyYn().getValue().equals("0")) {
-											// 출하주 조합원/비조합원
-											if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
-												feeData.setSraTrFee(objFee.getNmacoFeeUpr());
-											} else {
-												// 조합원
-												feeData.setSraTrFee(objFee.getMacoFeeUpr());
-											}
-										}else {
-											mLogger.debug("[@@@@@@@@@ TrpcsPyYn ] ");
-											feeData.setSraTrFee(0);
-										}
-										
-									}else {
-										//운송비 제외 코드
-										if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
-											feeData.setSraTrFee(objFee.getNmacoFeeUpr());
-										} else {
-											// 조합원
-											feeData.setSraTrFee(objFee.getMacoFeeUpr());
-										}
-									}
-								}
-							}
-							
-						} else {
-							//번식우 --------------------------------------------------------------------------------------------------------
-
-							//낙찰자 
-							if (objFee.getNaFee_c().equals(GlobalDefine.AUCTION_INFO.AUCTION_FEE_CODE_OJB_3_011)) {
-
-								if(spEntryInfo.getPpgcowFeeDsc().getValue().equals(objFee.getPpgcowFeeDsc())) {
-									// 조합원/비조합원
-									if (macoYn.equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
-										feeData.setSraTrFee(objFee.getNmacoFeeUpr());
-									}else {
-										feeData.setSraTrFee(objFee.getMacoFeeUpr());
-									}
-								}else {
-									feeData.setSraTrFee(0);
-								}
-								
-							}else {
-								//출하자
-
-								if(objFee.getFeeRgSqno().equals("4") && objFee.getSbidYn().equals("0")) {
-									feeData.setSraTrFee(0);
-								}else {
-									
-									if(objFee.getFeeRgSqno().equals("3") && objFee.getSbidYn().equals("1")) {
-										
-										if(spEntryInfo.getTrpcsPyYn().getValue().equals("0")) {
-											// 출하주 조합원/비조합원
-											if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
-												feeData.setSraTrFee(objFee.getNmacoFeeUpr());
-											} else {
-												// 조합원
-												feeData.setSraTrFee(objFee.getMacoFeeUpr());
-											}
-										}else {
-											feeData.setSraTrFee(0);
-										}
-										
-									}else {
-										//운송비 외
-										if(feeData.getNaFee_c().equals("020")){
-											// 조합원/비조합원
-											if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
-												feeData.setSraTrFee(objFee.getNmacoFeeUpr());
-											}else {
-												feeData.setSraTrFee(objFee.getMacoFeeUpr());
-											}
-										}else {
-											if(spEntryInfo.getPpgcowFeeDsc().getValue().equals(objFee.getPpgcowFeeDsc())) {
-												// 조합원/비조합원
-												if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
-													feeData.setSraTrFee(objFee.getNmacoFeeUpr());
-												}else {
-													feeData.setSraTrFee(objFee.getMacoFeeUpr());
-												}
-											}else {
-												feeData.setSraTrFee(0);
-											}
-										}
-									}
-								}
-							}
-						}
-
-						feeImpsDataList.add(feeData);
-					}
-					// 수수료 저장
-					int resultFeeImps = EntryInfoMapperService.getInstance().insertFeeImpsList(feeImpsDataList);
-				 	mLogger.debug("[낙찰 수수료 저장] " + resultFeeImps);
-				}else {
-					List<FeeImpsData> feeImpsDataList = new ArrayList<FeeImpsData>();
-
-					// 수수료
-					for (FeeData objFee : GlobalDefine.AUCTION_INFO.feeData) {
-
-						FeeImpsData feeData = new FeeImpsData();
-						feeData.setNaBzplc(auctionResult.getAuctionHouseCode());
-						feeData.setAucObjDsc(auctionResult.getEntryType());
-						feeData.setAucDt(auctionResult.getAucDt());
-						feeData.setOslpNo(auctionResult.getOslpNo());
-						feeData.setLedSqNo(auctionResult.getLedSqno());
-						feeData.setFeeRgSqno(objFee.getFeeRgSqno());
-						feeData.setAplDt(objFee.getAplDt());
-						feeData.setNaFee_c(objFee.getNaFee_c());
-						feeData.setFeeAplObj_c(objFee.getFeeAplObj_c());
-						feeData.setAnsDsc(objFee.getAnsDsc());
-						feeData.setsBidYn(objFee.getSbidYn());
-						feeData.setTmsYn("0");
-						feeData.setSraTrFee(0);
-						feeImpsDataList.add(feeData);
-					}
-
-					//유찰 수수료 저장
-					int resultFeeImps = EntryInfoMapperService.getInstance().insertFeeImpsList(feeImpsDataList);
-				 	mLogger.debug("[유찰 수수료 저장] " + resultFeeImps);
-					
-				}
+				//수수료 저장
+				setFee(spEntryInfo,bidder,auctionResult.getAuctionHouseCode(),auctionResult.getEntryType(),auctionResult.getAucDt(),auctionResult.getOslpNo(),auctionResult.getLedSqno(),code);
 
 				// 낙유찰 결과 UI 업데이트
 				updateAuctionStateInfo(isSuccess, bidder);
@@ -1174,6 +1009,206 @@ public abstract class BaseAuctionController implements NettyControllable {
 			addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
 			break;
 		}
+	}
+	
+	
+	/**
+	 * 수수료 저장
+	 * @param spEntryInfo 현재 출장우
+	 * @param bidder 응찰자
+	 * @param naBzplc 조합코드
+	 * @param aucObjDsc 구분코드
+	 * @param aucDt 경매일
+	 * @param oslpNo  원표번호
+	 * @param ledSqno 원장 일련번호
+	 * @param code 낙유찰결과
+	 */
+	public void setFee(SpEntryInfo spEntryInfo,SpBidding bidder, String naBzplc,String aucObjDsc,String aucDt,String oslpNo,String ledSqno,String code) {
+		
+		if(GlobalDefineCode.FLAG_TEST_MODE) {
+			return;
+		}
+		
+		// 수수료 삭제
+		FeeImpsData deleteFeeImpsData = new FeeImpsData();
+		deleteFeeImpsData.setNaBzplc(naBzplc);
+		deleteFeeImpsData.setAucObjDsc(aucObjDsc);
+		deleteFeeImpsData.setAucDt(aucDt);
+		deleteFeeImpsData.setOslpNo(oslpNo);
+		deleteFeeImpsData.setLedSqNo(ledSqno);
+		
+		// 수수료 내역 삭제
+		int deleteResult = EntryInfoMapperService.getInstance().deleteFeeImps(deleteFeeImpsData);
+		mLogger.debug("[수수료 삭제] " + deleteResult);
+
+		if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
+			// 낙찰자 조합 확인.
+			String macoYn = ConnectionInfoMapperService.getInstance().selectMacoYn(bidder.getUserNo().getValue());
+
+			List<FeeImpsData> feeImpsDataList = new ArrayList<FeeImpsData>();
+
+			// 수수료
+			for (FeeData objFee : GlobalDefine.AUCTION_INFO.feeData) {
+
+				FeeImpsData feeData = new FeeImpsData();
+				feeData.setNaBzplc(naBzplc);
+				feeData.setAucObjDsc(aucObjDsc);
+				feeData.setAucDt(aucDt);
+				feeData.setOslpNo(oslpNo);
+				feeData.setLedSqNo(ledSqno);
+
+				feeData.setFeeRgSqno(objFee.getFeeRgSqno());
+				feeData.setAplDt(objFee.getAplDt());
+				feeData.setNaFee_c(objFee.getNaFee_c());
+				feeData.setFeeAplObj_c(objFee.getFeeAplObj_c());
+				feeData.setAnsDsc(objFee.getAnsDsc());
+				feeData.setsBidYn(objFee.getSbidYn());
+				feeData.setTmsYn("0");
+
+				//송아지
+				if (aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))
+						|| aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+
+					if (objFee.getNaFee_c().equals(GlobalDefine.AUCTION_INFO.AUCTION_FEE_CODE_120)) {
+						
+						// 낙찰자 조합원/비조합원
+						if (macoYn.equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+							feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+						} else {
+							feeData.setSraTrFee(objFee.getMacoFeeUpr());
+						}
+
+					} else {
+						//운송비 불낙
+						if(objFee.getFeeRgSqno().equals("3") && objFee.getSbidYn().equals("0")) {
+							feeData.setSraTrFee(0);
+						}else {
+							
+							//운솓비 - 낙찰
+							if(objFee.getFeeRgSqno().equals("4") && objFee.getSbidYn().equals("1")) {
+								
+								if(spEntryInfo.getTrpcsPyYn().getValue().equals("0")) {
+									// 출하주 조합원/비조합원
+									if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+										feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+									} else {
+										// 조합원
+										feeData.setSraTrFee(objFee.getMacoFeeUpr());
+									}
+								}else {
+									feeData.setSraTrFee(0);
+								}
+								
+							}else {
+								//운송비 제외 코드
+								if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+									feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+								} else {
+									// 조합원
+									feeData.setSraTrFee(objFee.getMacoFeeUpr());
+								}
+							}
+						}
+					}
+					
+				} else {
+					//번식우 --------------------------------------------------------------------------------------------------------
+
+					//낙찰자 
+					if (objFee.getNaFee_c().equals(GlobalDefine.AUCTION_INFO.AUCTION_FEE_CODE_OJB_3_011)) {
+
+						if(spEntryInfo.getPpgcowFeeDsc().getValue().equals(objFee.getPpgcowFeeDsc())) {
+							// 조합원/비조합원
+							if (macoYn.equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+								feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+							}else {
+								feeData.setSraTrFee(objFee.getMacoFeeUpr());
+							}
+						}else {
+							feeData.setSraTrFee(0);
+						}
+						
+					}else {
+						//출하자
+
+						if(objFee.getFeeRgSqno().equals("4") && objFee.getSbidYn().equals("0")) {
+							feeData.setSraTrFee(0);
+						}else {
+							
+							if(objFee.getFeeRgSqno().equals("3") && objFee.getSbidYn().equals("1")) {
+								
+								if(spEntryInfo.getTrpcsPyYn().getValue().equals("0")) {
+									// 출하주 조합원/비조합원
+									if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+										feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+									} else {
+										// 조합원
+										feeData.setSraTrFee(objFee.getMacoFeeUpr());
+									}
+								}else {
+									feeData.setSraTrFee(0);
+								}
+								
+							}else {
+								//운송비 외
+								if(feeData.getNaFee_c().equals("020")){
+									// 조합원/비조합원
+									if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+										feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+									}else {
+										feeData.setSraTrFee(objFee.getMacoFeeUpr());
+									}
+								}else {
+									if(spEntryInfo.getPpgcowFeeDsc().getValue().equals(objFee.getPpgcowFeeDsc())) {
+										// 조합원/비조합원
+										if (spEntryInfo.getMacoYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_MACO_0)) {
+											feeData.setSraTrFee(objFee.getNmacoFeeUpr());
+										}else {
+											feeData.setSraTrFee(objFee.getMacoFeeUpr());
+										}
+									}else {
+										feeData.setSraTrFee(0);
+									}
+								}
+							}
+						}
+					}
+				}
+
+				feeImpsDataList.add(feeData);
+			}
+			// 수수료 저장
+			int resultFeeImps = EntryInfoMapperService.getInstance().insertFeeImpsList(feeImpsDataList);
+		 	mLogger.debug("[낙찰 수수료 저장] " + resultFeeImps);
+		}else {
+			List<FeeImpsData> feeImpsDataList = new ArrayList<FeeImpsData>();
+
+			// 수수료
+			for (FeeData objFee : GlobalDefine.AUCTION_INFO.feeData) {
+
+				FeeImpsData feeData = new FeeImpsData();
+				feeData.setNaBzplc(naBzplc);
+				feeData.setAucObjDsc(aucObjDsc);
+				feeData.setAucDt(aucDt);
+				feeData.setOslpNo(oslpNo);
+				feeData.setLedSqNo(ledSqno);
+				feeData.setFeeRgSqno(objFee.getFeeRgSqno());
+				feeData.setAplDt(objFee.getAplDt());
+				feeData.setNaFee_c(objFee.getNaFee_c());
+				feeData.setFeeAplObj_c(objFee.getFeeAplObj_c());
+				feeData.setAnsDsc(objFee.getAnsDsc());
+				feeData.setsBidYn(objFee.getSbidYn());
+				feeData.setTmsYn("0");
+				feeData.setSraTrFee(0);
+				feeImpsDataList.add(feeData);
+			}
+
+			//유찰 수수료 저장
+			int resultFeeImps = EntryInfoMapperService.getInstance().insertFeeImpsList(feeImpsDataList);
+		 	mLogger.debug("[유찰 수수료 저장] " + resultFeeImps);
+			
+		}
+		
 	}
 
 	abstract void onCancelOrClose();

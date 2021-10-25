@@ -16,11 +16,6 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineListener;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +31,6 @@ import com.google.cloud.texttospeech.v1.SynthesizeSpeechResponse;
 import com.google.cloud.texttospeech.v1.TextToSpeechClient;
 import com.google.cloud.texttospeech.v1.TextToSpeechSettings;
 import com.google.cloud.texttospeech.v1.VoiceSelectionParams;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -84,7 +78,6 @@ public class SoundUtil {
     private String mDefinePrevKey = "";
     private TTSNowRunnable mTTSNowRunnable;
     private TTSDefineRunnable mTTSDefineRunnable;
-    public LocalSoundDefineRunnable mLocalSoundDefineRunnable;
 
     public SoundUtil() {
         try {
@@ -100,7 +93,6 @@ public class SoundUtil {
 
             mTTSNowRunnable = new TTSNowRunnable(params, config);
             mTTSDefineRunnable = new TTSDefineRunnable(params, config);
-            mLocalSoundDefineRunnable = new LocalSoundDefineRunnable();
             initCertification(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, ""));
         } catch (Exception ex) {
             mLogger.error("Init Error " + ex.getMessage());
@@ -295,32 +287,6 @@ public class SoundUtil {
     		}
         }
     }
-
-
-    /**
-     * 경매 시작,카운트다운,정지 재생 처리 함수
-     *
-     * @param type
-     * @param lineListener
-     */
-    public void playLocalSound(LocalSoundDefineRunnable.LocalSoundType type, LineListener lineListener) {
-    	mLogger.debug("mLocalSoundDefineRunnable : " + mLocalSoundDefineRunnable);
-    	
-    	// 경매 시작음은 다른 TTS음성과 겹치도록 수정 적용(AS-IS 동일 적용)
-        //stopSound();
-        mLocalSoundDefineRunnable.play(type, lineListener);
-    }
-    
-    /**
-     * 경매 시작,카운트다운,정지 정지 처리 함수
-     *
-     * @param type
-     * @param lineListener
-     */
-    public void stopLocalSound() {
-    	mLocalSoundDefineRunnable.stop();
-    }
-    
 
     /**
      * 음성 정지
@@ -622,76 +588,5 @@ public class SoundUtil {
             SynthesizeSpeechResponse response = mClient.synthesizeSpeech(input, mParams, mAudioConfig);
             return new ByteArrayInputStream(response.getAudioContent().toByteArray());
         }
-    }
-
-
-    /**
-     * wav 파일 재생.
-     *
-     * @author jhlee
-     */
-    public static class LocalSoundDefineRunnable {
-
-        private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-        private final ExecutorService mWorkThread = Executors.newCachedThreadPool();
-        private Clip mClip;
-
-        public enum LocalSoundType {
-            START,
-            END,
-            DING
-        }
-
-        public void play(LocalSoundType type, LineListener listener) {
-            try {
-
-                mClip = AudioSystem.getClip();
-
-                AudioInputStream mEdasstart = AudioSystem.getAudioInputStream(this.getClass().getResource(GlobalDefine.FILE_INFO.LOCAL_SOUND_START));
-                AudioInputStream mEdasend = AudioSystem.getAudioInputStream(this.getClass().getResource(GlobalDefine.FILE_INFO.LOCAL_SOUND_END));
-                AudioInputStream mDing = AudioSystem.getAudioInputStream(this.getClass().getResource(GlobalDefine.FILE_INFO.LOCAL_SOUND_DING));
-
-                if (type.equals(LocalSoundType.START)) {
-                    mClip.open(mEdasstart);
-                } else if (type.equals(LocalSoundType.END)) {
-                    mClip.open(mEdasend);
-                } else if (type.equals(LocalSoundType.DING)) {
-                    mClip.open(mDing);
-                }
-
-                if (mClip != null && listener != null) {
-                    mClip.addLineListener(listener);
-                }
-
-                mWorkThread.submit(() -> {
-                    try {
-                        mClip.start();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
-
-            } catch (Exception ex) {
-                mLogger.error("Run " + ex);
-            }
-        }
-
-        /**
-         * 재생중인 Audio Clip Close 처리 함수
-         *
-         * @author jhlee
-         */
-        public synchronized void stop() {
-            try {
-                if (mClip != null) {
-                    mClip.close();
-                    mClip = null;
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                mLogger.error("Stop Error " + ex.getMessage());
-            }
-        }
-
     }
 }

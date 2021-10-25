@@ -83,51 +83,51 @@
   
 	<!-- tb_la_is_mm_indv -->
 	<sql id="indvColumn">
-		${alias}.NA_BZPLC,
-		${alias}.SRA_INDV_AMNNO,
-		${alias}.SRA_SRS_DSC,
-		${alias}.FHS_ID_NO,
-		${alias}.FARM_AMNNO,
-		${alias}.BIRTH,
-		ltrim(rtrim(${alias}.KPN_NO)) as KPN_NO,
-		${alias}.INDV_SEX_C,
-		${alias}.MCOW_SRA_INDV_AMNNO,
-		${alias}.MATIME,
-		${alias}.SRA_INDV_PASG_QCN,
-		${alias}.INDV_ID_NO,
-		${alias}.SRA_INDV_BRDSRA_RG_NO,
-		${alias}.RG_DSC,
-		${alias}.ANW_YN,
+		${alias}.NA_BZPLC,							<!--	경제통합사업장코드				-->
+		${alias}.SRA_INDV_AMNNO,					<!--	축산개체관리번호 				-->
+		${alias}.SRA_SRS_DSC,						<!--	축산축종구분코드					-->
+		${alias}.FHS_ID_NO,							<!-- 	농가식별번호					-->
+		${alias}.FARM_AMNNO,						<!-- 	농장관리번호					-->
+		${alias}.BIRTH,								<!-- 	생년월일						-->
+		ltrim(rtrim(${alias}.KPN_NO)) as KPN_NO,	<!--	KPN번호						-->
+		${alias}.INDV_SEX_C,						<!--	축산개체성별코드					-->
+		${alias}.MCOW_SRA_INDV_AMNNO,				<!--	어미소축산개체관리번호				-->
+		${alias}.MATIME,							<!-- 	산차							-->
+		${alias}.SRA_INDV_PASG_QCN,					<!-- 	계대							-->
+		${alias}.INDV_ID_NO,						<!-- 	개체식별번호					-->
+		${alias}.SRA_INDV_BRDSRA_RG_NO,				<!--	축산개체종축등록번호				-->
+		${alias}.RG_DSC,							<!-- 	등록구분코드					-->
+		${alias}.ANW_YN,							<!-- 	신규여부(데이터전환시 구데이터인지)	-->
 		CASE WHEN ${alias}.INDV_SEX_C = '0' THEN '없음'	WHEN ${alias}.INDV_SEX_C = '1' THEN '암'
 		WHEN ${alias}.INDV_SEX_C = '2' THEN '수'			WHEN ${alias}.INDV_SEX_C = '3' THEN '거세'
 		WHEN ${alias}.INDV_SEX_C = '4' THEN '미경산'		WHEN ${alias}.INDV_SEX_C = '5' THEN '비거세'
-		WHEN ${alias}.INDV_SEX_C = '6' THEN '프리마틴'		WHEN ${alias}.INDV_SEX_C = '9' THEN '공통' END INDV_SEX_C_NAME
+		WHEN ${alias}.INDV_SEX_C = '6' THEN '프리마틴'		WHEN ${alias}.INDV_SEX_C = '9' THEN '공통' END INDV_SEX_C_NAME	<!-- 	성별 문자열		-->
 	</sql>
 
 	<!-- tb_la_is_mh_sog_cow -->
 	<sql id="sogCowColumn">
-		${alias}.NA_BZPLC,
-		${alias}.AUC_PRG_SQ,
-		${alias}.COW_SOG_WT,
-		${alias}.AUC_OBJ_DSC,
-		${alias}.FIR_LOWS_SBID_LMT_AM / #{divisionPrice} AS FIR_LOWS_SBID_LMT_AM,
-		${alias}.LOWS_SBID_LMT_AM / #{divisionPrice} AS LOWS_SBID_LMT_AM,
-		${alias}.SRA_SBID_AM / #{divisionPrice} AS SRA_SBID_AM,
-		${alias}.SRA_SBID_UPR,
-		${alias}.RMK_CNTN,
-		${alias}.BRANDNM,
-		${alias}.PRNY_MTCN,
-		${alias}.AUC_DT,
-		REPLACE(REPLACE(REPLACE(CONVERT(varchar,A.LSCHG_DTM,20),'-',''),' ',''),':','') as LSCHG_DTM,
-		${alias}.LS_CMENO,
-		${alias}.SEL_STS_DSC,
-		${alias}.LWPR_CHG_NT,
-		${alias}.LVST_AUC_PTC_MN_NO,
-		${alias}.DNA_YN,
-		${alias}.SRA_PD_RGNNM,
-		${alias}.OSLP_NO,
-		${alias}.TRMN_AMNNO,
-		${alias}.LED_SQNO,
+		${alias}.NA_BZPLC,																				<!--	경제통합사업장코드 	-->
+		${alias}.AUC_PRG_SQ,																			<!--	경매진행순서 		-->
+		${alias}.COW_SOG_WT,																			<!--	우출하중량 			-->
+		${alias}.AUC_OBJ_DSC,																			<!--	경매대상구분코드		-->
+		${alias}.FIR_LOWS_SBID_LMT_AM / #{divisionPrice} AS FIR_LOWS_SBID_LMT_AM,						<!--	최초최저낙찰한도금액	-->
+		${alias}.LOWS_SBID_LMT_AM / #{divisionPrice} AS LOWS_SBID_LMT_AM,								<!--	최저낙찰한도금액		-->
+		${alias}.SRA_SBID_AM / #{divisionPrice} AS SRA_SBID_AM,											<!--	축산낙찰금액		-->
+		${alias}.SRA_SBID_UPR,																			<!--	낙찰 단가			-->
+		${alias}.RMK_CNTN,																				<!--	비고 내용			-->
+		${alias}.BRANDNM,																				<!--	브랜드명			-->
+		${alias}.PRNY_MTCN,																				<!--	임신개월수			-->
+		${alias}.AUC_DT,																				<!--	경매일자			-->
+		REPLACE(REPLACE(REPLACE(CONVERT(varchar,A.LSCHG_DTM,20),'-',''),' ',''),':','') as LSCHG_DTM,	<!--	최종변경일시		-->
+		${alias}.LS_CMENO,																				<!--	최종변경자개인번호	-->
+		${alias}.SEL_STS_DSC,																			<!--	판매상태구분코드		-->
+		${alias}.LWPR_CHG_NT,																			<!--	최저가변경횟수		-->
+		${alias}.LVST_AUC_PTC_MN_NO,																	<!--	가축경매참여자번호	-->
+		${alias}.DNA_YN,																				<!--	DNA				-->
+		${alias}.SRA_PD_RGNNM,																			<!--	축산생산지역명		-->
+		${alias}.OSLP_NO,																				<!--	원표번호			-->
+		${alias}.TRMN_AMNNO,																			<!--	거래인관리번호		-->
+		${alias}.LED_SQNO,																				<!--	원장일련번호		-->
 		(SELECT TOP 1 E.ATDR_DTM 
 			FROM TB_LA_IS_MH_ATDR_LOG E
 			WHERE E.NA_BZPLC = ${alias}.NA_BZPLC
@@ -137,26 +137,26 @@
 				AND E.TRMN_AMNNO = ${alias}.TRMN_AMNNO
 				AND E.LVST_AUC_PTC_MN_NO = ${alias}.LVST_AUC_PTC_MN_NO
 				AND E.ATDR_AM = ${alias}.SRA_SBID_UPR
-		 ) AS ATDR_DTM,
-		 ${alias}.TRPCS_PY_YN,
-		${alias}.PPGCOW_FEE_DSC,
-		${alias}.AUC_PRG_SQ as STAND_POSITION,
-		'N' as IS_EXCESS_COW
+		 ) AS ATDR_DTM,																					<!--	응찰일시			-->
+		 ${alias}.TRPCS_PY_YN,																			<!--	운송비지급여부		-->
+		${alias}.PPGCOW_FEE_DSC,																		<!--	번식우수수료구분코드	-->
+		${alias}.AUC_PRG_SQ as STAND_POSITION,															<!--	계류대번호			-->
+		'N' as IS_EXCESS_COW																			<!--	계류대번호 플래그	-->
 	</sql>
 
 	<!-- tb_la_is_mm_fhs -->
 	<sql id="fhsColumn">
-		${alias}.FTSNM,
-		${alias}.MACO_YN
+		${alias}.FTSNM,					<!--	농가명	-->
+		${alias}.MACO_YN				<!--	조합원여부	-->
 	</sql>
 
 	<sql id="aplColumn">
-		${alias}.SIMP_C,
-		${alias}.SIMP_CNM AS MCOW_DSC
+		${alias}.SIMP_C,				<!--	혈통코드	-->
+		${alias}.SIMP_CNM AS MCOW_DSC	<!--	혈통명	-->
 	</sql>
 	
 	<sql id="qcnColumn">
-		${alias}.QCN
+		${alias}.QCN					<!--	차수	-->
 	</sql>
 	
 
@@ -335,13 +335,13 @@
     </update>
 
 	<!-- 경매 결과 업데이트-->
-	<update id="updateAuctionResult" parameterType="AuctionResult">
+	<update id="updateAuctionResult" parameterType="EntryInfo">
 		UPDATE	TB_LA_IS_MH_SOG_COW
-		   SET	SRA_SBID_AM		= #{mSuccessBidPrice},
-		  		SRA_SBID_UPR	= #{mSuccessBidUpr},
-		  		LVST_AUC_PTC_MN_NO = #{mSuccessAuctionJoinNum},
-		  		TRMN_AMNNO	= #{mSuccessBidder},
-		   		SEL_STS_DSC	= #{mResultCode},
+		   SET	SRA_SBID_AM		= #{mAuctionBidPrice},
+		  		SRA_SBID_UPR	= #{mSraSbidUpPrice},
+		  		LVST_AUC_PTC_MN_NO = #{mAuctionSucBidder},
+		  		TRMN_AMNNO	= #{mTrmnAmnNo},
+		   		SEL_STS_DSC	= #{mAuctionResult},
 		   		LSCHG_DTM	= GETDATE(),
 		   		LS_CMENO	= #{mLsCmeNo}
 		 WHERE	NA_BZPLC	= #{mAuctionHouseCode}
@@ -349,6 +349,7 @@
 		   AND	AUC_OBJ_DSC	= #{mEntryType}
 		   AND	OSLP_NO		= #{mOslpNo}
 		   AND	LED_SQNO	= #{mLedSqno}
+		   
     </update>
 
 	<!-- 응찰 내역 카운트-->
@@ -360,7 +361,6 @@
 		AND AUC_OBJ_DSC = #{aucObjDsc}
 		AND OSLP_NO = #{oslpNo}
 		AND RG_SQNO = #{rgSqno}
-
 	</select>
 	
 	<!-- 다음 응찰 RG_SQNO-->
@@ -421,27 +421,7 @@
 			AND		LED_SQNO		= #{ledSqNo}
 	</delete>
 
-	<!-- 다시 계산 하여 수수료 부과내역 저장-->
-	<insert id="insertFeeImps" parameterType="FeeImpsData">
-	
-		INSERT INTO TB_LA_IS_MH_FEE_IMPS VALUES (
-			#{naBzplc},
-			#{aucObjDsc},
-			#{aucDt},
-			#{oslpNo},
-			#{ledSqNo},
-			#{feeRgSqno},
-			#{aplDt},
-			#{naFee_c},
-			#{feeAplObj_c},
-			#{ansDsc},
-			#{sBidYn},
-			#{sraTrFee},
-			#{tmsYn}
-		)
-	
-	</insert>
-	
+	<!-- 수수료 부과내역 저장-->
 	<insert id="insertFeeImpsList" parameterType="FeeImpsData">
 	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
 		INSERT INTO TB_LA_IS_MH_FEE_IMPS VALUES (

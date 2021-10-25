@@ -80,8 +80,8 @@ public class EntryInfoDao {
      * @param session
      * @return
      */
-    public int updateAuctionResult(SendAuctionResult auctionResult,SqlSession session) {
-        return session.update("updateAuctionResult", auctionResult);
+    public int updateAuctionResult(EntryInfo entryInfo,SqlSession session) {
+        return session.update("updateAuctionResult", entryInfo);
     }
     
     /**
@@ -125,16 +125,6 @@ public class EntryInfoDao {
         return session.delete("deleteFeeImps", feeData);
     }
     
-    
-    /**
-     * 수수료 데이터 저장
-     * @param feeData
-     * @param session
-     * @return
-     */
-    public int insertFeeImps(FeeImpsData feeData,SqlSession session) {
-        return session.insert("insertFeeImps", feeData);
-    }
     
     /**
      * 수수료 데이터 저장

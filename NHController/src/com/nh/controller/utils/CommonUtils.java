@@ -295,6 +295,8 @@ public class CommonUtils {
 	 */
 	public synchronized String geDiffDateMonth(String fromDateStr, String toDateStr) {
 
+		String baseVal = "4";
+		
 		String result = "";
 
 		if (!isValidString(toDateStr) || !isValidString(toDateStr)) {
@@ -316,19 +318,26 @@ public class CommonUtils {
 			Date fromDate = format.parse(fromDateStr);
 
 			long baseDay = 24 * 60 * 60 * 1000; // 일
-			long baseMonth = baseDay * 30; // 월
-			long baseYear = baseMonth * 12; // 년
 
 			// from 일자와 to 일자의 시간 차이를 계산한다.
 			long calDate = toDate.getTime() - fromDate.getTime();
 
 			// from 일자와 to 일자의 시간 차 값을 하루기준으로 나눠 준다.
-			long diffDate = calDate / baseDay;
-			long diffMonth = (calDate / baseMonth) + 1;
-			long diffYear = calDate / baseYear;
+			double diffDate = calDate / baseDay + 1;
+//			long diffMonth = (calDate / baseMonth) + 1;
+//			long diffYear = calDate / baseYear;
 
-			result = Long.toString(diffMonth);
-
+			double calDiffDate = diffDate / 30;
+	
+			long roundDate = Math.round(calDiffDate);
+			
+			if(roundDate >= 4) {
+				result = Long.toString(roundDate);
+			}else {
+				result = baseVal;
+			}
+			
+			
 		} catch (Exception e) {
 			System.out.println("[error] : " + e);
 			return result;

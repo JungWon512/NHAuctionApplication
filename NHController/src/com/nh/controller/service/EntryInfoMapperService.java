@@ -203,13 +203,13 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 	}
 
 	@Override
-	public int updateAuctionResult(SendAuctionResult auctionResult) {
+	public int updateAuctionResult(EntryInfo entryInfo) {
 
 		int resultValue = 0;
 
 		try (SqlSession session = DBSessionFactory.getSession()) {
 
-			resultValue = getDao().updateAuctionResult(auctionResult, session);
+			resultValue = getDao().updateAuctionResult(entryInfo, session);
 
 			if (resultValue > 0) {
 				session.commit();
@@ -348,29 +348,6 @@ public class EntryInfoMapperService extends BaseMapperService<EntryInfoDao> impl
 		return resultValue;
 	}
 
-	@Override
-	public int insertFeeImps(FeeImpsData fee) {
-		
-		int resultValue = 0;
-
-		try (SqlSession session = DBSessionFactory.getSession()) {
-
-			resultValue = getDao().insertFeeImps(fee, session);
-
-			if (resultValue > 0) {
-				session.commit();
-			} else {
-				session.rollback();
-			}
-
-		} catch (Exception e) {
-			// exception에 대한 처리 시 사용
-			resultValue = -1;
-		}
-
-		return resultValue;
-	}
-	
 	@Override
 	public int insertFeeImpsList(List<FeeImpsData> feeImpsList) {
 

@@ -24,7 +24,7 @@ import javafx.beans.property.StringProperty;
  * 계체식별번호 | 축산개체종축등록번호 | 등록구분번호 | 신규여부 | 우출하중량 | 최초최저낙찰한도금액 | 최저낙찰한도금액 | 비고내용 |
  * 마지막출품여부
  */
-public class SpEntryInfo implements FromAuctionController {
+public class SpEntryInfo implements FromAuctionController ,Cloneable{
 
     public static final char TYPE = 'I';
 
@@ -684,9 +684,14 @@ public class SpEntryInfo implements FromAuctionController {
         return spEntryInfo.getEntryNum().getValue().equals(getEntryNum().getValue());
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
+    public SpEntryInfo clone() {
+    	SpEntryInfo vo = null;
+		try {
+			vo = (SpEntryInfo) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return vo;		
+	}
 
 }

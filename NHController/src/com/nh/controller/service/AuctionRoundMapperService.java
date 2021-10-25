@@ -42,7 +42,6 @@ public class AuctionRoundMapperService extends BaseMapperService<AuctionRoundDao
 	            return getDao().selectAuctionStnData(auctionStnData, session);
 	        }
 	}
-	
 
 	@Override
 	public AuctionRound obtainAuctionRoundData(AuctionRound auctionRound) {

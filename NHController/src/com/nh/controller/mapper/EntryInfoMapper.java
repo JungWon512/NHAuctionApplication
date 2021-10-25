@@ -65,7 +65,7 @@ public interface EntryInfoMapper {
      * @param entryInfo
      * @return
      */
-    int updateAuctionResult(SendAuctionResult auctionResult); 
+    int updateAuctionResult(EntryInfo entryInfo); 
     
     /**
      * 응찰 내역 저장
@@ -74,12 +74,26 @@ public interface EntryInfoMapper {
      */
     int insertBiddingHistory(AucEntrData aucEntrData); 
    
+    
+    /**
+     * 수수료 기준 정보 조회
+     * @param fee
+     * @return
+     */
     List<FeeData> selectFee(FeeData fee);
     
+    /**
+     * 수수료 내역 삭제
+     * @param fee
+     * @return
+     */
     int deleteFeeImps(FeeImpsData fee);
     
-    int insertFeeImps(FeeImpsData fee);
-    
+    /**
+     * 수수료 내역 저장
+     * @param List
+     * @return
+     */
     int insertFeeImpsList(List<FeeImpsData> feeImpsList);
     
     

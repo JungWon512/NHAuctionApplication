@@ -8,23 +8,23 @@ package com.nh.controller.model;
  */
 public class FeeData {
 
-	private String naBzplc;
-	private String aplDt;
-	private String aucObjDsc;
-	private String feeRgSqno;
-	private String naFee_c;
-	private String sraFeenm;
-	private String jnlzBsnDsc;
-	private String sraNaFee_c;
-	private String feeAplObj_c;
-	private String amRtoDsc;
-	private String sgnoPrcDsc;
-	private int macoFeeUpr;
-	private int nmacoFeeUpr;
-	private String ansDsc;
-	private String sbidYn;
-	private String ppgcowFeeDsc;
-	private String delYn;
+	private String naBzplc;			//경제통합사업장코드
+	private String aplDt;			//적용일자
+	private String aucObjDsc;		//경매대상구분코드
+	private String feeRgSqno;		// -
+	private String naFee_c;			//경제통합수수료코드
+	private String sraFeenm;		//축산수수료명
+	private String jnlzBsnDsc;		//분개업무구분코드
+	private String sraNaFee_c;		//축산경제통합수수료코드
+	private String feeAplObj_c;		//수수료적용대상코드
+	private String amRtoDsc;		//금액비율구분코드
+	private String sgnoPrcDsc;		//단수처리구분코드
+	private int macoFeeUpr;			//조합원수수료단가
+	private int nmacoFeeUpr;		//비조합원수수료단가
+	private String ansDsc;			//가감구분코드
+	private String sbidYn;			//낙찰여부
+	private String ppgcowFeeDsc;	//번식우수수료구분코드
+	private String delYn;			//삭제여부
 	private String fsrgDtm;
 	private String fsrgmnEno;
 	private String lschgDtm;
