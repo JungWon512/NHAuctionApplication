@@ -152,7 +152,8 @@ public class LoginController implements Initializable {
 			public void onResponseError(String message) {
 				Platform.runLater(() ->{
 					CommonUtils.getInstance().dismissLoadingDialog();//dismiss loading
-					CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, mResMsg.getString("popup.btn.close"));
+					mLogger.debug("로그인 api error msg " + message);
+					CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.login.error"), mResMsg.getString("popup.btn.close"));
 				});
 			}
 		});

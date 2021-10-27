@@ -1684,7 +1684,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					mBtnSpace.setUserData("");
 				}
 
-				isPause = true;
 				onPause();
 			}
 		}
@@ -1697,6 +1696,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+			isPause = true;
+			SoundUtil.getInstance().stopSound();
 			addLogItem("카운트 다운 정지 : " + AuctionDelegate.getInstance().onPause(new PauseAuction(mCurrentSpEntryInfo.getAuctionHouseCode().getValue(), mCurrentSpEntryInfo.getEntryNum().getValue())));
 		}
 	}
@@ -1710,7 +1711,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
 			// 출품정보 읽은 후 실행 가능.
-			if (!isStartSoundPlaying) {
+//			if (!isStartSoundPlaying) {
 
 				mBtnReStart.setDisable(true);
 				mBtnPause.setDisable(false);
@@ -1722,7 +1723,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						onStopAuction(mRemainingTimeCount);
 					}
 				});
-			}
+//			}
 		}
 	}
 
@@ -3503,7 +3504,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					}
 					// 음성 경매 시작
 					if (ke.getCode() == KeyCode.SPACE) {
-						System.out.println("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
+						System.out.println("[KeyCode.SPACE]=> " + mAuctionStatus.getState());
 						normalSpaceStartAuction();
 						ke.consume();
 					}
