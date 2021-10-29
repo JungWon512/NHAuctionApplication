@@ -35,9 +35,9 @@ public class AudioFilePlay {
 	}
 
 	public enum AudioPlayTypes {
-		START("../resource/sounds/" + "edasstart.wav"), 
-		DING("../resource/sounds/" + "ding.wav"),
-		FINISH("../resource/sounds/" + "edasend.wav");
+		START("/com/nh/controller/resource/sounds/" + "edasstart.wav"), 
+		DING("/com/nh/controller/resource/sounds/" + "ding.wav"),
+		FINISH("/com/nh/controller/resource/sounds/" + "edasend.wav");
 
 		private final String code;
 
