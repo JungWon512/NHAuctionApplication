@@ -1684,6 +1684,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					mBtnSpace.setUserData("");
 				}
 
+				isPause = true;
 				onPause();
 			}
 		}
@@ -1696,7 +1697,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
-			isPause = true;
 			SoundUtil.getInstance().stopSound();
 			addLogItem("카운트 다운 정지 : " + AuctionDelegate.getInstance().onPause(new PauseAuction(mCurrentSpEntryInfo.getAuctionHouseCode().getValue(), mCurrentSpEntryInfo.getEntryNum().getValue())));
 		}
@@ -3324,8 +3324,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param spEntryInfo
 	 */
 	private void addFinishedTableViewItem(SpEntryInfo spEntryInfo) {
+		
+		SpEntryInfo finishSpEntryInfo = new SpEntryInfo();
+		
+		finishSpEntryInfo = spEntryInfo.clone();
 
-		mFinishedEntryInfoDataList.add(spEntryInfo);
+		mFinishedEntryInfoDataList.add(finishSpEntryInfo);
 
 		if (mFinishedEntryInfoDataList.size() > 4) {
 			mFinishedEntryInfoDataList.remove(0);
