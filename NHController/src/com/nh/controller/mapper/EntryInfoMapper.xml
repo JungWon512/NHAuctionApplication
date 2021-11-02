@@ -192,23 +192,23 @@
 				<include refid="indvColumn"><property name="alias" value="C"/></include>,
 				<include refid="aplColumn"><property name="alias" value="E"/></include>,
 				<include refid="qcnColumn"><property name="alias" value="F"/></include>,
-			<![CDATA[CASE WHEN NOT C.BIRTH IS NULL THEN
-					SUBSTRING(C.BIRTH,3,2) + '.'+ SUBSTRING(C.BIRTH,5,2) + '.' +  SUBSTRING(C.BIRTH,7,2) + '('+
-					CONVERT(varchar , CASE WHEN DATEDIFF(D, C.BIRTH,   A.AUC_DT) <= 4 THEN 4
-						   WHEN DATEPART(D, C.BIRTH) > DATEPART(D,   A.AUC_DT) THEN DATEDIFF(M, C.BIRTH,   A.AUC_DT) - 1  
-						   ELSE DATEDIFF(M, C.BIRTH,   A.AUC_DT) 
-					  END )
-					+ '개월 ' +
-					 CONVERT(varchar , CASE WHEN DATEDIFF(D, C.BIRTH,   A.AUC_DT) < 0 THEN 0   
-						   WHEN DATEDIFF(M, C.BIRTH,   A.AUC_DT) = 0 THEN DATEDIFF(D, C.BIRTH,   A.AUC_DT) 
-						   WHEN DATEDIFF(M, C.BIRTH,   A.AUC_DT) = 1 AND DATEPART(D, C.BIRTH) >= DATEPART(D,   A.AUC_DT) THEN DATEDIFF(D, C.BIRTH,   A.AUC_DT)  
-						   WHEN DATEDIFF(M, C.BIRTH,   A.AUC_DT) > 1 AND DATEPART(D, C.BIRTH) >= DATEPART(D,   A.AUC_DT) THEN DATEDIFF(D, DATEADD(M, DATEDIFF(M, C.BIRTH,   A.AUC_DT)-1, C.BIRTH),   A.AUC_DT) 
-					   WHEN DATEDIFF(M, C.BIRTH,   A.AUC_DT) > 1 AND DATEPART(D, C.BIRTH) < DATEPART(D,   A.AUC_DT) THEN DATEDIFF(D, DATEADD(M, DATEDIFF(M, C.BIRTH,   A.AUC_DT), C.BIRTH),   A.AUC_DT)
-					   ELSE 0
-					  END )
-					+ '일)'
-					ELSE '' 
-					END]]> as BIRTH
+			<![CDATA[ CASE WHEN NOT C.BIRTH IS NULL THEN
+						 SUBSTRING(C.BIRTH,3,2) + '.'+ SUBSTRING(C.BIRTH,5,2) + '.' +  SUBSTRING(C.BIRTH,7,2) + '('+
+							CONVERT(varchar , CASE WHEN DATEDIFF(M, C.BIRTH, A.AUC_DT) <= 4 THEN 4-- 개월 수가 4개월 이하일 경우 4개월로 고정
+								WHEN DATEPART(D, C.BIRTH) > DATEPART(D, A.AUC_DT) THEN DATEDIFF(M, C.BIRTH, A.AUC_DT) - 1-- 생년월일의 날짜가 경매일자의 날짜보다 큰 경우 월 차이에서 1을 빼준다.
+								   ELSE DATEDIFF(M, C.BIRTH, A.AUC_DT) -- 생년월일과 경매일자의 개월 수 차이
+								END  )
+								+ '개월 ' +
+							 CONVERT(varchar ,CASE WHEN DATEDIFF(D, C.BIRTH, A.AUC_DT) < 0 THEN 0  -- 생년월일보다 경매일자가 큰 경우 0으로 고정
+							 WHEN DATEDIFF(M, C.BIRTH, A.AUC_DT) < 4 THEN 0-- 개월 수가 4개월 미만 일 경우 0으로 고정
+							 WHEN DATEDIFF(M, C.BIRTH, A.AUC_DT) = 4 AND DATEPART(D, C.BIRTH) >= DATEPART(D, A.AUC_DT) THEN 0
+							 WHEN DATEPART(D, C.BIRTH) > DATEPART(D, A.AUC_DT) THEN DATEDIFF(D, DATEADD(M, DATEDIFF(M, C.BIRTH, A.AUC_DT)-1, C.BIRTH), A.AUC_DT)
+							 WHEN DATEPART(D, C.BIRTH) <= DATEPART(D, A.AUC_DT) THEN DATEDIFF(D, DATEADD(M, DATEDIFF(M, C.BIRTH, A.AUC_DT), C.BIRTH), A.AUC_DT)
+								ELSE 0
+							END )
+							+ '일)'
+							ELSE '' 
+							END]]> as BIRTH
 		FROM TB_LA_IS_MH_SOG_COW A LEFT OUTER JOIN TB_LA_IS_MM_FHS B ON A.NA_BZPLC = B.NA_BZPLC
 									 AND A.FHS_ID_NO		= B.FHS_ID_NO
 									 AND A.FARM_AMNNO		= B.FARM_AMNNO
