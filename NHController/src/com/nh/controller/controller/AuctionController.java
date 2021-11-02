@@ -1252,7 +1252,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 
 			mLogger.debug("[출품 취소 처리 시작] " + isCancel);
-
+			isStartSoundPlaying = false;
 			isCancel = true;
 
 			stopAllSound();
@@ -1534,29 +1534,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						mLogger.info("START TTS 재생이 준비되었습니다.");
 						mLogger.info("START TTS 재생 시간 : " + AudioFilePlay.getInstance().getPlayDuration());
 						AudioFilePlay.getInstance().playSound();
-
 					}
 
 					@Override
 					public void onPlayCompleted() {
-
 						mLogger.info("START Auction TTS 재생이 완료되었습니다. 취소 여부 : " + isCancel);
-
-//						// 출품 정보 읽음.
-						SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
-							@Override
-							public void playbackFinished(PlaybackEvent evt) {
-
-								isStartSoundPlaying = false;
-
-								if (isCancel) {
-									return;
-								}
-								// 음성 경매시 종료 타이머 시작.
-								System.out.println("[출품정보 음성 읽음. 정지 타이머 실행]");
-								soundAuctionTimerTask();
-							}
-						});
+						playStartCurrentEntrySound();
 					}
 
 				});
@@ -1566,6 +1549,29 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 			break;
 		}
+	}
+	
+	/**
+	 * 출품정보 사운드
+	 */
+	private void playStartCurrentEntrySound() {
+		
+		// 출품 정보 읽음.
+		SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
+			@Override
+			public void playbackFinished(PlaybackEvent evt) {
+
+				isStartSoundPlaying = false;
+
+				if (isCancel) {
+					return;
+				}
+				// 음성 경매시 종료 타이머 시작.
+				System.out.println("[출품정보 음성 읽음. 정지 타이머 실행]");
+				soundAuctionTimerTask();
+			}
+		});
+		
 	}
 
 	/**
@@ -1711,6 +1717,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 경매 진행 -> 카운트 다운 일시 정지. 경매 진행 -> 카운트 다운 시작.
 	 */
 	public void onReStart() {
+		
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -1719,16 +1726,28 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mBtnPause.setDisable(false);
 			isPause = false;
 			
-			
-			if (SettingApplication.getInstance().isUseSoundAuction()) {
+			//출품정보 읽는 도중 정지눌렀다가 다시 시작 하는경우. 다시 읽음
+			if(isStartSoundPlaying) {
+				playStartCurrentEntrySound();
+			}else {
 
-				if (!CommonUtils.getInstance().isListEmpty(mBiddingUserInfoDataList)) {
-					
-					//가격 체크
-					if (!checkOverPrice(mBiddingUserInfoDataList.get(0))) {
-						if (mBiddingUserInfoDataList.get(0).getAuctionJoinNum() != null && CommonUtils.getInstance().isValidString(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue())) {
-							playOverPriceSound(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue());
-						} else {
+				if (SettingApplication.getInstance().isUseSoundAuction()) {
+
+					if (!CommonUtils.getInstance().isListEmpty(mBiddingUserInfoDataList)) {
+						
+						//가격 체크
+						if (!checkOverPrice(mBiddingUserInfoDataList.get(0))) {
+							if (mBiddingUserInfoDataList.get(0).getAuctionJoinNum() != null && CommonUtils.getInstance().isValidString(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue())) {
+								playOverPriceSound(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue());
+							} else {
+								SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
+									@Override
+									public void playbackFinished(PlaybackEvent evt) {
+										onStopAuction(mRemainingTimeCount);
+									}
+								});
+							}
+						}else {
 							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
 								@Override
 								public void playbackFinished(PlaybackEvent evt) {
@@ -1744,16 +1763,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							}
 						});
 					}
-				}else {
-					SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
-						@Override
-						public void playbackFinished(PlaybackEvent evt) {
-							onStopAuction(mRemainingTimeCount);
-						}
-					});
+					
 				}
-				
 			}
+			
+			
 		}
 	}
 
@@ -2367,6 +2381,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //                    }
 				}
 			}
+			
+			mRemainingTimeCount = SettingApplication.getInstance().getAuctionCountdown();
 		}
 	}
 
@@ -2968,9 +2984,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// 정지,다시시작 버튼
 				mBtnReStart.setDisable(true);
 				mBtnPause.setDisable(false);
-
+				//최고가 이상 사운드 플래그
 				isOverPricePlaySound = false;
-
+				//재경매 사운드 플래그
 				isPlayReAuctionSound = false;
 
 				break;
@@ -2999,6 +3015,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			case GlobalDefineCode.AUCTION_STATUS_PASS:
 			case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 				isCancel = false;
+				isStartSoundPlaying = false;
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_FINISH:
 
