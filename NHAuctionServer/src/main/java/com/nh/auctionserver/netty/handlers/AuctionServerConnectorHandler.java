@@ -190,7 +190,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 										// 낙유찰 정보 수신이 필요한 경우 확인
 										ctx.writeAndFlush(new RequestAuctionResult(connectionInfo.getAuctionHouseCode(),
 												mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
-														.getAuctionStatus().getEntryNum()).getEncodedMessage());
+														.getAuctionStatus().getEntryNum()).getEncodedMessage() + "\r\n");
 									} else {
 										ctx.writeAndFlush(new CurrentEntryInfo(
 												mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())

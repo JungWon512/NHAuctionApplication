@@ -1809,7 +1809,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mWaitEntryInfoDataList = getParsingEntryDataList(entryInfoDataList);
 
 		if (!CommonUtils.getInstance().isListEmpty(entryInfoDataList)) {
-			mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), entryInfoDataList.size()));
+			Platform.runLater(() -> {
+				mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), entryInfoDataList.size()));
+			});
 		}
 
 		initFinishedEntryDataList();
@@ -2420,6 +2422,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		} catch (TimeoutException e) { // handle e }
 			mLogger.debug("[onBidderConnectInfo] " + e);
 		}
+
 	}
 
 	private boolean getConnectionBidderInfo(BidderConnectInfo bidderConnectInfo) {
