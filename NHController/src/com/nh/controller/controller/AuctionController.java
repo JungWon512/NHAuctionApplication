@@ -1556,6 +1556,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void playStartCurrentEntrySound() {
 		
+		if(isPause) {
+			return;
+		}
+		
 		// 출품 정보 읽음.
 		SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
 			@Override
@@ -1675,6 +1679,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+			
 			if (!isPause) {
 
 				mBtnReStart.setDisable(false);
@@ -1700,6 +1705,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+			
 			SoundUtil.getInstance().stopSound();
 			isOverPricePlaySound = false;
 			isPlayReAuctionSound = false;
