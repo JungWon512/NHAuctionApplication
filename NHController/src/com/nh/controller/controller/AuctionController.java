@@ -1345,7 +1345,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param countDown
 	 */
 	public void onStartAndStopAuction(int countDown) {
-
+		
 		// 출품 이관 체크
 		if (!isSendEnterInfo()) {
 			showAlertPopupOneButton(mResMsg.getString("msg.auction.send.need.entry.data"));
@@ -1388,6 +1388,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 갱신 + 경매 시작
 	 */
 	private void refreshAndStart() {
+		
+		if(isStartedAuction) {
+			return;
+		}
 
 		mAuctionStatus.setState(GlobalDefineCode.AUCTION_STATUS_READY);
 		
@@ -1496,36 +1500,46 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 		case GlobalDefineCode.AUCTION_STATUS_PASS:
 
+			// 취소 플래그
+			isCancel = false;
+			isStartSoundPlaying = true;
+			// 경매 시작 플래그
+			isStartedAuction = true;
+
+			
 			// 결장 응찰가 없음.
 			if (isEmptyProperty(mCurrentSpEntryInfo.getLowPrice()) || mCurrentSpEntryInfo.getLowPriceInt() <= 0) {
+							
 				// 결장 사운드 시작
 				SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
 					@Override
 					public void playbackFinished(PlaybackEvent evt) {
+
+						// 음성경매에서 + 눌러 단일경매로 시작한 경우
+						if (!SettingApplication.getInstance().isUseSoundAuction() && isPlusKeyStartAuction) {
+							toggleAuctionType();
+							isPlusKeyStartAuction = false;
+						}
+						
+
+						isStartSoundPlaying = false;
+						
 						setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 						// 다음 번호 이동
 						selectIndexWaitTable(1, false);
+						
 					}
 				});
 				return;
 			}
 
-			// 취소 플래그
-			isCancel = false;
-
-			// 경매 시작 플래그
-			isStartedAuction = true;
-
 			setCurrentEntrySoundData();
 			
-			isStartSoundPlaying = true;
-			System.out.println("[출품정보 음성 읽기 전 isStartSoundPlaying] " + isStartSoundPlaying);
 			// 시작 로그 msg
 			String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), mCurrentSpEntryInfo.getEntryNum().getValue());
 
 			// 시작 서버로 Start 보냄.
 			addLogItem(msgStart + AuctionDelegate.getInstance().onStartAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
-
 
 			// 음성경매인 경우 사운드
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
@@ -1561,7 +1575,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private void playStartCurrentEntrySound() {
 		
 		if(isPause) {
-			System.out.println("[isPause ] return");
+			System.out.println("[일시 정지 상태. 출품 정보 읽지 않음.]");
 			return;
 		}
 		
@@ -1570,7 +1584,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			@Override
 			public void playbackFinished(PlaybackEvent evt) {
 
-				System.out.println("[출품정보 음성 읽음. isStartSoundPlaying ] " + isStartSoundPlaying);
+				System.out.println("[출품정보 음성 읽음.]");
 				isStartSoundPlaying = false;
 
 				if (isCancel) {
@@ -2921,20 +2935,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void setAuctionVariableState(String code) {
 
-		
 		if (isResultCompleteFlag) {
 			return;
-		}
+		} 
 
 //		Platform.runLater(() -> {
 		
 			// 버튼들
 			btnToggle();
 
-			
 			switch (code) {
 
-			case GlobalDefineCode.AUCTION_STATUS_READY:
+			case GlobalDefineCode.AUCTION_STATUS_READY: 
 
 				System.out.println("#### AUCTION_STATUS_READY ####");
 				// 타이머 초기화
@@ -2975,8 +2987,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				isReAuction = false;
 				// 재경매중 라벨 숨김.
 				mReAuctionLabel.setVisible(false);
-				// 재경매중 카운트 초기화.
-				mReAuctionCountLabel.setText("");
+				
 				// 카운트 다운 라벨
 				mCountDownLabel.setVisible(false);
 				// 재경매 횟수 초기화
@@ -3002,6 +3013,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				isOverPricePlaySound = false;
 				//재경매 사운드 플래그
 				isPlayReAuctionSound = false;
+				
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_START:
 			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -3058,6 +3070,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			Platform.runLater(() -> {
 				// 경매 상태 - 경매 대기
 				if(code.equals(GlobalDefineCode.AUCTION_STATUS_READY)) {
+					// 재경매중 카운트 초기화.
+					mReAuctionCountLabel.setText("");
 					// 경매 상태 문구 -> 경매대기
 					mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.ready"));
 				}else if(code.equals(GlobalDefineCode.AUCTION_STATUS_START) || code.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
@@ -3596,9 +3610,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					}
 
 					// 경매 시작
-					if (ke.getCode() == KeyCode.ADD) {
+					if (ke.getCode() == KeyCode.L) {
 
-						if (isStartedAuction) {
+						if (isStartedAuction ||  isPlusKeyStartAuction || isStartSoundPlaying) {
 							return;
 						}
 
