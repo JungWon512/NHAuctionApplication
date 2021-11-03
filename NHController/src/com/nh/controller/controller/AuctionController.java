@@ -3610,7 +3610,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					}
 
 					// 경매 시작
-					if (ke.getCode() == KeyCode.L) {
+					if (ke.getCode() == KeyCode.ADD) {
 
 						if (isStartedAuction ||  isPlusKeyStartAuction || isStartSoundPlaying) {
 							return;
