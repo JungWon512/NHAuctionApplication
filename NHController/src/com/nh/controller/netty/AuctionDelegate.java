@@ -113,7 +113,7 @@ public class AuctionDelegate {
      * @return
      */
     public String onNextEntryReady(String entrySeq) {
-        return sendMessage(new ReadyEntryInfo(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq));
+        return sendMessage(new ReadyEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), entrySeq));
     }
 
     /**
@@ -122,7 +122,7 @@ public class AuctionDelegate {
      * @Description 시작 전송
      */
     public String onStartAuction(String entrySeq) {
-        return sendMessage(new StartAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq));
+        return sendMessage(new StartAuction(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), entrySeq));
     }
 
     /**
@@ -131,7 +131,7 @@ public class AuctionDelegate {
      * @Description 정지 전송
      */
     public String onStopAuction(String entrySeq,int countDown) {
-        return sendMessage(new StopAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq, Integer.toString(countDown)));
+        return sendMessage(new StopAuction(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), entrySeq, Integer.toString(countDown)));
     }
 
     /**
@@ -158,7 +158,7 @@ public class AuctionDelegate {
      * @Description 강제유찰 전송
      */
     public String onPassAuction(String entrySeq) {
-        return sendMessage(new PassAuction(GlobalDefineCode.AUCTION_HOUSE_HWADONG, entrySeq));
+        return sendMessage(new PassAuction(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), entrySeq));
     }
 
     /**
@@ -176,7 +176,7 @@ public class AuctionDelegate {
      * @Description 메시지 전송
      */
     public String onToastMessageRequest(String msg) {
-        return sendMessage(new ToastMessageRequest(GlobalDefineCode.AUCTION_HOUSE_HWADONG, msg));
+        return sendMessage(new ToastMessageRequest(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), msg));
     }
 
     /**
