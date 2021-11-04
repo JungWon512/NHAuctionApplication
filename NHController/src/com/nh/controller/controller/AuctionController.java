@@ -3228,10 +3228,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// 경매 완료 테이블에 데이터 넣음
 				addFinishedTableViewItem(spEntryInfo);
 
+				boolean isPlusSucStop = false;
+				
 				// 음성경매중에 + 키로 단일로 진행한경우
 				if (!SettingApplication.getInstance().isUseSoundAuction() && isPlusKeyStartAuction) {
 					toggleAuctionType();
 					isPlusKeyStartAuction = false;
+					isPlusSucStop = true;
 					// ENTER 경매 시작으로.
 					mBtnEnter.setText(mResMsg.getString("str.btn.start"));
 					CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
@@ -3251,7 +3254,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					selectIndexWaitTable(1, false);
 
 					// 음성경매 && 하나씩 진행 아닌경우
-					if (SettingApplication.getInstance().isUseSoundAuction() && !SettingApplication.getInstance().isUseOneAuction() && !isPlusKeyStartAuction) {
+					if (SettingApplication.getInstance().isUseSoundAuction() && !SettingApplication.getInstance().isUseOneAuction() && !isPlusKeyStartAuction && !isPlusSucStop) {
 						// 자동 시작
 						PauseTransition start = new PauseTransition(Duration.millis(1000));
 						start.setOnFinished(new EventHandler<ActionEvent>() {
