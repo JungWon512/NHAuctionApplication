@@ -3029,9 +3029,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				//재경매 사운드 플래그
 				isPlayReAuctionSound = false;
 				
-				// 출장우 정보 TTS 송출 여부 초기화
-				isStartSoundPlaying = false;
-				
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_START:
 			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -3054,7 +3051,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_PASS:
 			case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
-				isCancel = false;
+				isCancel = false;	
 				isStartSoundPlaying = false;
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_FINISH:
@@ -3636,6 +3633,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						System.out.println("[KeyCode.ADD]=> isPlusKeyStartAuction : " + isPlusKeyStartAuction);
 						System.out.println("[KeyCode.ADD]=> isStartSoundPlaying : " + isStartSoundPlaying);
 						System.out.println("[KeyCode.ADD]=> mAuctionStatus.getState() : " + mAuctionStatus.getState());
+						
+						if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_READY)
+								|| mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)
+								|| mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PASS)) {
+							// 출장우 정보 TTS 송출 여부 초기화
+							isStartSoundPlaying = false;
+						}
+						
 						if (isStartedAuction ||  isPlusKeyStartAuction || isStartSoundPlaying) {
 							return;
 						}
