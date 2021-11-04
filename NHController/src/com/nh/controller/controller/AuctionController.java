@@ -754,8 +754,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			// 추가된 데이터 항목이 있으면 add
 			if (!CommonUtils.getInstance().isListEmpty(newDataList)) {
+			
+				mLogger.debug("추가된 데이터 있음.");
+				
+				for(SpEntryInfo spEntryInfo : newDataList) {
+					addLogItem("추가된 데이터 전송=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
+				}
+
 				mWaitEntryInfoDataList.addAll(mRecordCount, newDataList);
 				mRecordCount += newDataList.size();
+
 			} else {
 				addLogItem("추기된 데이터 없음.");
 			}
@@ -3405,8 +3413,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (mGenderCheckBox.isSelected() && CommonUtils.getInstance().isValidString(mCurGenterLabel.getText())) {
 				entrySoundContent.append(EMPTY_SPACE);
 
-				if (mCurGenterLabel.getText().equals("수") || mCurGenterLabel.getText().equals("암")) {
-					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender.normal"), mCurGenterLabel.getText()));
+				if (mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_1) || mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_2)) {
+
+					if(mCurrentSpEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+						entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender.normal"), mCurGenterLabel.getText()));
+					}else {
+						
+						if(mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_1) ) {
+							entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.gender.f"));
+						}else {
+							entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.gender.m"));
+						}
+					}
+					
 				} else {
 					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender"), mCurGenterLabel.getText()));
 				}

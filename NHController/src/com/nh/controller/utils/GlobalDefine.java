@@ -140,11 +140,18 @@ public class GlobalDefine {
 		public static final String AUCTION_FEE_CODE_OJB_3_040  = "040"; // 운송비 불낙/낙찰
 		public static final String AUCTION_FEE_CODE_OJB_3_011  = "011"; // 낙찰자 - 임신우,비임신우,임신우+송아지,비임신우_송아지
 		
-		
-		
 		public static final String AUCTION_BID_STATUS_P  = "P"; // 카운트 다운 완료 후 응찰 상태 : 응찰 진행
 		public static final String AUCTION_BID_STATUS_F  = "F"; // 카운트 다운 완료 후 응찰 상태 : 응찰 종료
-
+		
+		//[S] 성별
+		public static final String AUCTION_INDV_SEX_C_0 = "0";	//없음
+		public static final String AUCTION_INDV_SEX_C_1 = "1";	//암
+		public static final String AUCTION_INDV_SEX_C_2 = "2";	//수
+		public static final String AUCTION_INDV_SEX_C_3 = "3";	//거세
+		public static final String AUCTION_INDV_SEX_C_4 = "4";	//미경산
+		public static final String AUCTION_INDV_SEX_C_5 = "5";	//비거세
+		public static final String AUCTION_INDV_SEX_C_6 = "6";	//프리마틴
+		public static final String AUCTION_INDV_SEX_C_9 = "9";	//공통
 	}
 
 	/**
