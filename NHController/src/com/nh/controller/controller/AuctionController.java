@@ -215,6 +215,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private boolean isPlayReAuctionSound = false;
 	
 	private boolean isRestart = false;
+	
+	private String REFRESH_ENTRY_LIST_TYPE_NONE = "NONE";          // 출장우 정보 갱신 - 기본
+	private String REFRESH_ENTRY_LIST_TYPE_SEND = "SEND";          // 출장우 정보 갱신 후 정보 보냄
+	private String REFRESH_ENTRY_LIST_TYPE_START = "START";        // 출장우 정보 갱신 후 시작
+	
 
 	/**
 	 * setStage
@@ -286,6 +291,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		thread.setDaemon(true);
 		thread.start();
 
+		//비고 수정 막음.
+		mNoteTextArea.setEditable(false);
 	}
 
 	/**
@@ -681,7 +688,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
 	 */
-	private void refreshWaitEntryDataList(boolean isRefresh) {
+	private void refreshWaitEntryDataList(boolean isRefresh ,String type) {
 
 		AuctionRound aucRoundParam = new AuctionRound();
 		aucRoundParam = GlobalDefine.AUCTION_INFO.auctionRoundData.clone();
@@ -755,12 +762,61 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			mWaitTableView.setItems(mWaitEntryInfoDataList);
 			mWaitTableView.refresh();
-
 		}
+		
+		PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
+		pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				onCowInfoSendOrStartAuction(type);
+			}
+		});
+		pauseTransition.play();
+		
 //			}
 //		};
-
 	}
+	
+	private void onCowInfoSendOrStartAuction(String type) {
+		
+		if(type.equals(REFRESH_ENTRY_LIST_TYPE_SEND)) {
+			
+			Thread thread = new Thread("onSendEntryData") {
+				@Override
+				public void run() {
+
+					addLogItem("start onSendEntryData thread");
+
+					int count = 0;
+
+					for (SpEntryInfo entryInfo : mWaitEntryInfoDataList) {
+						if (!isEmptyProperty(entryInfo.getEntryNum())) {
+							addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(entryInfo));
+							count++;
+						}
+					}
+
+					addLogItem(String.format(mResMsg.getString("msg.send.entry.data.result"), count));
+
+					mBtnF1.setDisable(true);
+
+					Platform.runLater(() -> {
+						CommonUtils.getInstance().dismissLoadingDialog();
+					});
+
+				}
+			};
+
+			thread.setDaemon(true);
+			thread.start();
+	
+		}else if(type.equals(REFRESH_ENTRY_LIST_TYPE_START)) {
+			//경매시
+			onStartAuction();
+		}
+		
+	}
+	
 
 	/**
 	 * 접속자 현황 set
@@ -909,50 +965,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				@Override
 				public void run() {
 					// 보내기 전 한번 더 갱신
-					refreshWaitEntryDataList(true);
+					refreshWaitEntryDataList(true, REFRESH_ENTRY_LIST_TYPE_SEND);
 				}
 			};
 
 			refreshWaitThread.setDaemon(true);
 			refreshWaitThread.start();
-
-			try {
-				refreshWaitThread.join();
-				addLogItem("[출품정보 보내기 전 갱신 여부]");
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} finally {
-
-				Thread thread = new Thread("onSendEntryData") {
-					@Override
-					public void run() {
-
-						addLogItem("start send thread");
-
-						int count = 0;
-
-						for (SpEntryInfo entryInfo : mWaitEntryInfoDataList) {
-							if (!isEmptyProperty(entryInfo.getEntryNum())) {
-								addLogItem(mResMsg.getString("msg.auction.send.entry.data") + AuctionDelegate.getInstance().onSendEntryData(entryInfo));
-								count++;
-							}
-						}
-
-						addLogItem(String.format(mResMsg.getString("msg.send.entry.data.result"), count));
-
-						mBtnF1.setDisable(true);
-
-						Platform.runLater(() -> {
-							CommonUtils.getInstance().dismissLoadingDialog();
-						});
-
-					}
-				};
-
-				thread.setDaemon(true);
-				thread.start();
-
-			}
 
 		} else {
 			addLogItem(mResMsg.getString("msg.need.connection"));
@@ -1086,7 +1104,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				addLogItem("Dialog callBack Value : " + type);
 
 				if (type.equals(EntryDialogType.ENTRY_LIST) || type.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
-					refreshWaitEntryDataList(false);
+					refreshWaitEntryDataList(false , REFRESH_ENTRY_LIST_TYPE_NONE);
 				}
 
 				if (index < 0) {
@@ -1396,34 +1414,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 
 		mAuctionStatus.setState(GlobalDefineCode.AUCTION_STATUS_READY);
+		// 경매 뷰 초기화
+		setAuctionVariableState(mAuctionStatus.getState());
 		
 		Thread thread = new Thread() {
 			@Override
 			public void run() {
 				// 갱신 후 변경점 있으면 서버 전달.
-				refreshWaitEntryDataList(true);
-				
-				// 경매 뷰 초기화
-				setAuctionVariableState(mAuctionStatus.getState());
-
+				refreshWaitEntryDataList(true ,REFRESH_ENTRY_LIST_TYPE_START);
 				Platform.runLater(() -> setCurrentEntryInfo(false));
 			}
 		};
 
 		thread.setDaemon(true);
 		thread.start();
-
-		try {
-			thread.join();
-			addLogItem("[시작 하기 전 갱신]");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} finally {
-
-			// 시작
-			onStartAuction();
-		}
-
 	}
 
 	/**
@@ -1765,11 +1769,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if(isStartSoundPlaying) {
 				playStartCurrentEntrySound();
 			}else {
-
+				isRestart = true;
+				
 				if (SettingApplication.getInstance().isUseSoundAuction()) {
 					
-					isRestart = true;
-	
 					if (!CommonUtils.getInstance().isListEmpty(mBiddingUserInfoDataList)) {
 						
 						//가격 체크
@@ -1804,6 +1807,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						});
 					}
 					
+				}else {
+					
+					if(mCountDownLabel.isVisible()) {
+						onStopAuction(mRemainingTimeCount);
+					}
+					
+					isRestart = false;
 				}
 			}
 			
@@ -2953,7 +2963,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		} 
 
 //		Platform.runLater(() -> {
-		
 			// 버튼들
 			btnToggle();
 
@@ -2966,16 +2975,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				stopAutoAuctionScheduler();
 				// 응찰 쓰레드폴 init
 				initExecutorService();
-				// 카운트다운 라벨 초기화
-				setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
 				// 카운트 시간 초기화
 				mRemainingTimeCount = SettingApplication.getInstance().getAuctionCountdown();
 				// 현재 응찰 내역 초기화
 				mCurrentBidderMap.clear();
 				// 이전 응찰 내역 초기화
 				mBeForeBidderDataList.clear();
-				// 응찰자 초기화
-				initBiddingInfoDataList();
 				// 대기 라벨 비활성화
 				mAuctionStateReadyLabel.setDisable(false);
 				// 진행 라벨 비활성화
@@ -3000,7 +3005,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				isReAuction = false;
 				// 재경매중 라벨 숨김.
 				mReAuctionLabel.setVisible(false);
-				
 				// 카운트 다운 라벨
 				mCountDownLabel.setVisible(false);
 				// 재경매 횟수 초기화
@@ -3017,8 +3021,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				isResultCompleteFlag = false;
 				// 카운트다운 키 눌림 여부
 				isCountDownBtnPressed = false;
-				// 응찰자 테이블
-				mBiddingInfoTableView.refresh();
 				// 정지,다시시작 버튼
 				mBtnReStart.setDisable(true);
 				mBtnPause.setDisable(false);
@@ -3053,36 +3055,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				isStartSoundPlaying = false;
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_FINISH:
-
-				if (mCurrentSpEntryInfo != null) {
-					addFinishedTableViewItem(mCurrentSpEntryInfo);
-				}
-
-				mCurEntryNumLabel.setText("");
-				mCurExhibitorLabel.setText("");
-				mCurGenterLabel.setText("");
-				mCurMotherLabel.setText("");
-				mCurMatimeLabel.setText("");
-				mCurPasgQcnLabel.setText("");
-				mCurWeightLabel.setText("");
-				mCurLowPriceLabel.setText("");
-				mCurSuccessPriceLabel.setText("");
-				mCurSuccessfulBidderLabel.setText("");
-				mCurResultLabel.setText("");
-				mCurNoteLabel.setText("");
-				mLowPriceChgNtLabel.setText("");
-
-				initBiddingInfoDataList();
-
-//				showAlertPopupOneButton(mResMsg.getString("msg.auction.finish"));
-				
 				break;
-			}
-			
+			}			
 
 			Platform.runLater(() -> {
 				// 경매 상태 - 경매 대기
 				if(code.equals(GlobalDefineCode.AUCTION_STATUS_READY)) {
+					// 카운트다운 라벨 초기화
+					setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
+					// 응찰자 초기화
+					initBiddingInfoDataList();
+					// 응찰자 테이블
+					mBiddingInfoTableView.refresh();
 					// 재경매중 카운트 초기화.
 					mReAuctionCountLabel.setText("");
 					// 경매 상태 문구 -> 경매대기
@@ -3091,9 +3075,29 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					// 경매 상태 문구 -> 경매진행
 					mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.progress"));
 				}else if(code.equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
+					
+					if (mCurrentSpEntryInfo != null) {
+						addFinishedTableViewItem(mCurrentSpEntryInfo);
+					}
+
+					mCurEntryNumLabel.setText("");
+					mCurExhibitorLabel.setText("");
+					mCurGenterLabel.setText("");
+					mCurMotherLabel.setText("");
+					mCurMatimeLabel.setText("");
+					mCurPasgQcnLabel.setText("");
+					mCurWeightLabel.setText("");
+					mCurLowPriceLabel.setText("");
+					mCurSuccessPriceLabel.setText("");
+					mCurSuccessfulBidderLabel.setText("");
+					mCurResultLabel.setText("");
+					mCurNoteLabel.setText("");
+					mLowPriceChgNtLabel.setText("");
+
+					initBiddingInfoDataList();
+
 					showAlertPopupOneButton(mResMsg.getString("msg.auction.finish"));
 				}
-			
 			});
 
 			System.out.println("[뷰 작업 완료]" + mAuctionStatus.getState());
