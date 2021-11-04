@@ -3228,21 +3228,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// 경매 완료 테이블에 데이터 넣음
 				addFinishedTableViewItem(spEntryInfo);
 
+				// 음성경매중에 + 키로 단일로 진행한경우
 				if (!SettingApplication.getInstance().isUseSoundAuction() && isPlusKeyStartAuction) {
 					toggleAuctionType();
+					isPlusKeyStartAuction = false;
 					// ENTER 경매 시작으로.
 					mBtnEnter.setText(mResMsg.getString("str.btn.start"));
 					CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
 				}
 
-				// 경매 준비 상태로 뷰들 초기화
-				setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
-
 				if (spEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
+			
+					// 경매 준비 상태로 뷰들 초기화
+					setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 
 					if ((mWaitTableView.getSelectionModel().getSelectedIndex() + 1) == mRecordCount) {
 						System.out.println("마지막. 뷰 초기화");
-						setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 						setCurrentEntryInfo(true);
 						return;
 					}
@@ -3270,19 +3271,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					}
 
 				} else {
-
 					// 유찰건 경매 준비 상태로 뷰들 초기화
 					setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 					addLogItem("경매 상태 유찰이거나 하나씩진행 체크 됨." + spEntryInfo.getAuctionResult().getValue() + " / " + SettingApplication.getInstance().isUseOneAuction());
 				}
-
 				// 현재 선택된 row 갱신
 				setCurrentEntryInfo(true);
-
-				// 음성경매중에 + 키로 단일로 진행한경우
-				if (isPlusKeyStartAuction) {
-					isPlusKeyStartAuction = false;
-				}
 
 			}
 		});

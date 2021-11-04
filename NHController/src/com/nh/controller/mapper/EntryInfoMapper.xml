@@ -98,8 +98,8 @@
 		${alias}.RG_DSC,							<!-- 	등록구분코드					-->
 		${alias}.ANW_YN,							<!-- 	신규여부(데이터전환시 구데이터인지)	-->
 		CASE WHEN ${alias}.INDV_SEX_C = '0' THEN '없음'	WHEN ${alias}.INDV_SEX_C = '1' THEN '암'
-		WHEN ${alias}.INDV_SEX_C = '2' THEN '수'			WHEN ${alias}.INDV_SEX_C = '3' THEN '거세'
-		WHEN ${alias}.INDV_SEX_C = '4' THEN '미경산'		WHEN ${alias}.INDV_SEX_C = '5' THEN '비거세'
+		WHEN ${alias}.INDV_SEX_C = '2' THEN '수'			WHEN ${alias}.INDV_SEX_C = '3' THEN '거세우'
+		WHEN ${alias}.INDV_SEX_C = '4' THEN '미경산우'		WHEN ${alias}.INDV_SEX_C = '5' THEN '비거세'
 		WHEN ${alias}.INDV_SEX_C = '6' THEN '프리마틴'		WHEN ${alias}.INDV_SEX_C = '9' THEN '공통' END INDV_SEX_C_NAME	<!-- 	성별 문자열		-->
 	</sql>
 
