@@ -72,7 +72,10 @@ public class EntryInfo implements FromAuctionController {
 	private String mTrpcsPyYn; // 자가운송여부
 	private String mPpgcowFeeDsc; // 번식우 - 임신,비임신 구분 코드
 	
-
+	private String mExpAuctionBidPrice; //-일괄 낙찰 예정 금액
+	private String mExpAuctionSucBidder; //-일괄 낙찰 예정자
+	
+	
 	public EntryInfo() {
 	}
 
@@ -171,7 +174,7 @@ public class EntryInfo implements FromAuctionController {
 		mFarmMngNum = Integer.toString(cowInfoData.getFARM_AMNNO());
 		mExhibitor = cowInfoData.getFTSNM();
 		mBrandName = cowInfoData.getBRANDNM();
-		mBirthday = cowInfoData.getBIRTH();
+		mBirthday = cowInfoData.getBIRTH_FMT();
 		mKpn = cowInfoData.getKPN_NO();
 		mGender = cowInfoData.getINDV_SEX_C();
 		mGenderName = cowInfoData.getINDV_SEX_C_NAME();
@@ -603,6 +606,22 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setPpgcowFeeDsc(String mPpgcowFeeDsc) {
 		this.mPpgcowFeeDsc = mPpgcowFeeDsc;
+	}
+	
+	public String getExpAuctionBidPrice() {
+		return mExpAuctionBidPrice;
+	}
+
+	public void setExpAuctionBidPrice(String mExpAuctionBidPrice) {
+		this.mExpAuctionBidPrice = mExpAuctionBidPrice;
+	}
+
+	public String getExpAuctionSucBidder() {
+		return mExpAuctionSucBidder;
+	}
+
+	public void setExpAuctionSucBidder(String mExpAuctionSucBidder) {
+		this.mExpAuctionSucBidder = mExpAuctionSucBidder;
 	}
 
 	@Override

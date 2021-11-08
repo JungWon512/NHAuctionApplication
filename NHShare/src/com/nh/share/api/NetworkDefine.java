@@ -59,5 +59,8 @@ public class NetworkDefine {
 	
 	public static final String API_REQUEST_AUCTION_UPDATE_COW_RESULT =  "/api/{version}/auction/update/cowresult"; // 경매 결과 저장
 	
-
+	public static final String API_REQUEST_MULTIPLE_AUCTION_STATUS =  "/api/{version}/auction/status"; // 일괄경매 시작
+	 
+	public static final String API_REQUEST_AUCTION_BID_ENTRY =  "/api/{version}/auction/select/bidentry"; // 응찰 내역 조회
+	
 }

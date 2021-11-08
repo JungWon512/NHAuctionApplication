@@ -57,6 +57,10 @@ public class CowInfoData {
 	private int OSLP_NO;      
 	private int QCN;
 	
+	private String BIRTH_FMT;
+	private int EXP_ATDR_AM;
+	private int EXP_LVST_AUC_PTC_MN_NO;
+	
 
 	
 	public String getSRA_SRS_DSC() {
@@ -340,5 +344,24 @@ public class CowInfoData {
 	}
 	public void setQCN(int qCN) {
 		QCN = qCN;
-	}                  		
+	}
+	
+	public String getBIRTH_FMT() {
+		return BIRTH_FMT;
+	}
+	public void setBIRTH_FMT(String bIRTH_FMT) {
+		BIRTH_FMT = bIRTH_FMT;
+	}
+	public int getEXP_ATDR_AM() {
+		return EXP_ATDR_AM;
+	}
+	public void setEXP_ATDR_AM(int eXP_ATDR_AM) {
+		EXP_ATDR_AM = eXP_ATDR_AM;
+	}
+	public int getEXP_LVST_AUC_PTC_MN_NO() {
+		return EXP_LVST_AUC_PTC_MN_NO;
+	}
+	public void setEXP_LVST_AUC_PTC_MN_NO(int eXP_LVST_AUC_PTC_MN_NO) {
+		EXP_LVST_AUC_PTC_MN_NO = eXP_LVST_AUC_PTC_MN_NO;
+	}    
 }
