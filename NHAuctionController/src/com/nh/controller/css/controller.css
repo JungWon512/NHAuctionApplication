@@ -272,6 +272,15 @@
 	-fx-text-fill: #111111;
 }*/
 
+/* 일괄 경매 테이블 컬럼 헤더 row */
+.base-contents .column-auction-row{
+	-fx-background-color: #122a48;
+	-fx-font-size: 18px;
+	-fx-font-family: "Noto Sans CJK KR Bold";
+	-fx-text-fill: #ffffff;
+	-fx-border-insets: 0 0 0 0;
+}
+
 /* 현재 경매 진행중인 row */
 .base-contents .current-auction-row{
 	-fx-border-width: 4px 0.5px 4px 0.5px;

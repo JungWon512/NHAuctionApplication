@@ -202,14 +202,18 @@ public class MoveStageUtil {
 	 */
 	public synchronized void onConnectServer(Stage chooseAuctionStage, String ip, int port, String id) throws Exception{
 		
+		isShowingAuctionStage = false;
+		
 		if(SettingApplication.getInstance().isSingleAuction()) {
-			isShowingAuctionStage = false;
 			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("AuctionControllerView.fxml"), getResourceBundle());
 			fxmlLoader.load();
 			AuctionController controller = fxmlLoader.getController();
 			controller.onConnectServer(chooseAuctionStage, fxmlLoader, ip, port, id);
 		}else {
-			
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("MultipleAuctionControllerView2.fxml"), getResourceBundle());
+			fxmlLoader.load();
+			MultipleAuctionController controller = fxmlLoader.getController();
+			controller.onConnectServer(chooseAuctionStage, fxmlLoader, ip, port, id);
 		}
 
 	}
@@ -228,19 +232,30 @@ public class MoveStageUtil {
 			}
 			
 			loginStage.close();
-
-			AuctionController controller = fxmlLoader.getController();
-			Stage stage = new Stage();
-			controller.setStage(stage);
-			setWindowTitle(stage,fxmlLoader.getResources());
-//			setRemoveTitlebar(stage);
-			Scene scene = new Scene(fxmlLoader.getRoot());
-			stage.setScene(scene);
-			stage.show();
-			isShowingAuctionStage = true;
-			// show 후에 ..
-			controller.initConfiguration(stage);
 			
+			isShowingAuctionStage = true;
+			
+			Stage stage = new Stage();
+			setWindowTitle(stage,fxmlLoader.getResources());
+			Scene scene = new Scene(fxmlLoader.getRoot());
+			
+			if(SettingApplication.getInstance().isSingleAuction()) {
+				AuctionController controller = fxmlLoader.getController();
+				controller.setStage(stage);
+				stage.setScene(scene);
+				stage.show();
+				// show 후에 ..
+				controller.initConfiguration(stage);
+			}else {
+				MultipleAuctionController controller = fxmlLoader.getController();
+				controller.setStage(stage);
+				setWindowTitle(stage,fxmlLoader.getResources());
+				stage.setScene(scene);
+				stage.show();
+				// show 후에 ..
+				controller.initConfiguration(stage);
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

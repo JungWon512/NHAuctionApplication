@@ -295,6 +295,81 @@
             </HBox>
             <VBox VBox.vgrow="ALWAYS">
                <children>
+                  <HBox maxHeight="40.0" minHeight="40.0" prefHeight="40.0">
+                     <children>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" styleClass="column-auction-row">
+                           <font>
+                              <Font name="Noto Sans CJK KR Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurEntryNumLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="column-auction-row" text="번호" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurExhibitorLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="column-auction-row" text="출하주" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurGenterLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" styleClass="column-auction-row" text="성별" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurMotherLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="column-auction-row" text="어미" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurMatimeLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="column-auction-row" text="산차" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurPasgQcnLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="column-auction-row" text="계대" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurWeightLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" styleClass="column-auction-row" text="중량(kg)" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurLowPriceLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" styleClass="column-auction-row" text="최저가" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurSuccessPriceLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" styleClass="column-auction-row" text="예정가" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurSuccessfulBidderLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="column-auction-row" text="예정자" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurResultLabel1" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="column-auction-row" text="결과" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCurNoteLabel1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="130.0" prefWidth="130.0" styleClass="column-auction-row" text="비고" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets left="6.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </HBox>
                   <HBox maxHeight="63.0" minHeight="63.0" prefHeight="63.0" VBox.vgrow="ALWAYS">
                            <children>
                               <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" styleClass="current-auction-row" text="현재">

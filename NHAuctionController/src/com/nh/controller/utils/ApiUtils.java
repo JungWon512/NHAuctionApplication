@@ -12,6 +12,8 @@ import com.nh.share.api.request.ActionRequestAuctionResult;
 import com.nh.share.api.request.ActionRequestDeleteFee;
 import com.nh.share.api.request.ActionRequestInsertBidLog;
 import com.nh.share.api.request.ActionRequestInsertFee;
+import com.nh.share.api.request.ActionRequestMultipleAuctionStatus;
+import com.nh.share.api.request.ActionRequestSelectBidEntry;
 import com.nh.share.api.request.ActionRequestSelectBidLogCnt;
 import com.nh.share.api.request.ActionRequestSelectBidNum;
 import com.nh.share.api.request.ActionRequestSelectCowCnt;
@@ -23,16 +25,19 @@ import com.nh.share.api.request.ActionRequestSelectQcn;
 import com.nh.share.api.request.ActionRequestUpdateCowResult;
 import com.nh.share.api.request.ActionRequestUpdateCowSt;
 import com.nh.share.api.request.ActionRequestUpdateLowsBidAmt;
+import com.nh.share.api.request.body.RequestBidEntryBody;
 import com.nh.share.api.request.body.RequestBidLogBody;
 import com.nh.share.api.request.body.RequestBidNumBody;
 import com.nh.share.api.request.body.RequestCowInfoBody;
 import com.nh.share.api.request.body.RequestFeeBody;
 import com.nh.share.api.request.body.RequestLoginBody;
 import com.nh.share.api.request.body.RequestMacoYnBody;
+import com.nh.share.api.request.body.RequestMultipleAuctionStatusBody;
 import com.nh.share.api.request.body.RequestQcnBody;
 import com.nh.share.api.request.body.RequestUpdateLowsBidAmtBody;
 import com.nh.share.api.response.BaseResponse;
 import com.nh.share.api.response.ResponseAuctionLogin;
+import com.nh.share.api.response.ResponseBidEntry;
 import com.nh.share.api.response.ResponseCowInfo;
 import com.nh.share.api.response.ResponseFee;
 import com.nh.share.api.response.ResponseJoinNumber;
@@ -222,5 +227,27 @@ public class ApiUtils {
 		ActionRuler.getInstance().addAction(new ActionRequestSelectMacoYn(body, listener_));
 		ActionRuler.getInstance().runNext();
 	}
+	
+	/**
+	 * 일괄경매 시작/정지/종료
+	 * @param body
+	 * @param listener_
+	 */
+	public void requestMultipleAuctionStatus(RequestMultipleAuctionStatusBody body, ActionResultListener<BaseResponse> listener_) {
+		ActionRuler.getInstance().addAction(new ActionRequestMultipleAuctionStatus(body, listener_));
+		ActionRuler.getInstance().runNext();
+	}
+	
+	
+	/**
+	 * 일괄경매 응찰목록 조회
+	 * @param body
+	 * @param listener_
+	 */
+	public void requestSelectBidEntry(RequestBidEntryBody body, ActionResultListener<ResponseBidEntry> listener_) {
+		ActionRuler.getInstance().addAction(new ActionRequestSelectBidEntry(body, listener_));
+		ActionRuler.getInstance().runNext();
+	}
+	
 	
 }

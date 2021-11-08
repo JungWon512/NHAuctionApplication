@@ -83,6 +83,9 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
 	private StringProperty mTrpcsPyYn; // 자가운송여부
 	private StringProperty mPpgcowFeeDsc; // 번식우 - 임신,비임신 구분 코드
 
+	private StringProperty mExpAuctionBidPrice; //-일괄 낙찰 예정 금액
+	private StringProperty mExpAuctionSucBidder; //-일괄 낙찰 예정자
+	
 
     public SpEntryInfo() {
     }
@@ -138,6 +141,9 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
         this.mMacoYn = new SimpleStringProperty(entryInfo.getMacoYn());
         this.mTrpcsPyYn = new SimpleStringProperty(entryInfo.getTrpcsPyYn());
         this.mPpgcowFeeDsc = new SimpleStringProperty(entryInfo.getPpgcowFeeDsc());
+        this.mExpAuctionBidPrice = new SimpleStringProperty(entryInfo.getExpAuctionBidPrice());
+        this.mExpAuctionSucBidder = new SimpleStringProperty(entryInfo.getExpAuctionSucBidder());
+        
     }
 
     public StringProperty getAuctionHouseCode() {
@@ -555,6 +561,22 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
 
 	public void setPpgcowFeeDsc(StringProperty mPpgcowFeeDsc) {
 		this.mPpgcowFeeDsc = mPpgcowFeeDsc;
+	}
+	
+	public StringProperty getExpAuctionBidPrice() {
+		return mExpAuctionBidPrice;
+	}
+
+	public void setExpAuctionBidPrice(StringProperty mExpAuctionBidPrice) {
+		this.mExpAuctionBidPrice = mExpAuctionBidPrice;
+	}
+
+	public StringProperty getExpAuctionSucBidder() {
+		return mExpAuctionSucBidder;
+	}
+
+	public void setExpAuctionSucBidder(StringProperty mExpAuctionSucBidder) {
+		this.mExpAuctionSucBidder = mExpAuctionSucBidder;
 	}
 
 	public String getConvertBirthDay() {

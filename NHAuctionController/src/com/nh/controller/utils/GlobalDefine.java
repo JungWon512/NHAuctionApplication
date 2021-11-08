@@ -152,6 +152,11 @@ public class GlobalDefine {
 		public static final String AUCTION_INDV_SEX_C_5 = "5";	//비거세
 		public static final String AUCTION_INDV_SEX_C_6 = "6";	//프리마틴
 		public static final String AUCTION_INDV_SEX_C_9 = "9";	//공통
+		
+		public static final String MULTIPLE_AUCTION_STATUS_START = "start";		//일괄경매 시작
+		public static final String MULTIPLE_AUCTION_STATUS_PAUSE = "pause";		//일괄경매 정지
+		public static final String MULTIPLE_AUCTION_STATUS_FINISH = "finish";	//일괄경매 종료
+		
 	}
 
 	/**

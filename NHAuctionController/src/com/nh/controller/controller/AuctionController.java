@@ -243,8 +243,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mStage = stage;
 
 		Platform.runLater(() -> {
-			// 경매 데이터 set
-//			requestAuctionInfo();
+			
 			// 전광판 접속
 			Thread udpServer = new Thread("server") {
 				@Override
@@ -294,7 +293,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		SoundUtil.getInstance();
 
 		// 경매 데이터
-		Thread thread = new Thread("cowSql") {
+		Thread thread = new Thread("cowInfo") {
 			@Override
 			public void run() {
 				// 경매 데이터 set
@@ -1084,18 +1083,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 낙찰 결과 보기
 	 */
 	public void openFinishedEntryListPopUp() {
-
-//		ObservableList<SpEntryInfo> dataList = getFinishedEntryInfoDataList();
-//
-//		if (CommonUtils.getInstance().isListEmpty(dataList)) {
-//			addLogItem("경매 결과 없음.");
-//			return;
-//		}
-
 		openEntryDialog(EntryDialogType.ENTRY_FINISH_LIST);
-
 	}
 
+	/**
+	 * 출장우 정보 갱신
+	 * @param dataList
+	 */
 	private void setWaitEntryDataList(ObservableList<SpEntryInfo> dataList) {
 
 		Platform.runLater(() -> {
@@ -2601,6 +2595,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	}
 
+	/**
+	 * 접속자 정보 Set
+	 * @param bidderConnectInfo
+	 * @return
+	 */
 	private boolean getConnectionBidderInfo(BidderConnectInfo bidderConnectInfo) {
 
 		if (!bidderConnectInfo.getStatus().equals(GlobalDefine.AUCTION_INFO.BIDDER_STATUS_L)) {
@@ -3153,8 +3152,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				@Override
 				public void run() {
 					Platform.runLater(() -> {
+						mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.sec"), mStartAuctionSec));
 						mStartAuctionSec++;
-						mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.sec"), mStartAuctionSec));	
 					});
 				}
 			};
