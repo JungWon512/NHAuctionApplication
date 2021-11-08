@@ -1,0 +1,80 @@
+@import "common.css";
+
+.login-view .label{
+	-fx-font-size: 17px;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+.login-view .button {
+	-fx-border-width: 1.0;
+	-fx-border-color: #0082e5;
+	-fx-background-color : #0082e5;
+	-fx-font-size: 22px;
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "Noto Sans CJK KR Bold";
+}
+
+.login-view .button:hover{
+	-fx-border-width: 1.0;
+	-fx-border-color: #0082e5;
+	-fx-background-color : #0082e5;
+	-fx-font-size: 22px;
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "Noto Sans CJK KR Bold";
+}
+
+.text-field {
+	-fx-background-color: #ffffff ;
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
+	-fx-background-radius: 0.0 ;
+	-fx-border-color: #0a1931;
+	-fx-font-size: 16px;
+	-fx-text-fill: #111111;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+.text-field:focused {
+	-fx-background-color:  #ffffff ;
+	-fx-font-size: 16px;
+	-fx-text-fill: #111111;
+	-fx-border-color: #0a1931;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+
+/* 체크박스 */
+.check-box {
+    -fx-text-fill: #111;
+    -fx-font-size: 17px;
+    -fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+}
+
+.check-box .mark {
+    -fx-shape:"M14.596,2.055L12.455,0C9.687,2.884,6.011,6.714,5.158,7.602L2.055,4.624L0,6.765l5.242,5.037l0.003-0.004
+    l0.003,0.004L14.596,2.055z";
+    -fx-scale-x: 0.85;
+    -fx-scale-y: 0.85;
+    -fx-background-color: #cccccc;
+    
+}
+
+.check-box:selected .mark {
+   -fx-shape:"M14.596,2.055L12.455,0C9.687,2.884,6.011,6.714,5.158,7.602L2.055,4.624L0,6.765l5.242,5.037l0.003-0.004
+    l0.003,0.004L14.596,2.055z";
+	-fx-background-color: #008fff;
+}
+
+.check-box:selected .box {
+   -fx-border-color: #cccccc;
+}
+
+.check-box:pressed .box {
+    -fx-scale-y: 0.90;
+    -fx-scale-x: 0.90;
+}

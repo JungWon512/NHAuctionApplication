@@ -1,0 +1,29 @@
+@import "common.css";
+.dialog-pane{
+	-fx-background-color: #ffffff;
+	-fx-border-width: 1px;
+	-fx-border-color: #008fff;
+}
+.dialog-pane .content{
+	-fx-font-size: 20px;
+	-fx-background-color: #ffffff;
+	-fx-padding: 15 0 15 0;
+}
+
+.dialog-pane .label{
+	-fx-text-fill: #111111;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+.dialog-pane > .button-bar > .container {
+	-fx-padding: 0px;
+}
+.dialog-pane .button {
+	-fx-font-family: "Noto Sans CJK KR Regular";
+	-fx-font-size: 20px;
+	-fx-text-fill: #ffffff;
+	-fx-padding: 8px 54px 8px 54px;
+	-fx-background-color: #008fff;
+	-fx-background-insets: 0.0, 0.0 0.0 1.0 0.0 ;
+	-fx-background-radius: 0.0 ;
+}
