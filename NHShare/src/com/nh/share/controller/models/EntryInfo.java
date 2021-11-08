@@ -1,5 +1,6 @@
 package com.nh.share.controller.models;
 
+import com.nh.share.api.models.CowInfoData;
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.setting.AuctionShareSetting;
 
@@ -157,6 +158,59 @@ public class EntryInfo implements FromAuctionController {
 		mIsExcessCow = messages[35];
 	}
 
+	
+	public EntryInfo(CowInfoData cowInfoData) {
+		
+		mAuctionHouseCode = cowInfoData.getNA_BZPLC();
+		mEntryNum = Integer.toString(cowInfoData.getAUC_PRG_SQ());
+		mAuctionQcn = Integer.toString(cowInfoData.getQCN());
+		mEntryType = cowInfoData.getAUC_OBJ_DSC();
+		mIndNum = cowInfoData.getSRA_INDV_AMNNO();
+		mIndMngCd = cowInfoData.getSRA_SRS_DSC();
+		mFhsNum = cowInfoData.getFHS_ID_NO();
+		mFarmMngNum = Integer.toString(cowInfoData.getFARM_AMNNO());
+		mExhibitor = cowInfoData.getFTSNM();
+		mBrandName = cowInfoData.getBRANDNM();
+		mBirthday = cowInfoData.getBIRTH();
+		mKpn = cowInfoData.getKPN_NO();
+		mGender = cowInfoData.getINDV_SEX_C();
+		mGenderName = cowInfoData.getINDV_SEX_C_NAME();
+		mMotherTypeCode = cowInfoData.getSIMP_C();
+		mMotherObjNum = cowInfoData.getMCOW_SRA_INDV_AMNNO();
+		mMotherCowName = cowInfoData.getMCOW_DSC();
+		mMaTime = Integer.toString(cowInfoData.getMATIME());
+		mMaMonth = cowInfoData.getPRNY_MTCN();
+		mPasgQcn = Integer.toString(cowInfoData.getSRA_INDV_PASG_QCN());
+		mObjIdNum = cowInfoData.getINDV_ID_NO();
+		mObjRegNum = cowInfoData.getSRA_INDV_BRDSRA_RG_NO();
+		mObjRegTypeNum = cowInfoData.getRG_DSC();
+		mRgnName = cowInfoData.getSRA_PD_RGNNM();
+		mDnaYn = cowInfoData.getDNA_YN();
+		mIsNew = cowInfoData.getANW_YN();
+		mWeight = Integer.toString(cowInfoData.getCOW_SOG_WT());
+		mInitPrice = cowInfoData.getFIR_LOWS_SBID_LMT_AM();
+		mLowPrice = cowInfoData.getLOWS_SBID_LMT_AM();
+		mSraSbidUpPrice = cowInfoData.getSRA_SBID_UPR();
+		mNote = cowInfoData.getRMK_CNTN();
+		mAucDt = cowInfoData.getAUC_DT();
+		mLsChgDtm = cowInfoData.getLSCHG_DTM();
+		mLsCmeNo = cowInfoData.getLS_CMENO();
+		mLwprChgNt = cowInfoData.getLWPR_CHG_NT();
+		mAuctionResult = cowInfoData.getSEL_STS_DSC();
+		mAuctionSucBidder = cowInfoData.getLVST_AUC_PTC_MN_NO();
+		mAuctionBidPrice = cowInfoData.getSRA_SBID_AM();
+		mAuctionBidDateTime = cowInfoData.getATDR_DTM();
+		mOslpNo = Integer.toString(cowInfoData.getOSLP_NO());
+		mTrmnAmnNo = cowInfoData.getTRMN_AMNNO();
+		mLedSqno = Integer.toString(cowInfoData.getLED_SQNO());
+		mStandPosition = Integer.toString(cowInfoData.getSTAND_POSITION());
+		mMacoYn = cowInfoData.getMACO_YN();
+		mTrpcsPyYn = cowInfoData.getTRPCS_PY_YN();
+		mPpgcowFeeDsc = cowInfoData.getPPGCOW_FEE_DSC();
+		mIsExcessCow = cowInfoData.getIS_EXCESS_COW();
+	}
+	
+	
 	@Override
 	public boolean equals(Object obj) {
 		return ((EntryInfo) obj).mEntryNum.equals(mEntryNum);

@@ -1,13 +1,10 @@
 package com.nh.share.api.request;
 
-import java.util.HashMap;
-
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.ActionRuler;
 import com.nh.share.api.NetworkDefine;
-import com.nh.share.api.request.body.RequestAuctionResultBody;
-import com.nh.share.api.response.BaseResponse;
-import com.nh.share.api.response.ResponseAuctionLogin;
+import com.nh.share.api.request.body.RequestUpdateLowsBidAmtBody;
+import com.nh.share.api.response.ResponseNumber;
 import com.nh.share.utils.CommonUtils;
 
 import okhttp3.Headers;
@@ -16,55 +13,44 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.PUT;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
- * 경매 결과 전송
- *
+ * 최저가 변경
+ * @author jhlee
  */
-public class ActionRequestAuctionResult extends Action {
+public class ActionRequestUpdateLowsBidAmt extends Action {
 	
-	private String body = null;
+	private RequestUpdateLowsBidAmtBody mBody = null;
 	
-	public ActionRequestAuctionResult(String body, String token ,ActionResultListener<BaseResponse> resultListener) {
-		this.mAccessToken = token;
-		this.body = body;
+	public ActionRequestUpdateLowsBidAmt(RequestUpdateLowsBidAmtBody body, ActionResultListener<ResponseNumber> resultListener) {
+		this.mBody = body;
 		this.mResultListenerBase = resultListener;
 	}
 
 	public interface RetrofitAPIService {
 
 		@FormUrlEncoded
-		@PUT(NetworkDefine.API_REQUEST_AUCTION_RESULT)
-		Call<BaseResponse> requestAuctionResult(
+		@POST(NetworkDefine.API_REQUEST_AUCTION_UPDATE_BID_AMT)
+		Call<ResponseNumber> requestUpdateLowsBidAmt(
 				@Path("version") String apiVer,
 				@Field("list") String paramBody);
 	}
 
-	private final Callback<BaseResponse> mCallBack = new Callback<BaseResponse>() {
+	private final Callback<ResponseNumber> mCallBack = new Callback<ResponseNumber>() {
 		@Override
-		public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+		public void onResponse(Call<ResponseNumber> call, Response<ResponseNumber> response) {
 			actionDone(resultType.ACTION_RESULT_RUNNEXT);
 			Headers headers = response.headers();
 			String type = headers.get(CONTENT_TYPE);
-			BaseResponse body = response.body();
+			ResponseNumber body = response.body();
 
 			switch (response.code()) {
 			case 200:
-				if (body.getSuccess()) {
-					mResultListenerBase.onResponseResult(body);
-				} else {
-					if(CommonUtils.getInstance().isValidString(body.getMessage())) {
-						mResultListenerBase.onResponseError(body.getMessage());
-					}else {
-						actionDone(resultType.ACTION_RESULT_ERROR_SKIP);
-					}
-					
-				}
+				mResultListenerBase.onResponseResult(body);
 				break;
 			default:
 				actionDone(resultType.ACTION_RESULT_ERROR_NOT_RESPONSE);
@@ -73,7 +59,7 @@ public class ActionRequestAuctionResult extends Action {
 		}
 
 		@Override
-		public void onFailure(Call<BaseResponse> call, Throwable t) {
+		public void onFailure(Call<ResponseNumber> call, Throwable t) {
 			if (t.toString().contains("Exception") || t.toString().contains("JsonSyntaxException") || t.toString().contains("MalformedJsonException") || t.toString().contains("NoRouteToHostException") || t.toString().contains("SocketTimeoutException")) {
 				ActionRuler.getInstance().finish();
 				actionDone(resultType.ACTION_RESULT_ERROR_NOT_RESPONSE);
@@ -138,6 +124,6 @@ public class ActionRequestAuctionResult extends Action {
 	public void run() {
 		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.NH_AUCTION_API_HOST).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
 		RetrofitAPIService mRetrofitAPIService = mRetrofit.create(RetrofitAPIService.class);
-		mRetrofitAPIService.requestAuctionResult(NetworkDefine.API_VERSION,body).enqueue(mCallBack);
+		mRetrofitAPIService.requestUpdateLowsBidAmt(NetworkDefine.API_VERSION,mBody.get("list").toString()).enqueue(mCallBack);
 	}
 }

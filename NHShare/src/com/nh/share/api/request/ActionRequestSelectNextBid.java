@@ -5,9 +5,8 @@ import java.util.HashMap;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.ActionRuler;
 import com.nh.share.api.NetworkDefine;
-import com.nh.share.api.request.body.RequestAuctionResultBody;
-import com.nh.share.api.response.BaseResponse;
-import com.nh.share.api.response.ResponseAuctionLogin;
+import com.nh.share.api.request.body.RequestBidLogBody;
+import com.nh.share.api.response.ResponseNumber;
 import com.nh.share.utils.CommonUtils;
 
 import okhttp3.Headers;
@@ -16,55 +15,44 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
-import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.PUT;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
- * 경매 결과 전송
- *
+ * 다음 응찰 로그 번호 조회
+ * @author jhlee
  */
-public class ActionRequestAuctionResult extends Action {
+public class ActionRequestSelectNextBid extends Action {
 	
-	private String body = null;
+	private RequestBidLogBody mBody = null;
 	
-	public ActionRequestAuctionResult(String body, String token ,ActionResultListener<BaseResponse> resultListener) {
-		this.mAccessToken = token;
-		this.body = body;
+	public ActionRequestSelectNextBid(RequestBidLogBody body, ActionResultListener<ResponseNumber> resultListener) {
+		this.mBody = body;
 		this.mResultListenerBase = resultListener;
 	}
 
 	public interface RetrofitAPIService {
 
 		@FormUrlEncoded
-		@PUT(NetworkDefine.API_REQUEST_AUCTION_RESULT)
-		Call<BaseResponse> requestAuctionResult(
+		@POST(NetworkDefine.API_REQUEST_AUCTION_NEXT_BID)
+		Call<ResponseNumber> requestSelecNextBid(
 				@Path("version") String apiVer,
-				@Field("list") String paramBody);
+				@FieldMap HashMap<String, Object> paramBody);
 	}
 
-	private final Callback<BaseResponse> mCallBack = new Callback<BaseResponse>() {
+	private final Callback<ResponseNumber> mCallBack = new Callback<ResponseNumber>() {
 		@Override
-		public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+		public void onResponse(Call<ResponseNumber> call, Response<ResponseNumber> response) {
 			actionDone(resultType.ACTION_RESULT_RUNNEXT);
 			Headers headers = response.headers();
 			String type = headers.get(CONTENT_TYPE);
-			BaseResponse body = response.body();
+			ResponseNumber body = response.body();
 
 			switch (response.code()) {
 			case 200:
-				if (body.getSuccess()) {
-					mResultListenerBase.onResponseResult(body);
-				} else {
-					if(CommonUtils.getInstance().isValidString(body.getMessage())) {
-						mResultListenerBase.onResponseError(body.getMessage());
-					}else {
-						actionDone(resultType.ACTION_RESULT_ERROR_SKIP);
-					}
-					
-				}
+				mResultListenerBase.onResponseResult(body);
 				break;
 			default:
 				actionDone(resultType.ACTION_RESULT_ERROR_NOT_RESPONSE);
@@ -73,7 +61,7 @@ public class ActionRequestAuctionResult extends Action {
 		}
 
 		@Override
-		public void onFailure(Call<BaseResponse> call, Throwable t) {
+		public void onFailure(Call<ResponseNumber> call, Throwable t) {
 			if (t.toString().contains("Exception") || t.toString().contains("JsonSyntaxException") || t.toString().contains("MalformedJsonException") || t.toString().contains("NoRouteToHostException") || t.toString().contains("SocketTimeoutException")) {
 				ActionRuler.getInstance().finish();
 				actionDone(resultType.ACTION_RESULT_ERROR_NOT_RESPONSE);
@@ -107,7 +95,7 @@ public class ActionRequestAuctionResult extends Action {
 			break;
 		case ACTION_RESULT_ERROR_NOT_RESPONSE:
 			ActionRuler.getInstance().finish();
-			mResultListenerBase.onResponseError(errorCode);
+			mResultListenerBase.onResponseError(errStr);
 			break;
 		case ACTION_RESULT_ERROR_RESPONSE:
 			ActionRuler.getInstance().finish();
@@ -131,13 +119,14 @@ public class ActionRequestAuctionResult extends Action {
 
 	@Override
 	void actionDone(resultType type) {
-		actionDone("", type, "");
+		String errMsg = "네트워크 상태가 원활하지 않습니다.\n잠시 후 다시 시도해주세요.";
+		actionDone(errMsg, type, "");
 	}
 
 	@Override
 	public void run() {
 		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.NH_AUCTION_API_HOST).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
 		RetrofitAPIService mRetrofitAPIService = mRetrofit.create(RetrofitAPIService.class);
-		mRetrofitAPIService.requestAuctionResult(NetworkDefine.API_VERSION,body).enqueue(mCallBack);
+		mRetrofitAPIService.requestSelecNextBid(NetworkDefine.API_VERSION,mBody).enqueue(mCallBack);
 	}
 }

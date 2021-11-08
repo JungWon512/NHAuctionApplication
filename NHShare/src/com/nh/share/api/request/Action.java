@@ -16,6 +16,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor.Level;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -68,21 +69,20 @@ public abstract class Action implements Runnable {
 	 * Application -> Okhttp 사이 동작 필요 헤더 정의
 	 */
 	private class ApplicationInterceptor implements Interceptor {
+		
 		@Override
 		public Response intercept(Interceptor.Chain chain) throws IOException {
-
-			mLogger.debug("[Request Interceptor] mAccessToken : " + mAccessToken);
 			
 			Request original = chain.request();
 
 			Request request = original.newBuilder().header(REQUEST_ACCEPT, ACCEPT_CONTENT_TYPE)
-					.header(AUTHORIZATION_TYPE,BEARER + " " + mAccessToken)
+					.header(AUTHORIZATION_TYPE,BEARER + " " + NetworkDefine.ADMIN_ACCESS_TOKEN)
 					.header(USER_AGENT, USER_AGENT_OS)
 					.method(original.method(), original.body()).build();
 
 			mLogger.debug("[Request Interceptor] url > " + request.url());
 			mLogger.debug("[Request Interceptor] headers > " + request.headers());
-
+		
 			return chain.proceed(request);
 		}
 	}
@@ -103,28 +103,30 @@ public abstract class Action implements Runnable {
 	}
 
 	OkHttpClient getDefaultHttpClient() {
-
+		
 //		// 디버깅용
 		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
+		
 		OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+		clientBuilder.interceptors().add(interceptor);
 		clientBuilder.retryOnConnectionFailure(true);
 		clientBuilder.readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
 		clientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
 		clientBuilder.addInterceptor(new ApplicationInterceptor());
 		clientBuilder.addNetworkInterceptor(new NetWorkInterceptor());
-
+		
 		return clientBuilder.build();
 	}
 
 	OkHttpClient getDownloadHttpClient() {
 
 //		// 다운로드 디버깅용 
-		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+//		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+//		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
 		OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+//		clientBuilder.interceptors().add(interceptor);
 		clientBuilder.retryOnConnectionFailure(true);
 		clientBuilder.readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
 		clientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
