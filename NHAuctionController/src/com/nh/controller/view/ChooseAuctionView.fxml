@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="mRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.0" prefWidth="920.0" styleClass="base-pane" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.ChooseAuctionController">
+   <top>
+      <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="100.0" styleClass="text-bold-008fff" text="전자경매 시스템" textFill="#56afff" BorderPane.alignment="CENTER">
+         <graphic>
+            <Label styleClass="text-bold-111111" text="가축시장" textFill="WHITE">
+               <font>
+                  <Font name="Noto Sans CJK KR Regular" size="36.0" />
+               </font>
+            </Label>
+         </graphic>
+         <font>
+            <Font name="Noto Sans CJK KR Regular" size="36.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="30.0" left="30.0" right="30.0" />
+         </BorderPane.margin>
+         <children>
+            <AnchorPane />
+            <HBox alignment="CENTER" prefHeight="80.0" prefWidth="200.0" spacing="50.0">
+               <children>
+                  <RadioButton fx:id="mCalfToggleButton" mnemonicParsing="false" selected="true" text="송아지" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="1">
+                  	<toggleGroup>
+						<ToggleGroup fx:id="cowTypeToggleGroup" />
+                    </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="mFatteningCattleToggleButton" mnemonicParsing="false" text="비육우" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="2" />
+                  <RadioButton fx:id="mBreedingCattleToggleButton" mnemonicParsing="false" text="번식우" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="3" />
+               </children>
+            </HBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #ffffff;" styleClass="border-line-707070" VBox.vgrow="ALWAYS">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label alignment="CENTER" text="경매일">
+                           <font>
+                              <Font name="Noto Sans CJK KR Regular" size="28.0" />
+                           </font>
+                        </Label>
+                        <DatePicker fx:id="mAuctionDatePicker" editable="false" focusTraversable="false" minHeight="66.0" />
+                     </children>
+                     <padding>
+                        <Insets left="30.0" right="30.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="CENTER" maxHeight="30.0" styleClass="app-ver-info" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label fx:id="mVersionLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Ver.0.0.1" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mReleaseDateLabel" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Date. 20210824.155140" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets left="20.0" right="20.0" />
+                     </padding>
+                  </HBox>
+                  <HBox maxHeight="50.0" minHeight="50.0" prefHeight="50.0" spacing="1.0" style="-fx-background-color: #cccccc;" styleClass="hbox-ip">
+                     <children>
+                        <TextField fx:id="mIp" disable="true" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" promptText="IP를 입력해주세요. ex) 0.0.0.0 ~ 255.255.255.255" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="mPort" disable="true" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" promptText="PORT를 입력해주세요.ex) 5001" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="mBtnConnectionInfoModify" maxHeight="50.0" minHeight="50.0" minWidth="100.0" mnemonicParsing="false" prefHeight="50.0" styleClass="btn-ip-modify" text="수정">
+                           <font>
+                              <Font name="Noto Sans CJK KR Regular" size="22.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </center>
+   <bottom>
+      <AnchorPane maxHeight="90.0" styleClass="bottom-btn-content" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="50.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Button fx:id="mBtnConnect" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="150.0" minWidth="150.0" mnemonicParsing="false" prefWidth="150.0" styleClass="confirm-button" text="확인">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="mBtnClose" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="150.0" minWidth="150.0" mnemonicParsing="false" prefWidth="150.0" styleClass="close-button" text="종료">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="30.0" />
+               </padding>
+            </HBox>
+            <Button fx:id="mBtnSetting" alignment="CENTER" contentDisplay="RIGHT" maxWidth="150.0" minWidth="150.0" mnemonicParsing="false" prefWidth="150.0" styleClass="setting-button" text="환경설정" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children>
+         <BorderPane.margin>
+            <Insets left="30.0" right="30.0" />
+         </BorderPane.margin>
+      </AnchorPane>
+   </bottom>
+</BorderPane>
