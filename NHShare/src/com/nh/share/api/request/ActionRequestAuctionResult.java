@@ -1,13 +1,9 @@
 package com.nh.share.api.request;
 
-import java.util.HashMap;
-
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.ActionRuler;
 import com.nh.share.api.NetworkDefine;
-import com.nh.share.api.request.body.RequestAuctionResultBody;
 import com.nh.share.api.response.BaseResponse;
-import com.nh.share.api.response.ResponseAuctionLogin;
 import com.nh.share.utils.CommonUtils;
 
 import okhttp3.Headers;
@@ -16,10 +12,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.PUT;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
@@ -39,7 +34,7 @@ public class ActionRequestAuctionResult extends Action {
 	public interface RetrofitAPIService {
 
 		@FormUrlEncoded
-		@PUT(NetworkDefine.API_REQUEST_AUCTION_RESULT)
+		@POST(NetworkDefine.API_REQUEST_AUCTION_RESULT)
 		Call<BaseResponse> requestAuctionResult(
 				@Path("version") String apiVer,
 				@Field("list") String paramBody);

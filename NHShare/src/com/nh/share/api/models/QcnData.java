@@ -17,7 +17,7 @@ public class QcnData {
 	private String AUC_OBJ_DSC;
 	private String LS_CMENO;
 	private int FEMALE_KG;
-	private int divisionPrice;
+	private int DIVISIONPRICE;
 	private String DEL_YN;
 	private int MALE_KG;
 	private String FSRGMN_ENO;
@@ -94,11 +94,11 @@ public class QcnData {
 	}
 
 	public int getDivisionPrice() {
-		return divisionPrice;
+		return DIVISIONPRICE;
 	}
 
 	public void setDivisionPrice(int divisionPrice) {
-		this.divisionPrice = divisionPrice;
+		this.DIVISIONPRICE = divisionPrice;
 	}
 
 	public String getDEL_YN() {

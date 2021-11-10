@@ -208,7 +208,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected void createUdpClient(UdpBillBoardStatusListener udpBillBoardStatusListener, UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
 
 		try {
-			// UDP 전광판
+			// UDP 전광판1
 			if (SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, "") != null && !SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, "").isEmpty()) {
 				BillboardDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""), udpBillBoardStatusListener);
 
@@ -220,7 +220,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 				mLogger.debug("Billboard connection port : " + SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""));
 				mLogger.debug("Billboard connection status : " + BillboardDelegate.getInstance().isActive());
 			}
-
+			
 			// UDP PDP
 			if (SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, "") != null && !SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, "").isEmpty()) {
 				PdpDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, ""), udpPdpBoardStatusListener);

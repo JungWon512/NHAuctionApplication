@@ -1315,8 +1315,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				toggleAuctionType();
 				isPlusKeyStartAuction = false;
 				// ENTER 경매 시작으로.
-				mBtnEnter.setText(mResMsg.getString("str.btn.start"));
-				CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
+				Platform.runLater(()-> {
+					mBtnEnter.setText(mResMsg.getString("str.btn.start"));
+					CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
+				});
+
 			}
 
 			// 서버로 취소결과 전달.
@@ -3180,7 +3183,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 			isCancel = false;
 			isStartSoundPlaying = false;
-			mStartAuctionSecScheduler.cancel();
+			if (mStartAuctionSecScheduler != null) {
+				mStartAuctionSecScheduler.cancel();
+			}
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_FINISH:
 			break;
@@ -3555,6 +3560,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						}
 					}
 
+				} else if (mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_4)) {
+					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.nomat"), mCurGenterLabel.getText()));
 				} else {
 					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender"), mCurGenterLabel.getText()));
 				}

@@ -3,6 +3,7 @@ package com.nh.share.api;
 import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,8 @@ import com.nh.share.utils.CommonUtils;
 
 public class ActionRuler {
 
-	private final LinkedList<Runnable> mRunnableList = new LinkedList<Runnable>();
+	private final ConcurrentLinkedQueue<Runnable> mRunnableList = new ConcurrentLinkedQueue<Runnable>();
+	//private final LinkedList<Runnable> mRunnableList = new LinkedList<Runnable>();
 	
 	private static final ActionRuler ruler = new ActionRuler();
 	
@@ -29,12 +31,15 @@ public class ActionRuler {
 
 	public synchronized void runNext() {
 
-		if (!isListEmpty(mRunnableList)) {
-			if (mRunnableList.get(0) != null) {
-				Runnable runnable = mRunnableList.get(0);
-				mRunnableList.remove(0);
-				Thread mHandler = new Thread(runnable);
-				mHandler.start();
+		if (!mRunnableList.isEmpty()) {
+			System.out.println("mRunnableList : " + mRunnableList.size());
+			if (!mRunnableList.isEmpty()) {
+				Runnable runnable = mRunnableList.poll();
+
+				if (runnable != null) {
+					Thread mHandler = new Thread(runnable);
+					mHandler.start();
+				}
 			} else {
 				mRunnableList.remove(0);
 			}
@@ -49,7 +54,7 @@ public class ActionRuler {
 	}
 
 	public void skip() {
-		if (!isListEmpty(mRunnableList))
+		if (!mRunnableList.isEmpty())
 			mRunnableList.remove(0);
 	}
 
@@ -79,15 +84,17 @@ public class ActionRuler {
 	}
 
 	public void addActionAtFirst(Action action) {
-		mRunnableList.add(0, action);
+		mRunnableList.add(action);
+		//mRunnableList.add(0, action);
 	}
 
 	public void addRunnableAtFirst(Runnable runnable) {
-		mRunnableList.add(0, runnable);
+		mRunnableList.add(runnable);
+		//mRunnableList.add(0, runnable);
 	}
 
 	public int getCount() {
-		if (isListEmpty(mRunnableList)) {
+		if (mRunnableList.isEmpty()) {
 			return 0;
 		}
 		return mRunnableList.size();

@@ -20,8 +20,8 @@ public class NetworkDefine {
 	
 	public static String ADMIN_ACCESS_TOKEN = "";
 	
-	public static final String NH_AUCTION_API_HOST = "http://115.41.222.25:8080"; // 개발 API의 호스트
-//	public static final String NH_AUCTION_API_HOST = "http://nhlva.nonghyup.com"; // 개발 API의 호스트
+//	public static final String NH_AUCTION_API_HOST = "http://115.41.222.25:8080"; // 개발 API의 호스트
+	public static final String NH_AUCTION_API_HOST = "http://nhlva.nonghyup.com"; // 개발 API의 호스트
 //	public static final String NH_AUCTION_API_HOST = "http://192.168.0.86:18080"; // 개발 API의 호스트
 //	public static final String NH_AUCTION_API_HOST = "http://1.201.161.58:8080"; // 운영 API의 호스트
 
