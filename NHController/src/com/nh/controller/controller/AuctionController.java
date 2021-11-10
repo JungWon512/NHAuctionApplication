@@ -98,6 +98,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
@@ -145,7 +146,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private Label mAuctionInfoDateLabel, mAuctionInfoRoundLabel, mAuctionInfoGubunLabel, mAuctionInfoTotalCountLabel;
 
 	@FXML // 경매 정보 - 상태
-	private Label mAuctionStateReadyLabel, mAuctionStateProgressLabel, mAuctionStateSuccessLabel, mAuctionStateFailLabel, mAuctionStateLabel;
+	private Label mAuctionStateReadyLabel, mAuctionStateProgressLabel, mAuctionStateSuccessLabel, mAuctionStateFailLabel, mAuctionStateLabel, mAuctionSecLabel;
 
 	@FXML // 남은 시간 Bar
 	private Label cnt_5, cnt_4, cnt_3, cnt_2, cnt_1;
@@ -186,11 +187,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@FXML // 하단 메세지 전송 텍스트
 	private Label mMessageText;
 
+	@FXML
+	private GridPane mAuctionStateGridPane;
+
 	private int mRemainingTimeCount = 5; // 카운트다운 남은 시간. 정지 상황에서 남은 시간을 저장하기 위함.
 
 	private final SharedPreference preference = new SharedPreference();
 
 	private Timer mAutoStopScheduler = null; // 음성 경매 정지 타이머
+	private Timer mStartAuctionSecScheduler = null; // 경매 시작 후 초 증가 타이머
+	private int mStartAuctionSec = 0; // 경매 시작 후 초 증가 타이머 증가값
 
 	private EntryDialogType mCurPageType; // 전체or보류목록 타입
 
@@ -213,13 +219,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private boolean isFirst = false;
 
 	private boolean isPlayReAuctionSound = false;
-	
+
 	private boolean isRestart = false;
-	
-	private String REFRESH_ENTRY_LIST_TYPE_NONE = "NONE";          // 출장우 정보 갱신 - 기본
-	private String REFRESH_ENTRY_LIST_TYPE_SEND = "SEND";          // 출장우 정보 갱신 후 정보 보냄
-	private String REFRESH_ENTRY_LIST_TYPE_START = "START";        // 출장우 정보 갱신 후 시작
-	
+
+	private String REFRESH_ENTRY_LIST_TYPE_NONE = "NONE"; // 출장우 정보 갱신 - 기본
+	private String REFRESH_ENTRY_LIST_TYPE_SEND = "SEND"; // 출장우 정보 갱신 후 정보 보냄
+	private String REFRESH_ENTRY_LIST_TYPE_START = "START"; // 출장우 정보 갱신 후 시작
 
 	/**
 	 * setStage
@@ -291,7 +296,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		thread.setDaemon(true);
 		thread.start();
 
-		//비고 수정 막음.
+		// 비고 수정 막음.
 		mNoteTextArea.setEditable(false);
 	}
 
@@ -688,7 +693,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
 	 */
-	private void refreshWaitEntryDataList(boolean isRefresh ,String type) {
+	private void refreshWaitEntryDataList(boolean isRefresh, String type) {
 
 		AuctionRound aucRoundParam = new AuctionRound();
 		aucRoundParam = GlobalDefine.AUCTION_INFO.auctionRoundData.clone();
@@ -754,10 +759,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			// 추가된 데이터 항목이 있으면 add
 			if (!CommonUtils.getInstance().isListEmpty(newDataList)) {
-			
+
 				mLogger.debug("추가된 데이터 있음.");
-				
-				for(SpEntryInfo spEntryInfo : newDataList) {
+
+				for (SpEntryInfo spEntryInfo : newDataList) {
 					addLogItem("추가된 데이터 전송=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
 				}
 
@@ -771,7 +776,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mWaitTableView.setItems(mWaitEntryInfoDataList);
 			mWaitTableView.refresh();
 		}
-		
+
 		PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
 		pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
@@ -780,15 +785,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		});
 		pauseTransition.play();
-		
+
 //			}
 //		};
 	}
-	
+
 	private void onCowInfoSendOrStartAuction(String type) {
-		
-		if(type.equals(REFRESH_ENTRY_LIST_TYPE_SEND)) {
-			
+
+		if (type.equals(REFRESH_ENTRY_LIST_TYPE_SEND)) {
+
 			Thread thread = new Thread("onSendEntryData") {
 				@Override
 				public void run() {
@@ -817,14 +822,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			thread.setDaemon(true);
 			thread.start();
-	
-		}else if(type.equals(REFRESH_ENTRY_LIST_TYPE_START)) {
-			//경매시
+
+		} else if (type.equals(REFRESH_ENTRY_LIST_TYPE_START)) {
+			// 경매시
 			onStartAuction();
 		}
-		
+
 	}
-	
 
 	/**
 	 * 접속자 현황 set
@@ -1112,7 +1116,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				addLogItem("Dialog callBack Value : " + type);
 
 				if (type.equals(EntryDialogType.ENTRY_LIST) || type.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
-					refreshWaitEntryDataList(false , REFRESH_ENTRY_LIST_TYPE_NONE);
+					refreshWaitEntryDataList(false, REFRESH_ENTRY_LIST_TYPE_NONE);
 				}
 
 				if (index < 0) {
@@ -1284,6 +1288,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			isCancel = true;
 
 			stopAllSound();
+			stopStartAuctionSecScheduler();
 
 			// 정지
 			onPause();
@@ -1291,9 +1296,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (!SettingApplication.getInstance().isUseSoundAuction() && isPlusKeyStartAuction) {
 				toggleAuctionType();
 				isPlusKeyStartAuction = false;
-				// ENTER 경매 시작으로.
-				mBtnEnter.setText(mResMsg.getString("str.btn.start"));
-				CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
+				Platform.runLater(() -> {
+					// ENTER 경매 시작으로.
+					mBtnEnter.setText(mResMsg.getString("str.btn.start"));
+					CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
+				});
 			}
 
 			// 서버로 취소결과 전달.
@@ -1373,7 +1380,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param countDown
 	 */
 	public void onStartAndStopAuction(int countDown) {
-		
+
 		// 출품 이관 체크
 		if (!isSendEnterInfo()) {
 			showAlertPopupOneButton(mResMsg.getString("msg.auction.send.need.entry.data"));
@@ -1416,20 +1423,20 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 갱신 + 경매 시작
 	 */
 	private void refreshAndStart() {
-		
-		if(isStartedAuction) {
+
+		if (isStartedAuction) {
 			return;
 		}
 
 		mAuctionStatus.setState(GlobalDefineCode.AUCTION_STATUS_READY);
 		// 경매 뷰 초기화
 		setAuctionVariableState(mAuctionStatus.getState());
-		
+
 		Thread thread = new Thread() {
 			@Override
 			public void run() {
 				// 갱신 후 변경점 있으면 서버 전달.
-				refreshWaitEntryDataList(true ,REFRESH_ENTRY_LIST_TYPE_START);
+				refreshWaitEntryDataList(true, REFRESH_ENTRY_LIST_TYPE_START);
 				Platform.runLater(() -> setCurrentEntryInfo(false));
 			}
 		};
@@ -1521,10 +1528,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			isStartedAuction = true;
 
 			setCurrentEntrySoundData();
-			
+
 			// 결장 응찰가 없음.
 			if (isEmptyProperty(mCurrentSpEntryInfo.getLowPrice()) || mCurrentSpEntryInfo.getLowPriceInt() <= 0) {
-											
+
 				if (SettingApplication.getInstance().isUseSoundAuction()) {
 					// 결장 사운드 시작
 					SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
@@ -1532,15 +1539,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						public void playbackFinished(PlaybackEvent evt) {
 
 							isStartSoundPlaying = false;
-							
+
 							setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 							// 다음 번호 이동
 							selectIndexWaitTable(1, false);
-							
+
 						}
 					});
-					
-				}else {
+
+				} else {
 					// 음성경매에서 + 눌러 단일경매로 시작한 경우
 					if (isPlusKeyStartAuction) {
 						toggleAuctionType();
@@ -1551,54 +1558,51 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					// 다음 번호 이동
 					selectIndexWaitTable(1, false);
 				}
-		
+
 				return;
 			}
 
-		
-			
 			// 시작 로그 msg
 			String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), mCurrentSpEntryInfo.getEntryNum().getValue());
 
 			// 시작 서버로 Start 보냄.
 			addLogItem(msgStart + AuctionDelegate.getInstance().onStartAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
 
-				System.out.println("[출품정보 음성 읽기 전 isCancel] " + isCancel);
+			System.out.println("[출품정보 음성 읽기 전 isCancel] " + isCancel);
 
-				AudioFilePlay.getInstance().setTargetPlay(this.getClass().getResource(AudioPlayTypes.which(AudioPlayTypes.START)).toExternalForm(), new AudioPlayListener() {
-					@Override
-					public void onPlayReady(AudioFilePlay audioFilePlay, MediaPlayer mediaPlayer) {
-						mLogger.info("START TTS 재생이 준비되었습니다.");
-						mLogger.info("START TTS 재생 시간 : " + AudioFilePlay.getInstance().getPlayDuration());
-						AudioFilePlay.getInstance().playSound();
+			AudioFilePlay.getInstance().setTargetPlay(this.getClass().getResource(AudioPlayTypes.which(AudioPlayTypes.START)).toExternalForm(), new AudioPlayListener() {
+				@Override
+				public void onPlayReady(AudioFilePlay audioFilePlay, MediaPlayer mediaPlayer) {
+					mLogger.info("START TTS 재생이 준비되었습니다.");
+					mLogger.info("START TTS 재생 시간 : " + AudioFilePlay.getInstance().getPlayDuration());
+					AudioFilePlay.getInstance().playSound();
+				}
+
+				@Override
+				public void onPlayCompleted() {
+					mLogger.info("START Auction TTS 재생이 완료되었습니다. 취소 여부 : " + isCancel);
+					if (SettingApplication.getInstance().isUseSoundAuction()) {
+						playStartCurrentEntrySound();
+					} else {
+						isStartSoundPlaying = false;
 					}
+				}
+			});
 
-					@Override
-					public void onPlayCompleted() {
-						mLogger.info("START Auction TTS 재생이 완료되었습니다. 취소 여부 : " + isCancel);
-						if (SettingApplication.getInstance().isUseSoundAuction()) {
-							playStartCurrentEntrySound();
-						}else {
-							isStartSoundPlaying = false;
-						}
-					}
-				});
-
-			
 			break;
 		}
 	}
-	
+
 	/**
 	 * 출품정보 사운드
 	 */
 	private void playStartCurrentEntrySound() {
-		
-		if(isPause) {
+
+		if (isPause) {
 			System.out.println("[일시 정지 상태. 출품 정보 읽지 않음.]");
 			return;
 		}
-		
+
 		// 출품 정보 읽음.
 		SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
 			@Override
@@ -1615,7 +1619,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				soundAuctionTimerTask();
 			}
 		});
-		
+
 	}
 
 	/**
@@ -1719,7 +1723,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
-			
+
 			if (!isPause) {
 
 				mBtnReStart.setDisable(false);
@@ -1745,7 +1749,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
-			
+
 			SoundUtil.getInstance().stopSound();
 			isOverPricePlaySound = false;
 			isPlayReAuctionSound = false;
@@ -1763,7 +1767,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 경매 진행 -> 카운트 다운 일시 정지. 경매 진행 -> 카운트 다운 시작.
 	 */
 	public void onReStart() {
-		
+
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -1771,19 +1775,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mBtnReStart.setDisable(true);
 			mBtnPause.setDisable(false);
 			isPause = false;
-			
+
 			mLogger.debug("isStartSoundPlaying : " + isStartSoundPlaying);
-			//출품정보 읽는 도중 정지눌렀다가 다시 시작 하는경우. 다시 읽음
-			if(isStartSoundPlaying) {
+			// 출품정보 읽는 도중 정지눌렀다가 다시 시작 하는경우. 다시 읽음
+			if (isStartSoundPlaying) {
 				playStartCurrentEntrySound();
-			}else {
+			} else {
 				isRestart = true;
-				
+
 				if (SettingApplication.getInstance().isUseSoundAuction()) {
-					
+
 					if (!CommonUtils.getInstance().isListEmpty(mBiddingUserInfoDataList)) {
-						
-						//가격 체크
+
+						// 가격 체크
 						if (!checkOverPrice(mBiddingUserInfoDataList.get(0))) {
 							if (mBiddingUserInfoDataList.get(0).getAuctionJoinNum() != null && CommonUtils.getInstance().isValidString(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue())) {
 								playOverPriceSound(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue());
@@ -1796,7 +1800,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 									}
 								});
 							}
-						}else {
+						} else {
 							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
 								@Override
 								public void playbackFinished(PlaybackEvent evt) {
@@ -1805,7 +1809,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 								}
 							});
 						}
-					}else {
+					} else {
 						SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
 							@Override
 							public void playbackFinished(PlaybackEvent evt) {
@@ -1814,18 +1818,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							}
 						});
 					}
-					
-				}else {
-					
-					if(mCountDownLabel.isVisible()) {
+
+				} else {
+
+					if (mCountDownLabel.isVisible()) {
 						onStopAuction(mRemainingTimeCount);
 					}
-					
+
 					isRestart = false;
 				}
 			}
-			
-			
+
 		}
 	}
 
@@ -2150,8 +2153,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			return;
 		}
-		
-	
+
 		setAuctionVariableState(auctionStatus.getState());
 
 	}
@@ -2198,7 +2200,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			public void run() {
 				addLogItem("Run Stop Scheduler. ");
 				addLogItem("isCountDownBtnPressed : " + isCountDownBtnPressed + " isResultCompleteFlag : " + isResultCompleteFlag);
-				
+
 				if (isCountDownBtnPressed || isResultCompleteFlag) {
 					stopAutoAuctionScheduler();
 					return;
@@ -2441,7 +2443,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //                    }
 				}
 			}
-			
+
 			mRemainingTimeCount = SettingApplication.getInstance().getAuctionCountdown();
 		}
 	}
@@ -2968,147 +2970,181 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		if (isResultCompleteFlag) {
 			return;
-		} 
+		}
 
 //		Platform.runLater(() -> {
-			// 버튼들
-			btnToggle();
+		// 버튼들
+		btnToggle();
 
-			switch (code) {
+		switch (code) {
 
-			case GlobalDefineCode.AUCTION_STATUS_READY: 
+		case GlobalDefineCode.AUCTION_STATUS_READY:
 
-				System.out.println("#### AUCTION_STATUS_READY ####");
-				// 타이머 초기화
-				stopAutoAuctionScheduler();
-				// 응찰 쓰레드폴 init
-				initExecutorService();
-				// 카운트 시간 초기화
-				mRemainingTimeCount = SettingApplication.getInstance().getAuctionCountdown();
-				// 현재 응찰 내역 초기화
-				mCurrentBidderMap.clear();
-				// 이전 응찰 내역 초기화
-				mBeForeBidderDataList.clear();
-				// 대기 라벨 비활성화
-				mAuctionStateReadyLabel.setDisable(false);
-				// 진행 라벨 비활성화
-				mAuctionStateProgressLabel.setDisable(true);
-				// 완료 라벨 비활성화
-				mAuctionStateSuccessLabel.setDisable(true);
-				// 유찰(보류) 라벨 비활성화
-				mAuctionStateFailLabel.setDisable(true);
-				// 출품 대기 테이블 활성화
-				mWaitTableView.setDisable(false);
-				// 응찰 테이블 활성화
-				mBiddingInfoTableView.setDisable(false);
-				// 경매 재경매 횟수
-				mReAuctionCount = 0;
-				// 1순위 회원
-				mRank_1_User = null;
-				// 유찰(보류) 여부 초기화
-				mIsPass = false;
-				// 경매 1건 종료 여부
-				isAuctionComplete = false;
-				// 재경매 여부
-				isReAuction = false;
-				// 재경매중 라벨 숨김.
-				mReAuctionLabel.setVisible(false);
-				// 카운트 다운 라벨
-				mCountDownLabel.setVisible(false);
-				// 재경매 횟수 초기화
-				mReAuctionCount = -1;
-				// 재경매자 목록 초기화
-				mReAuctionBidderDataList.clear();
-				// 경매 시작 여부
-				isStartedAuction = false;
-				// 취소 여부
+			System.out.println("#### AUCTION_STATUS_READY ####");
+			// 타이머 초기화
+			stopAutoAuctionScheduler();
+			// 응찰 쓰레드폴 init
+			initExecutorService();
+			// 카운트 시간 초기화
+			mRemainingTimeCount = SettingApplication.getInstance().getAuctionCountdown();
+			// 현재 응찰 내역 초기화
+			mCurrentBidderMap.clear();
+			// 이전 응찰 내역 초기화
+			mBeForeBidderDataList.clear();
+			// 대기 라벨 비활성화
+			mAuctionStateReadyLabel.setDisable(false);
+			// 진행 라벨 비활성화
+			mAuctionStateProgressLabel.setDisable(true);
+			// 완료 라벨 비활성화
+			mAuctionStateSuccessLabel.setDisable(true);
+			// 유찰(보류) 라벨 비활성화
+			mAuctionStateFailLabel.setDisable(true);
+			// 출품 대기 테이블 활성화
+			mWaitTableView.setDisable(false);
+			// 응찰 테이블 활성화
+			mBiddingInfoTableView.setDisable(false);
+			// 경매 재경매 횟수
+			mReAuctionCount = 0;
+			// 1순위 회원
+			mRank_1_User = null;
+			// 유찰(보류) 여부 초기화
+			mIsPass = false;
+			// 경매 1건 종료 여부
+			isAuctionComplete = false;
+			// 재경매 여부
+			isReAuction = false;
+			// 재경매중 라벨 숨김.
+			mReAuctionLabel.setVisible(false);
+			// 카운트 다운 라벨
+			mCountDownLabel.setVisible(false);
+			// 재경매 횟수 초기화
+			mReAuctionCount = -1;
+			// 재경매자 목록 초기화
+			mReAuctionBidderDataList.clear();
+			// 경매 시작 여부
+			isStartedAuction = false;
+			// 취소 여부
 //				isCancel = false;
-				// 정지 여부
-				isPause = false;
-				// 결과 전송~ 다음 경매 준비 까지 방어 플래그 초기화
-				isResultCompleteFlag = false;
-				// 카운트다운 키 눌림 여부
-				isCountDownBtnPressed = false;
-				// 정지,다시시작 버튼
-				mBtnReStart.setDisable(true);
-				mBtnPause.setDisable(false);
-				//최고가 이상 사운드 플래그
-				isOverPricePlaySound = false;
-				//재경매 사운드 플래그
-				isPlayReAuctionSound = false;
-				
-				break;
-			case GlobalDefineCode.AUCTION_STATUS_START:
-			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+			// 정지 여부
+			isPause = false;
+			// 결과 전송~ 다음 경매 준비 까지 방어 플래그 초기화
+			isResultCompleteFlag = false;
+			// 카운트다운 키 눌림 여부
+			isCountDownBtnPressed = false;
+			// 정지,다시시작 버튼
+			mBtnReStart.setDisable(true);
+			mBtnPause.setDisable(false);
+			// 최고가 이상 사운드 플래그
+			isOverPricePlaySound = false;
+			// 재경매 사운드 플래그
+			isPlayReAuctionSound = false;
+			// 경매 시작 ~ 경과시간 초
+			mStartAuctionSec = 0;
+			break;
+		// case GlobalDefineCode.AUCTION_STATUS_START:
+		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
-				// 사운드 경매인 경우 타이머 시작.
-				if (SettingApplication.getInstance().isUseSoundAuction() && !isStartSoundPlaying) {
-					// 음성 경매시 종료 타이머 시작.
-					System.out.println("[경매 상태에서. 정지 타이머 실행]");
-					soundAuctionTimerTask();
+			// 경매 시작 ~ 종료 경과 시간 타이머
+			stopStartAuctionSecScheduler();
+			// 경매 시작 후 경과 시간 타이머. 1초마다 반복 수행
+			mStartAuctionSecScheduler = new Timer();
+
+			/**
+			 * 경매 시작 후 경과 시간 1초마다 수행
+			 */
+			TimerTask mStartAuctionSecTask = new TimerTask() {
+				@Override
+				public void run() {
+					Platform.runLater(() -> {
+						mStartAuctionSec++;
+						mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.sec"), mStartAuctionSec));
+					});
+				}
+			};
+
+			mStartAuctionSecScheduler.schedule(mStartAuctionSecTask, 0, 1000);
+
+			// 사운드 경매인 경우 타이머 시작.
+			if (SettingApplication.getInstance().isUseSoundAuction() && !isStartSoundPlaying) {
+				// 음성 경매시 종료 타이머 시작.
+				System.out.println("[경매 상태에서. 정지 타이머 실행]");
+				soundAuctionTimerTask();
+			}
+
+			// 대기 라벨 비활성화
+			mAuctionStateReadyLabel.setDisable(true);
+			// 진행 라벨 활성화
+			mAuctionStateProgressLabel.setDisable(false);
+			// 낙찰 라벨 비활성화
+			mAuctionStateSuccessLabel.setDisable(true);
+			// 유찰 라벨 비활성화
+			mAuctionStateFailLabel.setDisable(true);
+			break;
+		case GlobalDefineCode.AUCTION_STATUS_PASS:
+		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
+			isCancel = false;
+			isStartSoundPlaying = false;
+			if (mStartAuctionSecScheduler != null) {
+				mStartAuctionSecScheduler.cancel();
+			}
+			break;
+		case GlobalDefineCode.AUCTION_STATUS_FINISH:
+			break;
+		}
+
+		Platform.runLater(() -> {
+			// 경매 상태 - 경매 대기
+			if (code.equals(GlobalDefineCode.AUCTION_STATUS_READY)) {
+				// 카운트다운 라벨 초기화
+				setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
+				// 응찰자 초기화
+				initBiddingInfoDataList();
+				// 응찰자 테이블
+				mBiddingInfoTableView.refresh();
+				// 재경매중 카운트 초기화.
+				mReAuctionCountLabel.setText("");
+				// 경매 상태 문구 -> 경매대기
+				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.ready"));
+
+				mAuctionStateGridPane.getStyleClass().clear();
+				CommonUtils.getInstance().addStyleClass(mAuctionStateGridPane, "bg-color-008fff");
+
+				// 경매 시작 후 경과 시간
+				mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.sec"), mStartAuctionSec));
+
+			} else if (code.equals(GlobalDefineCode.AUCTION_STATUS_START) || code.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+				// 경매 상태 문구 -> 경매진행
+				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.progress"));
+				mAuctionStateGridPane.getStyleClass().clear();
+				CommonUtils.getInstance().addStyleClass(mAuctionStateGridPane, "bg-color-04cf5c");
+
+			} else if (code.equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
+
+				if (mCurrentSpEntryInfo != null) {
+					addFinishedTableViewItem(mCurrentSpEntryInfo);
 				}
 
-				// 대기 라벨 비활성화
-				mAuctionStateReadyLabel.setDisable(true);
-				// 진행 라벨 활성화
-				mAuctionStateProgressLabel.setDisable(false);
-				// 낙찰 라벨 비활성화
-				mAuctionStateSuccessLabel.setDisable(true);
-				// 유찰 라벨 비활성화
-				mAuctionStateFailLabel.setDisable(true);
-				break;
-			case GlobalDefineCode.AUCTION_STATUS_PASS:
-			case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
-				isCancel = false;	
-				isStartSoundPlaying = false;
-				break;
-			case GlobalDefineCode.AUCTION_STATUS_FINISH:
-				break;
-			}			
+				mCurEntryNumLabel.setText("");
+				mCurExhibitorLabel.setText("");
+				mCurGenterLabel.setText("");
+				mCurMotherLabel.setText("");
+				mCurMatimeLabel.setText("");
+				mCurPasgQcnLabel.setText("");
+				mCurWeightLabel.setText("");
+				mCurLowPriceLabel.setText("");
+				mCurSuccessPriceLabel.setText("");
+				mCurSuccessfulBidderLabel.setText("");
+				mCurResultLabel.setText("");
+				mCurNoteLabel.setText("");
+				mLowPriceChgNtLabel.setText("");
 
-			Platform.runLater(() -> {
-				// 경매 상태 - 경매 대기
-				if(code.equals(GlobalDefineCode.AUCTION_STATUS_READY)) {
-					// 카운트다운 라벨 초기화
-					setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
-					// 응찰자 초기화
-					initBiddingInfoDataList();
-					// 응찰자 테이블
-					mBiddingInfoTableView.refresh();
-					// 재경매중 카운트 초기화.
-					mReAuctionCountLabel.setText("");
-					// 경매 상태 문구 -> 경매대기
-					mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.ready"));
-				}else if(code.equals(GlobalDefineCode.AUCTION_STATUS_START) || code.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
-					// 경매 상태 문구 -> 경매진행
-					mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.auction.progress"));
-				}else if(code.equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
-					
-					if (mCurrentSpEntryInfo != null) {
-						addFinishedTableViewItem(mCurrentSpEntryInfo);
-					}
+				initBiddingInfoDataList();
 
-					mCurEntryNumLabel.setText("");
-					mCurExhibitorLabel.setText("");
-					mCurGenterLabel.setText("");
-					mCurMotherLabel.setText("");
-					mCurMatimeLabel.setText("");
-					mCurPasgQcnLabel.setText("");
-					mCurWeightLabel.setText("");
-					mCurLowPriceLabel.setText("");
-					mCurSuccessPriceLabel.setText("");
-					mCurSuccessfulBidderLabel.setText("");
-					mCurResultLabel.setText("");
-					mCurNoteLabel.setText("");
-					mLowPriceChgNtLabel.setText("");
+				showAlertPopupOneButton(mResMsg.getString("msg.auction.finish"));
+			}
+		});
 
-					initBiddingInfoDataList();
-
-					showAlertPopupOneButton(mResMsg.getString("msg.auction.finish"));
-				}
-			});
-
-			System.out.println("[뷰 작업 완료]" + mAuctionStatus.getState());
+		System.out.println("[뷰 작업 완료]" + mAuctionStatus.getState());
 //		});
 	}
 
@@ -3137,9 +3173,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				spEntryInfo.setAuctionResult(new SimpleStringProperty(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS));
 				spEntryInfo.setAuctionBidDateTime(new SimpleStringProperty(bidder.getBiddingTime().getValue()));
 				mAuctionStateLabel.setText(mResMsg.getString("str.auction.state.success"));
-
 				resultStringBuffer.append(String.format(mResMsg.getString("str.sound.auction.result.success"), bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));
-
 			} else {
 				spEntryInfo.setAuctionSucBidder(new SimpleStringProperty(""));
 				spEntryInfo.setAuctionBidPrice(new SimpleStringProperty("0"));
@@ -3151,6 +3185,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnSpace.setUserData("");
 				CommonUtils.getInstance().removeStyleClass(mBtnSpace, "bg-color-04cf5c");
 			}
+
+			stopStartAuctionSecScheduler();
+			mAuctionStateGridPane.getStyleClass().clear();
+			CommonUtils.getInstance().addStyleClass(mAuctionStateGridPane, "bg-color-ea0030");
 
 			// 상단 경매 상태 라벨 낙/유찰 에 따라 표시
 			auctionStateLabelToggle(spEntryInfo.getAuctionResult().getValue());
@@ -3229,7 +3267,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				addFinishedTableViewItem(spEntryInfo);
 
 				boolean isPlusSucStop = false;
-				
+
 				// 음성경매중에 + 키로 단일로 진행한경우
 				if (!SettingApplication.getInstance().isUseSoundAuction() && isPlusKeyStartAuction) {
 					toggleAuctionType();
@@ -3241,7 +3279,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				}
 
 				if (spEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
-			
+
 					// 경매 준비 상태로 뷰들 초기화
 					setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 
@@ -3412,17 +3450,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				if (mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_1) || mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_2)) {
 
-					if(mCurrentSpEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+					if (mCurrentSpEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
 						entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender.normal"), mCurGenterLabel.getText()));
-					}else {
-						
-						if(mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_1) ) {
+					} else {
+
+						if (mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_1)) {
 							entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.gender.f"));
-						}else {
+						} else {
 							entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.gender.m"));
 						}
 					}
-					
+
 				} else {
 					entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender"), mCurGenterLabel.getText()));
 				}
@@ -3649,15 +3687,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						System.out.println("[KeyCode.ADD]=> isPlusKeyStartAuction : " + isPlusKeyStartAuction);
 						System.out.println("[KeyCode.ADD]=> isStartSoundPlaying : " + isStartSoundPlaying);
 						System.out.println("[KeyCode.ADD]=> mAuctionStatus.getState() : " + mAuctionStatus.getState());
-						
-						if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_READY)
-								|| mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)
-								|| mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PASS)) {
+
+						if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_READY) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PASS)) {
 							// 출장우 정보 TTS 송출 여부 초기화
 							isStartSoundPlaying = false;
 						}
-						
-						if (isStartedAuction ||  isPlusKeyStartAuction || isStartSoundPlaying) {
+
+						if (isStartedAuction || isPlusKeyStartAuction || isStartSoundPlaying) {
 							return;
 						}
 
@@ -4276,6 +4312,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			mMessageText.setText(message);
 		});
+	}
+
+	private void stopStartAuctionSecScheduler() {
+		// 경매 시작 ~ 종료 경과 시간 타이머
+		if (mStartAuctionSecScheduler != null) {
+			mStartAuctionSec = 0;
+			mStartAuctionSecScheduler.cancel();
+			mStartAuctionSecScheduler = null;
+		}
 	}
 
 }
