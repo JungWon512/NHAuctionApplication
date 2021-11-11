@@ -9,7 +9,7 @@ package com.nh.share.code;
  */
 public class GlobalDefineCode {
 	// SSL 적용 여부
-	public static final boolean FLAG_SSL = true;
+	public static final boolean FLAG_SSL = false;
 	// 개발,운영 여부
 	public static final boolean FLAG_PRD = true;
 	// 응찰자 테스트 모드
@@ -75,11 +75,11 @@ public class GlobalDefineCode {
 	public static final String AUCTION_STATUS_COMPLETED = "8006"; // 경매 완료 상태
 	public static final String AUCTION_STATUS_FINISH = "8007"; // 경매 종료 상태
 
-	//일괄 경매  진행 상태 코드
-	public static final String STN_AUCTION_STATUS_NONE = "11";		//대기,송장등록
-	public static final String STN_AUCTION_STATUS_PROGRESS = "21";	//경매
+	//일괄 경매 상태 코드
+	public static final String STN_AUCTION_STATUS_READY = "11";		//대기
+	public static final String STN_AUCTION_STATUS_PROGRESS = "21";	//경매시작
 	public static final String STN_AUCTION_STATUS_FINISH = "22";	//종료
-	public static final String STN_AUCTION_STATUS_PENDING = "23";	//보류
+	public static final String STN_AUCTION_STATUS_PAUSE = "23";		//정지
 
 	// 경매 시작 카운트 다운 상태
 	public static final String AUCTION_COUNT_DOWN_READY = "R"; // 경매 시작 카운트 다운 준비 상태
