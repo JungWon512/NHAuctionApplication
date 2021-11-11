@@ -30,6 +30,7 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 	private String lsCmeno; // 최초변경자개인번호
 	private int divisionPrice; // 송아지,번식우 : 10000, 비육우 : 1
 	private int rgSqNo; // 일괄경매 차수 정보
+	private String selStsDsc; // 일괄경매 상태 정보 (시작,정지,종료)
 	
 	public AuctionRound() {
 	}
@@ -73,6 +74,7 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 		this.femaleKg = qcnData.getFEMALE_KG();
 		this.divisionPrice = qcnData.getDivisionPrice();
 		this.rgSqNo = qcnData.getRG_SQNO();
+		this.selStsDsc = qcnData.getSEL_STS_DSC();
 
 //		this.ttScr = qcnData.getTT_SCR();
 //		this.fsrgDtm = qcnDatagetFSRG_DTM;
@@ -233,6 +235,13 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 
 	public void setRgSqNo(int rgSqNo) {
 		this.rgSqNo = rgSqNo;
+	}
+	public String getSelStsDsc() {
+		return selStsDsc;
+	}
+
+	public void setSelStsDsc(String selStsDsc) {
+		this.selStsDsc = selStsDsc;
 	}
 
 	@Override
