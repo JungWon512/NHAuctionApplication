@@ -3,6 +3,7 @@ package com.nh.controller.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.nh.share.api.models.BidEntryData;
 import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.setting.AuctionShareSetting;
@@ -50,6 +51,18 @@ public class SpBidding implements FromAuctionCommon, Serializable, Comparable<Sp
         biddingTime = new SimpleStringProperty(bidding.getBiddingTime());
         price = new SimpleStringProperty(bidding.getPrice());
         sraSbidAm = new SimpleStringProperty("");
+    }
+    
+    public SpBidding(BidEntryData data) {
+    	  auctionHouseCode = new SimpleStringProperty(data.getNA_BZPLC());
+          channel = new SimpleStringProperty("");
+          userNo = new SimpleStringProperty(Integer.toString(data.getTRMN_AMNNO()));
+          auctionJoinNum = new SimpleStringProperty(data.getLVST_AUC_PTC_MN_NO());
+          entryNum = new SimpleStringProperty(Integer.toString(data.getBID_NUM()));
+          isNewBid = new SimpleStringProperty("");
+          biddingTime = new SimpleStringProperty(data.getATDR_DTM());
+          price = new SimpleStringProperty(Integer.toString(data.getATDR_AM()));
+          sraSbidAm = new SimpleStringProperty("");
     }
 
     public StringProperty getAuctionHouseCode() {

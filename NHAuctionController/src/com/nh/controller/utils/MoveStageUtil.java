@@ -176,7 +176,7 @@ public class MoveStageUtil {
 		
 		try {
 			previousStage.close();
-			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("MultipleAuctionControllerView2.fxml"), getResourceBundle());
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("MultipleAuctionControllerView.fxml"), getResourceBundle());
 			Parent parent = fxmlLoader.load();
 			Stage stage = new Stage();
 			MultipleAuctionController controller = fxmlLoader.getController();

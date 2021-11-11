@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.share.code.GlobalDefineCode;
@@ -564,7 +565,7 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
 	}
 	
 	public StringProperty getExpAuctionBidPrice() {
-		return mExpAuctionBidPrice;
+		return returnValue(mExpAuctionBidPrice);
 	}
 
 	public void setExpAuctionBidPrice(StringProperty mExpAuctionBidPrice) {
@@ -572,7 +573,7 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
 	}
 
 	public StringProperty getExpAuctionSucBidder() {
-		return mExpAuctionSucBidder;
+		return returnValue(mExpAuctionSucBidder);
 	}
 
 	public void setExpAuctionSucBidder(StringProperty mExpAuctionSucBidder) {
@@ -622,7 +623,17 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
             String code = mAuctionResult.getValue();
 
             if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_READY)) {
-                resultStr.setValue("대기");
+            	
+            	if(SettingApplication.getInstance().isSingleAuction()) {
+            		  resultStr.setValue("대기");
+            	}else {
+            		
+            		if(Integer.parseInt(mLowPrice.getValue()) > 0) {
+            			resultStr.setValue("대기");
+            		}else {
+            			resultStr.setValue("결장");
+            		}
+            	}
             } else if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
                 resultStr.setValue("낙찰");
             } else if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {

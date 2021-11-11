@@ -206,6 +206,8 @@ public class PdpDelegate {
 	 * @Description 네티 접속 해제
 	 */
 	public void onDisconnect(NettyClientShutDownListener listener) {
-		mClient.stopClient(listener);
+		if(mClient != null) {
+			mClient.stopClient(listener);
+		}
 	}
 }

@@ -157,6 +157,10 @@ public class GlobalDefine {
 		public static final String MULTIPLE_AUCTION_STATUS_PAUSE = "pause";		//일괄경매 정지
 		public static final String MULTIPLE_AUCTION_STATUS_FINISH = "finish";	//일괄경매 종료
 		
+		public static final String BID_LOG_TYPE_START = "S";	// insert 응찰 로그 타입 - 출장우 경매 시작
+		public static final String BID_LOG_TYPE_ING = "I";		// insert 응찰 로그 타입 - 응찰
+		public static final String BID_LOG_TYPE_FINISH = "F";	// insert 응찰 로그 타입 - 출장우 경매 종료
+		
 	}
 
 	/**

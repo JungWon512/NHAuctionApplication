@@ -136,11 +136,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected boolean isReAuctionAndOverPrice = false;
 	
 	protected boolean isOverPricePlaySound = false; // 높은가 사운드 플래그 (중복사운드 방지)
-	
-	private String BID_LOG_TYPE_START = "S";
-	private String BID_LOG_TYPE_ING = "I";
-	private String BID_LOG_TYPE_FINISH = "F";
-	
 
 	public BaseAuctionController() {
 		init();
@@ -330,7 +325,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 					AucEntrData aucEntrData = getCurrentBaseEntrData(true);
 					aucEntrData.setRgSqno(GlobalDefine.AUCTION_INFO.LOG_AUCTION_START);
 					aucEntrData.setRmkCntn(mResMsg.getString("str.auction.start"));
-					requestInsertBiddingHistory(aucEntrData,BID_LOG_TYPE_START);
+					requestInsertBiddingHistory(aucEntrData,GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_START);
 				}
 
 				break;
@@ -356,7 +351,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 					AucEntrData aucEntrData = getCurrentBaseEntrData(true);
 					aucEntrData.setRgSqno(GlobalDefine.AUCTION_INFO.LOG_AUCTION_FINISH);
 					aucEntrData.setRmkCntn(mResMsg.getString("str.auction.finish"));
-					requestInsertBiddingHistory(aucEntrData,BID_LOG_TYPE_FINISH);
+					requestInsertBiddingHistory(aucEntrData,GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_FINISH);
 				}
 
 				break;
@@ -369,7 +364,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 					AucEntrData aucEntrData = getCurrentBaseEntrData(true);
 					aucEntrData.setRgSqno(GlobalDefine.AUCTION_INFO.LOG_AUCTION_FINISH);
 					aucEntrData.setRmkCntn(mResMsg.getString("str.auction.finish"));
-					requestInsertBiddingHistory(aucEntrData,BID_LOG_TYPE_FINISH);
+					requestInsertBiddingHistory(aucEntrData,GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_FINISH);
 				}
 				
 				break;
@@ -1341,11 +1336,11 @@ public abstract class BaseAuctionController implements NettyControllable {
 				
 				String logStr = "";
 				
-				if(type.equals(BID_LOG_TYPE_START)) {
+				if(type.equals(GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_START)) {
 					logStr = "시작";
-				}else if(type.equals(BID_LOG_TYPE_ING)) {
+				}else if(type.equals(GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_ING)) {
 					logStr = "응찰";
-				}else if(type.equals(BID_LOG_TYPE_FINISH)) {
+				}else if(type.equals(GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_FINISH)) {
 					logStr = "종료";
 				}
 				
@@ -1363,11 +1358,11 @@ public abstract class BaseAuctionController implements NettyControllable {
 				
 				String logStr = "";
 				
-				if(type.equals(BID_LOG_TYPE_START)) {
+				if(type.equals(GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_START)) {
 					logStr = "시작";
-				}else if(type.equals(BID_LOG_TYPE_ING)) {
+				}else if(type.equals(GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_ING)) {
 					logStr = "응찰";
-				}else if(type.equals(BID_LOG_TYPE_FINISH)) {
+				}else if(type.equals(GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_FINISH)) {
 					logStr = "종료";
 				}
 				
@@ -1393,7 +1388,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 				aucEntrData.setRgSqno("");
 				aucEntrData.setRmkCntn("");
 
-				requestInsertBiddingHistory(aucEntrData,BID_LOG_TYPE_ING);
+				requestInsertBiddingHistory(aucEntrData,GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_ING);
 			}
 		};
 		thread.setDaemon(true);

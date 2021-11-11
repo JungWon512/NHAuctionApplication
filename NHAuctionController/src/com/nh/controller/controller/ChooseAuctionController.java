@@ -407,17 +407,6 @@ public class ChooseAuctionController implements Initializable {
 
 				dismissShowingDialog();
 
-				if (isClose) {
-
-					if (!SettingApplication.getInstance().isSingleAuction()) {
-						// 일괄경매로 변경된 경우 현재창 종료 후 일괄경매 이동
-//						MoveStageUtil.getInstance().moveAuctionType(mStage);
-
-						return;
-					} else {
-
-					}
-				}
 			}
 
 			@Override

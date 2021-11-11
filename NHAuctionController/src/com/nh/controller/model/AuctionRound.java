@@ -29,6 +29,7 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 	private LocalDateTime lschgDtm; // 최종변경일시
 	private String lsCmeno; // 최초변경자개인번호
 	private int divisionPrice; // 송아지,번식우 : 10000, 비육우 : 1
+	private int rgSqNo; // 일괄경매 차수 정보
 	
 	public AuctionRound() {
 	}
@@ -71,6 +72,7 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 		this.maleKg = qcnData.getMALE_KG();
 		this.femaleKg = qcnData.getFEMALE_KG();
 		this.divisionPrice = qcnData.getDivisionPrice();
+		this.rgSqNo = qcnData.getRG_SQNO();
 
 //		this.ttScr = qcnData.getTT_SCR();
 //		this.fsrgDtm = qcnDatagetFSRG_DTM;
@@ -223,6 +225,15 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 	public void setDivisionPrice(int divisionPrice) {
 		this.divisionPrice = divisionPrice;
 	}
+	
+
+	public int getRgSqNo() {
+		return rgSqNo;
+	}
+
+	public void setRgSqNo(int rgSqNo) {
+		this.rgSqNo = rgSqNo;
+	}
 
 	@Override
 	public String toString() {
@@ -230,7 +241,7 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 				+ ", baseLmtAm=" + baseLmtAm + ", cutAm=" + cutAm + ", sgnoPrcDsc=" + sgnoPrcDsc + ", ddlYn=" + ddlYn
 				+ ", tmsYn=" + tmsYn + ", delYn=" + delYn + ", maleKg=" + maleKg + ", femaleKg=" + femaleKg + ", ttScr="
 				+ ttScr + ", fsrgDtm=" + fsrgDtm + ", fsgmnEno=" + fsgmnEno + ", lschgDtm=" + lschgDtm + ", lsCmeno="
-				+ lsCmeno + "]";
+				+ lsCmeno + ", rgSqNo=" + rgSqNo +"]";
 	}
 	
 	public AuctionRound clone() {

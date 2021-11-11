@@ -697,7 +697,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
 					mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
 					
-					
 					List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
 
 					for (int i = 0; i < result.getData().size(); i++) {
@@ -3143,25 +3142,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		//case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
-			//경매 시작 ~ 종료 경과 시간 타이머
-			stopStartAuctionSecScheduler();
-			//경매 시작 후 경과 시간 타이머. 1초마다 반복 수행
-			mStartAuctionSecScheduler = new Timer();
-
-			/**
-			 * 경매 시작 후 경과 시간 1초마다 수행
-			 */
-			TimerTask mStartAuctionSecTask = new TimerTask() {
-				@Override
-				public void run() {
-					Platform.runLater(() -> {
-						mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.sec"), mStartAuctionSec));
-						mStartAuctionSec++;
-					});
-				}
-			};
-			
-			mStartAuctionSecScheduler.schedule(mStartAuctionSecTask, 0, 1000); 
+			//경매 경과 시간 타이머 시작
+			startAuctionSecScheduler();
 
 			// 사운드 경매인 경우 타이머 시작.
 			if (SettingApplication.getInstance().isUseSoundAuction() && !isStartSoundPlaying) {
@@ -3183,9 +3165,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 			isCancel = false;
 			isStartSoundPlaying = false;
-			if (mStartAuctionSecScheduler != null) {
-				mStartAuctionSecScheduler.cancel();
-			}
+			
+			//경매 경과 시간 타이머 종료
+			stopStartAuctionSecScheduler();
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_FINISH:
 			break;
@@ -4400,10 +4382,39 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		});
 	}
 
+	/**
+	 * 경과시간 타이머 시작
+	 */
+	private void startAuctionSecScheduler() {
+
+		//경매 경과 시간 타이머 종료
+		stopStartAuctionSecScheduler();
+		
+		//경매 시작 후 경과 시간 타이머. 1초마다 반복 수행
+		mStartAuctionSecScheduler = new Timer();
+		
+		/**
+		 * 경매 시작 후 경과 시간 1초마다 수행
+		 */
+		TimerTask mStartAuctionSecTask = new TimerTask() {
+			@Override
+			public void run() {
+				Platform.runLater(() -> {
+					mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.sec"), mStartAuctionSec));
+					mStartAuctionSec++;
+				});
+			}
+		};
+		
+		mStartAuctionSecScheduler.schedule(mStartAuctionSecTask, 0, 1000); 
+	}
+	
+	/**
+	 * 경과시간 타이머 종료
+	 */
 	private void stopStartAuctionSecScheduler() {
 		//경매 시작 ~ 종료 경과 시간 타이머
 		if (mStartAuctionSecScheduler != null) {
-			mStartAuctionSec = 0;
 			mStartAuctionSecScheduler.cancel();
 			mStartAuctionSecScheduler = null;
 		}

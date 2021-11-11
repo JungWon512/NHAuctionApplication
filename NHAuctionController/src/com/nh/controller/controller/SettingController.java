@@ -187,8 +187,10 @@ public class SettingController implements Initializable {
 
 		if(!isDisplayBordConnection) {
 			mBtnInitServer.setDisable(true);
+		}else {
+//			mAuctionTypeSingleToggleButton.setDisable(true);
+//			mAuctionTypeMultiToggleButton.setDisable(true);
 		}
-
 	}
 
 	/**
@@ -526,12 +528,29 @@ public class SettingController implements Initializable {
 	 * @author dhKim
 	 */
 	private void setToggleGroups() {
-		getToggleTypes();
+		
 		boardToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> boardToggleType = newValue.getUserData().toString().trim());
 
 		pdpToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> pdpToggleType = newValue.getUserData().toString().trim());
 
-		auctionTypeToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> auctionToggleType = newValue.getUserData().toString().trim());
+		auctionTypeToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> {
+			
+			if(observableValue != null) {
+				mLogger.debug("" + observableValue.getValue());
+			}
+			
+			if(oldValue != null) {
+				mLogger.debug("" + oldValue.toString());
+			}
+			
+			if(newValue != null) {
+				mLogger.debug("" + newValue.toString());
+			}
+				
+			auctionToggleType = newValue.getUserData().toString().trim();
+		});
+
+		getToggleTypes();
 	}
 
 	/**
@@ -566,6 +585,7 @@ public class SettingController implements Initializable {
 		case AUCTIONTYPE -> mPdpViewAuctionTypeToggleButton.setSelected(true);
 		}
 
+		mLogger.debug("auctionToggle : " + auctionToggle);
 		switch (AuctionToggle.valueOf(auctionToggle.toUpperCase())) {
 		case SINGLE -> mAuctionTypeSingleToggleButton.setSelected(true);
 		case MULTI -> mAuctionTypeMultiToggleButton.setSelected(true);
@@ -889,22 +909,14 @@ public class SettingController implements Initializable {
 			setCountTextField();
 			setMobileCheckboxPreference(mobileCheckBoxSelectedList);
 			setToggleTypes();
+		
 			
-			String aucType = "";
-			
-			if(AuctionToggle.SINGLE.toString().equals(auctionTypeToggleGroup.getSelectedToggle().getUserData().toString().toUpperCase())) {
-				aucType = GlobalDefine.AUCTION_INFO.AUCTION_TYPE_SINGLE;
-			}else {
-				aucType = GlobalDefine.AUCTION_INFO.AUCTION_TYPE_MULTI;
-			}
+			mLogger.debug("auctionToggleType : " + auctionToggleType);
+	
 			
 			// 서버에 edit setting 전송
-			EditSetting setting = new EditSetting(sharedPreference.getString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, ""), sharedPreference.getString(SHARED_MOBILE_ARRAY[0], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[1], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[2], "Y"),
-					sharedPreference.getString(SHARED_MOBILE_ARRAY[3], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[4], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[5], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[6], "Y"),
-					sharedPreference.getString(SHARED_MOBILE_ARRAY[7], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[8], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[9], "N"), sharedPreference.getString(SHARED_MOBILE_ARRAY[10], "Y"),
-					sharedPreference.getString(SHARED_MOBILE_ARRAY[11], "N"), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"),aucType);
-			mLogger.debug(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
-
+			mLogger.debug(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(SettingApplication.getInstance().getSettingInfo()));
+			
 			if (this.isDisplayBordConnection) {
 
 					// UDP 전광판
@@ -969,7 +981,7 @@ public class SettingController implements Initializable {
 			}
 			
 			} catch (Exception e) {
-				mLogger.debug("[onAuctionStatus Exception] " + e);
+				mLogger.debug("[saveSettings Exception] " + e);
 			}finally {
 				// 환경설정 저장 후 값들 재설정
 				SettingApplication.getInstance().initSharedData();
