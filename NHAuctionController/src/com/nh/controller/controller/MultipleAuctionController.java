@@ -2847,7 +2847,12 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			@Override
 			public void run() {
 				Platform.runLater(() -> {
-					mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.sec"), mStartAuctionSec));
+					if (mStartAuctionSec >= 60) {
+						mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.min"), mStartAuctionSec / 60, mStartAuctionSec % 60));
+					} else {
+						mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.sec"), mStartAuctionSec));
+					}
+					
 					mStartAuctionSec++;
 				});
 			}
