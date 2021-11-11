@@ -3,8 +3,11 @@ package com.nh.share.common.models;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.nh.share.api.models.BidEntryData;
 import com.nh.share.common.interfaces.FromAuctionCommon;
 import com.nh.share.setting.AuctionShareSetting;
+
+import javafx.beans.property.SimpleStringProperty;
 
 /**
  * 경매 응찰 처리 기능
@@ -45,6 +48,20 @@ public class Bidding implements FromAuctionCommon, Serializable, Comparable<Bidd
 		mBiddingTime = biddingTime;
 	}
 
+	
+    public Bidding(BidEntryData data) {
+    	
+    	mAuctionHouseCode = data.getNA_BZPLC();
+		mChannel = "";
+		mUserNo = Integer.toString(data.getTRMN_AMNNO());
+		mAuctionJoinNum = data.getLVST_AUC_PTC_MN_NO();
+		mPrice = Integer.toString(data.getATDR_AM());
+		mEntryNum = Integer.toString(data.getBID_NUM());
+		mPriceInt = Integer.parseInt(mPrice);
+		mIsNewBid = "";
+		mBiddingTime = data.getATDR_DTM();
+  }
+    
 	public String getAuctionHouseCode() {
 		return mAuctionHouseCode;
 	}

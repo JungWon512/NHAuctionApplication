@@ -211,6 +211,9 @@ public class EntryInfo implements FromAuctionController {
 		mTrpcsPyYn = cowInfoData.getTRPCS_PY_YN();
 		mPpgcowFeeDsc = cowInfoData.getPPGCOW_FEE_DSC();
 		mIsExcessCow = cowInfoData.getIS_EXCESS_COW();
+		mExpAuctionBidPrice = Integer.toString(cowInfoData.getEXP_ATDR_AM()); 
+		mExpAuctionSucBidder = Integer.toString(cowInfoData.getEXP_LVST_AUC_PTC_MN_NO());
+		
 	}
 	
 	

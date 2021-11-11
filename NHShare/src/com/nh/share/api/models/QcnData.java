@@ -28,6 +28,7 @@ public class QcnData {
 	private String LSCHG_DTM;
 	private int QCN;
 	private String SEL_STS_DSC;
+	private int RG_SQNO;
 
 	public String getTT_SCR() {
 		return TT_SCR;
@@ -180,5 +181,23 @@ public class QcnData {
 	public void setSEL_STS_DSC(String sEL_STS_DSC) {
 		SEL_STS_DSC = sEL_STS_DSC;
 	}
+
+	public int getDIVISIONPRICE() {
+		return DIVISIONPRICE;
+	}
+
+	public void setDIVISIONPRICE(int dIVISIONPRICE) {
+		DIVISIONPRICE = dIVISIONPRICE;
+	}
+
+	public int getRG_SQNO() {
+		return RG_SQNO;
+	}
+
+	public void setRG_SQNO(int rG_SQNO) {
+		RG_SQNO = rG_SQNO;
+	}
+	
+	
 
 }

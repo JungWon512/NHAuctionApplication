@@ -7,7 +7,7 @@ import com.nh.share.api.models.BidEntryData;
 /**
  * 회차 정보 조회 응답 객체
  * 
- * @see {ActionRequestSelectBidEntey}
+ * @see {ActionRequestSelectBidEntry}
  *
  */
 public class ResponseBidEntry extends BaseResponse {
