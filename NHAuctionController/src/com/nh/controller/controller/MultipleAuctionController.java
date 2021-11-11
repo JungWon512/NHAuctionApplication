@@ -1196,7 +1196,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
 
 					for (int i = 0; i < result.getData().size(); i++) {
-
 						EntryInfo entryInfo = new EntryInfo(result.getData().get(i));
 						String flag = (i == result.getData().size() - 1) ? "Y" : "N";
 						entryInfo.setIsLastEntry(flag);
@@ -1270,7 +1269,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 							mLogger.debug("추기된 데이터 없음.");
 						}
 
-						mWaitTableView.setItems(mWaitEntryInfoDataList);
+//						mWaitTableView.setItems(mWaitEntryInfoDataList);
 						mWaitTableView.refresh();
 					}
 
@@ -1586,29 +1585,71 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_READY:
-
 			// 경매 시작 ~ 경과시간 초
 			mStartAuctionSec = 0;
-
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 			// 경매 경과 시간 타이머 시작
 			startAuctionSecScheduler();
-
+			
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_PASS:
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 
 			// 경매 경과 시간 타이머 종료
 			stopStartAuctionSecScheduler();
+		
 			break;
 		}
 
+		// 경매 상태 버튼 제어
+//		auctionStateButtonToggle(mAuctionStatus.getState());
 		// 상단 경매 진행 상태
 		auctionStateLabelToggle(mAuctionStatus.getState());
 
 	}
+	
+	/**
+	 * 경매 상태 버튼 제어
+	 * @param state
+	 */
+	private void auctionStateButtonToggle(String state) {
+		
+		switch (state) {
+		case GlobalDefineCode.AUCTION_STATUS_NONE:
+			break;
+		case GlobalDefineCode.AUCTION_STATUS_READY:
+			break;
+		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+		
+			mBtnUpPrice.setDisable(true);
+			mBtnDownPrice.setDisable(true);
+			mBtnF4.setDisable(true);
+			mBtnF5.setDisable(true);
+			mBtnF8.setDisable(true);
+			//경매시작
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
+				mBtnStart.setDisable(false);
+			}else {
+				mBtnStart.setDisable(true);
+			}
+			//경매정지
+			mBtnPause.setDisable(false);
+			//경매종료
+			mBtnFinish.setDisable(false);
+			
+			break;
+		case GlobalDefineCode.AUCTION_STATUS_PASS:
+		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 
+			break;
+		default:
+			
+			break;
+		}
+		
+	}
+	
 	/**
 	 * 상단 경매 진행 상태
 	 *
@@ -2706,7 +2747,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
 
 					List<SpBidding> resultDataList = result.getData().stream().map(item -> new SpBidding(item)).collect(Collectors.toList());
-					
 					
 					for(SpBidding spBidding : resultDataList) {
 						// 현재 응찰맵에 응찰내역이 있는경우. 이전 응찰 맵에 저장.
