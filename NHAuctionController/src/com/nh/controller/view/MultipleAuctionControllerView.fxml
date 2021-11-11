@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
@@ -369,7 +370,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="130.0" prefWidth="130.0" styleClass="column-auction-row" text="비고" HBox.hgrow="ALWAYS">
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="130.0" prefWidth="130.0" styleClass="column-auction-row" text="비고" HBox.hgrow="ALWAYS">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -479,8 +480,10 @@
                                     <TableColumn fx:id="mWaitPasgQcnColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="계대" />
                                     <TableColumn fx:id="mWaitWeightColumn" maxWidth="80.0" minWidth="80.0" text="중량(kg)" />
                                     <TableColumn fx:id="mWaitLowPriceColumn" maxWidth="80.0" minWidth="80.0" text="최저가" />
-                                    <TableColumn fx:id="mWaitSuccessPriceColumn" maxWidth="80.0" minWidth="80.0" text="경락가" />
-                                    <TableColumn fx:id="mWaitSuccessfulBidderColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="낙찰" />
+                                    <TableColumn fx:id="mWaitExSuccessPriceColumn" maxWidth="80.0" minWidth="80.0" text="예정가" />
+                                    <TableColumn fx:id="mWaitExSuccessfulBidderColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="예정자" />
+                                    <TableColumn fx:id="mWaitSuccessPriceColumn" maxWidth="80.0" minWidth="80.0" text="경락가" visible="false" />
+                                    <TableColumn fx:id="mWaitSuccessfulBidderColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="낙찰" visible="false" />
                                     <TableColumn fx:id="mWaitResultColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="결과" />
                                     <TableColumn fx:id="mWaitNoteColumn" minWidth="130.0" prefWidth="130.0" text="비고" />
                                  </columns>
@@ -691,9 +694,21 @@
                   <Button fx:id="mBtnF4" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F4]전체보기" />
                   <Button fx:id="mBtnF5" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F5]보류보기" />
                   <Button fx:id="mBtnF8" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F8]환경설정" />
-                  <Button fx:id="mBtnStart" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="경매시작" />
-                  <Button fx:id="mBtnPause" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="경매정지" />
-                  <Button fx:id="mBtnFinish" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="경매종료" />
+                  <Button fx:id="mBtnStart" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매시작">
+                     <styleClass>
+                        <String fx:value="btn-bottom" />
+                        <String fx:value="bg-color-04cf5c" />
+                     </styleClass></Button>
+                  <Button fx:id="mBtnPause" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매정지">
+                     <styleClass>
+                        <String fx:value="btn-bottom" />
+                        <String fx:value="bg-color-008fff" />
+                     </styleClass></Button>
+                  <Button fx:id="mBtnFinish" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매종료">
+                     <styleClass>
+                        <String fx:value="btn-bottom" />
+                        <String fx:value="bg-color-ea0030" />
+                     </styleClass></Button>
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" top="10.0" />

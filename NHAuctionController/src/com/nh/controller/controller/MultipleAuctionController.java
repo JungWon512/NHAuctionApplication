@@ -160,7 +160,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private CheckBox mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mMotherObjNumCheckBox, mMaTimeCheckBox, mPasgQcnCheckBox, mWeightCheckBox, mLowPriceCheckBox, mBrandNameCheckBox;
 
 	@FXML // 대기중인 출품
-	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn, mWaitMotherColumn, mWaitMatimeColumn, mWaitPasgQcnColumn, mWaitWeightColumn, mWaitLowPriceColumn, mWaitSuccessPriceColumn, mWaitSuccessfulBidderColumn, mWaitResultColumn, mWaitNoteColumn;
+	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn, mWaitMotherColumn, mWaitMatimeColumn, mWaitPasgQcnColumn, mWaitWeightColumn, mWaitLowPriceColumn, mWaitExSuccessPriceColumn,mWaitExSuccessfulBidderColumn,mWaitSuccessPriceColumn, mWaitSuccessfulBidderColumn, mWaitResultColumn, mWaitNoteColumn;
 
 	@FXML // 현재 경매
 	private Label mCurEntryNumLabel, mCurExhibitorLabel, mCurGenterLabel, mCurMotherLabel, mCurMatimeLabel, mCurPasgQcnLabel, mCurWeightLabel, mCurLowPriceLabel, mCurSuccessPriceLabel, mCurSuccessfulBidderLabel, mCurResultLabel, mCurNoteLabel;
@@ -513,6 +513,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		CommonUtils.getInstance().setAlignCenterCol(mWaitPasgQcnColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitWeightColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitLowPriceColumn);
+		CommonUtils.getInstance().setAlignCenterCol(mWaitExSuccessPriceColumn);
+		CommonUtils.getInstance().setAlignCenterCol(mWaitExSuccessfulBidderColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitSuccessPriceColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitSuccessfulBidderColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitResultColumn);
@@ -539,21 +541,23 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		// [s] binding
 		// 테이블 컬럼 - 대기
-		initWaitColumn(false);
-//		mWaitEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
-//		mWaitExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
-//		mWaitGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGenderName());
-//		mWaitMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherCowName());
-//		mWaitMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
-//		mWaitPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
-//		mWaitWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
-//		mWaitLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
-//		mWaitSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSraSbidUpPrice()); //낙찰가
-//		mWaitSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder()); //낙찰자
-//		mWaitSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getExpAuctionBidPrice()); //낙찰 예정가
-//		mWaitSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getExpAuctionSucBidder()); //낙찰 예정자
-//		mWaitResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
-//		mWaitNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
+
+		mWaitEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
+		mWaitExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
+		mWaitGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGenderName());
+		mWaitMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherCowName());
+		mWaitMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
+		mWaitPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
+		mWaitWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
+		mWaitLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
+		
+		mWaitExSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getExpAuctionBidPrice()); //낙찰 예정가
+		mWaitExSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getExpAuctionSucBidder()); //낙찰 예정자
+		mWaitSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSraSbidUpPrice()); //낙찰가
+		mWaitSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder()); //낙찰자
+
+		mWaitResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
+		mWaitNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
 
 		// 테이블 컬럼 - 응찰자
 		mBiddingPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getPrice());
@@ -572,6 +576,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mConnectionUserTableView.setPlaceholder(new Label(mResMsg.getString("msg.connected.user.default")));
 		mBiddingInfoTableView.setPlaceholder(new Label(mResMsg.getString("msg.bidder.default")));
 
+		updateWaitColumnAuctionState(false);
+		
 		// 응찰 현황
 		initBiddingInfoDataList();
 		// 접속 현황
@@ -579,38 +585,30 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 	}
 
-	private void initWaitColumn(boolean isAucFinish) {
+	/**
+	 * 경매 대기~진행 낙찰 예정가,예정자 표시
+	 * 경매 완료  낙찰가,낙찰자 표시
+	 * @param isAucFinish
+	 */
+	private void updateWaitColumnAuctionState(boolean isAucFinish) {
 
 		Platform.runLater(() -> {
-
-			mWaitEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
-			mWaitExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
-			mWaitGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGenderName());
-			mWaitMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherCowName());
-			mWaitMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
-			mWaitPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
-			mWaitWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
-			mWaitLowPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getLowPrice());
-
+			
 			if (!isAucFinish) {
-
 				mColSuccessPriceLabel.setText(mResMsg.getString("str.table.col.ing.price"));
 				mColSuccessBidderLabel.setText(mResMsg.getString("str.table.col.ing.bidder"));
-
-				mWaitSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getExpAuctionBidPrice()); // 낙찰 예정가
-				mWaitSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getExpAuctionSucBidder()); // 낙찰 예정자
+				mWaitExSuccessPriceColumn.setVisible(true); // 낙찰 예정가
+				mWaitExSuccessfulBidderColumn.setVisible(true); // 낙찰 예정자
+				mWaitSuccessPriceColumn.setVisible(false); // 경락가
+				mWaitSuccessfulBidderColumn.setVisible(false); // 낙찰자
 			} else {
-
 				mColSuccessPriceLabel.setText(mResMsg.getString("str.table.col.finish.price"));
 				mColSuccessBidderLabel.setText(mResMsg.getString("str.table.col.finish.bidder"));
-
-				mWaitSuccessPriceColumn.setCellValueFactory(cellData -> cellData.getValue().getSraSbidUpPrice()); // 낙찰가
-				mWaitSuccessfulBidderColumn.setCellValueFactory(cellData -> cellData.getValue().getAuctionSucBidder()); // 낙찰자
+				mWaitExSuccessPriceColumn.setVisible(false); // 낙찰 예정가
+				mWaitExSuccessfulBidderColumn.setVisible(false); // 낙찰 예정자
+				mWaitSuccessPriceColumn.setVisible(true); // 경락가
+				mWaitSuccessfulBidderColumn.setVisible(true); // 낙찰자
 			}
-
-			mWaitResultColumn.setCellValueFactory(cellData -> cellData.getValue().getBiddingResult());
-			mWaitNoteColumn.setCellValueFactory(cellData -> cellData.getValue().getNote());
-
 		});
 	}
 
@@ -867,10 +865,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 						spEntryInfo.getIsLastEntry().setValue(tmpIsLastEntry);
 
-						if (!isUp) {
-							long soundPrice = price * -1;
-							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.change.low.price"), soundPrice), null);
-						}
+//						if (!isUp) {
+//							long soundPrice = price * -1;
+//							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.change.low.price"), soundPrice), null);
+//						}
 
 					} else {
 						mLogger.debug("[최저가 수정 Fail]");
@@ -1465,8 +1463,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		stopStartAuctionSecScheduler();
 		
 		playLocalSound(AudioPlayTypes.FINISH);
-		
-		initWaitColumn(true);
 		refreshWaitEntryDataList(true, REFRESH_ENTRY_LIST_TYPE_NONE);
 		setCurrentEntryInfo();
 		mLogger.debug(mResMsg.getString("msg.auction.send.complete") + AuctionDelegate.getInstance().onStopAuction(mCurrentSpEntryInfo.getEntryNum().getValue(), 0));
@@ -1577,6 +1573,15 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
 			// 출품 정보 보내기 버튼 비활성화
 			mBtnF1.setDisable(true);
+		}
+
+		//출장우 컬럼 표시
+		if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PASS)
+				|| mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)
+				|| mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
+			updateWaitColumnAuctionState(true);
+		}else {
+			updateWaitColumnAuctionState(false);
 		}
 
 		switch (mAuctionStatus.getState()) {
