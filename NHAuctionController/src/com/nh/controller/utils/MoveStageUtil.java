@@ -210,7 +210,7 @@ public class MoveStageUtil {
 			AuctionController controller = fxmlLoader.getController();
 			controller.onConnectServer(chooseAuctionStage, fxmlLoader, ip, port, id);
 		}else {
-			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("MultipleAuctionControllerView2.fxml"), getResourceBundle());
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("MultipleAuctionControllerView.fxml"), getResourceBundle());
 			fxmlLoader.load();
 			MultipleAuctionController controller = fxmlLoader.getController();
 			controller.onConnectServer(chooseAuctionStage, fxmlLoader, ip, port, id);
