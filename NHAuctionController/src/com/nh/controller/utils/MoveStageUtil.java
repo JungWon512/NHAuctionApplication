@@ -234,7 +234,7 @@ public class MoveStageUtil {
 	
 	private void auctionStageShowLoadingDialog(Stage stage ,ResourceBundle resources ) {
 		
-		PauseTransition pauseTransition = new PauseTransition(Duration.millis(100));
+		PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
 		pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
