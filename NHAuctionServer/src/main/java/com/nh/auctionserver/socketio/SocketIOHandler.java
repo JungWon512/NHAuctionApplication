@@ -1543,10 +1543,15 @@ public class SocketIOHandler {
 												GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage());
 							}
 						} else {
-							if (((Bidding) parseObject).getPriceInt() >= Integer.valueOf(
+							if (mAuctioneer.getAuctionState(((Bidding) parseObject).getAuctionHouseCode()).getIsAuctionPause()) {
+								log.info("=============================================");
+								log.info("경매 정지로 인한 응찰 실패 : " + ((Bidding) parseObject).getEncodedMessage());
+								log.info("=============================================");
+								client.sendEvent("ResponseCode", new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
+										GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage());
+							} else if (((Bidding) parseObject).getPriceInt() >= Integer.valueOf(
 									mAuctioneer.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getLowPrice())
-									&& ((Bidding) parseObject).getPriceInt() < Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice())
-									&& !mAuctioneer.getAuctionState(((Bidding) parseObject).getAuctionHouseCode()).getIsAuctionPause()) {
+									&& ((Bidding) parseObject).getPriceInt() <= Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice())) {
 								client.sendEvent("ResponseCode",
 										new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
 												GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage());

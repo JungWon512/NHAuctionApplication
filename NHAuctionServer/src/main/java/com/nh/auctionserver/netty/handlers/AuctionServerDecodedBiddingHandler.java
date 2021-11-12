@@ -100,11 +100,16 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 					}
 				} else {
 					// 현재 진행 출품번호 및 최저가에 만족하는지 확인
-					if (bidding
+					if (mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getIsAuctionPause()) {
+						mLogger.debug("=============================================");
+						mLogger.debug("경매 정지로 인한 응찰 실패 : " + bidding.getEncodedMessage());
+						mLogger.debug("=============================================");
+						ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+								GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage() + "\r\n");
+					} else if (bidding
 							.getPriceInt() >= Integer.valueOf(mAuctionScheduler
 									.getEntryInfo(bidding.getAuctionHouseCode(), bidding.getEntryNum()).getLowPrice())
-							&& bidding.getPriceInt() < Integer.valueOf(mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmAuctionLimitPrice())
-							&& !mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getIsAuctionPause()) {
+							&& bidding.getPriceInt() <= Integer.valueOf(mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmAuctionLimitPrice())) {
 
 						ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
 								GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage() + "\r\n");
