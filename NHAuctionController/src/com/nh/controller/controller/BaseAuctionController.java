@@ -42,9 +42,11 @@ import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.api.ActionResultListener;
+import com.nh.share.api.request.body.RequestBidEntryBody;
 import com.nh.share.api.request.body.RequestBidLogBody;
 import com.nh.share.api.request.body.RequestBidNumBody;
 import com.nh.share.api.response.BaseResponse;
+import com.nh.share.api.response.ResponseBidEntry;
 import com.nh.share.api.response.ResponseJoinNumber;
 import com.nh.share.api.response.ResponseNumber;
 import com.nh.share.code.GlobalDefineCode;
@@ -357,19 +359,12 @@ public abstract class BaseAuctionController implements NettyControllable {
 				addLogItem(mResMsg.getString("msg.auction.status.finish"));
 				BillboardDelegate.getInstance().finishBillboard();
 				PdpDelegate.getInstance().finishPdp();
-			
-				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
-					AucEntrData aucEntrData = getCurrentBaseEntrData(true);
-					aucEntrData.setRgSqno(GlobalDefine.AUCTION_INFO.LOG_AUCTION_FINISH);
-					aucEntrData.setRmkCntn(mResMsg.getString("str.auction.finish"));
-					requestInsertBiddingHistory(aucEntrData,GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_FINISH);
-				}
-				
+				exeCalculationRankServiceShutDown();
 				break;
 			}
 
 		} catch (Exception e) {
-			mLogger.debug("[onAuctionStatus Exception] " + e);
+			mLogger.debug("[onAuctionStatus Send Udp Server Exception] " + e);
 		}
 
 	}
@@ -447,7 +442,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 							// 최저가와 같거나 크고, 응찰된 금액이랑 같지 않을 경우 응찰 내역 저장
 							if ((mCurrentBidderMap.get(bidding.getAuctionJoinNum()).getPriceInt() != bidding.getPriceInt()) && (mCurrentSpEntryInfo.getLowPriceInt() <= bidding.getPriceInt())) {
 
-								setBidding(bidding);
+								setBidding(bidding,true);
 
 								mLogger.debug("[onBidding] 재경매 응찰 저장 : " + bidding.getPriceInt());
 							} else {
@@ -460,7 +455,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 				} else {
 					// 재경매 상황이 아니면 응찰 set
-					setBidding(bidding);
+					setBidding(bidding,true);
 				}
 
 			} catch (Exception e) {
@@ -675,7 +670,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	 *
 	 * @param bidding
 	 */
-	public synchronized void setBidding(Bidding bidding) {
+	public synchronized void setBidding(Bidding bidding,boolean isInsertLog) {
 
 		SpBidding spBidding = new SpBidding(bidding);
 
@@ -874,8 +869,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 				auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
 				auctionResult.setSuccessBidUpr(bidder.getPrice().getValue());
 
-				int sraSbidAm = bidder.getPriceInt() * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000;
-
+				int sraSbidAm = bidder.getPriceInt() * GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice();
+				
 				auctionResult.setSuccessBidPrice(Integer.toString(sraSbidAm));
 
 				bidder.setSraSbidAm(new SimpleStringProperty(Integer.toString(sraSbidAm)));
@@ -953,7 +948,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 			// 최저가는 원단위로
 			if (CommonUtils.getInstance().isValidString(spEntryInfo.getLowPrice().getValue())) {
-				resultLowPrice = Integer.parseInt(spEntryInfo.getLowPrice().getValue()) * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000;
+				resultLowPrice = Integer.parseInt(spEntryInfo.getLowPrice().getValue()) * GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice();
 			}
 
 			
@@ -1000,7 +995,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 						// 최저가는 원단위로
 						if (CommonUtils.getInstance().isValidString(spEntryInfo.getLowPrice().getValue())) {
-							resultLowPrice = Integer.parseInt(spEntryInfo.getLowPrice().getValue()) * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000;
+							resultLowPrice = Integer.parseInt(spEntryInfo.getLowPrice().getValue()) * GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice();
 						}
 						
 						// 낙유찰 결과 전송
@@ -1183,7 +1178,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 					logContent.append(ENTER_LINE);
 					String user = biddingList.get(i).getAuctionJoinNum().getValue() + "(" + biddingList.get(i).getUserNo().getValue() + ")";
 					String rankUser = String.format(mResMsg.getString("log.auction.result.rank"), Integer.toString((i + 1)), user);
-					String price = String.format(mResMsg.getString("log.auction.result.price"), biddingList.get(i).getPriceInt() * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000) + EMPTY_SPACE
+					String price = String.format(mResMsg.getString("log.auction.result.price"), biddingList.get(i).getPriceInt() * GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice()) + EMPTY_SPACE
 							+ CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(biddingList.get(i).getBiddingTime().getValue());
 					logContent.append(rankUser + EMPTY_SPACE + price);
 
@@ -1214,7 +1209,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 					for (SpBidding beforeBidding : mBeForeBidderDataList) {
 
 						if (disBidding.getUserNo().getValue().equals(beforeBidding.getUserNo().getValue())) {
-							logContent.append(String.format(mResMsg.getString("log.auction.result.price"), beforeBidding.getPriceInt() * GlobalDefine.AUCTION_INFO.MULTIPLICATION_BIDDER_PRICE_10000));
+							logContent.append(String.format(mResMsg.getString("log.auction.result.price"), beforeBidding.getPriceInt() * GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice()));
 							logContent.append(EMPTY_SPACE);
 							logContent.append(EMPTY_SPACE);
 							logContent.append(CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(beforeBidding.getBiddingTime().getValue()));
@@ -1387,6 +1382,42 @@ public abstract class BaseAuctionController implements NettyControllable {
 		thread.start();
 	}
 
+	
+
+	/**
+	 * 응찰 목록
+	 */
+	protected void requestSelectBidEntry() {
+
+		final String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
+		final String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		final String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
+		RequestBidEntryBody body = new RequestBidEntryBody(naBzplc, aucObjDsc, aucDate, mCurrentSpEntryInfo.getOslpNo().getValue());
+
+		ApiUtils.getInstance().requestSelectBidEntry(body, new ActionResultListener<ResponseBidEntry>() {
+
+			@Override
+			public void onResponseResult(ResponseBidEntry result) {
+
+				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
+
+					List<Bidding> resultDataList = result.getData().stream().map(item -> new Bidding(item)).collect(Collectors.toList());
+					
+					for(Bidding bidding : resultDataList) {
+						setBidding(bidding , false);
+					}					
+				}
+			}
+
+			@Override
+			public void onResponseError(String message) {
+				mLogger.debug("[onResponseError] 응찰목록조회 :  " + message);
+				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+			}
+		});
+	}
+	
+	
 	/**
 	 * 원버튼 팝업
 	 *
@@ -1409,5 +1440,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 		return resultDataList;
 	}
+	
+	
 
 }

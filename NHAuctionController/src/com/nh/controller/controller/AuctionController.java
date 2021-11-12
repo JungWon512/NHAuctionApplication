@@ -77,7 +77,6 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -147,7 +146,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private TableColumn<SpBidding, String> mBiddingPriceColumn, mBiddingUserColumn;
 
 	@FXML // 하단 버튼
-	private Button mBtnEsc, mBtnF1, mBtnF3, mBtnF4, mBtnF5, mBtnF6, mBtnF7, mBtnF8, mBtnEnter, mBtnSpace, mBtnMessage, mBtnUpPrice, mBtnDownPrice;
+	private Button mBtnEsc, mBtnF3, mBtnF4, mBtnF5, mBtnF6, mBtnF7, mBtnF8, mBtnEnter, mBtnSpace, mBtnMessage, mBtnUpPrice, mBtnDownPrice;
 
 	@FXML // 경매 정보
 	private Label mAuctionInfoDateLabel, mAuctionInfoRoundLabel, mAuctionInfoGubunLabel, mAuctionInfoTotalCountLabel;
@@ -232,6 +231,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private String REFRESH_ENTRY_LIST_TYPE_NONE = "NONE"; // 출장우 정보 갱신 - 기본
 	private String REFRESH_ENTRY_LIST_TYPE_SEND = "SEND"; // 출장우 정보 갱신 후 정보 보냄
 	private String REFRESH_ENTRY_LIST_TYPE_START = "START"; // 출장우 정보 갱신 후 시작
+	
+	private boolean isSendEntryData = false;  //출장우 데이터 전송 여부
 
 
 	/**
@@ -245,7 +246,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		Platform.runLater(() -> {
 			
 			// 전광판 접속
-			Thread udpServer = new Thread("server") {
+			Thread udpServer = new Thread("udpServer") {
 				@Override
 				public void run() {
 					createUdpClient(mUdpBillBoardStatusListener, mUdpPdpBoardStatusListener);
@@ -318,7 +319,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
 
 		mBtnEsc.setOnMouseClicked(event -> onCancelOrClose());
-		mBtnF1.setOnMouseClicked(event -> onSendEntryData());
+//		mBtnF1.setOnMouseClicked(event -> onSendEntryData());
 		mBtnF3.setOnMouseClicked(event -> onPending());
 		mBtnF4.setOnMouseClicked(event -> openEntryListPopUp());
 		mBtnF5.setOnMouseClicked(event -> openEntryPendingListPopUp());
@@ -736,7 +737,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 								if (newDt > curDt) {
 									mWaitEntryInfoDataList.set(i, newEntryDataList.get(j));
 									// 출품정보 전송 후 변경된 사항 전달.
-									if (mBtnF1.isDisable()) {
+									if (isSendEnterInfo()) {
 
 										String tmpIsLastEntry = newEntryDataList.get(j).getIsLastEntry().getValue();
 
@@ -825,7 +826,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					addLogItem(String.format(mResMsg.getString("msg.send.entry.data.result"), count));
 
-					mBtnF1.setDisable(true);
+					isSendEntryData = true;
 
 					Platform.runLater(() -> {
 						CommonUtils.getInstance().dismissLoadingDialog();
@@ -981,7 +982,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		if (AuctionDelegate.getInstance().isActive()) {
 
 			// 버튼 상태
-			if (mBtnF1.isDisable()) {
+			if (!isSendEnterInfo()) {
 				return;
 			}
 
@@ -1385,7 +1386,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private boolean isSendEnterInfo() {
 
-		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE) || !isSendEntryData) {
 			return false;
 		} else {
 			return true;
@@ -2201,6 +2202,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(currentEntryNum)) {
 				return;
 			}
+			
+			//응찰내역
+			requestSelectBidEntry();
 
 			for (int i = 0; mWaitTableView.getItems().size() > i; i++) {
 
@@ -2235,7 +2239,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				if (btnResult.get().getButtonData() == ButtonData.LEFT) {
 					mAuctionStatus.setState(GlobalDefineCode.AUCTION_STATUS_NONE);
 					AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(auctionStatus.getAuctionHouseCode(), auctionStatus.getAuctionQcn()));
-					mBtnF1.setDisable(false);
+					isSendEntryData = false;
 					onSendEntryData();
 				} else {
 
@@ -2248,6 +2252,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
+
+		if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+			// 출장우 정보 보냄 플래그
+			isSendEntryData = true;
+		}
+		
 		setAuctionVariableState(auctionStatus.getState());
 
 	}
@@ -3201,27 +3211,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			} else if (code.equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
 
-				if (mCurrentSpEntryInfo != null) {
-					addFinishedTableViewItem(mCurrentSpEntryInfo);
-				}
+				Platform.runLater(()->{
+					
+					isApplicationClosePopup = true;
+					
+					Optional<ButtonType> btnResult =  showAlertPopupOneButton(mResMsg.getString("msg.auction.finish"));
+					
+					if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+						onServerAndClose();
+					}
 
-				mCurEntryNumLabel.setText("");
-				mCurExhibitorLabel.setText("");
-				mCurGenterLabel.setText("");
-				mCurMotherLabel.setText("");
-				mCurMatimeLabel.setText("");
-				mCurPasgQcnLabel.setText("");
-				mCurWeightLabel.setText("");
-				mCurLowPriceLabel.setText("");
-				mCurSuccessPriceLabel.setText("");
-				mCurSuccessfulBidderLabel.setText("");
-				mCurResultLabel.setText("");
-				mCurNoteLabel.setText("");
-				mLowPriceChgNtLabel.setText("");
-
-				initBiddingInfoDataList();
-
-				showAlertPopupOneButton(mResMsg.getString("msg.auction.finish"));
+				});
 			}
 		});
 
@@ -4109,8 +4109,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		Platform.runLater(() -> {
 
-			// 모든 상태 정보. 출품 정보 보내기 버튼 비활성화
-			mBtnF1.setDisable(true);
 			// 경매 시작 버튼 활성화
 			if (!SettingApplication.getInstance().isUseSoundAuction()) {
 				mBtnEnter.setDisable(false);
@@ -4424,5 +4422,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mStartAuctionSecScheduler = null;
 		}
 	}
+	
 
 }

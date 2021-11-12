@@ -108,10 +108,6 @@ public class GlobalDefine {
 		public static final int AUCTION_OBJ_DSC_1 = 1; // 경매 구분 - 송아지
 		public static final int AUCTION_OBJ_DSC_2 = 2; // 경매 구분 - 비육우
 		public static final int AUCTION_OBJ_DSC_3 = 3; // 경매 구분 - 번육우
-
-		public static final int MULTIPLICATION_BIDDER_PRICE_1000 = 1; // 응찰 기본 단위 -비육우
-		public static final int MULTIPLICATION_BIDDER_PRICE_10000 = 10000; // 응찰 기본 단위 -송아지,번식우
-
 		
 		public static final String BIDDER_STATUS_N = "N"; // 응찰자 접속 미응찰
 		public static final String BIDDER_STATUS_L = "L"; // 응찰자 접속 해제 여부

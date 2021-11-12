@@ -37,6 +37,8 @@ import com.nh.controller.interfaces.MessageStringListener;
 import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AucEntrData;
+import com.nh.controller.model.BillboardData;
+import com.nh.controller.model.PdpData;
 import com.nh.controller.model.SpBidderConnectInfo;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
@@ -186,7 +188,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private GridPane mAuctionStateGridPane;
 
 	@FXML //상단 버튼
-	private Button mBtnEsc, mBtnF4, mBtnF5,mBtnF8, mBtnStart, mBtnPause, mBtnFinish,mBtnMessage, mBtnUpPrice, mBtnDownPrice;;
+	private Button mBtnEsc, mBtnF4, mBtnF5,mBtnF8, mBtnStart, mBtnPause, mBtnFinish,mBtnMessage, mBtnUpPrice, mBtnDownPrice,mBtnSendPending;
 
 	@FXML // 새로고침
 	private Button mBtnRefresh;
@@ -251,7 +253,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		Platform.runLater(() -> {
 
 			// 전광판 접속
-			Thread udpServer = new Thread("server") {
+			Thread udpServer = new Thread("udpServer") {
 				@Override
 				public void run() {
 					createUdpClient(mUdpBillBoardStatusListener, mUdpPdpBoardStatusListener);
@@ -389,7 +391,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mBtnPause.setOnMouseClicked(event -> onPause());
 		mBtnFinish.setOnMouseClicked(event -> onFinish());
 		mBtnMessage.setOnMouseClicked(event -> openSendMessage(event));
-		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
 		mWaitTableView.setOnMouseClicked(event -> onClickWaitTableView(event));
 		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
 		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
@@ -397,6 +398,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mBtnRefresh.setOnMouseClicked(event -> onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH));
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
+		mBtnSendPending.setOnMouseClicked(event -> onSendPending());
 		
 
 		// 표시 숨김.
@@ -734,13 +736,24 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	/**
 	 * 응찰,접속자 ThreadPool 초기화
 	 */
-	protected void initExecutorService() {
+	private void initExecutorService() {
 		if (mExeOnBiddingService == null) {
 			mExeOnBiddingService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 			mLogger.debug("[#응찰 ThreadPool init]");
 		}
 	}
 
+	/**
+	 * 응찰,접속자 ThreadPool 정지
+	 */
+	private void shutDownExecutorService() {
+		if (mExeOnBiddingService != null && !mExeOnBiddingService.isShutdown()) {
+			mExeOnBiddingService.shutdown();
+			mLogger.debug("[#응찰 ThreadPool shutDown]");
+		}
+		mExeOnBiddingService = null;
+	}
+	
 	/**
 	 * 대기중인 테이블 뷰 클릭
 	 *
@@ -1168,6 +1181,13 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 		}
 	}
+	
+	/**
+	 * 전광판으로 유찰 대상 목록 표시 전송
+	 */
+	public void onSendPending() {
+		
+	}
 
 	/**
 	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
@@ -1235,7 +1255,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 									mWaitEntryInfoDataList.set(i, newEntryDataList.get(j));
 									
 									// 출품정보 전송 후 변경된 사항 전달.
-									if (isSendEntryData) {
+									if (isSendEnterInfo()) {
 
 										String tmpIsLastEntry = newEntryDataList.get(j).getIsLastEntry().getValue();
 
@@ -1309,7 +1329,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 * @return true : 이관 완료 , false : 이관 필요
 	 */
 	private boolean isSendEnterInfo() {
-		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE) || !isSendEntryData) {
 			return false;
 		} else {
 			return true;
@@ -1590,11 +1610,14 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		}
 
 		mAuctionStatus = auctionStatus;
+	
 
 		if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
 			// 출장우 정보 보냄 플래그
 			isSendEntryData = true;
 		}
+		
+		onSendUpdServerState();
 
 		//출장우 컬럼 표시
 		if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PASS)
@@ -1624,6 +1647,23 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			stopStartAuctionSecScheduler();
 		
 			break;
+			
+		case GlobalDefineCode.AUCTION_STATUS_FINISH:
+			Platform.runLater(()->{
+				
+				isApplicationClosePopup = true;
+				
+				Optional<ButtonType> btnResult =  showAlertPopupOneButton(mResMsg.getString("msg.auction.finish"));
+				
+				if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+					onServerAndClose();
+				}
+				
+				
+			});
+			
+			
+			break;
 		}
 
 		// 경매 상태 버튼 제어
@@ -1633,6 +1673,118 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		
 		
 		Platform.runLater(()->CommonUtils.getInstance().dismissLoadingDialog());
+	}
+	
+	/**
+	 * 전광판으로 경매 상태 전송
+	 */
+	private void onSendUpdServerState() {
+		
+		try {
+
+			switch (mAuctionStatus.getState()) {
+			case GlobalDefineCode.AUCTION_STATUS_NONE:
+				mLogger.debug(mResMsg.getString("msg.auction.status.none"));
+				break;
+			case GlobalDefineCode.AUCTION_STATUS_READY:
+				mLogger.debug(String.format(mResMsg.getString("msg.auction.status.ready"), mAuctionStatus.getEntryNum()));
+				break;
+			case GlobalDefineCode.AUCTION_STATUS_START:
+
+				if (!BillboardDelegate.getInstance().isEmptyClient() && BillboardDelegate.getInstance().isActive()) {
+
+					// UDP 통신
+					BillboardData billboardData = new BillboardData();
+					billboardData.setbEntryNum(String.valueOf(mCurrentSpEntryInfo.getEntryNum().getValue()));
+					billboardData.setbExhibitor(String.valueOf(mCurrentSpEntryInfo.getExhibitor().getValue()));
+					billboardData.setbWeight(String.valueOf(mCurrentSpEntryInfo.getWeight().getValue()));
+					billboardData.setbGender(String.valueOf(mCurrentSpEntryInfo.getGender().getValue()));
+					billboardData.setbMotherTypeCode(String.valueOf(mCurrentSpEntryInfo.getMotherTypeCode().getValue()));
+					billboardData.setbPasgQcn(String.valueOf(mCurrentSpEntryInfo.getPasgQcn().getValue()));
+					billboardData.setbMatime(String.valueOf(mCurrentSpEntryInfo.getMatime().getValue()));
+					billboardData.setbKpn(String.valueOf(mCurrentSpEntryInfo.getKpn().getValue()));
+					billboardData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getReRgnName().getValue()));
+					billboardData.setbNote(String.valueOf(mCurrentSpEntryInfo.getNote().getValue()));
+					billboardData.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
+					billboardData.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));
+
+					BillboardDelegate.getInstance().sendBillboardData(billboardData);
+					BillboardDelegate.getInstance().startBillboard();
+					mLogger.debug(mResMsg.getString("msg.billboard.send.current.entry.data") + billboardData.getEncodedMessage());
+				}
+
+				if (!PdpDelegate.getInstance().isEmptyClient() && PdpDelegate.getInstance().isActive()) {
+
+					PdpData pdpData = new PdpData();
+					pdpData.setbEntryType(String.valueOf(mCurrentSpEntryInfo.getEntryType().getValue()));
+					pdpData.setbEntryNum(String.valueOf(mCurrentSpEntryInfo.getEntryNum().getValue()));
+					pdpData.setbExhibitor(String.valueOf(mCurrentSpEntryInfo.getExhibitor().getValue()));
+					pdpData.setbWeight(String.valueOf(mCurrentSpEntryInfo.getWeight().getValue()));
+					pdpData.setbGender(String.valueOf(mCurrentSpEntryInfo.getGender().getValue()));
+					pdpData.setbMotherTypeCode(String.valueOf(mCurrentSpEntryInfo.getMotherTypeCode().getValue()));
+					pdpData.setbPasgQcn(String.valueOf(mCurrentSpEntryInfo.getPasgQcn().getValue()));
+					pdpData.setbMatime(String.valueOf(mCurrentSpEntryInfo.getMatime().getValue()));
+					pdpData.setbKpn(String.valueOf(mCurrentSpEntryInfo.getKpn().getValue()));
+					pdpData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getReRgnName().getValue()));
+					pdpData.setbNote(String.valueOf(mCurrentSpEntryInfo.getNote().getValue()));
+					pdpData.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
+					pdpData.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));
+
+					PdpDelegate.getInstance().sendPdpData(pdpData);
+					PdpDelegate.getInstance().startPdp();
+					mLogger.debug(mResMsg.getString("msg.pdp.send.current.entry.data") + pdpData.getEncodedMessage());
+				}
+
+				mLogger.debug(String.format(mResMsg.getString("msg.auction.status.start"), mAuctionStatus.getEntryNum()));
+
+				// 시작 로그 저장
+				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
+					AucEntrData aucEntrData = getCurrentBaseEntrData(true);
+					aucEntrData.setRgSqno(GlobalDefine.AUCTION_INFO.LOG_AUCTION_START);
+					aucEntrData.setRmkCntn(mResMsg.getString("str.auction.start"));
+					requestInsertBiddingHistory(aucEntrData,GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_START);
+				}
+
+				break;
+			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+				mLogger.debug(String.format(mResMsg.getString("msg.auction.status.progress"), mAuctionStatus.getEntryNum()));
+				break;
+			case GlobalDefineCode.AUCTION_STATUS_PASS:
+			case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
+				
+				if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PASS)) {
+					mLogger.debug(String.format(mResMsg.getString("msg.auction.status.pass"), mAuctionStatus.getEntryNum()));
+					BillboardDelegate.getInstance().completeBillboard();
+					PdpDelegate.getInstance().completePdp();
+				}else if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {		
+					mLogger.debug(String.format(mResMsg.getString("msg.auction.status.completed"), mAuctionStatus.getEntryNum()));
+					BillboardDelegate.getInstance().completeBillboard();
+					PdpDelegate.getInstance().completePdp();
+				}
+				
+				shutDownExecutorService();
+			
+				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
+					AucEntrData aucEntrData = getCurrentBaseEntrData(true);
+					aucEntrData.setRgSqno(GlobalDefine.AUCTION_INFO.LOG_AUCTION_FINISH);
+					aucEntrData.setRmkCntn(mResMsg.getString("str.auction.finish"));
+					requestInsertBiddingHistory(aucEntrData,GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_FINISH);
+				}
+
+				break;
+			case GlobalDefineCode.AUCTION_STATUS_FINISH:
+				mLogger.debug(mResMsg.getString("msg.auction.status.finish"));
+				BillboardDelegate.getInstance().finishBillboard();
+				PdpDelegate.getInstance().finishPdp();
+				shutDownExecutorService();
+				break;
+			}
+
+		} catch (Exception e) {
+			mLogger.debug("[onAuctionStatus Send Udp Server Exception] " + e);
+		}
+		
+		
 	}
 	
 	/**

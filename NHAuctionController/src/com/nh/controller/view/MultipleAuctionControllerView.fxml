@@ -3,7 +3,6 @@
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -33,7 +32,7 @@
           <RowConstraints maxHeight="26.0" minHeight="26.0" prefHeight="26.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <padding>
-            <Insets left="20.0" right="20.0" />
+            <Insets left="20.0" right="10.0" />
          </padding>
          <children>
             <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
@@ -74,9 +73,17 @@
                      <padding>
                         <Insets left="20.0" right="20.0" />
                      </padding>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
                   </HBox>
                </children>
             </HBox>
+            <Button fx:id="mBtnSendPending" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-header" text="유찰 대상 표시" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Button>
          </children>
       </GridPane>
    </top>
@@ -103,57 +110,53 @@
                               <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                            </rowConstraints>
                            <children>
-                              <HBox maxWidth="1.7976931348623157E308" prefHeight="100.0" spacing="7.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS">
-                                 <children>
-                                    <CheckBox fx:id="mEntryNumCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="순번" userData="2" HBox.hgrow="ALWAYS" />
-                                    <CheckBox fx:id="mExhibitorCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="출하주" userData="2" HBox.hgrow="ALWAYS" />
-                                    <CheckBox fx:id="mGenderCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="성별" userData="2" HBox.hgrow="ALWAYS" />
-                                    <CheckBox fx:id="mMotherObjNumCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="혈통" userData="2" HBox.hgrow="ALWAYS" />
-                                    <CheckBox fx:id="mMaTimeCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="산차" userData="2" HBox.hgrow="ALWAYS" />
-                                    <CheckBox fx:id="mPasgQcnCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="계대" userData="2" HBox.hgrow="ALWAYS" />
-                                    <CheckBox fx:id="mWeightCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="중량" userData="2" HBox.hgrow="ALWAYS" />
-                                    <CheckBox fx:id="mLowPriceCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="최저가" userData="2" HBox.hgrow="ALWAYS" />
-                                    <CheckBox fx:id="mBrandNameCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="브랜드" userData="2" HBox.hgrow="ALWAYS" />
-                                 </children>
-                              </HBox>
-                              <HBox prefHeight="80.0" prefWidth="200.0" spacing="6.0" styleClass="main-top-sound" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <HBox prefHeight="80.0" prefWidth="200.0" spacing="6.0" styleClass="main-top-sound" GridPane.columnIndex="1" GridPane.rowSpan="2147483647">
                                  <children>
                                     <Button fx:id="mBtnIntroSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="경매전 인삿말" HBox.hgrow="ALWAYS">
                                        <font>
                                           <Font size="14.0" />
-                                       </font></Button>
+                                       </font>
+                                    </Button>
                                     <Button fx:id="mBtnBuyerSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="매수인 안내" HBox.hgrow="ALWAYS">
                                        <font>
                                           <Font size="14.0" />
-                                       </font></Button>
+                                       </font>
+                                    </Button>
                                     <Button fx:id="mBtnGuideSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="안내멘트" HBox.hgrow="ALWAYS">
                                        <font>
                                           <Font size="14.0" />
-                                       </font></Button>
+                                       </font>
+                                    </Button>
                                     <Button fx:id="mBtnEtc_1_Sound" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="예비1">
                                        <font>
                                           <Font size="14.0" />
-                                       </font></Button>
+                                       </font>
+                                    </Button>
                                     <Button fx:id="mBtnEtc_2_Sound" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="예비2">
                                        <font>
                                           <Font size="14.0" />
-                                       </font></Button>
+                                       </font>
+                                    </Button>
                                     <Button fx:id="mBtnEtc_3_Sound" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="예비3">
                                        <font>
                                           <Font size="14.0" />
-                                       </font></Button>
+                                       </font>
+                                    </Button>
                                     <Button fx:id="mBtnEtc_4_Sound" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="예비4">
                                        <font>
                                           <Font size="14.0" />
-                                       </font></Button>
+                                       </font>
+                                    </Button>
                                     <Button fx:id="mBtnEtc_5_Sound" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="예비5">
                                        <font>
                                           <Font size="14.0" />
-                                       </font></Button>
+                                       </font>
+                                    </Button>
                                     <Button fx:id="mBtnEtc_6_Sound" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="예비6">
                                        <font>
                                           <Font size="14.0" />
-                                       </font></Button>
+                                       </font>
+                                    </Button>
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="4.0" styleClass="main-top-setting" GridPane.columnIndex="3" GridPane.rowSpan="2147483647">
