@@ -850,6 +850,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		} else if (type.equals(REFRESH_ENTRY_LIST_TYPE_START)) {
 			// 경매시
 			onStartAuction();
+		}else {
+			Platform.runLater(() -> {
+				CommonUtils.getInstance().dismissLoadingDialog();
+			});
 		}
 
 	}
@@ -989,8 +993,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		 * 네티 접속 상태 출품 데이터 전송 전 상태
 		 */
 		if (AuctionDelegate.getInstance().isActive()) {
-
-			CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.msg.send.data"));
 
 			Thread refreshWaitThread = new Thread("refreshWaitEntryDataList") {
 				@Override

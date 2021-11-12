@@ -111,11 +111,6 @@ public class MoveStageUtil {
 	 */
 	public synchronized void moveAuctionType(Stage previousStage) {
 		moveChooseAuctionStage(previousStage);
-//		if(SettingApplication.getInstance().isSingleAuction()) {
-//			moveChooseAuctionStage(previousStage);
-//		}else {
-//			moveMultipleAuctionStage(previousStage);
-//		}
 	}
 
 	/**
@@ -168,32 +163,6 @@ public class MoveStageUtil {
 		}
 	}
 	
-	/**
-	 * 일괄 경매 이동
-	 * @param previousStage
-	 */
-	public synchronized void moveMultipleAuctionStage(Stage previousStage) {
-		
-		try {
-			previousStage.close();
-			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("MultipleAuctionControllerView.fxml"), getResourceBundle());
-			Parent parent = fxmlLoader.load();
-			Stage stage = new Stage();
-			MultipleAuctionController controller = fxmlLoader.getController();
-//			controller.setStage(stage);
-			setRemoveTitlebar(stage);
-			Scene scene = new Scene(parent);
-			stage.setScene(scene);
-			stage.show();
-			
-			centerOnScreen(stage);
-			// show 후에 ..
-//			controller.initConfiguration();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
 	
 	/**
 	 * 로그인 -> 경매 서버 접속 -> 경매 화면 이동
@@ -255,10 +224,24 @@ public class MoveStageUtil {
 				// show 후에 ..
 				controller.initConfiguration(stage);
 			}
-
+			
+			auctionStageShowLoadingDialog(stage,fxmlLoader.getResources());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void auctionStageShowLoadingDialog(Stage stage ,ResourceBundle resources ) {
+		
+		PauseTransition pauseTransition = new PauseTransition(Duration.millis(100));
+		pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				CommonUtils.getInstance().showLoadingDialog(stage, resources.getString("dialog.searching.entry.list"));
+			}
+		});
+		pauseTransition.play();
 	}
 
 	/**

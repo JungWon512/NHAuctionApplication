@@ -129,6 +129,7 @@ public class EntryListController implements Initializable {
 	 */
 	public void setPageType(EntryDialogType type) {
 		
+		
 		String pageTitle = "";
 
 		String searchAuctionResult = "";
@@ -143,12 +144,23 @@ public class EntryListController implements Initializable {
 		case ENTRY_PENDING_LIST:
 
 			initClickCallback();
-			mDownPriceLabel.setVisible(true);
-			mDownPriceTextField.setVisible(true);
-			int cowLowerLimitPrice = SettingApplication.getInstance().getCowLowerLimitPrice(auctionRound.getAucObjDsc());
-			mDownPriceTextField.setText(Integer.toString(cowLowerLimitPrice));
-			mBtnDownPrice.setVisible(true);
-			mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
+			
+			if(SettingApplication.getInstance().isSingleAuction()) {
+				
+				int cowLowerLimitPrice = SettingApplication.getInstance().getCowLowerLimitPrice(auctionRound.getAucObjDsc());
+				mDownPriceTextField.setText(Integer.toString(cowLowerLimitPrice));
+				mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
+				
+				mDownPriceLabel.setVisible(true);
+				mDownPriceTextField.setVisible(true);
+				mBtnDownPrice.setVisible(true);
+			}else {
+				
+				mDownPriceLabel.setVisible(false);
+				mDownPriceTextField.setVisible(false);
+				mBtnDownPrice.setVisible(false);
+			}
+		
 			pageTitle = mResMsg.getString("str.page.title.auction_pending_list");
 			mBtnSelect.setVisible(true);
 			mBtnSelect.setOnMouseClicked(event -> onCallBack());
@@ -162,7 +174,9 @@ public class EntryListController implements Initializable {
 		}
 
 		mTitleLabel.setText(pageTitle);
+		mTitleLabel.setVisible(true);
 		mBtnClose.setOnMouseClicked(event -> onClose());
+		mBtnClose.setVisible(true);
 
 		this.mCurPageType = type;
 
