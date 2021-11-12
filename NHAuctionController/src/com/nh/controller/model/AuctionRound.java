@@ -72,7 +72,7 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 		this.delYn = qcnData.getDEL_YN();
 		this.maleKg = qcnData.getMALE_KG();
 		this.femaleKg = qcnData.getFEMALE_KG();
-		this.divisionPrice = qcnData.getDivisionPrice();
+		this.divisionPrice = qcnData.getDIVISION_PRICE();
 		this.rgSqNo = qcnData.getRG_SQNO();
 		this.selStsDsc = qcnData.getSEL_STS_DSC();
 

@@ -79,7 +79,7 @@
                   </HBox>
                </children>
             </HBox>
-            <Button fx:id="mBtnSendPending" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-header" text="유찰 대상 표시" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+            <Button fx:id="mBtnSendPending" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-header" text="유찰 대상 목록 표시" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>

@@ -278,7 +278,7 @@ public class ChooseAuctionController implements Initializable {
 
 						GlobalDefine.AUCTION_INFO.auctionRoundData = new AuctionRound(qcnData);
 
-						mLogger.debug("[경매 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
+						mLogger.debug("[경매 회차 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
 
 						if (GlobalDefine.AUCTION_INFO.auctionRoundData != null) {
 							// 출장우 카운트

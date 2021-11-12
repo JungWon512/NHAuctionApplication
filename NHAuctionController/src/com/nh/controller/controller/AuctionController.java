@@ -61,7 +61,6 @@ import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
-import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PauseAuction;
@@ -664,6 +663,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						});
 //						mWaitTableView.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> { 선택 콜백 인덱스	 필요시 주석 해제
 //						});
+						
+						if(!isSendEnterInfo()) {
+							//회차정보 초기화
+//							mLogger.debug("[CLEAR INIT SERVER]" + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
+							//출장우 전송
+							onSendEntryData();
+						}else {
+							mLogger.debug("[출장우 데이터 전송 X. 현재 경매 상태 ]=> " + mAuctionStatus.getState());
+						}
+						
 					}
 				});
 				pauseTransition.play();
@@ -980,11 +989,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		 * 네티 접속 상태 출품 데이터 전송 전 상태
 		 */
 		if (AuctionDelegate.getInstance().isActive()) {
-
-			// 버튼 상태
-			if (!isSendEnterInfo()) {
-				return;
-			}
 
 			CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.msg.send.data"));
 
@@ -2167,13 +2171,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	}
 
 	private void onSendSettingInfo() {
-
-		EditSetting setting = new EditSetting(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "Y"),
-				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
-				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
-				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
-				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"), SettingApplication.getInstance().getSettingAuctionType());
-		addLogItem(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
+		// Setting 정보 전송
+		mLogger.debug(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(SettingApplication.getInstance().getSettingInfo()));
 	}
 
 	@Override
@@ -2202,9 +2201,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(currentEntryNum)) {
 				return;
 			}
-			
-			//응찰내역
-			requestSelectBidEntry();
+	
 
 			for (int i = 0; mWaitTableView.getItems().size() > i; i++) {
 
@@ -2220,6 +2217,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				}
 			}
+			
+			//응찰내역
+			requestSelectBidEntry();
 		});
 
 		isFirst = true;

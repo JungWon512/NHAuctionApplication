@@ -571,7 +571,7 @@ public class SettingApplication {
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
-				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"), SettingApplication.getInstance().getSettingAuctionType());
+				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"), SettingApplication.getInstance().getSettingAuctionType(),Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice()));
 		
 		return setting;
 	}

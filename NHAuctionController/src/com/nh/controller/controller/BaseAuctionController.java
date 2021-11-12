@@ -146,6 +146,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	 */
 	protected void init() {
 		mAuctionStatus = new AuctionStatus();
+		setAuctionStatus(GlobalDefineCode.AUCTION_STATUS_NONE);
 		mBeForeBidderDataList = new ArrayList<SpBidding>();
 		mCurrentBidderMap = new LinkedHashMap<String, SpBidding>();
 		mReAuctionBidderDataList = new ArrayList<SpBidding>();
@@ -1398,14 +1399,20 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 			@Override
 			public void onResponseResult(ResponseBidEntry result) {
-
+				
+	
 				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
 
+					mLogger.debug("[응찰목록조회 true ]  : " + result.getData().size());
+					
+					
 					List<Bidding> resultDataList = result.getData().stream().map(item -> new Bidding(item)).collect(Collectors.toList());
 					
 					for(Bidding bidding : resultDataList) {
 						setBidding(bidding , false);
 					}					
+				}else {
+					mLogger.debug("[응찰목록조회 false ] : " + result.getMessage());
 				}
 			}
 

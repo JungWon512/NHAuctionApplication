@@ -79,6 +79,7 @@ import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PauseAuction;
+import com.nh.share.controller.models.RequestShowFailBidding;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
@@ -106,7 +107,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -117,6 +117,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -238,6 +239,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private int mStartAuctionSec = 0; // 경매 시작 후 초 증가 타이머 증가값
 	
 	private boolean isSendEntryData = false; //출장우 데이터 전송 여부
+	
+	//우클릭 새로고침 적용
+	private ContextMenu mRefreshContextMenu = null;
+	
 
 	/**
 	 * setStage
@@ -393,7 +398,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mBtnRefresh.setOnMouseClicked(event -> onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH));
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
-		mBtnSendPending.setOnMouseClicked(event -> onSendPending());
+		mBtnSendPending.setOnMouseClicked(event -> onSendPendingList());
 		
 
 		// 표시 숨김.
@@ -591,6 +596,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		ContextMenu contextMenu = new ContextMenu();
 
 		MenuItem item1 = new MenuItem(mResMsg.getString("str.connect.user.sort"));
+		
 		item1.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -673,7 +679,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 							}
 						});
 						
-						if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+						if(!isSendEnterInfo()) {
 							//회차정보 초기화
 //							mLogger.debug("[CLEAR INIT SERVER]" + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
 							//출장우 전송
@@ -686,6 +692,31 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					}
 				});
 				pauseTransition.play();
+			}
+	
+			//우클릭 새로고침 적용
+			if(mRefreshContextMenu == null) {
+				
+				MenuItem item1 = new MenuItem(mResMsg.getString("str.refresh"));
+				
+				item1.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						// 새로고침
+						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
+					}
+				});
+				
+				mRefreshContextMenu = new ContextMenu();
+				mRefreshContextMenu.getItems().addAll(item1);
+
+				mWaitTableView.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+					@Override
+					public void handle(ContextMenuEvent event) {
+						// 우클릭 새로고침 show
+						mRefreshContextMenu.show(mWaitTableView, event.getScreenX(), event.getSceneY());
+					}
+				});
 			}
 		}
 	}
@@ -717,7 +748,17 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 * @param event
 	 */
 	public void onClickWaitTableView(MouseEvent event) {
-		setCurrentEntryInfo();
+	
+		//마우스 왼쪽 클릭시 출장우 정보 선택, 우클릭 등 그외 버튼 막음.
+	  if (event.getButton() == MouseButton.PRIMARY) {
+		  
+		  //우클릭 새로고침 창 숨김.
+		  if(mRefreshContextMenu != null && mRefreshContextMenu.isShowing()) {
+			  mRefreshContextMenu.hide();
+		  }
+		  
+		  setCurrentEntryInfo();
+	  }
 	}
 
 	/**
@@ -943,8 +984,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private void onRefresh(String type) {
 //		Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.msg.refresh.data")));
 		refreshWaitEntryDataList(true, type);
-		requestSelectBidEntry();
-		setCurrentEntryInfo();
 	}
 
 	/**
@@ -1142,8 +1181,15 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	/**
 	 * 전광판으로 유찰 대상 목록 표시 전송
 	 */
-	public void onSendPending() {
+	public void onSendPendingList() {
 		
+		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
+		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
+		String rgSqNo = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo());
+
+		RequestShowFailBidding requestShowFailBidding =	new RequestShowFailBidding(naBzplc, aucDate,aucObjDsc, rgSqNo);
+		AuctionDelegate.getInstance().sendMessage(requestShowFailBidding);
 	}
 
 	/**
@@ -1258,6 +1304,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						mWaitTableView.refresh();
 					
 					}
+					
+					setCurrentEntryInfo();
 
 					PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
 					pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
@@ -1318,7 +1366,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			public void run() {
 				// 갱신 후 변경점 있으면 서버 전달.
 				refreshWaitEntryDataList(true, REFRESH_ENTRY_LIST_TYPE_START);
-				Platform.runLater(() -> setCurrentEntryInfo());
 			}
 		};
 
@@ -1912,16 +1959,36 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	@Override
 	public void onBidding(Bidding bidding) {
 		
-		mLogger.debug("[onBidding]" + bidding.getEncodedMessage());
-		
+		// 로그
+		mLogger.debug(mResMsg.getString("msg.auction.get.bidding") + bidding.getEncodedMessage());
+				
 		 if (GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)
 				 || GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_FINISH)) {
 			 mLogger.debug("응찰 막음. 정지나 종료 상태 "  + GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc() );
 			 return;
 		 }
 		 
-		// 응찰 쓰레드풀 실행
+		// 시작.진행시 응찰 받음.
+		if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) && !mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+			mLogger.debug("경매 시작/진행중일때만 응찰 가능합니다. " + mAuctionStatus.getState());
+			return;
+		}
+
+		// 응찰자 ,가격 체크.
+		if (!CommonUtils.getInstance().isValidString(bidding.getUserNo()) || !CommonUtils.getInstance().isValidString(bidding.getAuctionJoinNum()) 
+				|| !CommonUtils.getInstance().isValidString(bidding.getEntryNum()) || !CommonUtils.getInstance().isValidString(bidding.getPrice())) {
+			mLogger.debug("출품번호/응찰자/가격 비정상입니다.");
+			return;
+		}
+
+		if (bidding.getPrice().length() > 4) {
+			mLogger.debug("응찰가가 4자리 이상입니다. 응찰에 실패했습니다.");
+			return;
+		}
+		
+		// 응찰 쓰레드풀 init
 		initExecutorService();
+		// 응찰 쓰레드풀 실행
 		mExeOnBiddingService.submit(getBiddingRunnable(bidding));
 	}
 
@@ -1934,27 +2001,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private Runnable getBiddingRunnable(Bidding bidding) {
 
 		return (() -> {
-
 			try {
-				// 시작.진행시 응찰 받음.
-				if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) && !mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
-					mLogger.debug("경매 시작/진행중일때만 응찰 가능합니다. " + mAuctionStatus.getState());
-					return;
-				}
-
-				// 로그
-				mLogger.debug(mResMsg.getString("msg.auction.get.bidding") + bidding.getEncodedMessage());
-
-				// 응찰자 ,가격 체크.
-				if (!CommonUtils.getInstance().isValidString(bidding.getUserNo()) || !CommonUtils.getInstance().isValidString(bidding.getAuctionJoinNum()) || !CommonUtils.getInstance().isValidString(bidding.getEntryNum()) || !CommonUtils.getInstance().isValidString(bidding.getPrice())) {
-					mLogger.debug("출품번호/응찰자/가격 비정상입니다.");
-					return;
-				}
-
-				if (bidding.getPrice().length() > 4) {
-					mLogger.debug("응찰가가 4자리 이상입니다. 응찰에 실패했습니다.");
-					return;
-				}
 
 				setBidding(bidding);
 
@@ -2212,15 +2259,15 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				MoveStageUtil.getInstance().moveAuctionStage(mStage, mFxmlLoader);
 
 				// 내부 저장 port ip obj
-				SharedPreference.getInstance().setString(SharedPreference.getInstance().PREFERENCE_SERVER_IP, AuctionDelegate.getInstance().getHost());
+				SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SERVER_IP, AuctionDelegate.getInstance().getHost());
 
 				if (AuctionDelegate.getInstance().getPort() > 0) {
-					SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SERVER_PORT, AuctionDelegate.getInstance().getPort());
+					SharedPreference.getInstance().setInt(SharedPreference.PREFERENCE_SERVER_PORT, AuctionDelegate.getInstance().getPort());
 				} else {
-					SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SERVER_PORT, GlobalDefine.AUCTION_INFO.AUCTION_PORT);
+					SharedPreference.getInstance().setInt(SharedPreference.PREFERENCE_SERVER_PORT, GlobalDefine.AUCTION_INFO.AUCTION_PORT);
 				}
 
-				SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+				SharedPreference.getInstance().setInt(SharedPreference.PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 
 				break;
 			case GlobalDefineCode.CONNECT_FAIL:
@@ -2708,18 +2755,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			}
 		});
 	}
-
-	@SuppressWarnings("rawtypes")
-	private EventHandler mCheckBoxEventHandler = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			// 체크박스 내부 저장
-			if (event.getSource() instanceof CheckBox) {
-				CheckBox checkBox = (CheckBox) event.getSource();
-				SharedPreference.getInstance().setBoolean(checkBox.getUserData().toString(), checkBox.isSelected());
-			}
-		}
-	};
 
 	/**
 	 * 접속자 현황 순번으로 재정렬.
