@@ -238,7 +238,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private ExecutorService mExeOnBiddingService = null; // 응찰 서비스
 	private Timer mStartAuctionSecScheduler = null; // 경매 시작 후 초 증가 타이머
 	private int mStartAuctionSec = 0; // 경매 시작 후 초 증가 타이머 증가값
-	private String mCurrentAuctionStatusType = "";
 	
 	private boolean isSendEntryData = false; //출장우 데이터 전송 여부
 
@@ -396,7 +395,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
 		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
-		mBtnRefresh.setOnMouseClicked(event -> onRefresh());
+		mBtnRefresh.setOnMouseClicked(event -> onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH));
 		mBtnUpPrice.setOnMouseClicked(event -> onUpPrice(event));
 		mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 		
@@ -715,10 +714,17 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 							}
 						});
 						
-						//회차정보 초기화
-						mLogger.debug("[CLEAR INIT SERVER]" + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
-						//출장우 전송
-						onSendEntryData();
+						if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+							//회차정보 초기화
+//							mLogger.debug("[CLEAR INIT SERVER]" + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
+							//출장우 전송
+							onSendEntryData();
+						}else {
+							mLogger.debug("[출장우 데이터 전송 X. 현재 경매 상태 ]=> " + mAuctionStatus.getState());
+						}
+						
+
+						mLogger.debug("[현재 회차 경매 상태]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc());
 					}
 				});
 				pauseTransition.play();
@@ -965,10 +971,11 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	/**
 	 * 새로고침 버튼
 	 */
-	private void onRefresh() {
-		Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.msg.refresh.data")));
-		refreshWaitEntryDataList(true, REFRESH_ENTRY_LIST_TYPE_REFRESH);
+	private void onRefresh(String type) {
+//		Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.msg.refresh.data")));
+		refreshWaitEntryDataList(true, type);
 		requestSelectBidEntry();
+		setCurrentEntryInfo();
 	}
 
 	/**
@@ -1023,15 +1030,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				dismissShowingDialog();
 
 				if (isSaved) {
-
-					if (!SettingApplication.getInstance().isSingleAuction()) {
-						onCloseApplication();
-						return;
-					}
-
 					// 최저가 낮추기 금액
 					int BaselowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
-
 					setBaseDownPrice(Integer.toString(BaselowPrice));
 				}
 			}
@@ -1166,7 +1166,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		} else {
 			mLogger.debug(mResMsg.getString("msg.need.connection"));
-			CommonUtils.getInstance().dismissLoadingDialog();
+			Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 		}
 	}
 
@@ -1280,6 +1280,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 //						mWaitTableView.setItems(mWaitEntryInfoDataList);
 						mWaitTableView.refresh();
+					
 					}
 
 					PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
@@ -1291,8 +1292,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					});
 					pauseTransition.play();
 				}
-
-				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 			}
 
 			@Override
@@ -1330,7 +1329,9 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			Platform.runLater(() ->showAlertPopupOneButton(mResMsg.getString("msg.auction.send.need.entry.data")));
 			return;
 		}
-
+		
+		Platform.runLater(() ->CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.multi.auction.start")));
+		
 //		switch (mAuctionStatus.getState()) {
 //		case GlobalDefineCode.AUCTION_STATUS_READY: // 준비,경매완료,유찰 상황에서 시작 가능.
 //		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
@@ -1358,21 +1359,22 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		// 출품 이관 체크
 
-		Platform.runLater(() -> {
-
-			String dialogMsg = "";
-
-			if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_START)) {
-				dialogMsg = mResMsg.getString("dialog.multi.auction.start");
-			} else if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_PAUSE)) {
-				dialogMsg = mResMsg.getString("dialog.multi.auction.pause");
-			} else if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_FINISH)) {
-				dialogMsg = mResMsg.getString("dialog.multi.auction.finish");
-			}
-
-			CommonUtils.getInstance().showLoadingDialog(mStage, dialogMsg);
-
-		});
+//		Platform.runLater(() -> {
+//
+//			String dialogMsg = "";
+//
+//			if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_START)) {
+//				dialogMsg = mResMsg.getString("dialog.multi.auction.start");
+//			} else if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_PAUSE)) {
+//				dialogMsg = mResMsg.getString("dialog.multi.auction.pause");
+//			} else if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_FINISH)) {
+//				dialogMsg = mResMsg.getString("dialog.multi.auction.finish");
+//			}
+//
+//			if (!type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_START)) {
+//				CommonUtils.getInstance().showLoadingDialog(mStage, dialogMsg);
+//			}
+//		});
 
 		final String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
 		final String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
@@ -1391,8 +1393,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				if (result != null && result.getSuccess()) {
 					mLogger.debug("[일괄경매 Status Success] : " + type);
 
-					mCurrentAuctionStatusType = type;
-
 					if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_START)) {
 						
 						GlobalDefine.AUCTION_INFO.auctionRoundData.setSelStsDsc(GlobalDefineCode.STN_AUCTION_STATUS_PROGRESS);
@@ -1402,29 +1402,44 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					} else if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_PAUSE)) {
 						
 						GlobalDefine.AUCTION_INFO.auctionRoundData.setSelStsDsc(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE);
-
+						
+						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
+					
 						onAuctionStatusPause();
+						
+						// 경매 상태 버튼 제어
+						auctionStateButtonToggle(mAuctionStatus.getState());
+						// 상단 경매 진행 상태
+						auctionStateLabelToggle(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc());
+						
 
 					} else if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_FINISH)) {
 
 						GlobalDefine.AUCTION_INFO.auctionRoundData.setSelStsDsc(GlobalDefineCode.STN_AUCTION_STATUS_FINISH);
 						
+						onRefresh(REFRESH_ENTRY_LIST_TYPE_NONE);
+						
 						onAuctionStatusFinish();
 					}
 					
-					auctionStateLabelToggle(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc());
+					// 경매 상태 버튼 제어
+//					auctionStateButtonToggle(mAuctionStatus.getState());
+					// 상단 경매 진행 상태
+//					auctionStateLabelToggle(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc());
 
 				} else {
 					mLogger.debug("[일괄경매 시작 False]");
-					Platform.runLater(() -> showAlertPopupOneButton(result.getMessage()));
+					Platform.runLater(() -> {
+						CommonUtils.getInstance().dismissLoadingDialog();
+						showAlertPopupOneButton(result.getMessage());	
+					});
 				}
-				
-				Platform.runLater(()->CommonUtils.getInstance().dismissLoadingDialog());
 			}
 
 			@Override
 			public void onResponseError(String message) {
 				Platform.runLater(()->{
+					CommonUtils.getInstance().dismissLoadingDialog();
 					mLogger.debug("[일괄경매 시작 onResponseError ]");
 					showAlertPopupOneButton(message);
 				});
@@ -1432,11 +1447,13 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		});
 	}
 
-	private void onPause() {
+	private void onPause() {	
+		Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.multi.auction.pause")));
 		onStartAuction(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_PAUSE);
 	}
 
 	private void onFinish() {
+		Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.multi.auction.finish")));
 		onStartAuction(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_FINISH);
 	}
 
@@ -1450,7 +1467,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		// 시작 서버로 Start 보냄.
 		mLogger.debug(msgStart + AuctionDelegate.getInstance().onStartAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
-
+		
 		// Start 사운드
 		playLocalSound(AudioPlayTypes.START);
 	}
@@ -1468,11 +1485,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private void onAuctionStatusFinish() {
 		stopAllSound();
 		stopStartAuctionSecScheduler();
-		
-		playLocalSound(AudioPlayTypes.FINISH);
-		refreshWaitEntryDataList(true, REFRESH_ENTRY_LIST_TYPE_NONE);
-		setCurrentEntryInfo();
 		mLogger.debug(mResMsg.getString("msg.auction.send.complete") + AuctionDelegate.getInstance().onStopAuction(mCurrentSpEntryInfo.getEntryNum().getValue(), 0));
+		// Start 사운드
+		playLocalSound(AudioPlayTypes.FINISH);
+		
 	}
 
 
@@ -1592,17 +1608,19 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_READY:
+			
 			// 경매 시작 ~ 경과시간 초
 			mStartAuctionSec = 0;
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
+			
 			// 경매 경과 시간 타이머 시작
 			startAuctionSecScheduler();
 			
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_PASS:
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
-
+			
 			// 경매 경과 시간 타이머 종료
 			stopStartAuctionSecScheduler();
 		
@@ -1610,10 +1628,12 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		}
 
 		// 경매 상태 버튼 제어
-//		auctionStateButtonToggle(mAuctionStatus.getState());
+		auctionStateButtonToggle(mAuctionStatus.getState());
 		// 상단 경매 진행 상태
 		auctionStateLabelToggle(mAuctionStatus.getState());
-
+		
+		
+		Platform.runLater(()->CommonUtils.getInstance().dismissLoadingDialog());
 	}
 	
 	/**
@@ -1646,14 +1666,16 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			mBtnF4.setDisable(true);
 			mBtnF5.setDisable(true);
 			mBtnF8.setDisable(true);
+			
 			//경매시작
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
 				mBtnStart.setDisable(false);
+				mBtnPause.setDisable(true);
 			}else {
 				mBtnStart.setDisable(true);
+				mBtnPause.setDisable(false);
 			}
-			//경매정지
-			mBtnPause.setDisable(false);
+			
 			//경매종료
 			mBtnFinish.setDisable(false);
 			
@@ -1775,9 +1797,9 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		
 		mLogger.debug("[onBidding]" + bidding.getEncodedMessage());
 		
-		 if (mCurrentAuctionStatusType.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_PAUSE)
-				 || mCurrentAuctionStatusType.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_FINISH)) {
-			 mLogger.debug("응찰 막음. 정지나 종료 상태 "  + mCurrentAuctionStatusType );
+		 if (GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)
+				 || GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_FINISH)) {
+			 mLogger.debug("응찰 막음. 정지나 종료 상태 "  + GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc() );
 			 return;
 		 }
 		 
@@ -1926,12 +1948,13 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		
 		mLogger.debug(mResMsg.getString("msg.auction.get.bidding.cancel") + cancelBidding.getEncodedMessage());
 		
-		 if (mCurrentAuctionStatusType.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_PAUSE)
-				 || mCurrentAuctionStatusType.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_FINISH)) {
-			 mLogger.debug("응찰 취소 막음. 정지나 종료 상태 "  + mCurrentAuctionStatusType );
+		
+		if (GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)
+				 || GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_FINISH)) {
+			 mLogger.debug("응찰 취소 막음. 정지나 종료 상태 "  + GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc() );
 			 return;
 		 }
-
+		
 		initExecutorService();
 		// 응찰취소 쓰레드풀 실행
 		mExeOnBiddingService.submit(getCancelBiddingRunnable(cancelBidding));
@@ -2729,22 +2752,32 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			mCurMotherLabel.setText(mCurrentSpEntryInfo.getMotherCowName().getValue());
 			mCurMatimeLabel.setText(mCurrentSpEntryInfo.getMatime().getValue());
 			mCurPasgQcnLabel.setText(mCurrentSpEntryInfo.getPasgQcn().getValue());
-
-			if (mCurrentAuctionStatusType.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_FINISH)) {
+			
+			
+			if (GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_FINISH)) {
 
 				if (!CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getAuctionSucBidder())) {
 					mCurSuccessfulBidderLabel.setText(mCurrentSpEntryInfo.getAuctionSucBidder().getValue());
+				}else {
+					mCurSuccessfulBidderLabel.setText("0");
 				}
+				
 				if (!CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getSraSbidUpPrice())) {
 					mCurSuccessPriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getSraSbidUpPrice().getValue())));
+				}else {
+					mCurSuccessPriceLabel.setText("0");
 				}
 
 			} else {
 				if (!CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getExpAuctionSucBidder())) {
 					mCurSuccessfulBidderLabel.setText(mCurrentSpEntryInfo.getExpAuctionSucBidder().getValue());
+				}else {
+					mCurSuccessfulBidderLabel.setText("0");
 				}
 				if (!CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getExpAuctionBidPrice())) {
 					mCurSuccessPriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getExpAuctionBidPrice().getValue())));
+				}else {
+					mCurSuccessPriceLabel.setText("0");
 				}
 
 			}
@@ -2756,8 +2789,11 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			mCurLowPriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getLowPrice().getValue())));
 
 			requestSelectBidEntry();
-
-			CommonUtils.getInstance().dismissLoadingDialog();
+			
+			if (GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
+				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+			}
+			
 		});
 	}
 
@@ -2810,6 +2846,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			@Override
 			public void onResponseError(String message) {
 				mLogger.debug("[onResponseError] 응찰목록조회 :  " + message);
+				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 				initBiddingInfoDataList();
 			}
 		});
@@ -2908,7 +2945,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		// 경매 경과 시간 타이머 종료
 		stopStartAuctionSecScheduler();
-
+		
 		// 경매 시작 후 경과 시간 타이머. 1초마다 반복 수행
 		mStartAuctionSecScheduler = new Timer();
 

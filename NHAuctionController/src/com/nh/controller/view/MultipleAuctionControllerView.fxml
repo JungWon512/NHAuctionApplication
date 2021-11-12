@@ -297,13 +297,6 @@
             <VBox VBox.vgrow="ALWAYS">
                <children>
                   <AnchorPane>
-                     <children>
-                        <Button fx:id="mBtnRefresh" maxHeight="40.0" minHeight="40.0" minWidth="80.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" styleClass="base-contents" text="새로고침" AnchorPane.rightAnchor="5.0">
-                           <font>
-                              <Font name="Noto Sans CJK KR Regular" size="14.0" />
-                           </font>
-                        </Button>
-                     </children>
                      <padding>
                         <Insets bottom="7.0" />
                      </padding>
@@ -690,20 +683,21 @@
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.hgrow="ALWAYS">
                <children>
                   <Button fx:id="mBtnEsc" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[ESC]프로그램종료" />
+                  <Button fx:id="mBtnRefresh" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="새로고침" />
                   <Button fx:id="mBtnF4" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F4]전체보기" />
                   <Button fx:id="mBtnF5" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F5]보류보기" />
                   <Button fx:id="mBtnF8" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F8]환경설정" />
-                  <Button fx:id="mBtnStart" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매시작">
+                  <Button fx:id="mBtnStart" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매시작">
                      <styleClass>
                         <String fx:value="btn-bottom" />
                         <String fx:value="bg-color-04cf5c" />
                      </styleClass></Button>
-                  <Button fx:id="mBtnPause" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매정지">
+                  <Button fx:id="mBtnPause" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매정지">
                      <styleClass>
                         <String fx:value="btn-bottom" />
                         <String fx:value="bg-color-008fff" />
                      </styleClass></Button>
-                  <Button fx:id="mBtnFinish" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매종료">
+                  <Button fx:id="mBtnFinish" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매종료">
                      <styleClass>
                         <String fx:value="btn-bottom" />
                         <String fx:value="bg-color-ea0030" />

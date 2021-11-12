@@ -21,11 +21,9 @@ import com.nh.controller.netty.BillboardDelegate;
 import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
-import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.controller.utils.SoundUtil;
-import com.nh.share.controller.models.EditSetting;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -116,9 +114,6 @@ public class SettingController implements Initializable {
 
 	@FXML // 경매 타입 (단일 ,일괄)
 	private ToggleButton mAuctionTypeSingleToggleButton, mAuctionTypeMultiToggleButton;
-
-	@FXML // 계류대 번호
-	private TextField mStandPositionTextField;
 	
 	@FXML
 	private TextArea mSoundValTextArea;
@@ -188,8 +183,8 @@ public class SettingController implements Initializable {
 		if(!isDisplayBordConnection) {
 			mBtnInitServer.setDisable(true);
 		}else {
-//			mAuctionTypeSingleToggleButton.setDisable(true);
-//			mAuctionTypeMultiToggleButton.setDisable(true);
+			mAuctionTypeSingleToggleButton.setDisable(true);
+			mAuctionTypeMultiToggleButton.setDisable(true);
 		}
 	}
 
@@ -342,14 +337,6 @@ public class SettingController implements Initializable {
 		// 음성경매 대기 시간
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, soundAuctionWaitTime);
 
-		if (mStandPositionTextField.getText() == null || !CommonUtils.getInstance().isValidString(mStandPositionTextField.getText().trim())) {
-			// 계류대 번호
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, SettingApplication.getInstance().DEFAULT_SETTING_STAND_POSITION);
-		} else {
-			// 계류대 번호
-			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, mStandPositionTextField.getText().trim());
-		}
-
 		// TTS 인증 처리
 		SoundUtil.getInstance().initCertification(mSoundValTextArea.getText());
 	}
@@ -417,8 +404,7 @@ public class SettingController implements Initializable {
 		mReAuctionCountTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, SettingApplication.getInstance().DEFAULT_SETTING_RE_AUCTION_COUNT));
 		// 대기시간
 		mSoundAuctionWaitTime.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME));
-		// 계류대 번호
-		mStandPositionTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, SettingApplication.getInstance().DEFAULT_SETTING_STAND_POSITION));
+
 		//음성 설정 파일
 		mSoundValTextArea.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_CONFIG));
 	
