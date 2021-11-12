@@ -44,6 +44,11 @@
                   </RadioButton>
                   <RadioButton fx:id="mFatteningCattleToggleButton" mnemonicParsing="false" text="비육우" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="2" />
                   <RadioButton fx:id="mBreedingCattleToggleButton" mnemonicParsing="false" text="번식우" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="3" />
+                  <RadioButton fx:id="mAllCowToggleButton" mnemonicParsing="false" text="일괄" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="0" >
+                     <toggleGroup>
+                        <ToggleGroup fx:id="cowTypeToggleGroup1" />
+                     </toggleGroup>
+                  </RadioButton>
                </children>
             </HBox>
             <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #ffffff;" styleClass="border-line-707070" VBox.vgrow="ALWAYS">

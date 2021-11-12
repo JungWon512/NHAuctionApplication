@@ -24,6 +24,7 @@ import com.nh.share.api.request.body.RequestCowInfoBody;
 import com.nh.share.api.request.body.RequestQcnBody;
 import com.nh.share.api.response.ResponseNumber;
 import com.nh.share.api.response.ResponseQcn;
+import com.nh.share.code.GlobalDefineCode;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -61,7 +62,7 @@ public class ChooseAuctionController implements Initializable {
 	private ToggleGroup cowTypeToggleGroup;
 
 	@FXML // 소 타입 , 송아지,비육우,번식우
-	private ToggleButton mCalfToggleButton, mFatteningCattleToggleButton, mBreedingCattleToggleButton;
+	private ToggleButton mCalfToggleButton, mFatteningCattleToggleButton, mBreedingCattleToggleButton, mAllCowToggleButton;
 
 	@FXML // 접속 , 종료 , 환경설정
 	private Button mBtnConnect, mBtnClose, mBtnSetting;
@@ -110,6 +111,8 @@ public class ChooseAuctionController implements Initializable {
 		mBtnConnectionInfoModify.setOnMouseClicked(event -> modifyConnectionInfo());
 
 		setDefaultSetting();
+		
+		toggleAllCowDisable();
 	}
 
 	private void setApplicationInfo() {
@@ -122,12 +125,9 @@ public class ChooseAuctionController implements Initializable {
 	 */
 	private void setDefaultSetting() {
 
-		String ip = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SERVER_IP,
-				GlobalDefine.AUCTION_INFO.AUCTION_HOST);
-		int port = SharedPreference.getInstance().getInt(SharedPreference.PREFERENCE_SERVER_PORT,
-				GlobalDefine.AUCTION_INFO.AUCTION_PORT);
-		int obj = SharedPreference.getInstance().getInt(SharedPreference.PREFERENCE_SELECTED_OBJ,
-				GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1);
+		String ip = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SERVER_IP, GlobalDefine.AUCTION_INFO.AUCTION_HOST);
+		int port = SharedPreference.getInstance().getInt(SharedPreference.PREFERENCE_SERVER_PORT, GlobalDefine.AUCTION_INFO.AUCTION_PORT);
+		int obj = SharedPreference.getInstance().getInt(SharedPreference.PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1);
 
 		mIp.setText(ip);
 		mPort.setText(Integer.toString(port));
@@ -142,6 +142,9 @@ public class ChooseAuctionController implements Initializable {
 		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:
 			mBreedingCattleToggleButton.setSelected(true);
 			break;
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_0:
+			mAllCowToggleButton.setSelected(true);
+			break;
 		default:
 			mCalfToggleButton.setSelected(true);
 		}
@@ -153,8 +156,7 @@ public class ChooseAuctionController implements Initializable {
 	 */
 	private void initCowToggleTypes() {
 		// listener
-		cowTypeToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> System.out
-				.println("소 타입 => " + newValue.getUserData().toString().trim()));
+		cowTypeToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> System.out.println("소 타입 => " + newValue.getUserData().toString().trim()));
 	}
 
 	/**
@@ -214,16 +216,13 @@ public class ChooseAuctionController implements Initializable {
 	 */
 	public void onConnection() {
 
-		if (!CommonUtils.getInstance().isValidString(mIp.getText())
-				|| !CommonUtils.getInstance().isValidString(mPort.getText())) {
-			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.check.ip.port"),
-					mResMsg.getString("popup.btn.ok"));
+		if (!CommonUtils.getInstance().isValidString(mIp.getText()) || !CommonUtils.getInstance().isValidString(mPort.getText())) {
+			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.check.ip.port"), mResMsg.getString("popup.btn.ok"));
 			return;
 		}
 
 		if (!CommonUtils.getInstance().isValidIp(mIp.getText())) {
-			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.check.ip.port"),
-					mResMsg.getString("popup.btn.ok"));
+			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.check.ip.port"), mResMsg.getString("popup.btn.ok"));
 			return;
 		}
 
@@ -232,8 +231,7 @@ public class ChooseAuctionController implements Initializable {
 		// 선택된 경매일
 		if (mAuctionDatePicker.getValue() == null) {
 			CommonUtils.getInstance().dismissLoadingDialog();
-			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"),
-					mResMsg.getString("popup.btn.ok"));
+			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"), mResMsg.getString("popup.btn.ok"));
 			return;
 		}
 
@@ -262,8 +260,7 @@ public class ChooseAuctionController implements Initializable {
 		clearGlobalData();
 
 		// 회차 조회
-		RequestQcnBody qcnBody = new RequestQcnBody(naBzplc, aucObjDsc, aucDate,
-				GlobalDefine.ADMIN_INFO.adminData.getAccessToken());
+		RequestQcnBody qcnBody = new RequestQcnBody(naBzplc, aucObjDsc, aucDate, GlobalDefine.ADMIN_INFO.adminData.getAccessToken());
 
 		ApiUtils.getInstance().requestSelectQcn(qcnBody, new ActionResultListener<ResponseQcn>() {
 
@@ -329,9 +326,7 @@ public class ChooseAuctionController implements Initializable {
 							public void run() {
 								try {
 
-									MoveStageUtil.getInstance().onConnectServer(mStage, mIp.getText().toString(),
-											Integer.parseInt(mPort.getText().toString()),
-											GlobalDefine.ADMIN_INFO.adminData.getUserId());
+									MoveStageUtil.getInstance().onConnectServer(mStage, mIp.getText().toString(), Integer.parseInt(mPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId());
 
 								} catch (Exception e) {
 									e.printStackTrace();
@@ -406,6 +401,8 @@ public class ChooseAuctionController implements Initializable {
 			public void callBack(Boolean isClose) {
 
 				dismissShowingDialog();
+				
+				toggleAllCowDisable();
 
 			}
 
@@ -416,6 +413,26 @@ public class ChooseAuctionController implements Initializable {
 		}, null, null);
 	}
 
+	
+	private void toggleAllCowDisable() {
+		
+		if (SettingApplication.getInstance().isSingleAuction()) {
+			if(!mAllCowToggleButton.isDisable()) {
+				mAllCowToggleButton.setDisable(true);
+				
+				String aucObjDsc = cowTypeToggleGroup.getSelectedToggle().getUserData().toString();
+				
+				if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_0))) {
+					mCalfToggleButton.setSelected(true);
+				}
+			}
+		
+		}else {
+			if(mAllCowToggleButton.isDisable()) {
+				mAllCowToggleButton.setDisable(false);
+			}
+		}
+	}
 	/**
 	 * Showing dialog Close
 	 */
