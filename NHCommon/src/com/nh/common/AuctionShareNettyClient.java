@@ -14,7 +14,6 @@ import com.nh.common.handlers.AuctionClientDecodedCheckSessionHandler;
 import com.nh.common.handlers.AuctionClientDecodedConnectionInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedCountDownHandler;
 import com.nh.common.handlers.AuctionClientDecodedCurrentEntryInfoHandler;
-import com.nh.common.handlers.AuctionClientDecodedFavoriteEntryInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedRequestAuctionResultHandler;
 import com.nh.common.handlers.AuctionClientDecodedResponseCodeHandler;
 import com.nh.common.handlers.AuctionClientDecodedResponseConnectionInfoHandler;
@@ -116,7 +115,6 @@ public class AuctionShareNettyClient {
 					pipeline.addLast(new AuctionClientDecodedCurrentEntryInfoHandler(controller)); // 현재 출품 정보
 					pipeline.addLast(new AuctionClientDecodedBiddingHandler(controller)); // 응찰 정보
 					pipeline.addLast(new AuctionClientDecodedCountDownHandler(controller)); // 경매 시작 카운트 다운 기능
-					pipeline.addLast(new AuctionClientDecodedFavoriteEntryInfoHandler(controller)); // 관심출품 정보
 					pipeline.addLast(new AuctionClientDecodedAuctionStatusHandler(controller)); // 경매 상태 정보 전송
 					pipeline.addLast(new AuctionClientDecodedToastMessageHandler(controller)); // 메시지 전송 처리
 					pipeline.addLast(new AuctionClientDecodedConnectionInfoHandler(controller)); // 응찰자접속요청

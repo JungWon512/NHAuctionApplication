@@ -38,8 +38,7 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 	private Map<String, ChannelGroup> mStandChannelsMap = null;
 
 	public AuctionServerDecodedBiddingHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<Object, ConnectionInfo> connectionInfoMap,
-			Map<String, Object> connectionChannelInfoMap,
+			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap,
 			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
 			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap,
@@ -77,26 +76,48 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 
 				mLogger.debug("Message ADD : " + bidding.getEncodedMessage());
 
-				// 현재 진행 출품번호 및 최저가에 만족하는지 확인
-				if (bidding.getEntryNum()
-						.equals(mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getCurrentEntryInfo()
-								.getEntryNum())
-						&& bidding.getPriceInt() >= Integer.valueOf(
-								mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getStartPrice())) {
+				if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getAuctionType()
+						.equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+					// 현재 진행 출품번호 및 최저가에 만족하는지 확인
+					if (bidding.getEntryNum()
+							.equals(mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode())
+									.getCurrentEntryInfo().getEntryNum())
+							&& bidding.getPriceInt() >= Integer.valueOf(
+									mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getStartPrice())) {
 
-					ctx.writeAndFlush(
-							new ResponseCode(bidding.getAuctionHouseCode(), GlobalDefineCode.RESPONSE_SUCCESS_BIDDING)
-									.getEncodedMessage() + "\r\n");
+						ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+								GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage() + "\r\n");
 
-					// 응찰 정보 수집
-					mAuctionServer.itemAdded(bidding.getEncodedMessage());
+						// 응찰 정보 수집
+						mAuctionServer.itemAdded(bidding.getEncodedMessage());
 
+					} else {
+						mLogger.debug("=============================================");
+						mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+						mLogger.debug("=============================================");
+						ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+								GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage() + "\r\n");
+					}
 				} else {
-					mLogger.debug("=============================================");
-					mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
-					mLogger.debug("=============================================");
-					ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
-							GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage() + "\r\n");
+					// 현재 진행 출품번호 및 최저가에 만족하는지 확인
+					if (bidding
+							.getPriceInt() >= Integer.valueOf(mAuctionScheduler
+									.getEntryInfo(bidding.getAuctionHouseCode(), bidding.getEntryNum()).getLowPrice())
+							&& !mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getIsAuctionPause()) {
+
+						ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+								GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage() + "\r\n");
+
+						// 응찰 정보 수집
+						mAuctionServer.itemAdded(bidding.getEncodedMessage());
+
+					} else {
+						mLogger.debug("=============================================");
+						mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+						mLogger.debug("=============================================");
+						ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+								GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage() + "\r\n");
+					}
 				}
 			} else {
 				ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),

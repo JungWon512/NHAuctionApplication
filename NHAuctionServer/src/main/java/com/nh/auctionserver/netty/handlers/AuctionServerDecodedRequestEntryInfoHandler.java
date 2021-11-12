@@ -11,12 +11,12 @@ import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.RequestEntryInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ResponseCode;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelId;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 
@@ -75,11 +75,13 @@ public final class AuctionServerDecodedRequestEntryInfoHandler extends SimpleCha
 				ctx.writeAndFlush(new ResponseCode(requestEntryInfo.getAuctionHouseCode(),
 						GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage() + "\r\n");
 			} else {
-				if (mAuctionScheduler.getEntryInfo(requestEntryInfo.getAuctionHouseCode(),
-						requestEntryInfo.getEntryNum()) != null) {
+				EntryInfo entryInfo = null;
+				entryInfo = mAuctionScheduler.getEntryInfo(requestEntryInfo.getAuctionHouseCode(),
+						requestEntryInfo.getEntryNum());
+				
+				if (entryInfo != null) {
 					ctx.writeAndFlush(
-							new CurrentEntryInfo(mAuctionScheduler.getEntryInfo(requestEntryInfo.getAuctionHouseCode(),
-									requestEntryInfo.getEntryNum())).getEncodedMessage());
+							new CurrentEntryInfo(entryInfo).getEncodedMessage() + "\r\n");
 				} else {
 					ctx.writeAndFlush(new ResponseCode(requestEntryInfo.getAuctionHouseCode(),
 							GlobalDefineCode.RESPONSE_REQUEST_NOT_RESULT).getEncodedMessage() + "\r\n");

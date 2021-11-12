@@ -72,6 +72,7 @@ public class AuctionServerApplication implements CommandLineRunner, ApplicationL
 	@Override
 	public void onApplicationEvent(ApplicationStartedEvent event) {
 		runServer(new String[] { "start", AuctionServerSetting.DEFAULT_CONNECT_PORT });
+		//mSocketIOServer.getSocketIOHandler().setSocketIOPort(9000);
 		mSocketIOServer.start();
 
 		mServer.setSocketIOHandler(mSocketIOServer.getSocketIOHandler(), mSSLContext);

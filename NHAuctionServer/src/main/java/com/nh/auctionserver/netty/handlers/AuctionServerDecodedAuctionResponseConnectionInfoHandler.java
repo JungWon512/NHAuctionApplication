@@ -9,15 +9,14 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.code.GlobalDefineCode;
+import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.AuctionType;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
-import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ShowEntryInfo;
-import com.nh.share.utils.JwtCertTokenUtils;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -124,32 +123,37 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 								GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage() + "\r\n");
 					} else {
 						if (mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()) != null) {
-							clientChannelContext.writeAndFlush(new CurrentEntryInfo(mAuctionScheduler
-									.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getCurrentEntryInfo())
-											.getEncodedMessage()
-									+ "\r\n");
+							if (mAuctionScheduler.getAuctionEditSetting(responseConnectionInfo.getAuctionHouseCode()).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+								clientChannelContext.writeAndFlush(new CurrentEntryInfo(mAuctionScheduler
+										.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getCurrentEntryInfo())
+												.getEncodedMessage()
+										+ "\r\n");
 
-							// 정상 접속자 초기 경매 상태 정보 전달 처리
-							clientChannelContext.channel().writeAndFlush(
-									mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode())
-											.getAuctionStatus().getEncodedMessage() + "\r\n");
-							
-							if (mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getRetryTargetInfo() != null) {
-								clientChannelContext.channel().writeAndFlush(mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getRetryTargetInfo().getEncodedMessage() + "\r\n");
-							}
-							
-							if (!mAuctionScheduler.getCurrentAuctionStatus(responseConnectionInfo.getAuctionHouseCode())
-									.equals(GlobalDefineCode.AUCTION_STATUS_READY) && mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getAuctionBidStatus() != null) {
-								clientChannelContext.channel().writeAndFlush(mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getAuctionBidStatus().getEncodedMessage() + "\r\n");
+								// 정상 접속자 초기 경매 상태 정보 전달 처리
+								clientChannelContext.channel().writeAndFlush(
+										mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode())
+												.getAuctionStatus().getEncodedMessage() + "\r\n");
+								
+								if (mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getRetryTargetInfo() != null) {
+									clientChannelContext.channel().writeAndFlush(mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getRetryTargetInfo().getEncodedMessage() + "\r\n");
+								}
+								
+								if (!mAuctionScheduler.getCurrentAuctionStatus(responseConnectionInfo.getAuctionHouseCode())
+										.equals(GlobalDefineCode.AUCTION_STATUS_READY) && mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getAuctionBidStatus() != null) {
+									clientChannelContext.channel().writeAndFlush(mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getAuctionBidStatus().getEncodedMessage() + "\r\n");
+								}
+							} else {
+								// 정상 접속자 초기 경매 상태 정보 전달 처리
+								clientChannelContext.channel().writeAndFlush(
+										mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode())
+												.getAuctionStatus().getEncodedMessage() + "\r\n");
+								
+								if (!mAuctionScheduler.getCurrentAuctionStatus(responseConnectionInfo.getAuctionHouseCode())
+										.equals(GlobalDefineCode.AUCTION_STATUS_READY) && mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getAuctionBidStatus() != null) {
+									clientChannelContext.channel().writeAndFlush(mAuctionScheduler.getAuctionState(responseConnectionInfo.getAuctionHouseCode()).getAuctionBidStatus().getEncodedMessage() + "\r\n");
+								}
 							}
 						}
-
-//	    				// 관심 차량 정보 필요 대상 추출 및 관련 정보 전송 처리
-//	    				if (mAuctionScheduler.containFavoriteCarInfoMap(mAuctionScheduler.getAuctionState().getEntryNum(),
-//	    						connectorInfo.getUserNo())) {
-//	    					clientChannelContext.writeAndFlush(new FavoriteEntryInfo(mAuctionScheduler.getAuctionState().getEntryNum(), "Y")
-//	    							.getEncodedMessage() + "\r\n");
-//	    				}
 					}
 				} else {
 					clientChannelContext.channel().writeAndFlush(new ResponseConnectionInfo(responseConnectionInfo.getAuctionHouseCode(),

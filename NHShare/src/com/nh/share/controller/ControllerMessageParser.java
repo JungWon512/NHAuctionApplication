@@ -3,10 +3,12 @@ package com.nh.share.controller;
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.FinishAuction;
 import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PassAuction;
 import com.nh.share.controller.models.PauseAuction;
 import com.nh.share.controller.models.ReadyEntryInfo;
+import com.nh.share.controller.models.RequestShowFailBidding;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.controller.models.StartAuction;
 import com.nh.share.controller.models.StopAuction;
@@ -29,6 +31,8 @@ public class ControllerMessageParser {
 			return new PassAuction(messages[1], messages[2]);
 		case StopAuction.TYPE: // 경매 정치 기능
 			return new StopAuction(messages[1], messages[2], messages[3]);
+		case FinishAuction.TYPE: // 경매 종료 처리
+			return new FinishAuction(messages[1]);
 		case StartAuction.TYPE: // 경매 시작 처리
 			return new StartAuction(messages[1], messages[2]);
 		case PauseAuction.TYPE: // 경매 정지 취소 처리
@@ -43,6 +47,8 @@ public class ControllerMessageParser {
 			return new ReadyEntryInfo(messages[1], messages[2]);
 		case SendAuctionResult.TYPE: // 낙유찰 결과 전송
 			return new SendAuctionResult(messages);
+		case RequestShowFailBidding.TYPE: // 유찰 대상 목록 표시 요청(일괄경매)
+			return new RequestShowFailBidding(messages[1], messages[2], messages[3], messages[4]);
 		default:
 			throw null;
 		}

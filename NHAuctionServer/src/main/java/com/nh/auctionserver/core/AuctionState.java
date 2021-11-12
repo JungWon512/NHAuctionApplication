@@ -62,6 +62,9 @@ public class AuctionState {
 	
 	// 출하안내시스템접속상태
 	private boolean mIsStandConnect = false;
+	
+	// 일괄경매 정지 상태
+	private boolean mIsAuctionPause = false;
 
 	public AuctionState(String auctionHouseCode) {
 		mAuctionHouseCode = auctionHouseCode;
@@ -548,5 +551,13 @@ public class AuctionState {
 	
 	public void setIsStandConnect(boolean isStandConnect) {
 		mIsStandConnect = isStandConnect;
+	}
+	
+	public boolean getIsAuctionPause() {
+		return mIsAuctionPause;
+	}
+	
+	public void setIsAuctionPause(boolean isPause) {
+		mIsAuctionPause = isPause;
 	}
 }

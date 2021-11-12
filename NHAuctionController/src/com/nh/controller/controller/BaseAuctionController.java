@@ -42,7 +42,6 @@ import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.api.ActionResultListener;
-import com.nh.share.api.request.body.RequestAuctionResultBody;
 import com.nh.share.api.request.body.RequestBidLogBody;
 import com.nh.share.api.request.body.RequestBidNumBody;
 import com.nh.share.api.response.BaseResponse;
@@ -61,7 +60,6 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
@@ -476,12 +474,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 	public void onToastMessage(ToastMessage toastMessage) {
 		mLogger.debug("onToastMessage : " + toastMessage.getEncodedMessage());
 		addLogItem(toastMessage.getEncodedMessage());
-	}
-
-	@Override
-	public void onFavoriteEntryInfo(FavoriteEntryInfo favoriteEntryInfo) {
-		mLogger.debug("onFavoriteEntryInfo : " + favoriteEntryInfo.getEncodedMessage());
-		addLogItem(favoriteEntryInfo.getEncodedMessage());
 	}
 
 	@Override

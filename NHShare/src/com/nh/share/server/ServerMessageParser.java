@@ -1,15 +1,14 @@
 package com.nh.share.server;
 
 import com.nh.share.server.interfaces.FromAuctionServer;
-import com.nh.share.server.models.AuctionBidStatus;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ShowEntryInfo;
+import com.nh.share.server.models.ShowFailBidding;
 import com.nh.share.server.models.StandConnectInfo;
 import com.nh.share.server.models.StandEntryInfo;
 import com.nh.share.server.models.ToastMessage;
@@ -23,8 +22,6 @@ public class ServerMessageParser {
 			return new AuctionCountDown(messages[1], messages[2], messages[3]);
 		case ToastMessage.TYPE: // 메시지 전송 처리
 			return new ToastMessage(messages[1], messages[2]);
-		case FavoriteEntryInfo.TYPE: // 관심출품 여부 정보
-			return new FavoriteEntryInfo(messages);
 		case ResponseCode.TYPE: // 예외 상황 전송 처리
 			return new ResponseCode(messages[1], messages[2]);
 		case AuctionCheckSession.TYPE: // 접속 유효 확인 처리
@@ -41,6 +38,8 @@ public class ServerMessageParser {
 			return new ShowEntryInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6], messages[7], messages[8], messages[9], messages[10], messages[11]);
 		case StandConnectInfo.TYPE: // 출하안내시스템 접속 상태 정보 전송
 			return new StandConnectInfo(messages[1], messages[2]);
+		case ShowFailBidding.TYPE: // 일괄경매 유찰 예상 목록 표시 요청(출하안내시스템)
+			return new ShowFailBidding(messages[1], messages[2], messages[3], messages[4]);
 		default:
 			return null;
 		}

@@ -81,7 +81,6 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.StandConnectInfo;
@@ -1998,12 +1997,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 	@Override
 	public void onToastMessage(ToastMessage toastMessage) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onFavoriteEntryInfo(FavoriteEntryInfo favoriteEntryInfo) {
 		// TODO Auto-generated method stub
 
 	}

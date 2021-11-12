@@ -23,12 +23,15 @@ import com.nh.auctionserver.netty.handlers.AuctionServerDecodedBiddingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedCancelBiddingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedEditSettingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedEntryInfoHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedFinishAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedInitEntryInfoAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedPassAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedPauseAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedReadyEntryInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRefreshConnectorHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRequestEntryInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRequestLogoutHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRequestShowFailBiddingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRetryTargetInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedStartAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedStopAuctionHandler;
@@ -54,10 +57,12 @@ import com.nh.share.controller.ControllerMessageParser;
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.FinishAuction;
 import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PassAuction;
 import com.nh.share.controller.models.PauseAuction;
 import com.nh.share.controller.models.ReadyEntryInfo;
+import com.nh.share.controller.models.RequestShowFailBidding;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.controller.models.StartAuction;
 import com.nh.share.controller.models.StopAuction;
@@ -69,10 +74,10 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ShowEntryInfo;
+import com.nh.share.server.models.ShowFailBidding;
 import com.nh.share.server.models.StandConnectInfo;
 import com.nh.share.server.models.StandEntryInfo;
 import com.nh.share.server.models.ToastMessage;
@@ -285,6 +290,15 @@ public class AuctionServer {
 						pipeline.addLast(new AuctionServerDecodedAuctionBidStatusHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedRequestEntryInfoHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedFinishAuctionHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedRequestShowFailBiddingHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 					}
 				})
 				/* Nagle 알고리즘 비활성화 여부 설정 */
@@ -400,8 +414,8 @@ public class AuctionServer {
 				channelItemWriteAndFlush(((ToastMessage) serverParsedMessage));
 			}
 
-			if (serverParsedMessage instanceof FavoriteEntryInfo) {
-				channelItemWriteAndFlush(((FavoriteEntryInfo) serverParsedMessage));
+			if (serverParsedMessage instanceof ShowFailBidding) {
+				channelItemWriteAndFlush(((ShowFailBidding) serverParsedMessage));
 			}
 
 			if (serverParsedMessage instanceof CurrentEntryInfo) {
@@ -519,6 +533,26 @@ public class AuctionServer {
 				}
 			}
 
+			if (controllerParsedMessage instanceof FinishAuction) {
+				mLogger.info("경매 종료 요청 거점코드 : " + ((FinishAuction) controllerParsedMessage).getAuctionHouseCode());
+
+				if (mAuctioneer.getCurrentAuctionStatus(((FinishAuction) controllerParsedMessage).getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+					mAuctioneer.finishAuction(((FinishAuction) controllerParsedMessage).getAuctionHouseCode());
+				} else {
+					mControllerChannelsMap.get(((FinishAuction) controllerParsedMessage).getAuctionHouseCode())
+							.writeAndFlush(
+									new ResponseCode(((FinishAuction) controllerParsedMessage).getAuctionHouseCode(),
+											GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage() + "\r\n");
+				}
+			}
+		
+			if (controllerParsedMessage instanceof RequestShowFailBidding) {
+				mLogger.info("일괄 경매 유찰 예상 목록 표시 요청 거점코드 : " + ((RequestShowFailBidding) controllerParsedMessage).getAuctionHouseCode());
+
+				channelItemWriteAndFlush(new ShowFailBidding(((RequestShowFailBidding) controllerParsedMessage)));
+			}
+			
 			if (controllerParsedMessage instanceof InitEntryInfo) {
 				mLogger.info("경매 출품 데이터 초기화 요청 거점코드 : " + ((InitEntryInfo) controllerParsedMessage).getAuctionHouseCode());
 				mLogger.info("경매 출품 데이터 초기화 요청 회차 : " + ((InitEntryInfo) controllerParsedMessage).getAuctionQcn());
@@ -532,9 +566,11 @@ public class AuctionServer {
 
 			if (controllerParsedMessage instanceof EntryInfo) {
 				// 출품 이관 후 변경된 데이터 전송 처리
-				if (!mAuctioneer.getCurrentAuctionStatus(((EntryInfo) controllerParsedMessage).getAuctionHouseCode())
-						.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
-					channelItemWriteAndFlush(new CurrentEntryInfo(((EntryInfo) controllerParsedMessage)));
+				if (mAuctioneer.getAuctionEditSetting(((EntryInfo) controllerParsedMessage).getAuctionHouseCode()).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+					if (!mAuctioneer.getCurrentAuctionStatus(((EntryInfo) controllerParsedMessage).getAuctionHouseCode())
+							.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
+						channelItemWriteAndFlush(new CurrentEntryInfo(((EntryInfo) controllerParsedMessage)));
+					}
 				}
 				
 				mAuctioneer.addEntryInfo(((EntryInfo) controllerParsedMessage).getAuctionHouseCode(),
@@ -725,25 +761,12 @@ public class AuctionServer {
 					}
 				}
 				break;
-			case FavoriteEntryInfo.TYPE: // 관심출품 여부 정보
-				// Web Socket Broadcast
-				if (mSocketIOHandler != null) {
-					mSocketIOHandler.sendPacketData(message);
-				}
-
+			case ShowFailBidding.TYPE: // 일괄경매 유찰 예상 경매번호 노출 요청(출하안내시스템)
 				// Netty Broadcast
-				if (mBidderChannelsMap != null) {
-					if (mBidderChannelsMap.containsKey(((FavoriteEntryInfo) event).getAuctionHouseCode())) {
-						if (mBidderChannelsMap.get(((FavoriteEntryInfo) event).getAuctionHouseCode()).size() > 0) {
-							mBidderChannelsMap.get(((FavoriteEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
-						}
-					}
-				}
-
-				if (mWatcherChannelsMap != null) {
-					if (mWatcherChannelsMap.containsKey(((FavoriteEntryInfo) event).getAuctionHouseCode())) {
-						if (mWatcherChannelsMap.get(((FavoriteEntryInfo) event).getAuctionHouseCode()).size() > 0) {
-							mWatcherChannelsMap.get(((FavoriteEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+				if (mStandChannelsMap != null) {
+					if (mStandChannelsMap.containsKey(((ShowFailBidding) event).getAuctionHouseCode())) {
+						if (mStandChannelsMap.get(((ShowFailBidding) event).getAuctionHouseCode()).size() > 0) {
+							mStandChannelsMap.get(((ShowFailBidding) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
@@ -973,6 +996,14 @@ public class AuctionServer {
 					if (mBidderChannelsMap.containsKey(((AuctionType) event).getAuctionHouseCode())) {
 						if (mBidderChannelsMap.get(((AuctionType) event).getAuctionHouseCode()).size() > 0) {
 							mBidderChannelsMap.get(((AuctionType) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+
+				if (mStandChannelsMap != null) {
+					if (mStandChannelsMap.containsKey(((AuctionType) event).getAuctionHouseCode())) {
+						if (mStandChannelsMap.get(((AuctionType) event).getAuctionHouseCode()).size() > 0) {
+							mStandChannelsMap.get(((AuctionType) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}

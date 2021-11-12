@@ -37,8 +37,7 @@ public final class AuctionServerDecodedCancelBiddingHandler extends SimpleChanne
 	private Map<String, ChannelGroup> mStandChannelsMap = null;
 
 	public AuctionServerDecodedCancelBiddingHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<Object, ConnectionInfo> connectionInfoMap,
-			Map<String, Object> connectionChannelInfoMap,
+			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap,
 			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
 			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap,
@@ -69,25 +68,49 @@ public final class AuctionServerDecodedCancelBiddingHandler extends SimpleChanne
 				return;
 			}
 
-			// 취소 요청에 대하여 현재 진행 중인 출품번호와 경매 상태가 적합한지 확인
-			if (cancelBidding.getEntryNum()
-					.equals(mAuctionScheduler.getAuctionState(cancelBidding.getAuctionHouseCode()).getCurrentEntryInfo()
-							.getEntryNum())
-					&& (mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
-							.equals(GlobalDefineCode.AUCTION_STATUS_START)
-					|| mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
-							.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS))) {
+			if (mAuctionScheduler.getAuctionEditSetting(cancelBidding.getAuctionHouseCode()).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+				// 취소 요청에 대하여 현재 진행 중인 출품번호와 경매 상태가 적합한지 확인
+				if (cancelBidding.getEntryNum()
+						.equals(mAuctionScheduler.getAuctionState(cancelBidding.getAuctionHouseCode()).getCurrentEntryInfo()
+								.getEntryNum())
+						&& (mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
+								.equals(GlobalDefineCode.AUCTION_STATUS_START)
+								|| mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
+										.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS))) {
 
-				mLogger.debug("Message ADD : " + cancelBidding.getEncodedMessage());
+					mLogger.debug("Message ADD : " + cancelBidding.getEncodedMessage());
 
-				ctx.writeAndFlush(new ResponseCode(cancelBidding.getAuctionHouseCode(),
-						GlobalDefineCode.RESPONSE_SUCCESS_CANCEL_BIDDING).getEncodedMessage() + "\r\n");
+					ctx.writeAndFlush(new ResponseCode(cancelBidding.getAuctionHouseCode(),
+							GlobalDefineCode.RESPONSE_SUCCESS_CANCEL_BIDDING).getEncodedMessage() + "\r\n");
 
-				mAuctionServer.itemAdded(cancelBidding.getEncodedMessage());
+					mAuctionServer.itemAdded(cancelBidding.getEncodedMessage());
 
+				} else {
+					ctx.writeAndFlush(new ResponseCode(cancelBidding.getAuctionHouseCode(),
+							GlobalDefineCode.RESPONSE_DENIED_CANCEL_BIDDING).getEncodedMessage() + "\r\n");
+				}
 			} else {
-				ctx.writeAndFlush(new ResponseCode(cancelBidding.getAuctionHouseCode(),
-						GlobalDefineCode.RESPONSE_DENIED_CANCEL_BIDDING).getEncodedMessage() + "\r\n");
+				// 취소 요청에 대하여 현재 진행 중인 출품번호와 경매 상태가 적합한지 확인
+				if ((mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
+								.equals(GlobalDefineCode.AUCTION_STATUS_START)
+								|| mAuctionScheduler.getCurrentAuctionStatus(cancelBidding.getAuctionHouseCode())
+										.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS))
+						&& (mAuctionScheduler.getAuctionEditSetting(cancelBidding.getAuctionHouseCode()).getAuctionType()
+								.equals(GlobalDefineCode.AUCTION_TYPE_BUNDLE)
+								&& !mAuctionScheduler.getAuctionState(cancelBidding.getAuctionHouseCode())
+										.getIsAuctionPause())) {
+
+					mLogger.debug("Message ADD : " + cancelBidding.getEncodedMessage());
+
+					ctx.writeAndFlush(new ResponseCode(cancelBidding.getAuctionHouseCode(),
+							GlobalDefineCode.RESPONSE_SUCCESS_CANCEL_BIDDING).getEncodedMessage() + "\r\n");
+
+					mAuctionServer.itemAdded(cancelBidding.getEncodedMessage());
+
+				} else {
+					ctx.writeAndFlush(new ResponseCode(cancelBidding.getAuctionHouseCode(),
+							GlobalDefineCode.RESPONSE_DENIED_CANCEL_BIDDING).getEncodedMessage() + "\r\n");
+				}
 			}
 		} else {
 			mLogger.debug("=============================================");

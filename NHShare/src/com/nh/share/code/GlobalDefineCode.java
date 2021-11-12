@@ -9,7 +9,7 @@ package com.nh.share.code;
  */
 public class GlobalDefineCode {
 	// SSL 적용 여부
-	public static final boolean FLAG_SSL = false;
+	public static final boolean FLAG_SSL = true;
 	// 개발,운영 여부
 	public static final boolean FLAG_PRD = true;
 	// 응찰자 테스트 모드
@@ -19,7 +19,7 @@ public class GlobalDefineCode {
 	
 	// 경매장 거점 코드
 	public enum AUCTION_HOUSE {
-		AUCTION_HOUSE_HWADONG("8808990656656"),
+		AUCTION_HOUSE_HADONG("8808990656656"),
 		AUCTION_HOUSE_HWASUN("8808990661315"),
 		AUCTION_HOUSE_JANGSU("8808990657202");
 	    
@@ -34,10 +34,6 @@ public class GlobalDefineCode {
 	    }
 	 
 	}
-	
-	public static final String AUCTION_HOUSE_HWADONG = "8808990656656";
-	public static final String AUCTION_HOUSE_HWASUN = "8808990661315";
-	public static final String AUCTION_HOUSE_JANGSU = "8808990657202";
 	
 	// 응찰 채널
 	public static final String CONNECT_CHANNEL_BIDDER = "6001";
@@ -101,11 +97,15 @@ public class GlobalDefineCode {
 	public static final String AUCTION_RESULT_CODE_PENDING = "23";		//보류
 	public static final String AUCTION_RESULT_CODE_CANCEL = "24";		//취소
 	
+	// 경매 유형 코드
+	public static final String AUCTION_TYPE_SINGLE = "20";		// 단일
+	public static final String AUCTION_TYPE_BUNDLE = "10";		// 일괄
+	
 	// 요청 결과 미존재
 	public static final String RESPONSE_REQUEST_NOT_RESULT = "4001";
 	// 요청 실패
 	public static final String RESPONSE_REQUEST_FAIL = "4002";
-	// 시작가 이하 응찰 시도
+	// 유효하지 않은 가격 응찰 시도
 	public static final String RESPONSE_REQUEST_BIDDING_LOW_PRICE = "4003";
 	// 출품 이관 전 상태
 	public static final String RESPONSE_NOT_TRANSMISSION_ENTRY_INFO = "4004";

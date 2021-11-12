@@ -11,7 +11,6 @@ import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
-import com.nh.share.server.models.FavoriteEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.StandConnectInfo;
@@ -54,8 +53,6 @@ public interface NettyControllable {
     public void onCancelBidding(CancelBidding cancelBidding); // 응찰 취소
 
     public void onToastMessage(ToastMessage toastMessage); // 메시지 전송
-
-    public void onFavoriteEntryInfo(FavoriteEntryInfo favoriteEntryInfo); // 관심 출품 정보
 
     public void onAuctionResult(AuctionResult auctionResult); // 경매 낙유찰 결과 전송
 

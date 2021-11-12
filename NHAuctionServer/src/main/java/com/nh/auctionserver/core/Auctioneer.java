@@ -24,6 +24,7 @@ import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.auctionserver.setting.AuctionServerSetting;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
+import com.nh.share.common.models.AuctionType;
 import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
@@ -126,6 +127,10 @@ public class Auctioneer {
 	 */
 	public synchronized void startAuction(String auctionHouseCode) {
 		mLogger.info("startAuction auctionHouseCode : " + auctionHouseCode);
+		if (getAuctionEditSetting(auctionHouseCode).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_BUNDLE)) {
+			mAuctionStateMap.get(auctionHouseCode).setIsAuctionPause(false);
+		}
+		
 		if (mAuctionStateMap.containsKey(auctionHouseCode)) {
 			if (mAuctionStateMap.get(auctionHouseCode).getAuctionState()
 					.equals(GlobalDefineCode.AUCTION_STATUS_READY)) {
@@ -192,6 +197,10 @@ public class Auctioneer {
 	 *
 	 */
 	public synchronized void pauseAuction(String auctionHouseCode) {
+		if (getAuctionEditSetting(auctionHouseCode).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_BUNDLE)) {
+			mAuctionStateMap.get(auctionHouseCode).setIsAuctionPause(true);
+		}
+		
 		if (mStartCountDownJobMap.containsKey(auctionHouseCode)) {
 			mStartCountDownJobMap.get(auctionHouseCode).cancel(true);
 		}
@@ -205,6 +214,20 @@ public class Auctioneer {
 				.onAuctionCountDownReady(Integer.valueOf(mAuctionEditSettingMap.get(auctionHouseCode).getCountDown()));
 	}
 
+	/**
+	 * 
+	 * @MethodName finishAuction
+	 * @Description 경매 종료 처리
+	 *
+	 */
+	public synchronized void finishAuction(String auctionHouseCode) {
+		mAuctionStateMap.get(auctionHouseCode).onFinish();
+		
+		if (mAuctionServer != null) {
+			mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+		}
+	}
+	
 	public synchronized void broadcastToastMessage(ToastMessageRequest requestToastMessage) {
 		ToastMessage toastMessage = new ToastMessage(requestToastMessage.getAuctionHouseCode(),
 				requestToastMessage.getMessage());
@@ -268,31 +291,52 @@ public class Auctioneer {
 		mLogger.info("mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() : "
 				+ mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount());
 
-		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
-				&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
-			mAuctionStateMap.get(auctionHouseCode).setCurrentEntryInfo(entryInfo);
+		if (getAuctionEditSetting(auctionHouseCode) != null) {
+			if (getAuctionEditSetting(auctionHouseCode).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+				if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
+						&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
+					mAuctionStateMap.get(auctionHouseCode).setCurrentEntryInfo(entryInfo);
 
-			mAuctionStateMap.get(auctionHouseCode)
-					.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.get(auctionHouseCode).size()));
+					mAuctionStateMap.get(auctionHouseCode)
+							.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.get(auctionHouseCode).size()));
 
-			mLogger.info(entryInfo.getEntryNum() + "번 출품 상품이 경매 준비되었습니다.");
-			mAuctionStateMap.get(auctionHouseCode).onReady();
+					mLogger.info(entryInfo.getEntryNum() + "번 출장우가 경매 준비되었습니다.");
+					mAuctionStateMap.get(auctionHouseCode).onReady();
 
-			// 출품 정보 및 경매 상태 전송
-			if (mAuctionServer != null) {
-				mAuctionServer
-						.itemAdded(new CurrentEntryInfo(mAuctionStateMap.get(auctionHouseCode).getCurrentEntryInfo())
-								.getEncodedMessage());
+					// 출품 정보 및 경매 상태 전송
+					if (mAuctionServer != null) {
+						mAuctionServer
+								.itemAdded(new CurrentEntryInfo(mAuctionStateMap.get(auctionHouseCode).getCurrentEntryInfo())
+										.getEncodedMessage());
 
-				mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
-			}
-		} else {
-			mLogger.info("모든 출품 상품이 경매 완료되었습니다.");
-			mAuctionStateMap.get(auctionHouseCode).onFinish();
+						mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+					}
+				} /*
+					 * else { mLogger.info("모든 출장우가 경매 완료되었습니다.");
+					 * mAuctionStateMap.get(auctionHouseCode).onFinish();
+					 * 
+					 * // 출품 정보 및 경매 상태 전송 if (mAuctionServer != null) {
+					 * mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).
+					 * getAuctionStatus().getEncodedMessage()); } }
+					 */
+			} else {
+				if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
+						&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
+					mLogger.info(entryInfo.getEntryNum() + "번 출장우가 경매 준비되었습니다.");
+					mAuctionStateMap.get(auctionHouseCode).onReady();
 
-			// 출품 정보 및 경매 상태 전송
-			if (mAuctionServer != null) {
-				mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+					// 출품 정보 및 경매 상태 전송
+					if (mAuctionServer != null) {
+						mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+					}
+				} /*
+					 * else { mLogger.info("모든 출장우가 경매 완료되었습니다.");
+					 * mAuctionStateMap.get(auctionHouseCode).onFinish();
+					 * 
+					 * // 출품 정보 및 경매 상태 전송 if (mAuctionServer != null) {
+					 * mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).
+					 * getAuctionStatus().getEncodedMessage()); } }
+					 */
 			}
 		}
 	}
@@ -317,31 +361,52 @@ public class Auctioneer {
 			mLogger.info("readyEntryInfo is null");
 		}
 
-		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
-				&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
-			mAuctionStateMap.get(auctionHouseCode).setCurrentEntryInfo(entryInfo);
+		if (getAuctionEditSetting(auctionHouseCode) != null) {
+			if (getAuctionEditSetting(auctionHouseCode).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+				if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
+						&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
+					mAuctionStateMap.get(auctionHouseCode).setCurrentEntryInfo(entryInfo);
 
-			mAuctionStateMap.get(auctionHouseCode)
-					.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.get(auctionHouseCode).size()));
+					mAuctionStateMap.get(auctionHouseCode)
+							.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.get(auctionHouseCode).size()));
 
-			mLogger.info(entryInfo.getEntryNum() + "번 출품 상품이 경매 준비되었습니다.");
-			mAuctionStateMap.get(auctionHouseCode).onReady();
+					mLogger.info(entryInfo.getEntryNum() + "번 출품 상품이 경매 준비되었습니다.");
+					mAuctionStateMap.get(auctionHouseCode).onReady();
 
-			// 출품 정보 및 경매 상태 전송
-			if (mAuctionServer != null) {
-				mAuctionServer
-						.itemAdded(new CurrentEntryInfo(mAuctionStateMap.get(auctionHouseCode).getCurrentEntryInfo())
-								.getEncodedMessage());
+					// 출품 정보 및 경매 상태 전송
+					if (mAuctionServer != null) {
+						mAuctionServer
+								.itemAdded(new CurrentEntryInfo(mAuctionStateMap.get(auctionHouseCode).getCurrentEntryInfo())
+										.getEncodedMessage());
 
-				mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
-			}
-		} else {
-			mLogger.info("모든 출품 상품이 경매 완료되었습니다.");
-			mAuctionStateMap.get(auctionHouseCode).onFinish();
+						mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+					}
+				} /*
+					 * else { mLogger.info("모든 출장우가 경매 완료되었습니다.");
+					 * mAuctionStateMap.get(auctionHouseCode).onFinish();
+					 * 
+					 * // 출품 정보 및 경매 상태 전송 if (mAuctionServer != null) {
+					 * mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).
+					 * getAuctionStatus().getEncodedMessage()); } }
+					 */
+			} else {
+				if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
+						&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
+					mLogger.info("총 " + mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() + "건의 출장우가 경매 준비되었습니다.");
+					mAuctionStateMap.get(auctionHouseCode).onReady();
 
-			// 출품 정보 및 경매 상태 전송
-			if (mAuctionServer != null) {
-				mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+					// 출품 정보 및 경매 상태 전송
+					if (mAuctionServer != null) {
+						mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+					}
+				} /*
+					 * else { mLogger.info("모든 출장우가 경매 완료되었습니다.");
+					 * mAuctionStateMap.get(auctionHouseCode).onFinish();
+					 * 
+					 * // 출품 정보 및 경매 상태 전송 if (mAuctionServer != null) {
+					 * mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).
+					 * getAuctionStatus().getEncodedMessage()); } }
+					 */
 			}
 		}
 	}
@@ -676,15 +741,16 @@ public class Auctioneer {
 									.getEncodedMessage());
 
 					// 경매 출품 건 완료 상태로 전환
-//					mAuctionStateMap.get(auctionHouseCode).onCompleted();
-//					if (mAuctionServer != null) {
-//						mAuctionServer.itemAdded(
-//								mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+					mAuctionStateMap.get(auctionHouseCode).onCompleted();
+					
+					if (mAuctionServer != null) {
+						mAuctionServer.itemAdded(
+								mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
 //						// 낙유찰 정보 전송 요청
 //						mAuctionServer.itemAdded(new RequestAuctionResult(auctionHouseCode,
 //								mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEntryNum())
 //										.getEncodedMessage());
-//					}
+					}
 				}
 
 				mStartCountDownJobMap.get(auctionHouseCode).cancel(true);
@@ -908,6 +974,11 @@ public class Auctioneer {
 	public synchronized void setAuctionEditSetting(EditSetting editSetting) {
 		mAuctionEditSettingMap.put(editSetting.getAuctionHouseCode(), editSetting);
 
+		// 경매 유형코드 전송
+		if (getAuctionEditSetting(editSetting.getAuctionHouseCode()) != null) {
+			mAuctionServer.itemAdded(new AuctionType(getAuctionEditSetting(editSetting.getAuctionHouseCode()).getAuctionHouseCode(), getAuctionEditSetting(editSetting.getAuctionHouseCode()).getAuctionType()).getEncodedMessage());
+		}
+		
 		if (mAuctionServer != null) {
 			mAuctionServer.itemAdded(
 					new ShowEntryInfo(getAuctionEditSetting(editSetting.getAuctionHouseCode())).getEncodedMessage());

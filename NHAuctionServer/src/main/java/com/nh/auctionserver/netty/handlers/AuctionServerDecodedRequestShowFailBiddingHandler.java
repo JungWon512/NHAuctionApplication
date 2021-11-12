@@ -5,19 +5,20 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.corundumstudio.socketio.SocketIOClient;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
 import com.nh.share.common.models.ConnectionInfo;
-import com.nh.share.common.models.ResponseBiddingInfo;
+import com.nh.share.controller.models.RequestShowFailBidding;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelId;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 
-public class AuctionServerDecodedResponseBiddingInfoHandler extends SimpleChannelInboundHandler<ResponseBiddingInfo> {
-	private final Logger mLogger = LoggerFactory.getLogger(AuctionServerDecodedAuctionResponseSessionHandler.class);
+@Sharable
+public final class AuctionServerDecodedRequestShowFailBiddingHandler
+		extends SimpleChannelInboundHandler<RequestShowFailBidding> {
+	private final Logger mLogger = LoggerFactory.getLogger(AuctionServerDecodedRequestShowFailBiddingHandler.class);
 
 	private final AuctionServer mAuctionServer;
 	private final Auctioneer mAuctionScheduler;
@@ -31,9 +32,8 @@ public class AuctionServerDecodedResponseBiddingInfoHandler extends SimpleChanne
 	private Map<String, Object> mConnectionChannelInfoMap;
 	private Map<String, ChannelGroup> mStandChannelsMap = null;
 
-	public AuctionServerDecodedResponseBiddingInfoHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
-			Map<Object, ConnectionInfo> connectionInfoMap,
-			Map<String, Object> connectionChannelInfoMap,
+	public AuctionServerDecodedRequestShowFailBiddingHandler(AuctionServer auctionServer, Auctioneer auctionSchedule,
+			Map<Object, ConnectionInfo> connectionInfoMap, Map<String, Object> connectionChannelInfoMap,
 			Map<String, ChannelGroup> controllerChannelsMap, Map<String, ChannelGroup> bidderChannelsMap,
 			Map<String, ChannelGroup> watcherChannelsMap, Map<String, ChannelGroup> auctionResultMonitorChannelsMap,
 			Map<String, ChannelGroup> connectionMonitorChannelsMap,
@@ -50,23 +50,16 @@ public class AuctionServerDecodedResponseBiddingInfoHandler extends SimpleChanne
 		mStandChannelsMap = connectionStandChannelsMap;
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, ResponseBiddingInfo responseBiddingInfo) throws Exception {
-		if (mConnectionChannelInfoMap.containsKey(responseBiddingInfo.getUserNo())) {
-			 if (mConnectionChannelInfoMap
-						.get(responseBiddingInfo.getUserNo()) instanceof ChannelHandlerContext) {
-				 ChannelHandlerContext clientChannelContext = (ChannelHandlerContext) mConnectionChannelInfoMap.get(responseBiddingInfo.getUserNo());
+	protected void channelRead0(ChannelHandlerContext ctx, RequestShowFailBidding requestShowFailBIdding)
+			throws Exception {
+		mLogger.info("유찰 예상 목록 표시 요청 : " + (requestShowFailBIdding.getEncodedMessage()));
 
-					// 조회 된 응찰 정보 전송 처리
-					clientChannelContext.channel().writeAndFlush(responseBiddingInfo.getEncodedMessage() + "\r\n");
-			 } else if (mConnectionChannelInfoMap
-						.get(responseBiddingInfo.getUserNo()) instanceof SocketIOClient) {
-				 SocketIOClient socketIOClient = (SocketIOClient) mConnectionChannelInfoMap
-							.get(responseBiddingInfo.getUserNo());
-
-				 socketIOClient.sendEvent("ResponseBiddingInfo", responseBiddingInfo.getEncodedMessage());
-			 }
+		if (mControllerChannelsMap.get(requestShowFailBIdding.getAuctionHouseCode()).contains(ctx.channel()) == true) {
+			mLogger.info("정상 채널에서 유찰 예상 목록 표시를 요청하였습니다.");
+			mAuctionServer.itemAdded(requestShowFailBIdding.getEncodedMessage());
+		} else {
+			mLogger.info("비정상 채널에서 유찰 예상 목록 표시를 요청하였으나, 요청이 거부되었습니다.");
 		}
 	}
 }
