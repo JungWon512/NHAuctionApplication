@@ -17,7 +17,7 @@ public class QcnData {
 	private String AUC_OBJ_DSC;
 	private String LS_CMENO;
 	private int FEMALE_KG;
-	private int DIVISIONPRICE;
+	private int DIVISION_PRICE;
 	private String DEL_YN;
 	private int MALE_KG;
 	private String FSRGMN_ENO;
@@ -92,14 +92,6 @@ public class QcnData {
 
 	public void setFEMALE_KG(int fEMALE_KG) {
 		FEMALE_KG = fEMALE_KG;
-	}
-
-	public int getDivisionPrice() {
-		return DIVISIONPRICE;
-	}
-
-	public void setDivisionPrice(int divisionPrice) {
-		this.DIVISIONPRICE = divisionPrice;
 	}
 
 	public String getDEL_YN() {
@@ -181,15 +173,7 @@ public class QcnData {
 	public void setSEL_STS_DSC(String sEL_STS_DSC) {
 		SEL_STS_DSC = sEL_STS_DSC;
 	}
-
-	public int getDIVISIONPRICE() {
-		return DIVISIONPRICE;
-	}
-
-	public void setDIVISIONPRICE(int dIVISIONPRICE) {
-		DIVISIONPRICE = dIVISIONPRICE;
-	}
-
+	
 	public int getRG_SQNO() {
 		return RG_SQNO;
 	}
@@ -197,7 +181,13 @@ public class QcnData {
 	public void setRG_SQNO(int rG_SQNO) {
 		RG_SQNO = rG_SQNO;
 	}
-	
-	
+
+	public int getDIVISION_PRICE() {
+		return DIVISION_PRICE;
+	}
+
+	public void setDIVISION_PRICE(int dIVISION_PRICE) {
+		DIVISION_PRICE = dIVISION_PRICE;
+	}
 
 }
