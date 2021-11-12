@@ -2030,15 +2030,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				MoveStageUtil.getInstance().moveAuctionStage(mStage, mFxmlLoader);
 
 				// 내부 저장 port ip obj
-				SharedPreference.getInstance().setString(SharedPreference.getInstance().PREFERENCE_SERVER_IP, AuctionDelegate.getInstance().getHost());
+				SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SERVER_IP, AuctionDelegate.getInstance().getHost());
 
 				if (AuctionDelegate.getInstance().getPort() > 0) {
-					SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SERVER_PORT, AuctionDelegate.getInstance().getPort());
+					SharedPreference.getInstance().setInt(SharedPreference.PREFERENCE_SERVER_PORT, AuctionDelegate.getInstance().getPort());
 				} else {
-					SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SERVER_PORT, GlobalDefine.AUCTION_INFO.AUCTION_PORT);
+					SharedPreference.getInstance().setInt(SharedPreference.PREFERENCE_SERVER_PORT, GlobalDefine.AUCTION_INFO.AUCTION_PORT);
 				}
 
-				SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+				SharedPreference.getInstance().setInt(SharedPreference.PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 
 				break;
 			case GlobalDefineCode.CONNECT_FAIL:

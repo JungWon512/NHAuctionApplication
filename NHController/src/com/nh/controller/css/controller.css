@@ -413,11 +413,22 @@
 }
 */
 
+/* 경매 진행 상태 상위 pane */
+.label-status-pane{
+	-fx-background-color: #008fff;
+}
+
 /* 경매 진행 상태 라벨 */
 .label-status{
-	-fx-background-color: #008fff;
 	-fx-text-fill: #ffffff;
 	-fx-font-size: 32px;
+	-fx-font-family: "Noto Sans CJK KR Bold";
+}
+
+/* 경매 진행 상태 라벨 */
+.label-status-sec{
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 20px;
 	-fx-font-family: "Noto Sans CJK KR Bold";
 }
 
@@ -546,6 +557,12 @@
 }
 .bg-color-27293d{
 	-fx-background-color: #27293d;
+}
+.bg-color-008fff{
+	-fx-background-color: #008fff;
+}
+.bg-color-ea0030{
+	-fx-background-color: #ea0030;
 }
 
 .display-board-status{

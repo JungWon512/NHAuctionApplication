@@ -551,7 +551,26 @@
                         <Insets bottom="5.0" />
                      </padding>
                   </HBox>
-                  <Label fx:id="mAuctionStateLabel" alignment="CENTER" maxHeight="100.0" maxWidth="1.7976931348623157E308" styleClass="label-status" text="경매대기" VBox.vgrow="ALWAYS" />
+                  <GridPane fx:id="mAuctionStateGridPane" styleClass="bg-color-008fff" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label fx:id="mAuctionStateLabel" alignment="CENTER" contentDisplay="BOTTOM" graphicTextGap="0.0" maxHeight="100.0" maxWidth="1.7976931348623157E308" styleClass="label-status" text="경매대기" />
+                        <Label fx:id="mAuctionSecLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="label-status-sec" text="0초" textAlignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+                           <font>
+                              <Font name="Noto Sans CJK KR Regular" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </GridPane>
                </children>
             </VBox>
             <AnchorPane maxHeight="493.0" minHeight="493.0" prefHeight="493.0" styleClass="bidding-user-info" VBox.vgrow="ALWAYS">
