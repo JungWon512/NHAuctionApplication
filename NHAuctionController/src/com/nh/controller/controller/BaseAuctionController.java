@@ -552,7 +552,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 		case GlobalDefineCode.RESPONSE_REQUEST_FAIL:
 			msg = mResMsg.getString("msg.auction.response.code.fail");
 			break;
-		case GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE:
+		case GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE:
 			msg = mResMsg.getString("msg.auction.response.code.bidding.low.price");
 			break;
 		case GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO:

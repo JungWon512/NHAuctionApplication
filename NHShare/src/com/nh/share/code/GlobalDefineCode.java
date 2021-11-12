@@ -106,7 +106,7 @@ public class GlobalDefineCode {
 	// 요청 실패
 	public static final String RESPONSE_REQUEST_FAIL = "4002";
 	// 유효하지 않은 가격 응찰 시도
-	public static final String RESPONSE_REQUEST_BIDDING_LOW_PRICE = "4003";
+	public static final String RESPONSE_REQUEST_BIDDING_INVALID_PRICE = "4003";
 	// 출품 이관 전 상태
 	public static final String RESPONSE_NOT_TRANSMISSION_ENTRY_INFO = "4004";
 	// 응찰 취소 불가

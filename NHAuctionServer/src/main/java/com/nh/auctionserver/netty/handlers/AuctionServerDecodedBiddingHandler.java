@@ -96,13 +96,14 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 						mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
 						mLogger.debug("=============================================");
 						ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
-								GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage() + "\r\n");
+								GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage() + "\r\n");
 					}
 				} else {
 					// 현재 진행 출품번호 및 최저가에 만족하는지 확인
 					if (bidding
 							.getPriceInt() >= Integer.valueOf(mAuctionScheduler
 									.getEntryInfo(bidding.getAuctionHouseCode(), bidding.getEntryNum()).getLowPrice())
+							&& bidding.getPriceInt() < Integer.valueOf(mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmAuctionLimitPrice())
 							&& !mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getIsAuctionPause()) {
 
 						ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
@@ -116,7 +117,7 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 						mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
 						mLogger.debug("=============================================");
 						ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
-								GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage() + "\r\n");
+								GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage() + "\r\n");
 					}
 				}
 			} else {

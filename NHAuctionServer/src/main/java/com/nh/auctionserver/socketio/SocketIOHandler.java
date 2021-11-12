@@ -1540,11 +1540,13 @@ public class SocketIOHandler {
 								log.info("=============================================");
 								client.sendEvent("ResponseCode",
 										new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
-												GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage());
+												GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage());
 							}
 						} else {
 							if (((Bidding) parseObject).getPriceInt() >= Integer.valueOf(
-									mAuctioneer.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getLowPrice())) {
+									mAuctioneer.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getLowPrice())
+									&& ((Bidding) parseObject).getPriceInt() < Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice())
+									&& !mAuctioneer.getAuctionState(((Bidding) parseObject).getAuctionHouseCode()).getIsAuctionPause()) {
 								client.sendEvent("ResponseCode",
 										new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
 												GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage());
@@ -1558,7 +1560,7 @@ public class SocketIOHandler {
 								log.info("=============================================");
 								client.sendEvent("ResponseCode",
 										new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
-												GlobalDefineCode.RESPONSE_REQUEST_BIDDING_LOW_PRICE).getEncodedMessage());
+												GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage());
 							}
 						}
 					} else {
@@ -1573,33 +1575,68 @@ public class SocketIOHandler {
 					client.disconnect();
 				}
 			} else if (parseObject instanceof CancelBidding) {
-				if (mConnectorInfoMap.containsKey(client.getSessionId()) && mBidderChannelClientMap
-						.get(((CancelBidding) parseObject).getAuctionHouseCode()).containsKey(client.getSessionId())) {
-					if (mAuctioneer.getCurrentAuctionStatus(((CancelBidding) parseObject).getAuctionHouseCode())
-							.equals(GlobalDefineCode.AUCTION_STATUS_START)
-							|| mAuctioneer.getCurrentAuctionStatus(((CancelBidding) parseObject).getAuctionHouseCode())
-									.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+				if (mAuctioneer.getAuctionEditSetting(((CancelBidding) parseObject).getAuctionHouseCode()).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+					if (mConnectorInfoMap.containsKey(client.getSessionId()) && mBidderChannelClientMap
+							.get(((CancelBidding) parseObject).getAuctionHouseCode()).containsKey(client.getSessionId())) {
+						if (mAuctioneer.getCurrentAuctionStatus(((CancelBidding) parseObject).getAuctionHouseCode())
+								.equals(GlobalDefineCode.AUCTION_STATUS_START)
+								|| mAuctioneer.getCurrentAuctionStatus(((CancelBidding) parseObject).getAuctionHouseCode())
+										.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 
-						log.info("Message ADD : " + ((CancelBidding) parseObject).getEncodedMessage());
+							log.info("Message ADD : " + ((CancelBidding) parseObject).getEncodedMessage());
 
-						client.sendEvent("ResponseCode",
-								new ResponseCode(((CancelBidding) parseObject).getAuctionHouseCode(),
-										GlobalDefineCode.RESPONSE_SUCCESS_CANCEL_BIDDING).getEncodedMessage());
+							client.sendEvent("ResponseCode",
+									new ResponseCode(((CancelBidding) parseObject).getAuctionHouseCode(),
+											GlobalDefineCode.RESPONSE_SUCCESS_CANCEL_BIDDING).getEncodedMessage());
 
-						mAuctionServer.itemAdded(((CancelBidding) parseObject).getEncodedMessage());
+							mAuctionServer.itemAdded(((CancelBidding) parseObject).getEncodedMessage());
 
+						} else {
+							client.sendEvent("ResponseCode",
+									new ResponseCode(((CancelBidding) parseObject).getAuctionHouseCode(),
+											GlobalDefineCode.RESPONSE_DENIED_CANCEL_BIDDING).getEncodedMessage());
+						}
 					} else {
-						client.sendEvent("ResponseCode",
-								new ResponseCode(((CancelBidding) parseObject).getAuctionHouseCode(),
-										GlobalDefineCode.RESPONSE_DENIED_CANCEL_BIDDING).getEncodedMessage());
+						log.info("=============================================");
+						log.info("유효하지 않은 채널로 응찰 취소 요청 : " + client.getSessionId());
+						log.info(client.getSessionId() + "를 Close 처리하였습니다.");
+						log.info("=============================================");
+						client.disconnect();
 					}
 				} else {
-					log.info("=============================================");
-					log.info("유효하지 않은 채널로 응찰 취소 요청 : " + client.getSessionId());
-					log.info(client.getSessionId() + "를 Close 처리하였습니다.");
-					log.info("=============================================");
-					client.disconnect();
+					if (mConnectorInfoMap.containsKey(client.getSessionId()) && mBidderChannelClientMap
+							.get(((CancelBidding) parseObject).getAuctionHouseCode()).containsKey(client.getSessionId())) {
+						if (mAuctioneer.getCurrentAuctionStatus(((CancelBidding) parseObject).getAuctionHouseCode())
+								.equals(GlobalDefineCode.AUCTION_STATUS_START)
+								|| mAuctioneer.getCurrentAuctionStatus(((CancelBidding) parseObject).getAuctionHouseCode())
+										.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)
+										&& (mAuctioneer.getAuctionEditSetting(((CancelBidding) parseObject).getAuctionHouseCode()).getAuctionType()
+												.equals(GlobalDefineCode.AUCTION_TYPE_BUNDLE)
+												&& !mAuctioneer.getAuctionState(((CancelBidding) parseObject).getAuctionHouseCode())
+														.getIsAuctionPause())) {
+
+							log.info("Message ADD : " + ((CancelBidding) parseObject).getEncodedMessage());
+
+							client.sendEvent("ResponseCode",
+									new ResponseCode(((CancelBidding) parseObject).getAuctionHouseCode(),
+											GlobalDefineCode.RESPONSE_SUCCESS_CANCEL_BIDDING).getEncodedMessage());
+
+							mAuctionServer.itemAdded(((CancelBidding) parseObject).getEncodedMessage());
+
+						} else {
+							client.sendEvent("ResponseCode",
+									new ResponseCode(((CancelBidding) parseObject).getAuctionHouseCode(),
+											GlobalDefineCode.RESPONSE_DENIED_CANCEL_BIDDING).getEncodedMessage());
+						}
+					} else {
+						log.info("=============================================");
+						log.info("유효하지 않은 채널로 응찰 취소 요청 : " + client.getSessionId());
+						log.info(client.getSessionId() + "를 Close 처리하였습니다.");
+						log.info("=============================================");
+						client.disconnect();
+					}
 				}
+				
 			} else if (parseObject instanceof RequestEntryInfo) {
 				if (mConnectorInfoMap.containsKey(client.getSessionId())
 						&& mBidderChannelClientMap.get(((RequestEntryInfo) parseObject).getAuctionHouseCode())
