@@ -289,13 +289,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// 뷰 초기화
 		initViewConfiguration();
 
-		// 사운드 초기화
-		SoundUtil.getInstance();
-
 		// 경매 데이터
 		Thread thread = new Thread("cowInfo") {
 			@Override
 			public void run() {
+				// 사운드 초기화
+				SoundUtil.getInstance();
 				// 경매 데이터 set
 				requestAuctionInfo();
 			}
@@ -657,7 +656,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 										mWaitTableView.getSelectionModel().select(oldSpEntryInfo);
 									}
 								}
-
 							}
 
 						});
@@ -671,11 +669,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							onSendEntryData();
 						}else {
 							mLogger.debug("[출장우 데이터 전송 X. 현재 경매 상태 ]=> " + mAuctionStatus.getState());
+							Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 						}
 						
 					}
 				});
 				pauseTransition.play();
+			}else {
+				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 			}
 		}
 
@@ -1940,6 +1941,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 						initFinishedEntryDataList();
 						initWaitEntryDataList(mWaitEntryInfoDataList);
+					}else {
+						Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 					}
 
 				});
@@ -2304,6 +2307,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
+				
+				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+				
 				addLogItem("Run Stop Scheduler. ");
 				addLogItem("isCountDownBtnPressed : " + isCountDownBtnPressed + " isResultCompleteFlag : " + isResultCompleteFlag);
 
@@ -3154,6 +3160,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		//case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
+			Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+			
 			//경매 경과 시간 타이머 시작
 			startAuctionSecScheduler();
 
@@ -3479,7 +3487,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				setCurrentEntrySoundData();
 			}
 
-			CommonUtils.getInstance().dismissLoadingDialog();
+			Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 		});
 	}
 

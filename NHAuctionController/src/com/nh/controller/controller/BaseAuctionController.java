@@ -1414,6 +1414,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 				}else {
 					mLogger.debug("[응찰목록조회 false ] : " + result.getMessage());
 				}
+				
+				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 			}
 
 			@Override
