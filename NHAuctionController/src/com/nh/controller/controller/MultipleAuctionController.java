@@ -157,9 +157,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	@FXML // 경매 상단 아이콘 메세지보내기,전광판 1 상태, 전광판 2 상태
 	private ImageView mDisplay_1_ImageView, mDisplay_2_ImageView, mDisplay_3_ImageView;
 
-	@FXML // 음성 선택 check-box
-	private CheckBox mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mMotherObjNumCheckBox, mMaTimeCheckBox, mPasgQcnCheckBox, mWeightCheckBox, mLowPriceCheckBox, mBrandNameCheckBox;
-
 	@FXML // 대기중인 출품
 	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn, mWaitMotherColumn, mWaitMatimeColumn, mWaitPasgQcnColumn, mWaitWeightColumn, mWaitLowPriceColumn, mWaitExSuccessPriceColumn,mWaitExSuccessfulBidderColumn,mWaitSuccessPriceColumn, mWaitSuccessfulBidderColumn, mWaitResultColumn, mWaitNoteColumn;
 
@@ -379,8 +376,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 */
 	private void initViewConfiguration() {
 
-		initParsingSharedData();
-
 		initTableConfiguration();
 
 		mBtnEsc.setOnMouseClicked(event -> onCloseApplication());
@@ -458,46 +453,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		});
 	}
 
-	/**
-	 * 출품 정보 음성 설정 저장된 값들 셋팅
-	 */
-	@SuppressWarnings("unchecked")
-	private void initParsingSharedData() {
-
-		List<Boolean> checkList = SettingApplication.getInstance().getParsingMainSoundFlag();
-
-		// 메인 상단 체크박스 [S]
-		mEntryNumCheckBox.setSelected(checkList.get(0));
-		mExhibitorCheckBox.setSelected(checkList.get(1));
-		mGenderCheckBox.setSelected(checkList.get(2));
-		mMotherObjNumCheckBox.setSelected(checkList.get(3));
-		mMaTimeCheckBox.setSelected(checkList.get(4));
-		mPasgQcnCheckBox.setSelected(checkList.get(5));
-		mWeightCheckBox.setSelected(checkList.get(6));
-		mLowPriceCheckBox.setSelected(checkList.get(7));
-		mBrandNameCheckBox.setSelected(checkList.get(8));
-
-		mEntryNumCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER);
-		mExhibitorCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR);
-		mGenderCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_GENDER);
-		mMotherObjNumCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MOTHER);
-		mMaTimeCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_MATIME);
-		mPasgQcnCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_PASGQCN);
-		mWeightCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_WEIGHT);
-		mLowPriceCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE);
-		mBrandNameCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_BRAND);
-
-		mEntryNumCheckBox.setOnAction(mCheckBoxEventHandler);
-		mExhibitorCheckBox.setOnAction(mCheckBoxEventHandler);
-		mGenderCheckBox.setOnAction(mCheckBoxEventHandler);
-		mMotherObjNumCheckBox.setOnAction(mCheckBoxEventHandler);
-		mMaTimeCheckBox.setOnAction(mCheckBoxEventHandler);
-		mPasgQcnCheckBox.setOnAction(mCheckBoxEventHandler);
-		mWeightCheckBox.setOnAction(mCheckBoxEventHandler);
-		mLowPriceCheckBox.setOnAction(mCheckBoxEventHandler);
-		mBrandNameCheckBox.setOnAction(mCheckBoxEventHandler);
-		// 메인 상단 체크박스 [E]
-	}
 
 	/**
 	 * 테이블뷰 관련
@@ -537,6 +492,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		// [s] fmt - number
 		CommonUtils.getInstance().setNumberColumnFactory(mWaitWeightColumn, false);
 		CommonUtils.getInstance().setNumberColumnFactory(mWaitLowPriceColumn, true);
+		CommonUtils.getInstance().setNumberColumnFactory(mWaitExSuccessPriceColumn, true);
 		CommonUtils.getInstance().setNumberColumnFactory(mWaitSuccessPriceColumn, true);
 		CommonUtils.getInstance().setNumberColumnFactory(mBiddingPriceColumn, true);
 		// [e] fmt - number
@@ -618,11 +574,13 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 * 응찰자 초기값
 	 */
 	private void initBiddingInfoDataList() {
-		mBiddingUserInfoDataList.clear();
-		mBiddingUserInfoDataList.add(new SpBidding());
-		mBiddingInfoTableView.setItems(mBiddingUserInfoDataList);
-		mBiddingInfoTableView.getSelectionModel().select(0);
-//		biddingInfoTableStyleToggle();
+		Platform.runLater(() -> {
+			mBiddingUserInfoDataList.clear();
+			mBiddingUserInfoDataList.add(new SpBidding());
+			mBiddingInfoTableView.setItems(mBiddingUserInfoDataList);
+			mBiddingInfoTableView.getSelectionModel().select(0);
+	//		biddingInfoTableStyleToggle();
+		});
 	}
 
 	/**
@@ -723,7 +681,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						}else {
 							mLogger.debug("[출장우 데이터 전송 X. 현재 경매 상태 ]=> " + mAuctionStatus.getState());
 						}
-						
 
 						mLogger.debug("[현재 회차 경매 상태]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc());
 					}
@@ -1447,11 +1404,20 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 //					auctionStateLabelToggle(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc());
 
 				} else {
-					mLogger.debug("[일괄경매 시작 False]");
-					Platform.runLater(() -> {
-						CommonUtils.getInstance().dismissLoadingDialog();
-						showAlertPopupOneButton(result.getMessage());	
-					});
+
+					if(type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_START) && mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_READY)) {
+						mLogger.debug("[DB START+경매서버가 대기(8002)인 상황에서 경매시작 누른경우. 일괄경매 시작!! ]");
+						GlobalDefine.AUCTION_INFO.auctionRoundData.setSelStsDsc(GlobalDefineCode.STN_AUCTION_STATUS_PROGRESS);	
+						onAuctionStatusStart();
+					}else {
+						mLogger.debug("[일괄경매 시작 False]");
+						
+						Platform.runLater(() -> {
+							CommonUtils.getInstance().dismissLoadingDialog();
+							showAlertPopupOneButton(result.getMessage());	
+						});
+					}
+					
 				}
 			}
 
@@ -2904,7 +2870,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				if (!CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getAuctionSucBidder())) {
 					mCurSuccessfulBidderLabel.setText(mCurrentSpEntryInfo.getAuctionSucBidder().getValue());
 				}else {
-					mCurSuccessfulBidderLabel.setText("0");
+					mCurSuccessfulBidderLabel.setText("");
 				}
 				
 				if (!CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getSraSbidUpPrice())) {
