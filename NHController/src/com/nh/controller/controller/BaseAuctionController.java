@@ -460,12 +460,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 	}
 
 	@Override
-	public void onFavoriteEntryInfo(FavoriteEntryInfo favoriteEntryInfo) {
-		mLogger.debug("onFavoriteEntryInfo : " + favoriteEntryInfo.getEncodedMessage());
-		addLogItem(favoriteEntryInfo.getEncodedMessage());
-	}
-
-	@Override
 	public void onConnectionInfo(final ConnectionInfo connectionInfo) {
 		mLogger.debug("onConnectionInfo : " + connectionInfo.getEncodedMessage());
 

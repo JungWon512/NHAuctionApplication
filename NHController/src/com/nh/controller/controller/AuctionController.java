@@ -2077,7 +2077,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
 				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
 				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
-				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"), SettingApplication.getInstance().getSettingAuctionType());
+				preference.getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), preference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"), SettingApplication.getInstance().getSettingAuctionType(),"10000");
 		addLogItem(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
 	}
 

@@ -902,7 +902,7 @@ public class SettingController implements Initializable {
 			EditSetting setting = new EditSetting(sharedPreference.getString(SharedPreference.PREFERENCE_AUCTION_HOUSE_CODE, ""), sharedPreference.getString(SHARED_MOBILE_ARRAY[0], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[1], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[2], "Y"),
 					sharedPreference.getString(SHARED_MOBILE_ARRAY[3], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[4], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[5], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[6], "Y"),
 					sharedPreference.getString(SHARED_MOBILE_ARRAY[7], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[8], "Y"), sharedPreference.getString(SHARED_MOBILE_ARRAY[9], "N"), sharedPreference.getString(SHARED_MOBILE_ARRAY[10], "Y"),
-					sharedPreference.getString(SHARED_MOBILE_ARRAY[11], "N"), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"),aucType);
+					sharedPreference.getString(SHARED_MOBILE_ARRAY[11], "N"), sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"),aucType,"10000");
 			mLogger.debug(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(setting));
 
 			if (this.isDisplayBordConnection) {

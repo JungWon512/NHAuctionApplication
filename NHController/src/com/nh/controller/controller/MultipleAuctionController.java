@@ -556,12 +556,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	public void onToastMessage(ToastMessage toastMessage) {
 		// TODO Auto-generated method stub
 	}
-
-	@Override
-	public void onFavoriteEntryInfo(FavoriteEntryInfo favoriteEntryInfo) {
-		// TODO Auto-generated method stub
-	}
-
 	@Override
 	public void onAuctionResult(AuctionResult auctionResult) {
 		mLogger.debug("onAuctionResult : " + auctionResult.getEncodedMessage());
