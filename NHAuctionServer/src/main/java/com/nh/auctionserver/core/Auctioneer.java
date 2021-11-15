@@ -91,21 +91,23 @@ public class Auctioneer {
 		// 경매 유효 접속 세션 확인 처리 시작
 		startCheckSessionTimer();
 
-		for (GlobalDefineCode.AUCTION_HOUSE auctionHouseCode : GlobalDefineCode.AUCTION_HOUSE.values()) {
-			initAuction(auctionHouseCode.getValue());
-		}
+//		for (GlobalDefineCode.AUCTION_HOUSE auctionHouseCode : GlobalDefineCode.AUCTION_HOUSE.values()) {
+//			initAuction(auctionHouseCode.getValue());
+//		}
 
 	}
 
-	private void initAuction(String auctionHouseCode) {
+	public void initAuction(String auctionHouseCode) {
 		if (mAuctionStateMap == null) {
 			mAuctionStateMap = new HashMap<String, AuctionState>();
 		}
 
-		mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
+		if (!mAuctionStateMap.containsKey(auctionHouseCode)) {
+			mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
 
-		// 경매 응찰 정보 Reset
-		resetAuctionData(auctionHouseCode);
+			// 경매 응찰 정보 Reset
+			resetAuctionData(auctionHouseCode);
+		}
 	}
 	
 	/**
@@ -116,7 +118,13 @@ public class Auctioneer {
 	 * @return AuctionState 현재 경매 상태
 	 */
 	public String getCurrentAuctionStatus(String auctionHouseCode) {
-		return mAuctionStateMap.get(auctionHouseCode).getAuctionState();
+		String result = GlobalDefineCode.AUCTION_STATUS_NONE;
+		
+		if (mAuctionStateMap != null && mAuctionStateMap.containsKey(auctionHouseCode)) {
+			result = mAuctionStateMap.get(auctionHouseCode).getAuctionState();
+		}
+		
+		return result;
 	}
 
 	/**
