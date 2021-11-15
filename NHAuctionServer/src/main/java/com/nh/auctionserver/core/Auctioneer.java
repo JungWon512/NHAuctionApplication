@@ -98,16 +98,22 @@ public class Auctioneer {
 	}
 
 	public void initAuction(String auctionHouseCode) {
-		if (mAuctionStateMap == null) {
-			mAuctionStateMap = new HashMap<String, AuctionState>();
-		}
+//		if (mAuctionStateMap == null) {
+//			mAuctionStateMap = new HashMap<String, AuctionState>();
+//		}
+//
+//		if (!mAuctionStateMap.containsKey(auctionHouseCode)) {
+//			mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
+//
+//			// 경매 응찰 정보 Reset
+//			resetAuctionData(auctionHouseCode);
+//		}
+		
+		mAuctionStateMap = new HashMap<String, AuctionState>();
+		mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
 
-		if (!mAuctionStateMap.containsKey(auctionHouseCode)) {
-			mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
-
-			// 경매 응찰 정보 Reset
-			resetAuctionData(auctionHouseCode);
-		}
+		// 경매 응찰 정보 Reset
+		resetAuctionData(auctionHouseCode);
 	}
 	
 	/**
@@ -748,16 +754,20 @@ public class Auctioneer {
 							String.valueOf(mAuctionStateMap.get(auctionHouseCode).getAuctionCountDownTime()))
 									.getEncodedMessage());
 
-					// 경매 출품 건 완료 상태로 전환
-					mAuctionStateMap.get(auctionHouseCode).onCompleted();
-					
-					if (mAuctionServer != null) {
-						mAuctionServer.itemAdded(
-								mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
-//						// 낙유찰 정보 전송 요청
-//						mAuctionServer.itemAdded(new RequestAuctionResult(auctionHouseCode,
-//								mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEntryNum())
-//										.getEncodedMessage());
+					if (getAuctionEditSetting(auctionHouseCode) != null) {
+						if (getAuctionEditSetting(auctionHouseCode).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_BUNDLE)) {
+							// 경매 출품 건 완료 상태로 전환
+							mAuctionStateMap.get(auctionHouseCode).onCompleted();
+							
+							if (mAuctionServer != null) {
+								mAuctionServer.itemAdded(
+										mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
+//								// 낙유찰 정보 전송 요청
+//								mAuctionServer.itemAdded(new RequestAuctionResult(auctionHouseCode,
+//										mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEntryNum())
+//												.getEncodedMessage());
+							}
+						}
 					}
 				}
 
