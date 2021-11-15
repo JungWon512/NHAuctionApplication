@@ -186,6 +186,9 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	@FXML
 	private GridPane mAuctionStateGridPane;
 
+	@FXML //상단 버튼
+	private Button mHeaderBtnRefresh, mHeaderBtnStart, mHeaderBtnPause,mHeaderBtnFinish;
+	
 	@FXML //하단 버튼
 	private Button mBtnEsc, mBtnF4, mBtnF5,mBtnF8, mBtnStart, mBtnPause, mBtnFinish,mBtnMessage, mBtnSendPending,mBtnQcnFinish;
 
@@ -388,18 +391,28 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mBtnStart.setOnMouseClicked(event -> onRefreshStartAuction());
 		mBtnPause.setOnMouseClicked(event -> onPause());
 		mBtnFinish.setOnMouseClicked(event -> onFinish());
+		mHeaderBtnStart.setOnMouseClicked(event -> onRefreshStartAuction());
+		mHeaderBtnPause.setOnMouseClicked(event -> onPause());
+		mHeaderBtnFinish.setOnMouseClicked(event -> onFinish());		
 		mBtnMessage.setOnMouseClicked(event -> openSendMessage(event));
 		mWaitTableView.setOnMouseClicked(event -> onClickWaitTableView(event));
 		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
 		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
+		
 		mBtnRefresh.setOnMouseClicked(event -> {
 			Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
 			onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);	
 		});
+		
+		mHeaderBtnRefresh.setOnMouseClicked(event -> {
+			Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
+			onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);	
+		});
+		
+	
 		mBtnSendPending.setOnMouseClicked(event -> onSendPendingList());
 		mBtnQcnFinish.setOnMouseClicked(event -> onSendQcnFinish());
-		
 
 		// 표시 숨김.
 		mBtnIntroSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
@@ -1814,14 +1827,17 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			
 			mBtnF4.setDisable(false);
 			mBtnF5.setDisable(false);
-			mBtnF8.setDisable(false);
+			mBtnF8.setDisable(false);	
 			
 			//경매시작
 			mBtnStart.setDisable(false);
+			mHeaderBtnStart.setDisable(false);
 			//경매정지
 			mBtnPause.setDisable(true);
+			mHeaderBtnPause.setDisable(true);
 			//경매종료
 			mBtnFinish.setDisable(true);
+			mHeaderBtnFinish.setDisable(true);
 			//경매회차종료
 			mBtnQcnFinish.setDisable(true);
 			
@@ -1835,14 +1851,20 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			//경매시작
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
 				mBtnStart.setDisable(false);
+				mHeaderBtnStart.setDisable(false);
 				mBtnPause.setDisable(true);
+				mHeaderBtnPause.setDisable(true);
+				
 			}else {
 				mBtnStart.setDisable(true);
+				mHeaderBtnStart.setDisable(true);
 				mBtnPause.setDisable(false);
+				mHeaderBtnPause.setDisable(false);
 			}
 			
 			//경매종료
 			mBtnFinish.setDisable(false);
+			mHeaderBtnFinish.setDisable(false);
 			//경매회차종료
 			mBtnQcnFinish.setDisable(true);
 			
@@ -1856,13 +1878,15 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			
 			//경매시작
 			mBtnStart.setDisable(false);
+			mHeaderBtnStart.setDisable(false);
 			//경매정지
 			mBtnPause.setDisable(true);
+			mHeaderBtnPause.setDisable(true);
 			//경매종료
 			mBtnFinish.setDisable(true);
+			mHeaderBtnFinish.setDisable(true);
 			//경매회차종료
 			mBtnQcnFinish.setDisable(false);
-	
 			break;
 		default:
 			

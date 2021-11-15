@@ -35,13 +35,48 @@
             <Insets left="20.0" right="10.0" />
          </padding>
          <children>
-            <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+            <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowSpan="2147483647">
                <children>
-                  <Button fx:id="mBtnMessage" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="128.0" minHeight="40.0" minWidth="128.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="128.0" styleClass="btn-header" text="메시지 전송">
+                  <Button fx:id="mBtnMessage" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="128.0" minWidth="128.0" mnemonicParsing="false" prefWidth="128.0" styleClass="btn-header" text="메시지 전송">
                      <HBox.margin>
-                        <Insets right="10.0" />
+                        <Insets bottom="20.0" />
                      </HBox.margin></Button>
+                  <Button fx:id="mHeaderBtnRefresh" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" minWidth="115.0" mnemonicParsing="false" styleClass="btn-bottom" text="새로고침">
+                     <HBox.margin>
+                        <Insets bottom="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="mHeaderBtnStart" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" minWidth="115.0" mnemonicParsing="false" text="경매시작">
+                     <styleClass>
+                        <String fx:value="btn-bottom" />
+                        <String fx:value="bg-color-04cf5c" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets bottom="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="mHeaderBtnPause" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" minWidth="115.0" mnemonicParsing="false" text="경매정지">
+                     <styleClass>
+                        <String fx:value="btn-bottom" />
+                        <String fx:value="bg-color-008fff" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets bottom="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="mHeaderBtnFinish" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" minWidth="115.0" mnemonicParsing="false" text="경매종료">
+                     <styleClass>
+                        <String fx:value="btn-bottom" />
+                        <String fx:value="bg-color-ea0030" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets bottom="20.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
+               <GridPane.margin>
+                  <Insets right="10.0" />
+               </GridPane.margin>
             </HBox>
             <Button fx:id="mBtnSendPending" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-header" text="유찰 대상 목록 표시" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                <GridPane.margin>
