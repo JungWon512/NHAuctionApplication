@@ -243,6 +243,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 	// 우클릭 새로고침 적용
 	private ContextMenu mRefreshContextMenu = null;
+	
+	private boolean isQcnFinish = false;	//경매 회차 종료 버튼 눌렀을때 플래그
 
 	/**
 	 * setStage
@@ -1182,10 +1184,22 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 * 경매 회차 종료 처리
 	 */
 	public void onSendQcnFinish() {
-
-		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
-			FinishAuction finishAuction = new FinishAuction(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
-			mLogger.debug("[겸매회차 종료]=>  " + AuctionDelegate.getInstance().sendMessage(finishAuction));
+		
+		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {	
+			
+			Platform.runLater(() -> {
+			
+				Optional<ButtonType> btnResult = showAlertPopupOneButton(mResMsg.getString("msg.auction.finish.qcn"),mResMsg.getString("popup.btn.ok"));
+	
+				if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+					isQcnFinish = true;
+					isApplicationClosePopup = true;
+					FinishAuction finishAuction = new FinishAuction(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
+					mLogger.debug("[겸매회차 종료]=>  " + AuctionDelegate.getInstance().sendMessage(finishAuction));
+					onServerAndClose();
+				}
+			
+			});
 		}
 	}
 
@@ -1578,7 +1592,11 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	public void onAuctionStatus(AuctionStatus auctionStatus) {
 
 		mLogger.debug("[경매 상태 정보] " + auctionStatus.getEncodedMessage());
-
+		
+		// 회차 종료 플래그.
+		if(isQcnFinish) {
+			return;
+		}
 
 		// 회차정보 다를경우 처리
 		if (GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn() != Integer.parseInt(auctionStatus.getAuctionQcn())
@@ -1600,6 +1618,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			});
 
 			return;
+		}else {
+			
 		}
 
 		mAuctionStatus = auctionStatus;
@@ -2472,6 +2492,17 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private Optional<ButtonType> showAlertPopupOneButton(String message) {
 		return CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, mResMsg.getString("popup.btn.close"));
 	}
+	
+	/**
+	 * 원버튼 팝업
+	 *
+	 * @param message
+	 * @return
+	 */
+	private Optional<ButtonType> showAlertPopupOneButton(String message,String btnStr) {
+		return CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, btnStr);
+	}
+	
 
 	/**
 	 * 구성 설정

@@ -27,28 +27,28 @@ public class SettingApplication {
 	private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 	// 전광판 설정 IP, PORT 기본값
-	public final String DEFAULT_SETTING_IP_BOARD_TEXT1 = "192.168.1.91";
-	public final String DEFAULT_SETTING_PORT_BOARD_TEXT1 = "9881";
-	public final String DEFAULT_SETTING_IP_BOARD_TEXT2 = "192.168.1.90";
-	public final String DEFAULT_SETTING_PORT_BOARD_TEXT2 = "9981";
+	public final String DEFAULT_SETTING_IP_BOARD_TEXT1 = "";
+	public final String DEFAULT_SETTING_PORT_BOARD_TEXT1 = "";
+	public final String DEFAULT_SETTING_IP_BOARD_TEXT2 = "";
+	public final String DEFAULT_SETTING_PORT_BOARD_TEXT2 = "";
 	public final String DEFAULT_SETTING_IP_BOARD_TEXT3 = "";
-	public final String DEFAULT_SETTING_PORT_BOARD_TEXT3 = "0";
+	public final String DEFAULT_SETTING_PORT_BOARD_TEXT3 = "";
 	public final String DEFAULT_SETTING_BOARD_TOGGLE_TYPE = BoardToggle.NONE.toString();
 
 	// PDP 환경설정 기본값
 	public final String DEFAULT_SETTING_PDP_TOGGLE_TYPE = PdpToggle.BOARDTYPE.toString();
-	public final String DEFAULT_SETTING_FORMAT = "1";
+	public final String DEFAULT_SETTING_FORMAT = "";
 
 	// PDP 셋톱박스 기본값
 	public final String DEFAULT_SETTING_IP_PDP_TEXT1 = "";
-	public final String DEFAULT_SETTING_PORT_PDP_TEXT1 = "0";
+	public final String DEFAULT_SETTING_PORT_PDP_TEXT1 = "";
 	// PDP 셋톱박스3 기본값
 	public final String DEFAULT_SETTING_IP_PDP_TEXT2 = "";
-	public final String DEFAULT_SETTING_PORT_PDP_TEXT2 = "0";
+	public final String DEFAULT_SETTING_PORT_PDP_TEXT2 = "";
 
 	// 응찰석 셋톱박스 기본값
 	public final String DEFAULT_SETTING_IP_BIDDER_TEXT = "";
-	public final String DEFAULT_SETTING_PORT_BIDDER_TEXT = "0";
+	public final String DEFAULT_SETTING_PORT_BIDDER_TEXT = "";
 
 	// 전광판 노출 자리수 설정 기본값
 	public final String DEFAULT_BORAD_ENTRYNUM = "3";
@@ -117,14 +117,14 @@ public class SettingApplication {
 	public final String DEFAULT_SETTING_MOBILE_ENTRYNUM= "Y";
 	public final String DEFAULT_SETTING_MOBILE_EXHIBITOR= "Y";
 	public final String DEFAULT_SETTING_MOBILE_GENDER= "Y";
-	public final String DEFAULT_SETTING_MOBILE_WEIGHT= "Y";
+	public final String DEFAULT_SETTING_MOBILE_WEIGHT= "N";
 	public final String DEFAULT_SETTING_MOBILE_MOTHER= "Y";
 	public final String DEFAULT_SETTING_MOBILE_MATIME= "Y";
 	public final String DEFAULT_SETTING_MOBILE_KPN= "Y";
 	public final String DEFAULT_SETTING_MOBILE_REGION= "Y";
-	public final String DEFAULT_SETTING_MOBILE_NOTE= "N";
-	public final String DEFAULT_SETTING_MOBILE_LOWPRICE= "N";
-	public final String DEFAULT_SETTING_MOBILE_PASSAGE= "N";
+	public final String DEFAULT_SETTING_MOBILE_NOTE= "Y";
+	public final String DEFAULT_SETTING_MOBILE_LOWPRICE= "Y";
+	public final String DEFAULT_SETTING_MOBILE_PASSAGE= "Y";
 	public final String DEFAULT_SETTING_MOBILE_DNA="N";
 	public final String DEFAULT_SETTING_SOUND_CONFIG="";
 

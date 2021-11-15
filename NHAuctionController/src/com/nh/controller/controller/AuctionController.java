@@ -62,6 +62,7 @@ import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.controller.models.FinishAuction;
 import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PauseAuction;
 import com.nh.share.server.models.AuctionBidStatus;
@@ -144,7 +145,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private TableColumn<SpBidding, String> mBiddingPriceColumn, mBiddingUserColumn;
 
 	@FXML // 하단 버튼
-	private Button mBtnEsc, mBtnF3, mBtnF4, mBtnF5, mBtnF6, mBtnF7, mBtnF8, mBtnEnter, mBtnSpace, mBtnMessage, mBtnUpPrice, mBtnDownPrice;
+	private Button mBtnEsc, mBtnF3, mBtnF4, mBtnF5, mBtnF6, mBtnF8, mBtnEnter, mBtnSpace, mBtnMessage, mBtnUpPrice, mBtnDownPrice,mBtnQcnFinish;
 
 	@FXML // 경매 정보
 	private Label mAuctionInfoDateLabel, mAuctionInfoRoundLabel, mAuctionInfoGubunLabel, mAuctionInfoTotalCountLabel;
@@ -231,6 +232,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private String REFRESH_ENTRY_LIST_TYPE_START = "START"; // 출장우 정보 갱신 후 시작
 
 	private boolean isSendEntryData = false; // 출장우 데이터 전송 여부
+	
+	private boolean isQcnFinish = false;	//경매 회차 종료 버튼 눌렀을때 플래그
+	
 
 	/**
 	 * setStage
@@ -323,6 +327,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
 		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
+		mBtnQcnFinish.setOnMouseClicked(event -> onSendQcnFinish());
+		
 		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단
 		// 숨김.
 		// mBtnF7.setOnMouseClicked(event -> -());
@@ -999,6 +1005,31 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			CommonUtils.getInstance().dismissLoadingDialog();
 		}
 	}
+	
+	/**
+	 * 경매 회차 종료 처리
+	 */
+	public void onSendQcnFinish() {
+		
+		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {	
+			
+			Platform.runLater(() -> {
+			
+				Optional<ButtonType> btnResult = showAlertPopupOneButton(mResMsg.getString("msg.auction.finish.qcn"),mResMsg.getString("popup.btn.ok"));
+	
+				if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+					isQcnFinish = true;
+					isApplicationClosePopup = true;
+					FinishAuction finishAuction = new FinishAuction(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
+					mLogger.debug("[겸매회차 종료]=>  " + AuctionDelegate.getInstance().sendMessage(finishAuction));
+					onServerAndClose();
+				}
+			
+			});
+			
+		}
+	}
+	
 
 	/**
 	 * 보류 처리
@@ -2222,6 +2253,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@Override
 	public void onAuctionStatus(AuctionStatus auctionStatus) {
 		super.onAuctionStatus(auctionStatus);
+		
+		// 회차 종료 플래그.
+		if(isQcnFinish) {
+			return;
+		}
+	
 
 		// 회차정보 다를경우 처리
 		if (GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn() != Integer.parseInt(auctionStatus.getAuctionQcn())
@@ -4151,7 +4188,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnDownPrice.setDisable(true);
 				// 출품 대기 테이블 비활성화
 				mWaitTableView.setDisable(true);
-
+				// 경매회차종료
+				mBtnQcnFinish.setDisable(true);
+				
+				break;
+			case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
+				// 경매회차종료
+				mBtnQcnFinish.setDisable(false);
 				break;
 			default:
 
@@ -4178,6 +4221,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// 가격 상승,다운 활성화
 				mBtnUpPrice.setDisable(false);
 				mBtnDownPrice.setDisable(false);
+				// 경매회차종료
+				mBtnQcnFinish.setDisable(true);
 
 				break;
 			}
@@ -4422,6 +4467,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mStartAuctionSecScheduler.cancel();
 			mStartAuctionSecScheduler = null;
 		}
+	}
+	
+	/**
+	 * 원버튼 팝업
+	 *
+	 * @param message
+	 * @return
+	 */
+	private Optional<ButtonType> showAlertPopupOneButton(String message,String btnStr) {
+		return CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, btnStr);
 	}
 
 }
