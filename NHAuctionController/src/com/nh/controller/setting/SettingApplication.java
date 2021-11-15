@@ -37,7 +37,7 @@ public class SettingApplication {
 
 	// PDP 환경설정 기본값
 	public final String DEFAULT_SETTING_PDP_TOGGLE_TYPE = PdpToggle.BOARDTYPE.toString();
-	public final String DEFAULT_SETTING_FORMAT = "";
+	public final String DEFAULT_SETTING_FORMAT = "1";
 
 	// PDP 셋톱박스 기본값
 	public final String DEFAULT_SETTING_IP_PDP_TEXT1 = "";
@@ -99,10 +99,10 @@ public class SettingApplication {
 	// 비고 사용 기본값
 	public final boolean DEFAULT_SETTING_NOTE = false;
 	// 카운트 기본값
-	public final String DEFAULT_SETTING_COUNTDOWN = "1";
+	public final String DEFAULT_SETTING_COUNTDOWN = "3";
 	public final String DEFAULT_SETTING_COUNTDOWN_MAX = "9";
 	// 동가 재경매 횟수
-	public final String DEFAULT_SETTING_RE_AUCTION_COUNT = "3";
+	public final String DEFAULT_SETTING_RE_AUCTION_COUNT = "2";
 	// 동가 재경매 기본값
 	public final boolean DEFAULT_SETTING_RE_AUCTION_CHECK = true;
 	// 하나씩 진행 기본값
@@ -111,7 +111,7 @@ public class SettingApplication {
 	public final boolean DEFAULT_SETTING_USE_SOUND_AUCTION = false;
 	// 대기시간 기본값
 	public final String DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME_MAX = "50";
-	public final String DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME = "3";
+	public final String DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME = "5";
 	
 	// 모바일 표출 기본값
 	public final String DEFAULT_SETTING_MOBILE_ENTRYNUM= "Y";

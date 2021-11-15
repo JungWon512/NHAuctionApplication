@@ -4192,10 +4192,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnQcnFinish.setDisable(true);
 				
 				break;
-			case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
-				// 경매회차종료
-				mBtnQcnFinish.setDisable(false);
-				break;
 			default:
 
 				if (!SettingApplication.getInstance().isUseSoundAuction()) {
@@ -4226,6 +4222,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				break;
 			}
+			
+			if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+				// 경매회차종료
+				mBtnQcnFinish.setDisable(false);
+			}
+			
 		});
 	}
 
