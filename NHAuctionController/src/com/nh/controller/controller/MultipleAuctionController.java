@@ -1250,7 +1250,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 								long newDt = Long.parseLong(newEntryDataList.get(j).getLsChgDtm().getValue());
 								long curDt = Long.parseLong(mWaitEntryInfoDataList.get(i).getLsChgDtm().getValue());
 
-								if (newDt > curDt) {
+								if ((newDt > curDt) || type.equals(REFRESH_ENTRY_LIST_TYPE_REFRESH)) {
 
 									mWaitEntryInfoDataList.set(i, newEntryDataList.get(j));
 
@@ -1267,11 +1267,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 										mLogger.debug("변경된 출품 정보 서버 전송 : " + newEntryDataList.get(j).getEntryNum().getValue());
 									}
-								} else {
-									if (type.equals(REFRESH_ENTRY_LIST_TYPE_REFRESH)) {
-										mWaitEntryInfoDataList.set(i, newEntryDataList.get(j));
-									}
-								}
+								} 
+								
 								break;
 							}
 						}
