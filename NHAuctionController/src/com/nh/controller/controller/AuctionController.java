@@ -129,8 +129,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private TableView<SpBidding> mBiddingInfoTableView;
 
 	@FXML // 완료된 출품
-	private TableColumn<SpEntryInfo, String> mFinishedEntryNumColumn, mFinishedExhibitorColumn, mFinishedGenderColumn, mFinishedMotherColumn, mFinishedMatimeColumn, mFinishedPasgQcnColumn, mFinishedWeightColumn, mFinishedLowPriceColumn, mFinishedSuccessPriceColumn, mFinishedSuccessfulBidderColumn,
-			mFinishedResultColumn, mFinishedNoteColumn;
+	private TableColumn<SpEntryInfo, String> mFinishedEntryNumColumn, mFinishedExhibitorColumn, mFinishedGenderColumn, mFinishedMotherColumn, mFinishedMatimeColumn, mFinishedPasgQcnColumn, mFinishedWeightColumn, mFinishedLowPriceColumn, mFinishedSuccessPriceColumn, mFinishedSuccessfulBidderColumn, mFinishedResultColumn, mFinishedNoteColumn;
 
 	@FXML // 대기중인 출품
 	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn, mWaitMotherColumn, mWaitMatimeColumn, mWaitPasgQcnColumn, mWaitWeightColumn, mWaitLowPriceColumn, mWaitSuccessPriceColumn, mWaitSuccessfulBidderColumn, mWaitResultColumn, mWaitNoteColumn;
@@ -202,7 +201,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private Timer mAutoStopScheduler = null; // 음성 경매 정지 타이머
 	private Timer mStartAuctionSecScheduler = null; // 경매 시작 후 초 증가 타이머
 	private int mStartAuctionSec = 0; // 경매 시작 후 초 증가 타이머 증가값
-	
+
 	private EntryDialogType mCurPageType; // 전체or보류목록 타입
 
 	private Map<String, BidderConnectInfo> mConnectionUserMap = new HashMap<>(); // 접속 현황
@@ -230,9 +229,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private String REFRESH_ENTRY_LIST_TYPE_NONE = "NONE"; // 출장우 정보 갱신 - 기본
 	private String REFRESH_ENTRY_LIST_TYPE_SEND = "SEND"; // 출장우 정보 갱신 후 정보 보냄
 	private String REFRESH_ENTRY_LIST_TYPE_START = "START"; // 출장우 정보 갱신 후 시작
-	
-	private boolean isSendEntryData = false;  //출장우 데이터 전송 여부
 
+	private boolean isSendEntryData = false; // 출장우 데이터 전송 여부
 
 	/**
 	 * setStage
@@ -240,20 +238,21 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param stage
 	 */
 	public void setStage(Stage stage) {
+		
 		mStage = stage;
-
-		Platform.runLater(() -> {
-			
-			// 전광판 접속
-			Thread udpServer = new Thread("udpServer") {
-				@Override
-				public void run() {
-					createUdpClient(mUdpBillBoardStatusListener, mUdpPdpBoardStatusListener);
-				}
-			};
-			udpServer.setDaemon(true);
-			udpServer.start();
-		});
+		
+		// 경매 데이터
+		Thread thread = new Thread("cowInfo") {
+			@Override
+			public void run() {
+				// 경매 데이터 set
+				requestAuctionInfo();
+				// 전광판
+				createUdpClient(mUdpBillBoardStatusListener, mUdpPdpBoardStatusListener);
+			}
+		};
+		thread.setDaemon(true);
+		thread.start();
 
 		if (mStage != null) {
 			// 타이틀바 X 버튼 프로그램 완전 종료
@@ -289,18 +288,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// 뷰 초기화
 		initViewConfiguration();
 
-		// 경매 데이터
-		Thread thread = new Thread("cowInfo") {
-			@Override
-			public void run() {
-				// 사운드 초기화
-				SoundUtil.getInstance();
-				// 경매 데이터 set
-				requestAuctionInfo();
-			}
-		};
-		thread.setDaemon(true);
-		thread.start();
+		// 사운드 초기화
+		SoundUtil.getInstance();
 
 		// 비고 수정 막음.
 		mNoteTextArea.setEditable(false);
@@ -508,7 +497,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	}
 
-
 	/**
 	 * 출품 정보 음성 설정 저장된 값들 셋팅
 	 */
@@ -661,21 +649,21 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						});
 //						mWaitTableView.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> { 선택 콜백 인덱스	 필요시 주석 해제
 //						});
-						
-						if(!isSendEnterInfo()) {
-							//회차정보 초기화
+
+						if (!isSendEnterInfo()) {
+							// 회차정보 초기화
 //							mLogger.debug("[CLEAR INIT SERVER]" + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
-							//출장우 전송
+							// 출장우 전송
 							onSendEntryData();
-						}else {
+						} else {
 							mLogger.debug("[출장우 데이터 전송 X. 현재 경매 상태 ]=> " + mAuctionStatus.getState());
 							Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 						}
-						
+
 					}
 				});
 				pauseTransition.play();
-			}else {
+			} else {
 				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 			}
 		}
@@ -692,7 +680,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
 		String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
 		String selStsDsc = "";
-		
+
 		// 보류목록일경우
 		if (mCurPageType.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
 			selStsDsc = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
@@ -707,7 +695,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
 					mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
-					
+
 					List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
 
 					for (int i = 0; i < result.getData().size(); i++) {
@@ -725,7 +713,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						addLogItem("조회 데이터 없음.");
 						return;
 					}
-					
+
 					// 현재 최종 수정시간 < 조회된 최종 수정시간 -> 데이터 갱신&서버 전달
 					for (int i = 0; mRecordCount > i; i++) {
 
@@ -764,7 +752,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							}
 						}
 					}
-					
 
 					if (isRefresh) {
 						// 추가된 데이터 있는지 확인
@@ -813,6 +800,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 출장우 전송 & 경매 시작.
+	 * 
 	 * @param type
 	 */
 	private void onCowInfoSendOrStartAuction(String type) {
@@ -838,9 +826,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					isSendEntryData = true;
 
-					Platform.runLater(() -> {
-						CommonUtils.getInstance().dismissLoadingDialog();
-					});
+//					Platform.runLater(() -> {
+//						CommonUtils.getInstance().dismissLoadingDialog();
+//					});
 
 				}
 			};
@@ -851,7 +839,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		} else if (type.equals(REFRESH_ENTRY_LIST_TYPE_START)) {
 			// 경매시
 			onStartAuction();
-		}else {
+		} else {
 			Platform.runLater(() -> {
 				CommonUtils.getInstance().dismissLoadingDialog();
 			});
@@ -1095,6 +1083,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 출장우 정보 갱신
+	 * 
 	 * @param dataList
 	 */
 	private void setWaitEntryDataList(ObservableList<SpEntryInfo> dataList) {
@@ -1322,7 +1311,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				toggleAuctionType();
 				isPlusKeyStartAuction = false;
 				// ENTER 경매 시작으로.
-				Platform.runLater(()-> {
+				Platform.runLater(() -> {
 					mBtnEnter.setText(mResMsg.getString("str.btn.start"));
 					CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
 				});
@@ -1903,7 +1892,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private void requestEntryData() {
 
 		mCurPageType = EntryDialogType.ENTRY_LIST;
-		
+
 		final String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
 		final String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 		final String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
@@ -1911,7 +1900,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		// 출장우 데이터 조회
 		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, "", stnYn);
-		
+
 		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
 
 			@Override
@@ -1941,7 +1930,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 						initFinishedEntryDataList();
 						initWaitEntryDataList(mWaitEntryInfoDataList);
-					}else {
+					} else {
 						Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 					}
 
@@ -2129,6 +2118,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			switch (responseConnectionInfo.getResult()) {
 			case GlobalDefineCode.CONNECT_SUCCESS:
 				addLogItem(mResMsg.getString("msg.connection.success") + responseConnectionInfo.getEncodedMessage());
+
 				// Setting 정보 전송
 				onSendSettingInfo();
 				MoveStageUtil.getInstance().moveAuctionStage(mStage, mFxmlLoader);
@@ -2206,7 +2196,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(currentEntryNum)) {
 				return;
 			}
-	
 
 			for (int i = 0; mWaitTableView.getItems().size() > i; i++) {
 
@@ -2222,8 +2211,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				}
 			}
-			
-			//응찰내역
+
+			// 응찰내역
 			requestSelectBidEntry();
 		});
 
@@ -2235,7 +2224,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		super.onAuctionStatus(auctionStatus);
 
 		// 회차정보 다를경우 처리
-		if (GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn() != Integer.parseInt(auctionStatus.getAuctionQcn())) {
+		if (GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn() != Integer.parseInt(auctionStatus.getAuctionQcn())
+			|| auctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
 
 			Platform.runLater(() -> {
 
@@ -2257,12 +2247,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-
 		if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
 			// 출장우 정보 보냄 플래그
 			isSendEntryData = true;
 		}
-		
+
 		setAuctionVariableState(auctionStatus.getState());
 
 	}
@@ -2307,9 +2296,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
-				
+
 				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
-				
+
 				addLogItem("Run Stop Scheduler. ");
 				addLogItem("isCountDownBtnPressed : " + isCountDownBtnPressed + " isResultCompleteFlag : " + isResultCompleteFlag);
 
@@ -2617,6 +2606,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 접속자 정보 Set
+	 * 
 	 * @param bidderConnectInfo
 	 * @return
 	 */
@@ -3154,15 +3144,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			isOverPricePlaySound = false;
 			// 재경매 사운드 플래그
 			isPlayReAuctionSound = false;
-			//경매 시작 ~ 경과시간 초
+			// 경매 시작 ~ 경과시간 초
 			mStartAuctionSec = 0;
 			break;
-		//case GlobalDefineCode.AUCTION_STATUS_START:
+		// case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
 			Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
-			
-			//경매 경과 시간 타이머 시작
+
+			// 경매 경과 시간 타이머 시작
 			startAuctionSecScheduler();
 
 			// 사운드 경매인 경우 타이머 시작.
@@ -3185,8 +3175,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 			isCancel = false;
 			isStartSoundPlaying = false;
-			
-			//경매 경과 시간 타이머 종료
+
+			// 경매 경과 시간 타이머 종료
 			stopStartAuctionSecScheduler();
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_FINISH:
@@ -3209,8 +3199,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				mAuctionStateGridPane.getStyleClass().clear();
 				CommonUtils.getInstance().addStyleClass(mAuctionStateGridPane, "bg-color-008fff");
-				
-				//경매 시작 후 경과 시간
+
+				// 경매 시작 후 경과 시간
 				mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.sec"), mStartAuctionSec));
 
 			} else if (code.equals(GlobalDefineCode.AUCTION_STATUS_START) || code.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
@@ -3221,12 +3211,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			} else if (code.equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
 
-				Platform.runLater(()->{
-					
+				Platform.runLater(() -> {
+
 					isApplicationClosePopup = true;
-					
-					Optional<ButtonType> btnResult =  showAlertPopupOneButton(mResMsg.getString("msg.auction.finish"));
-					
+
+					Optional<ButtonType> btnResult = showAlertPopupOneButton(mResMsg.getString("msg.auction.finish"));
+
 					if (btnResult.get().getButtonData() == ButtonData.LEFT) {
 						onServerAndClose();
 					}
@@ -3234,6 +3224,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				});
 			}
 		});
+
+		Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 
 		System.out.println("[뷰 작업 완료]" + mAuctionStatus.getState());
 //		});
@@ -3998,7 +3990,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		return dataList;
 	}
 
-
 	/**
 	 * 컬럼 데이터 콤마 표시
 	 *
@@ -4395,12 +4386,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void startAuctionSecScheduler() {
 
-		//경매 경과 시간 타이머 종료
+		// 경매 경과 시간 타이머 종료
 		stopStartAuctionSecScheduler();
-		
-		//경매 시작 후 경과 시간 타이머. 1초마다 반복 수행
+
+		// 경매 시작 후 경과 시간 타이머. 1초마다 반복 수행
 		mStartAuctionSecScheduler = new Timer();
-		
+
 		/**
 		 * 경매 시작 후 경과 시간 1초마다 수행
 		 */
@@ -4413,25 +4404,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					} else {
 						mAuctionSecLabel.setText(String.format(mResMsg.getString("str.start.auction.sec"), mStartAuctionSec));
 					}
-					
+
 					mStartAuctionSec++;
 				});
 			}
 		};
-		
-		mStartAuctionSecScheduler.schedule(mStartAuctionSecTask, 0, 1000); 
+
+		mStartAuctionSecScheduler.schedule(mStartAuctionSecTask, 0, 1000);
 	}
-	
+
 	/**
 	 * 경과시간 타이머 종료
 	 */
 	private void stopStartAuctionSecScheduler() {
-		//경매 시작 ~ 종료 경과 시간 타이머
+		// 경매 시작 ~ 종료 경과 시간 타이머
 		if (mStartAuctionSecScheduler != null) {
 			mStartAuctionSecScheduler.cancel();
 			mStartAuctionSecScheduler = null;
 		}
 	}
-	
 
 }
