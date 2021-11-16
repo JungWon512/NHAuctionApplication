@@ -8,14 +8,14 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 / 제어프로그램 -> 응찰채널
  * 
- * AY | 조합구분코드 | 경매번호 | 응찰상태코드(F/P)
+ * AY | 조합구분코드 | 경매번호 | 응찰상태코드(F/P/N)
  *
  */
 public class AuctionBidStatus implements FromAuctionCommon {
 	public static final char TYPE = 'Y';
 	private String mAuctionHouseCode;
 	private String mEntryNum;
-	private String mStatus; // 상태구분 (F : 응찰종료 / P : 응찰진행)
+	private String mStatus; // 상태구분 (F : 응찰종료 / P : 응찰진행 / N : 기본값)
 
 	public AuctionBidStatus() {
 

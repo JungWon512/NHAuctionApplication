@@ -31,6 +31,7 @@ import com.nh.share.common.models.RetryTargetInfo;
 import com.nh.share.controller.models.EditSetting;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.ToastMessageRequest;
+import com.nh.share.server.models.AuctionBidStatus;
 import com.nh.share.server.models.AuctionCheckSession;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.CurrentEntryInfo;
@@ -315,6 +316,15 @@ public class Auctioneer {
 							.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.get(auctionHouseCode).size()));
 
 					mLogger.info(entryInfo.getEntryNum() + "번 출장우가 경매 준비되었습니다.");
+
+					if (mAuctionStateMap.get(auctionHouseCode).getAuctionBidStatus() == null) {
+						mAuctionStateMap.get(auctionHouseCode).setAuctionBidStatus(new AuctionBidStatus(auctionHouseCode, entryInfo.getEntryNum(), GlobalDefineCode.AUCTION_BID_STATUS_N));
+					} else {
+						mAuctionStateMap.get(auctionHouseCode).getAuctionBidStatus().setAuctionHouseCode(auctionHouseCode);
+						mAuctionStateMap.get(auctionHouseCode).getAuctionBidStatus().setEntryNum(entryInfo.getEntryNum());
+						mAuctionStateMap.get(auctionHouseCode).getAuctionBidStatus().setStatus(GlobalDefineCode.AUCTION_BID_STATUS_N);
+					}
+
 					mAuctionStateMap.get(auctionHouseCode).onReady();
 
 					// 출품 정보 및 경매 상태 전송
@@ -337,6 +347,7 @@ public class Auctioneer {
 				if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
 						&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
 					mLogger.info(entryInfo.getEntryNum() + "번 출장우가 경매 준비되었습니다.");
+					
 					mAuctionStateMap.get(auctionHouseCode).onReady();
 
 					// 출품 정보 및 경매 상태 전송
@@ -756,6 +767,7 @@ public class Auctioneer {
 
 					if (getAuctionEditSetting(auctionHouseCode) != null) {
 						if (getAuctionEditSetting(auctionHouseCode).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_BUNDLE)) {
+							
 							// 경매 출품 건 완료 상태로 전환
 							mAuctionStateMap.get(auctionHouseCode).onCompleted();
 							
@@ -1025,6 +1037,16 @@ public class Auctioneer {
 	}
 
 	public synchronized void setAuctionCompleted(String auctionHouseCode) {
+		if (getAuctionEditSetting(auctionHouseCode).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+			if (mAuctionStateMap.get(auctionHouseCode).getAuctionBidStatus() == null) {
+				mAuctionStateMap.get(auctionHouseCode).setAuctionBidStatus(new AuctionBidStatus(auctionHouseCode, mAuctionStateMap.get(auctionHouseCode).getCurrentEntryInfo().getEntryNum(), GlobalDefineCode.AUCTION_BID_STATUS_N));
+			} else {
+				mAuctionStateMap.get(auctionHouseCode).getAuctionBidStatus().setAuctionHouseCode(auctionHouseCode);
+				mAuctionStateMap.get(auctionHouseCode).getAuctionBidStatus().setEntryNum(mAuctionStateMap.get(auctionHouseCode).getCurrentEntryInfo().getEntryNum());
+				mAuctionStateMap.get(auctionHouseCode).getAuctionBidStatus().setStatus(GlobalDefineCode.AUCTION_BID_STATUS_N);
+			}
+		}
+	
 		// 경매 출품 건 완료 상태로 전환
 		mAuctionStateMap.get(auctionHouseCode).onCompleted();
 
