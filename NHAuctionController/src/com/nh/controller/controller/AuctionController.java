@@ -163,7 +163,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private Label mDeprePriceLabel, mLowPriceChgNtLabel;
 
 	@FXML // 음성 선택 check-box
-	private CheckBox mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mMotherObjNumCheckBox, mMaTimeCheckBox, mPasgQcnCheckBox, mWeightCheckBox, mLowPriceCheckBox, mBrandNameCheckBox;
+	private CheckBox mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mMotherObjNumCheckBox, mMaTimeCheckBox, mPasgQcnCheckBox, mWeightCheckBox, mLowPriceCheckBox, mBrandNameCheckBox ,mDnaCheckBox ;
 
 	@FXML // 음성 멘트 버튼
 	private Button mBtnIntroSound, mBtnBuyerSound, mBtnGuideSound, mBtnEtc_1_Sound, mBtnEtc_2_Sound, mBtnEtc_3_Sound, mBtnEtc_4_Sound, mBtnEtc_5_Sound, mBtnEtc_6_Sound;
@@ -234,6 +234,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private boolean isSendEntryData = false; // 출장우 데이터 전송 여부
 	
 	private boolean isQcnFinish = false;	//경매 회차 종료 버튼 눌렀을때 플래그
+	
+	private boolean isQcnChange = false; //경매 회차 변경
 	
 
 	/**
@@ -521,6 +523,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mWeightCheckBox.setSelected(checkList.get(6));
 		mLowPriceCheckBox.setSelected(checkList.get(7));
 		mBrandNameCheckBox.setSelected(checkList.get(8));
+		mDnaCheckBox.setSelected(checkList.get(9));
 
 		mEntryNumCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER);
 		mExhibitorCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR);
@@ -531,6 +534,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mWeightCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_WEIGHT);
 		mLowPriceCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE);
 		mBrandNameCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_BRAND);
+		mDnaCheckBox.setUserData(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_DNA);
 
 		mEntryNumCheckBox.setOnAction(mCheckBoxEventHandler);
 		mExhibitorCheckBox.setOnAction(mCheckBoxEventHandler);
@@ -541,6 +545,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mWeightCheckBox.setOnAction(mCheckBoxEventHandler);
 		mLowPriceCheckBox.setOnAction(mCheckBoxEventHandler);
 		mBrandNameCheckBox.setOnAction(mCheckBoxEventHandler);
+		mDnaCheckBox.setOnAction(mCheckBoxEventHandler);
 		// 메인 상단 체크박스 [E]
 	}
 
@@ -656,9 +661,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //						mWaitTableView.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> { 선택 콜백 인덱스	 필요시 주석 해제
 //						});
 
-						if (!isSendEnterInfo()) {
-							// 회차정보 초기화
-//							mLogger.debug("[CLEAR INIT SERVER]" + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
+						if (!isSendEnterInfo() && !isQcnChange) {
 							// 출장우 전송
 							onSendEntryData();
 						} else {
@@ -1011,23 +1014,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void onSendQcnFinish() {
 		
-		if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {	
+		Platform.runLater(() -> {
 			
-			Platform.runLater(() -> {
-			
-				Optional<ButtonType> btnResult = showAlertPopupOneButton(mResMsg.getString("msg.auction.finish.qcn"),mResMsg.getString("popup.btn.ok"));
-	
-				if (btnResult.get().getButtonData() == ButtonData.LEFT) {
-					isQcnFinish = true;
-					isApplicationClosePopup = true;
-					FinishAuction finishAuction = new FinishAuction(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
-					mLogger.debug("[겸매회차 종료]=>  " + AuctionDelegate.getInstance().sendMessage(finishAuction));
-					onServerAndClose();
-				}
-			
-			});
-			
-		}
+			Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, mResMsg.getString("msg.auction.finish.qcn"), mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.cancel"));
+
+			if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+				isQcnFinish = true;
+				isApplicationClosePopup = true;
+				FinishAuction finishAuction = new FinishAuction(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
+				mLogger.debug("[겸매회차 종료]=>  " + AuctionDelegate.getInstance().sendMessage(finishAuction));
+				onServerAndClose();
+			}
+		});
 	}
 	
 
@@ -1046,8 +1044,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				String entryType = spEntryInfo.getEntryType().getValue();
 				String aucDt = spEntryInfo.getAucDt().getValue();
 				String state = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
-				String oslpNo = spEntryInfo.getOslpNo().getValue();
-				String ledSqNo = spEntryInfo.getLedSqno().getValue();
+//				String oslpNo = spEntryInfo.getOslpNo().getValue();
+//				String ledSqNo = spEntryInfo.getLedSqno().getValue();
 
 				EntryInfo entryInfo = new EntryInfo();
 				entryInfo.setEntryNum(entryNum);
@@ -2155,15 +2153,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				MoveStageUtil.getInstance().moveAuctionStage(mStage, mFxmlLoader);
 
 				// 내부 저장 port ip obj
-				SharedPreference.getInstance().setString(SharedPreference.getInstance().PREFERENCE_SERVER_IP, AuctionDelegate.getInstance().getHost());
+				SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SERVER_IP, AuctionDelegate.getInstance().getHost());
 
 				if (AuctionDelegate.getInstance().getPort() > 0) {
-					SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SERVER_PORT, AuctionDelegate.getInstance().getPort());
+					SharedPreference.getInstance().setInt(SharedPreference.PREFERENCE_SERVER_PORT, AuctionDelegate.getInstance().getPort());
 				} else {
-					SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SERVER_PORT, GlobalDefine.AUCTION_INFO.AUCTION_PORT);
+					SharedPreference.getInstance().setInt(SharedPreference.PREFERENCE_SERVER_PORT, GlobalDefine.AUCTION_INFO.AUCTION_PORT);
 				}
 
-				SharedPreference.getInstance().setInt(SharedPreference.getInstance().PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+				SharedPreference.getInstance().setInt(SharedPreference.PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 
 				break;
 			case GlobalDefineCode.CONNECT_FAIL:
@@ -2259,16 +2257,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 	
+		mLogger.debug("[회차정보 확인. 현재 qcn : " + GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()  + " / AS qcn :  " +  Integer.parseInt(auctionStatus.getAuctionQcn()));
 
 		// 회차정보 다를경우 처리
-		if (GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn() != Integer.parseInt(auctionStatus.getAuctionQcn())
+		if ((GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc().equals(auctionStatus.getAuctionHouseCode()))
+				&& (GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn() != Integer.parseInt(auctionStatus.getAuctionQcn()))
 			|| auctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
 
+			isQcnChange = true;
+			
 			Platform.runLater(() -> {
-
+		
 				Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, mResMsg.getString("dialog.change.qcn"), mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.exit"));
 
 				if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+					
+					CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.msg.send.data"));
+					
 					mAuctionStatus.setState(GlobalDefineCode.AUCTION_STATUS_NONE);
 					AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(auctionStatus.getAuctionHouseCode(), auctionStatus.getAuctionQcn()));
 					isSendEntryData = false;
@@ -2282,6 +2287,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			});
 
 			return;
+		}else {
+			isQcnChange = false;
 		}
 
 		if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
@@ -3527,7 +3534,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	@SuppressWarnings("unlikely-arg-type")
 	private void setCurrentEntrySoundData() {
-
+		
 		if (!SettingApplication.getInstance().isUseSoundAuction()) {
 			return;
 		}
@@ -3622,7 +3629,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.brand"), mCurrentSpEntryInfo.getBrandName().getValue()));
 				isOnlyEntryNumber = false;
 			}
-
+			
+			if (mDnaCheckBox.isSelected() && !CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getDnaYn())) {
+				if(mCurrentSpEntryInfo.getDnaYn().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_DNA_1)) {			
+					entrySoundContent.append(EMPTY_SPACE);
+					entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.dna"));
+					isOnlyEntryNumber = false;
+				}
+			}
+			
 			if (!CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getNote())) {
 				entrySoundContent.append(EMPTY_SPACE);
 				entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.note"), mCurrentSpEntryInfo.getNote().getValue()));
@@ -4188,8 +4203,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnDownPrice.setDisable(true);
 				// 출품 대기 테이블 비활성화
 				mWaitTableView.setDisable(true);
-				// 경매회차종료
-				mBtnQcnFinish.setDisable(true);
 				
 				break;
 			default:
@@ -4217,17 +4230,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// 가격 상승,다운 활성화
 				mBtnUpPrice.setDisable(false);
 				mBtnDownPrice.setDisable(false);
-				// 경매회차종료
-				mBtnQcnFinish.setDisable(true);
 
 				break;
 			}
-			
-			if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
-				// 경매회차종료
-				mBtnQcnFinish.setDisable(false);
-			}
-			
 		});
 	}
 

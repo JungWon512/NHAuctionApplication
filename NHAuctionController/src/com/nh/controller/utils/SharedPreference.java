@@ -149,6 +149,7 @@ public class SharedPreference {
 	public static final String PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE = "PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE";
 	public static final String PREFERENCE_MAIN_SOUND_ENTRY_BRAND = "PREFERENCE_MAIN_SOUND_ENTRY_BRAND";
 	public static final String PREFERENCE_MAIN_SOUND_ENTRY_KPN = "PREFERENCE_MAIN_SOUND_ENTRY_KPN";
+	public static final String PREFERENCE_MAIN_SOUND_ENTRY_DNA = "PREFERENCE_MAIN_SOUND_ENTRY_DNA";
 	// 메인 출품 정보 음성 설정 체크박스  [END]
 	
 	public static final String PREFERENCE_SEND_MESSAGE = "PREFERENCE_SEND_MESSAGE"; // 메세지 전송

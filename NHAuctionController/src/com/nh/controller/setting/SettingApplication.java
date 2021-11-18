@@ -382,6 +382,7 @@ public class SettingApplication {
 		checkDataList.add(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_LOWPRICE, true));
 		checkDataList.add(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_BRAND, true));
 		checkDataList.add(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_KPN, true));
+		checkDataList.add(SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_DNA, true));
 
 		return checkDataList;
 	}
@@ -456,6 +457,31 @@ public class SettingApplication {
 		}
 		return lowerLimitPrice;
 	}
+	
+	/**
+	 * DNA - 친자 
+	 * 
+	 * @return 1.일치 , 2.불일치 ,3.미확인
+	 */
+	public String getDnaYn(String dnaYn) {
+
+		String resultStr = "";
+
+		switch (dnaYn) {
+		case GlobalDefine.AUCTION_INFO.AUCTION_DNA_1:
+			resultStr = "일치";
+			break;
+		case GlobalDefine.AUCTION_INFO.AUCTION_DNA_2:
+			resultStr = "불일치";
+			break;
+		case GlobalDefine.AUCTION_INFO.AUCTION_DNA_3:
+			resultStr  = "미확인";
+			break;
+		}
+		
+		return resultStr;
+	}
+	
 
 	public int getUpperLimitCalf() {
 		return reInt(upperLimitCalf);

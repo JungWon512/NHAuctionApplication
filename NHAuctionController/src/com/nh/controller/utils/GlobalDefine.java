@@ -110,6 +110,10 @@ public class GlobalDefine {
 		public static final int AUCTION_OBJ_DSC_3 = 3; // 경매 구분 - 번육우
 		public static final int AUCTION_OBJ_DSC_0 = 0; // 경매 구분 - 일괄
 		
+		public static final String AUCTION_DNA_1 = "1"; // 친자 - 일치
+		public static final String AUCTION_DNA_2 = "2"; // 친자 - 불일치
+		public static final String AUCTION_DNA_3 = "3"; // 친자 - 미확인
+		
 		public static final String BIDDER_STATUS_N = "N"; // 응찰자 접속 미응찰
 		public static final String BIDDER_STATUS_L = "L"; // 응찰자 접속 해제 여부
 		

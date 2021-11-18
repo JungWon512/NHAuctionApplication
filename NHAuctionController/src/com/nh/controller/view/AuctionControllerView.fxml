@@ -114,6 +114,7 @@
                                     <CheckBox fx:id="mWeightCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="중량" userData="2" HBox.hgrow="ALWAYS" />
                                     <CheckBox fx:id="mLowPriceCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="최저가" userData="2" HBox.hgrow="ALWAYS" />
                                     <CheckBox fx:id="mBrandNameCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="브랜드" userData="2" HBox.hgrow="ALWAYS" />
+                                    <CheckBox fx:id="mDnaCheckBox" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="친자" userData="2" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="80.0" prefWidth="200.0" spacing="6.0" styleClass="main-top-sound" GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -700,7 +701,7 @@
                   <Button fx:id="mBtnF8" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F8]환경설정" />
                   <Button fx:id="mBtnEnter" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="145.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[ENTER]경매시작" />
                   <Button fx:id="mBtnSpace" alignment="CENTER" contentDisplay="CENTER" disable="true" maxWidth="180.0" minHeight="40.0" minWidth="180.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" styleClass="btn-bottom" text="[Space]음성경매시작" />
-                  <Button fx:id="mBtnQcnFinish" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="회차종료" />
+                  <Button fx:id="mBtnQcnFinish" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="회차종료" />
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" top="10.0" />
