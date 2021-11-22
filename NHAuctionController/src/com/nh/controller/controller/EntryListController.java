@@ -369,7 +369,7 @@ public class EntryListController implements Initializable {
 				@Override
 				public void onResponseResult(ResponseNumber result) {
 
-					if (result != null && result.getSuccess() && result.getData() > 0) {
+					if (result != null && result.getSuccess()) {
 
 						mLogger.debug("[최저가 수정 Success]");
 						

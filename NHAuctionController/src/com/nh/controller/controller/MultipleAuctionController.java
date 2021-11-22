@@ -389,7 +389,17 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mHeaderBtnPause.setOnMouseClicked(event -> onPause());
 		mHeaderBtnFinish.setOnMouseClicked(event -> onFinish());
 		mBtnMessage.setOnMouseClicked(event -> openSendMessage(event));
-		mWaitTableView.setOnMouseClicked(event -> onClickWaitTableView(event));
+		
+		mWaitTableView.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getButton() == MouseButton.PRIMARY){
+                	onClickWaitTableView();
+                }
+            }
+        });
+		
+		
 		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
 		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
@@ -719,7 +729,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					@Override
 					public void handle(ContextMenuEvent event) {
 						// 우클릭 새로고침 show
-
 						mRefreshContextMenu.show(mWaitTableView, event.getScreenX(), event.getSceneY());
 					}
 				});
@@ -753,18 +762,16 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 *
 	 * @param event
 	 */
-	public void onClickWaitTableView(MouseEvent event) {
+	public void onClickWaitTableView() {
 
 		// 마우스 왼쪽 클릭시 출장우 정보 선택, 우클릭 등 그외 버튼 막음.
-		if (event.getButton() == MouseButton.PRIMARY) {
-
-			// 우클릭 새로고침 창 숨김.
-			if (mRefreshContextMenu != null && mRefreshContextMenu.isShowing()) {
-				mRefreshContextMenu.hide();
-			}
-
-			setCurrentEntryInfo();
+		// 우클릭 새로고침 창 숨김.
+		if (mRefreshContextMenu != null && mRefreshContextMenu.isShowing()) {
+			mRefreshContextMenu.hide();
 		}
+
+		setCurrentEntryInfo();
+
 	}
 
 	/**
@@ -1250,7 +1257,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 							if (curEntryNum.equals(newEntryNum)) {
 
 								if (CommonUtils.getInstance().isEmptyProperty(newEntryDataList.get(j).getLsChgDtm()) || CommonUtils.getInstance().isEmptyProperty(mWaitEntryInfoDataList.get(i).getLsChgDtm())) {
-									break;
+									continue;
 								}
 
 								long newDt = Long.parseLong(newEntryDataList.get(j).getLsChgDtm().getValue());
@@ -1963,8 +1970,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			return;
 		}
 
-		if (bidding.getPrice().length() > 4) {
-			mLogger.debug("응찰가가 4자리 이상입니다. 응찰에 실패했습니다.");
+		if (bidding.getPrice().length() > 5) {
+			mLogger.debug("응찰가가 5자리 이상입니다. 응찰에 실패했습니다.");
 			return;
 		}
 

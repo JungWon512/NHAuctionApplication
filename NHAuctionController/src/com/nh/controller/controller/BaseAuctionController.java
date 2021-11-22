@@ -136,6 +136,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected boolean isReAuctionAndOverPrice = false;
 	
 	protected boolean isOverPricePlaySound = false; // 높은가 사운드 플래그 (중복사운드 방지)
+	
+	protected boolean isAutoPlay = false;
 
 	public BaseAuctionController() {
 		init();
@@ -428,8 +430,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 					return;
 				}
 
-				if (bidding.getPrice().length() > 4) {
-					addLogItem("응찰가가 4자리 이상입니다. 응찰에 실패했습니다.");
+				if (bidding.getPrice().length() > 5) {
+					addLogItem("응찰가가 5자리 이상입니다. 응찰에 실패했습니다.");
 					return;
 				}
 

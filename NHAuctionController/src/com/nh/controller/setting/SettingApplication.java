@@ -602,4 +602,20 @@ public class SettingApplication {
 		return setting;
 	}
 	
+	/**
+	 * 원/만원단위 여부
+	 * true 원단위 , false 만원단위
+	 * @return
+	 */
+	public boolean isWon() {
+		
+		if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice() <= 1) {
+			return true;
+		}else {
+			return false;
+		}
+		
+	}
+	
+	
 }
