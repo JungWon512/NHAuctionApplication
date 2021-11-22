@@ -117,6 +117,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					}
 				} else if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
 					mLogger.info("Controller Channel Count : " + mControllerChannelsMap.size());
+					mLogger.info(mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode()));
 
 					if (mConnectionInfoMap.size() > 0) {
 						if (mControllerChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mControllerChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {

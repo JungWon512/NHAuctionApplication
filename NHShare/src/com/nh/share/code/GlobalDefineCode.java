@@ -76,6 +76,11 @@ public class GlobalDefineCode {
 	public static final String STN_AUCTION_STATUS_PROGRESS = "21";	//경매시작
 	public static final String STN_AUCTION_STATUS_FINISH = "22";	//종료
 	public static final String STN_AUCTION_STATUS_PAUSE = "23";		//정지
+	
+	// 응찰 가능 여부 상태
+	public static final String AUCTION_BID_STATUS_N = "N";		//기본값
+	public static final String AUCTION_BID_STATUS_P = "P";		//응찰중
+	public static final String AUCTION_BID_STATUS_F = "F";		//응찰완료
 
 	// 경매 시작 카운트 다운 상태
 	public static final String AUCTION_COUNT_DOWN_READY = "R"; // 경매 시작 카운트 다운 준비 상태

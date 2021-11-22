@@ -110,8 +110,24 @@ public class Auctioneer {
 //			resetAuctionData(auctionHouseCode);
 //		}
 		
+		if (mAuctionStateMap == null) {
+			mAuctionStateMap = new HashMap<String, AuctionState>();
+		}
+		
+		if (!mAuctionStateMap.containsKey(auctionHouseCode)) {
+			mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
+		}
+
+		// 경매 응찰 정보 Reset
+		resetAuctionData(auctionHouseCode);
+	}
+	
+	public void requestInitAuction(String auctionHouseCode) {
 		mAuctionStateMap = new HashMap<String, AuctionState>();
-		mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
+		
+		if (!mAuctionStateMap.containsKey(auctionHouseCode)) {
+			mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
+		}
 
 		// 경매 응찰 정보 Reset
 		resetAuctionData(auctionHouseCode);
@@ -466,7 +482,7 @@ public class Auctioneer {
 	 * @return
 	 */
 	public void initEntryInfo(String auctionHouseCode) {
-		initAuction(auctionHouseCode);
+		requestInitAuction(auctionHouseCode);
 		
 		if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)) {
 			mAuctionEntryRepositoryMap.get(auctionHouseCode).removeAllEntryList();
