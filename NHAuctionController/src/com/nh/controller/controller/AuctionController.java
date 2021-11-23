@@ -347,7 +347,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		
 		mBtnRefresh.setOnMouseClicked(event -> {
 			Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
-			refreshWaitEntryDataList(REFRESH_ENTRY_LIST_TYPE_NONE);
+			refreshWaitAllEntryDataList(-1);
 		});
 		
 		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단
@@ -660,7 +660,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					public void handle(ActionEvent event) {
 						// 새로고침
 						Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
-						refreshWaitEntryDataList(REFRESH_ENTRY_LIST_TYPE_NONE);
+						refreshWaitAllEntryDataList(-1);
 					}
 				});
 
@@ -727,43 +727,92 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	}
 
+	
 	/**
-	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
+	 * 대기중인 출품 목록 전체 갱신.서버전달.
 	 */
-	private void refreshWaitEntryDataList(String type) {
-
-		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
-		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
-		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
-		String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
-		String selStsDsc = "";
-
-		// 보류목록일경우
-		if (mCurPageType.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
-			selStsDsc = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
-		}
-
-		// 출장우 데이터 조회
-		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn);
-
-		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
+	private void refreshWaitAllEntryDataList(int index) {
+	
+		
+		ApiUtils.getInstance().requestSelectCowInfo(getCowInfoParam(), new ActionResultListener<ResponseCowInfo>() {
 			@Override
 			public void onResponseResult(final ResponseCowInfo result) {
 
 				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
 					mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
 
-					List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
+					ObservableList<SpEntryInfo> newEntryDataList = getParsingCowEntryDataList(result.getData());
+					
+					Platform.runLater(() -> {
+						
+						mRecordCount = result.getData().size();
+						mWaitEntryInfoDataList.clear();
+						mWaitEntryInfoDataList.addAll(newEntryDataList);
 
-					for (int i = 0; i < result.getData().size(); i++) {
+						for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
+							mWaitEntryInfoDataList.add(new SpEntryInfo());
+						}
+						
+						mWaitTableView.refresh();
+						
+						//초기화 전송
+						mLogger.debug("[CLEAR INIT SERVER] : " + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
+						
+						//출장우 정보 전송
+						onCowInfoSendOrStartAuction(REFRESH_ENTRY_LIST_TYPE_SEND);
+						
+						if (index > -1) {
+							selectIndexWaitTable(index, true);
+						}
+						
+						CommonUtils.getInstance().dismissLoadingDialog();
+					});
+				}
+			}
+			
+			@Override
+			public void onResponseError(String message) {
+				mLogger.debug("[onResponseError] 출장우 정보 " + message);
+				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+			}	
+		});
+	}
+	
+	/**
+	 * 출장우 데이터 파라미터값
+	 * @return
+	 */
+	private RequestCowInfoBody getCowInfoParam() {
+		
+		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
+		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
+		String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
+		String selStsDsc = "";
+		
+		// 보류목록일경우
+		if (mCurPageType.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
+			selStsDsc = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
+		}
+		
+		// 출장우 데이터 조회
+		return new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn);
+	}
+	
+	/**
+	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
+	 */
+	private void refreshWaitEntryDataList(boolean isRefresh,String type) {
 
-						EntryInfo entryInfo = new EntryInfo(result.getData().get(i));
-						String flag = (i == result.getData().size() - 1) ? "Y" : "N";
-						entryInfo.setIsLastEntry(flag);
-						entryInfoDataList.add(entryInfo);
-					}
+		ApiUtils.getInstance().requestSelectCowInfo(getCowInfoParam(), new ActionResultListener<ResponseCowInfo>() {
+			@Override
+			public void onResponseResult(final ResponseCowInfo result) {
 
-					ObservableList<SpEntryInfo> newEntryDataList = getParsingEntryDataList(entryInfoDataList);
+				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
+					
+					mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
+
+					ObservableList<SpEntryInfo> newEntryDataList = getParsingCowEntryDataList(result.getData());
 
 					// 조회 데이터 없으면 리턴
 					if (CommonUtils.getInstance().isListEmpty(newEntryDataList)) {
@@ -809,31 +858,33 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							}
 						}
 					}
-
 					
-					// 추가된 데이터 있는지 확인
-					ObservableList<SpEntryInfo> newDataList = newEntryDataList.stream().filter(e -> !mWaitEntryInfoDataList.contains(e)).collect(Collectors.toCollection(FXCollections::observableArrayList));
-
-					// 추가된 데이터 항목이 있으면 add
-					if (!CommonUtils.getInstance().isListEmpty(newDataList)) {
-
-						mLogger.debug("추가된 데이터 있음.");
-
-						for (SpEntryInfo spEntryInfo : newDataList) {
-							addLogItem("추가된 데이터 전송=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
+					if (isRefresh) {
+					
+						// 추가된 데이터 있는지 확인
+						ObservableList<SpEntryInfo> newDataList = newEntryDataList.stream().filter(e -> !mWaitEntryInfoDataList.contains(e)).collect(Collectors.toCollection(FXCollections::observableArrayList));
+	
+						// 추가된 데이터 항목이 있으면 add
+						if (!CommonUtils.getInstance().isListEmpty(newDataList)) {
+	
+							mLogger.debug("추가된 데이터 있음.");
+	
+							for (SpEntryInfo spEntryInfo : newDataList) {
+								addLogItem("추가된 데이터 전송=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
+							}
+	
+							mWaitEntryInfoDataList.addAll(mRecordCount, newDataList);
+							mRecordCount += newDataList.size();
+	
+						} else {
+							addLogItem("추기된 데이터 없음.");
 						}
-
-						mWaitEntryInfoDataList.addAll(mRecordCount, newDataList);
-						mRecordCount += newDataList.size();
-
-					} else {
-						addLogItem("추기된 데이터 없음.");
+	
+						mWaitTableView.setItems(mWaitEntryInfoDataList);
+						mWaitTableView.refresh();
+					
 					}
-
-					mWaitTableView.setItems(mWaitEntryInfoDataList);
-					mWaitTableView.refresh();
-				
-
+					
 					PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
 					pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
 						@Override
@@ -1044,7 +1095,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				@Override
 				public void run() {
 					// 보내기 전 한번 더 갱신
-					refreshWaitEntryDataList(REFRESH_ENTRY_LIST_TYPE_SEND);
+					refreshWaitEntryDataList(true,REFRESH_ENTRY_LIST_TYPE_SEND);
 				}
 			};
 
@@ -1158,26 +1209,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		openEntryDialog(EntryDialogType.ENTRY_FINISH_LIST);
 	}
 
-	/**
-	 * 출장우 정보 갱신
-	 * 
-	 * @param dataList
-	 */
-	private void setWaitEntryDataList(ObservableList<SpEntryInfo> dataList) {
-
-		Platform.runLater(() -> {
-
-			mRecordCount = dataList.size();
-			mWaitEntryInfoDataList.clear();
-			mWaitEntryInfoDataList.addAll(dataList);
-
-			for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
-				mWaitEntryInfoDataList.add(new SpEntryInfo());
-			}
-			mWaitTableView.refresh();
-		});
-
-	}
 
 	/**
 	 * 보류 목록 보기
@@ -1204,12 +1235,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				dismissShowingDialog();
 
-				addLogItem("Dialog callBack Value : " + type);
-
-				if (type.equals(EntryDialogType.ENTRY_LIST) || type.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
-					refreshWaitEntryDataList(REFRESH_ENTRY_LIST_TYPE_NONE);
-				}
-
 				if (index < 0) {
 					return;
 				}
@@ -1217,19 +1242,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				if (CommonUtils.getInstance().isListEmpty(dataList)) {
 					return;
 				}
-
-				mCurPageType = type;
-
+				
 				// 낙찰 결과보기는 이동,갱신 안 함
 				if (type.equals(EntryDialogType.ENTRY_FINISH_LIST)) {
 					return;
 				}
+				
+				mCurPageType = type;
+				
+				refreshWaitAllEntryDataList(index);
 
-				setWaitEntryDataList(dataList);
-
-				if (index > -1) {
-					selectIndexWaitTable(index, true);
-				}
 			}
 		});
 	}
@@ -1528,7 +1550,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			@Override
 			public void run() {
 				// 갱신 후 변경점 있으면 서버 전달.
-				refreshWaitEntryDataList(REFRESH_ENTRY_LIST_TYPE_START);
+				refreshWaitEntryDataList(true,REFRESH_ENTRY_LIST_TYPE_START);
 				Platform.runLater(() -> setCurrentEntryInfo(false));
 			}
 		};
@@ -1978,15 +2000,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		mCurPageType = EntryDialogType.ENTRY_LIST;
 
-		final String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
-		final String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
-		final String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
-		final String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
-
-		// 출장우 데이터 조회
-		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, "", stnYn);
-
-		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
+		ApiUtils.getInstance().requestSelectCowInfo(getCowInfoParam(), new ActionResultListener<ResponseCowInfo>() {
 
 			@Override
 			public void onResponseResult(final ResponseCowInfo result) {
@@ -1997,22 +2011,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 						mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
 
-						List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
-
-						for (int i = 0; i < result.getData().size(); i++) {
-							EntryInfo entryInfo = new EntryInfo(result.getData().get(i));
-							String flag = (i == result.getData().size() - 1) ? "Y" : "N";
-							entryInfo.setIsLastEntry(flag);
-							entryInfoDataList.add(entryInfo);
-						}
-
 						mWaitEntryInfoDataList.clear();
-						mWaitEntryInfoDataList = getParsingEntryDataList(entryInfoDataList);
-
-						if (!CommonUtils.getInstance().isListEmpty(entryInfoDataList)) {
-							mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), entryInfoDataList.size()));
-						}
-
+						mWaitEntryInfoDataList = getParsingCowEntryDataList(result.getData());
+						mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), result.getData().size()));
+			
 						initFinishedEntryDataList();
 						initWaitEntryDataList(mWaitEntryInfoDataList);
 					} else {
@@ -2171,6 +2173,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							long soundPrice = price * -1;
 							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.change.low.price"), soundPrice), null);
 						}
+						
+						mWaitTableView.refresh();
 
 					} else {
 						mLogger.debug("[최저가 수정 Fail]");
@@ -4145,6 +4149,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (event.getSource() instanceof CheckBox) {
 				CheckBox checkBox = (CheckBox) event.getSource();
 				SharedPreference.getInstance().setBoolean(checkBox.getUserData().toString(), checkBox.isSelected());
+				
 			}
 		}
 	};

@@ -59,6 +59,7 @@ import com.nh.controller.utils.MoveStageUtil.EntryDialogType;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.controller.utils.SoundUtil;
 import com.nh.share.api.ActionResultListener;
+import com.nh.share.api.models.CowInfoData;
 import com.nh.share.api.request.body.RequestBidEntryBody;
 import com.nh.share.api.request.body.RequestBidLogBody;
 import com.nh.share.api.request.body.RequestBidNumBody;
@@ -943,22 +944,9 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
 
 						mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
-
-						List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
-
-						for (int i = 0; i < result.getData().size(); i++) {
-							EntryInfo entryInfo = new EntryInfo(result.getData().get(i));
-							String flag = (i == result.getData().size() - 1) ? "Y" : "N";
-							entryInfo.setIsLastEntry(flag);
-							entryInfoDataList.add(entryInfo);
-						}
-
 						mWaitEntryInfoDataList.clear();
-						mWaitEntryInfoDataList = getParsingEntryDataList(entryInfoDataList);
-
-						if (!CommonUtils.getInstance().isListEmpty(entryInfoDataList)) {
-							mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), entryInfoDataList.size()));
-						}
+						mWaitEntryInfoDataList = getParsingCowEntryDataList(result.getData());
+						mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), result.getData().size()));
 
 						initWaitEntryDataList(mWaitEntryInfoDataList);
 
@@ -1038,7 +1026,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			@Override
 			public void initServer() {
 				dismissShowingDialog();
-				mLogger.debug("[CLEAR INIT SERVER]" + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
+				mLogger.debug("[CLEAR INIT SERVER] " + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
 				isApplicationClosePopup = true;
 				onServerAndClose();
 			}
@@ -1061,10 +1049,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 				mLogger.debug("Dialog callBack Value : " + type);
 
-				if (type.equals(EntryDialogType.ENTRY_LIST) || type.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
-					refreshWaitEntryDataList(false, REFRESH_ENTRY_LIST_TYPE_NONE);
-				}
-
 				if (index < 0) {
 					return;
 				}
@@ -1072,19 +1056,79 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				if (CommonUtils.getInstance().isListEmpty(dataList)) {
 					return;
 				}
-
-				mCurPageType = type;
-
+				
 				// 낙찰 결과보기는 이동,갱신 안 함
 				if (type.equals(EntryDialogType.ENTRY_FINISH_LIST)) {
 					return;
 				}
+				
+				mCurPageType = type;
+				
 
-				setWaitEntryDataList(dataList);
+				//출장우 정보 갱신, 서버 전송
+				String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
+				String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+				String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
+				String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
+				String selStsDsc = "";
 
-				if (index > -1) {
-					selectIndexWaitTable(index, true);
+				// 보류목록일경우
+				if (mCurPageType.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
+					selStsDsc = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
 				}
+				
+				// 출장우 데이터 조회
+				RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn);
+
+				ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
+					@Override
+					public void onResponseResult(final ResponseCowInfo result) {
+
+						if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
+							mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
+
+
+							ObservableList<SpEntryInfo> newEntryDataList = getParsingCowEntryDataList(result.getData());
+
+							// 조회 데이터 없으면 리턴
+							if (CommonUtils.getInstance().isListEmpty(newEntryDataList)) {
+								mLogger.debug("조회 데이터 없음.");
+								return;
+							}
+							
+							Platform.runLater(() -> {
+								
+								mRecordCount = dataList.size();
+								mWaitEntryInfoDataList.clear();
+								mWaitEntryInfoDataList.addAll(dataList);
+
+								for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
+									mWaitEntryInfoDataList.add(new SpEntryInfo());
+								}
+								
+								mWaitTableView.refresh();
+								//초기화 전송
+								mLogger.debug("[CLEAR INIT SERVER] : " + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
+							
+								//출장우 정보 전송
+								onCowInfoSendOrStartAuction(REFRESH_ENTRY_LIST_TYPE_SEND);
+								
+								if (index > -1) {
+									selectIndexWaitTable(index, true);
+								}
+								
+								CommonUtils.getInstance().dismissLoadingDialog();
+							});
+						}
+					}
+					
+					@Override
+					public void onResponseError(String message) {
+						mLogger.debug("[onResponseError] 출장우 정보 " + message);
+						Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+					}	
+				});
+				
 			}
 		});
 	}
@@ -1117,27 +1161,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				mMessageStage = null;
 			}
 		});
-	}
-
-	/**
-	 * 출장우 정보 갱신
-	 * 
-	 * @param dataList
-	 */
-	private void setWaitEntryDataList(ObservableList<SpEntryInfo> dataList) {
-
-		Platform.runLater(() -> {
-
-			mRecordCount = dataList.size();
-			mWaitEntryInfoDataList.clear();
-			mWaitEntryInfoDataList.addAll(dataList);
-
-			for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
-				mWaitEntryInfoDataList.add(new SpEntryInfo());
-			}
-			mWaitTableView.refresh();
-		});
-
 	}
 
 	/**
@@ -1228,16 +1251,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
 					mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
 
-					List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
-
-					for (int i = 0; i < result.getData().size(); i++) {
-						EntryInfo entryInfo = new EntryInfo(result.getData().get(i));
-						String flag = (i == result.getData().size() - 1) ? "Y" : "N";
-						entryInfo.setIsLastEntry(flag);
-						entryInfoDataList.add(entryInfo);
-					}
-
-					ObservableList<SpEntryInfo> newEntryDataList = getParsingEntryDataList(entryInfoDataList);
+					ObservableList<SpEntryInfo> newEntryDataList = getParsingCowEntryDataList(result.getData());
 
 					// 조회 데이터 없으면 리턴
 					if (CommonUtils.getInstance().isListEmpty(newEntryDataList)) {
@@ -1257,7 +1271,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 							if (curEntryNum.equals(newEntryNum)) {
 
 								if (CommonUtils.getInstance().isEmptyProperty(newEntryDataList.get(j).getLsChgDtm()) || CommonUtils.getInstance().isEmptyProperty(mWaitEntryInfoDataList.get(i).getLsChgDtm())) {
-									continue;
+									break;
 								}
 
 								long newDt = Long.parseLong(newEntryDataList.get(j).getLsChgDtm().getValue());
@@ -1368,16 +1382,19 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 //		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 //		case GlobalDefineCode.AUCTION_STATUS_PASS:
 //		
-		Thread thread = new Thread() {
-			@Override
-			public void run() {
-				// 갱신 후 변경점 있으면 서버 전달.
-				refreshWaitEntryDataList(true, REFRESH_ENTRY_LIST_TYPE_START);
-			}
-		};
-
-		thread.setDaemon(true);
-		thread.start();
+		// 경매시
+		onStartAuction(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_START);
+		
+//		Thread thread = new Thread() {
+//			@Override
+//			public void run() {
+//				// 갱신 후 변경점 있으면 서버 전달.
+//				refreshWaitEntryDataList(true, REFRESH_ENTRY_LIST_TYPE_START);
+//			}
+//		};
+//
+//		thread.setDaemon(true);
+//		thread.start();
 //			break;
 //		}
 	}
@@ -1408,6 +1425,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_START)) {
 
 						GlobalDefine.AUCTION_INFO.auctionRoundData.setSelStsDsc(GlobalDefineCode.STN_AUCTION_STATUS_PROGRESS);
+						
+						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
 
 						onAuctionStatusStart();
 
@@ -2792,6 +2811,29 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		return resultDataList;
 	}
+	
+	/**
+	 * EntryInfo -> SpEntryInfo
+	 *
+	 * @param dataList
+	 * @return
+	 */
+	protected ObservableList<SpEntryInfo> getParsingCowEntryDataList(List<CowInfoData> dataList) {
+		
+		List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
+
+		for (int i = 0; i < dataList.size(); i++) {
+			EntryInfo entryInfo = new EntryInfo(dataList.get(i));
+			String flag = (i == dataList.size() - 1) ? "Y" : "N";
+			entryInfo.setIsLastEntry(flag);
+			entryInfoDataList.add(entryInfo);
+		}
+		
+		ObservableList<SpEntryInfo> resultDataList = entryInfoDataList.stream().map(item -> new SpEntryInfo(item)).collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+		return resultDataList;
+	}
+	
 
 	/**
 	 * 
@@ -2840,7 +2882,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 				if (index == 0) {
 					mWaitTableView.getSelectionModel().select(0);
-					mWaitTableView.scrollTo(mWaitTableView.getSelectionModel().getSelectedIndex());
+					mWaitTableView.scrollTo(mWaitTableView.getSelectionModel().getSelectedIndex()+ 1);
 				} else {
 
 					int currentSelectedIndex = mWaitTableView.getSelectionModel().getSelectedIndex();
@@ -2855,7 +2897,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 					if (mRecordCount > selectIndex) {
 						mWaitTableView.getSelectionModel().select(selectIndex);
-						mWaitTableView.scrollTo(mWaitTableView.getSelectionModel().getSelectedIndex());
+						mWaitTableView.scrollTo(mWaitTableView.getSelectionModel().getSelectedIndex()+ 1);
 					}
 				}
 

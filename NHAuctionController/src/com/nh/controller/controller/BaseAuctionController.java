@@ -42,6 +42,7 @@ import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.api.ActionResultListener;
+import com.nh.share.api.models.CowInfoData;
 import com.nh.share.api.request.body.RequestBidEntryBody;
 import com.nh.share.api.request.body.RequestBidLogBody;
 import com.nh.share.api.request.body.RequestBidNumBody;
@@ -1438,7 +1439,31 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected Optional<ButtonType> showAlertPopupOneButton(String message) {
 		return CommonUtils.getInstance().showAlertPopupOneButton(mStage, message, mResMsg.getString("popup.btn.close"));
 	}
+	
+	
 
+	/**
+	 * EntryInfo -> SpEntryInfo
+	 *
+	 * @param dataList
+	 * @return
+	 */
+	protected ObservableList<SpEntryInfo> getParsingCowEntryDataList(List<CowInfoData> dataList) {
+		
+		List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
+
+		for (int i = 0; i < dataList.size(); i++) {
+			EntryInfo entryInfo = new EntryInfo(dataList.get(i));
+			String flag = (i == dataList.size() - 1) ? "Y" : "N";
+			entryInfo.setIsLastEntry(flag);
+			entryInfoDataList.add(entryInfo);
+		}
+		
+		ObservableList<SpEntryInfo> resultDataList = entryInfoDataList.stream().map(item -> new SpEntryInfo(item)).collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+		return resultDataList;
+	}
+	
 	/**
 	 * EntryInfo -> SpEntryInfo
 	 *
