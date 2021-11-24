@@ -1887,6 +1887,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 경매 진행 -> 카운트 다운 일시 정지. 경매 진행 -> 카운트 다운 시작.
 	 */
 	public void onReStart() {
+		
+		if(!isPause) {
+			return;
+		}
 
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_START:
@@ -1912,31 +1916,61 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							if (mBiddingUserInfoDataList.get(0).getAuctionJoinNum() != null && CommonUtils.getInstance().isValidString(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue())) {
 								playOverPriceSound(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue());
 							} else {
+								
+								if (!mCountDownLabel.isVisible()) {
+									if(!isPause) {
+										startAutoAuctionScheduler(mRemainingTimeCount);
+									}
+								}else {
+									SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
+										@Override
+										public void playbackFinished(PlaybackEvent evt) {
+											if(!isPause) {
+												onStopAuction(mRemainingTimeCount);
+											}
+											isRestart = false;
+										}
+									});
+								}
+							}
+						} else {
+							
+							
+							if (!mCountDownLabel.isVisible()) {
+								startAutoAuctionScheduler(mRemainingTimeCount);
+							}else {
 								SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
 									@Override
 									public void playbackFinished(PlaybackEvent evt) {
-										onStopAuction(mRemainingTimeCount);
+										if(!isPause) {
+											onStopAuction(mRemainingTimeCount);
+										}
+										
 										isRestart = false;
 									}
 								});
 							}
-						} else {
+					
+						
+						}
+					} else {
+						
+						
+						if (!mCountDownLabel.isVisible()) {
+							startAutoAuctionScheduler(mRemainingTimeCount);
+						}else {
 							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
 								@Override
 								public void playbackFinished(PlaybackEvent evt) {
-									onStopAuction(mRemainingTimeCount);
+									if(!isPause) {
+										onStopAuction(mRemainingTimeCount);
+									}
 									isRestart = false;
 								}
 							});
 						}
-					} else {
-						SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
-							@Override
-							public void playbackFinished(PlaybackEvent evt) {
-								onStopAuction(mRemainingTimeCount);
-								isRestart = false;
-							}
-						});
+				
+					
 					}
 
 				} else {
@@ -2460,6 +2494,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					onStopAuction(countDown);
 				}
 			
+				isRestart = false;
 
 //				checkBiddingUserPlaySound();
 

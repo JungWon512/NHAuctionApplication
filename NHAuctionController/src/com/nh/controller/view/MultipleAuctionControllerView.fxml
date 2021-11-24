@@ -704,7 +704,7 @@
                         <String fx:value="btn-bottom" />
                         <String fx:value="bg-color-ea0030" />
                      </styleClass></Button>
-                  <Button fx:id="mBtnQcnFinish" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="회차종료" />
+                  <Button fx:id="mBtnQcnFinish" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="회차종료" />
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" top="10.0" />
