@@ -764,6 +764,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							selectIndexWaitTable(index, true);
 						}
 						
+						setCurrentEntryInfo(true);
+						
 						CommonUtils.getInstance().dismissLoadingDialog();
 					});
 				}
@@ -1865,7 +1867,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
-//			SoundUtil.getInstance().stopSound();
+			SoundUtil.getInstance().stopSound();
 //			isOverPricePlaySound = false;
 //			isPlayReAuctionSound = false;
 
