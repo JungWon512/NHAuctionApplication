@@ -138,6 +138,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 	
 	protected boolean isOverPricePlaySound = false; // 높은가 사운드 플래그 (중복사운드 방지)
 	
+	protected boolean isPlayReAuctionSound = false; // 재경매자 사운드
+	
+	
 	protected boolean isAutoPlay = false;
 
 	public BaseAuctionController() {
@@ -730,29 +733,54 @@ public abstract class BaseAuctionController implements NettyControllable {
 	}
 
 	/**
-	 * 순위 계산 -> ui 갱신 -> 콜백
+	 * 순위 계산 -> ui 갱신 -> 콜백 -> 경매 정지 타이머 실행
 	 */
 	protected CompletionHandler<Boolean, Void> mCalculationRankCallBack = new CompletionHandler<Boolean, Void>() {
 		@Override
 		public void completed(Boolean result, Void attachment) {
-
-			// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
-			if (SettingApplication.getInstance().isUseSoundAuction() && !isReAuction && !isStartSoundPlaying) {
-				addLogItem("[순위 산정 완료 정지 타이머 실행] isReAuction 1111 : " + isReAuction + " / isStartSoundPlaying : " + isStartSoundPlaying);
+			
+			//음성경매만 
+			if (!SettingApplication.getInstance().isUseSoundAuction() || isStartSoundPlaying) {
+				mLogger.debug("[음성경매가 아니거나 시작 사운드 플래이중임");
+				return;
+			}
+			
+			//재경매 상황 아님
+			if(!isReAuction) {
+				
+				mLogger.debug("[mCalculationRankCallBack 재경매 상황 아님");
+				
 				soundAuctionTimerTask();
-			} else {
-				if (isReAuction && SettingApplication.getInstance().isUseSoundAuction()) {
-					addLogItem("[순위 산정 완료 정지 타이머 실행] isReAuction 2222 : " + isReAuction + " / isStartSoundPlaying : " + isStartSoundPlaying);
-					if (checkOverPrice(mBiddingUserInfoDataList.get(0))) {
-						stopSoundAuctionTimerTask();
-						soundAuctionTimerTask();
-					}else {
-						addLogItem("[순위 산정 완료 정지 타이머 실행] isReAuction 3333 : " + isReAuction + " / isStartSoundPlaying : " + isStartSoundPlaying);
-						stopSoundAuctionTimerTask();
-						checkBiddingUserPlaySound();
-					}
+				
+			}else {
+				
+				//재경매 상황
+				mLogger.debug("[mCalculationRankCallBack 재경매 상황");
+				
+				if(!isPlayReAuctionSound) {
+					soundAuctionTimerTask();
 				}
 			}
+			
+
+			// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
+//			if (SettingApplication.getInstance().isUseSoundAuction() && !isReAuction && !isStartSoundPlaying) {
+//				addLogItem("[순위 산정 완료 정지 타이머 실행] isReAuction 1111 : " + isReAuction + " / isStartSoundPlaying : " + isStartSoundPlaying);
+//				soundAuctionTimerTask();
+//			} else {
+//				if (isReAuction && SettingApplication.getInstance().isUseSoundAuction()) {
+//					
+//					addLogItem("[순위 산정 완료 정지 타이머 실행] isReAuction 2222 : " + isReAuction + " / isStartSoundPlaying : " + isStartSoundPlaying);
+//					if (checkOverPrice(mBiddingUserInfoDataList.get(0))) {
+//						stopSoundAuctionTimerTask();
+//						soundAuctionTimerTask();
+//					}else {
+//						addLogItem("[순위 산정 완료 정지 타이머 실행] isReAuction 3333 : " + isReAuction + " / isStartSoundPlaying : " + isStartSoundPlaying);
+//						stopSoundAuctionTimerTask();
+//						checkBiddingUserPlaySound();
+//					}
+//				}
+//			}
 		}
 
 		@Override
@@ -832,7 +860,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 			result = true;
 			isOverPricePlaySound = false;
 		}
-
+		
 		mLogger.debug("[최저가+상한가=응찰가 비교] : " + result + " / 최저가+상한가 : " + lowPrice + "(" + targetPrice + ")" + " / 응찰가 : " + curPrice + "(" + curPrice + ")" + " / 회원번호 : " + spBidding.getAuctionJoinNum());
 
 		return result;

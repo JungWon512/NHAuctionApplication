@@ -225,7 +225,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	private boolean isFirst = false;
 
-	private boolean isPlayReAuctionSound = false;
 
 	private boolean isRestart = false;
 
@@ -1868,7 +1867,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 //			SoundUtil.getInstance().stopSound();
 //			isOverPricePlaySound = false;
-			isPlayReAuctionSound = false;
+//			isPlayReAuctionSound = false;
 
 			// 응찰영역 카운트다운 라벨 숨김.
 //			if (mCountDownLabel.isVisible()) {
@@ -2416,6 +2415,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					isCountDownRunning = true;
 				}
 
+				// 카운트다운 사운드
 				playCountDownSound(countDown);
 
 			}
@@ -2437,16 +2437,26 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //			return;
 //		}
 //		
-
 		SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), countDown), new PlaybackListener() {
 			@Override
 			public void playbackFinished(PlaybackEvent evt) {
-				// TODO Auto-generated method stub
 				super.playbackFinished(evt);
-				// 서버로 정지 전송
-				onStopAuction(countDown);
+				
+				if(mBiddingUserInfoDataList != null && mBiddingUserInfoDataList.size() > 0 && mBiddingUserInfoDataList.get(0).getAuctionJoinNum() != null 
+						&& mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue() != null ) {
+					
+					if (checkOverPrice(mBiddingUserInfoDataList.get(0))) {
+						// 서버로 정지 전송
+						onStopAuction(countDown);
+					}
+					
+				}else {
+					// 서버로 정지 전송
+					onStopAuction(countDown);
+				}
+			
 
-				checkBiddingUserPlaySound();
+//				checkBiddingUserPlaySound();
 
 			}
 		});
@@ -2461,6 +2471,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					stopAutoAuctionScheduler();
 					playOverPriceSound(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue());
 				}
+			}else {
+				startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
 			}
 		}
 	}
@@ -2889,7 +2901,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private void calSuccessfulBidder(boolean isPass) {
 
 		addLogItem("[낙유찰 및 재경매 설정]");
-
+		
 		// 응찰자 여부
 		if (mCurrentBidderMap.size() > 0) {
 			// 응찰 가격 조건 체크
@@ -2977,42 +2989,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					// 재경매자 목록 보냄
 					addLogItem("재경매 대상자 보냄 : " + AuctionDelegate.getInstance().onRetryTargetInfo(new RetryTargetInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), mCurrentSpEntryInfo.getEntryNum().getValue(), strReAuctionBidder.toString())));
 
-					// 사운드 경매인경우 재경매자 음성 시작
-//					if (SettingApplication.getInstance().isUseSoundAuction()) {
-
+					//재경매자 음성 play
 					playReAuctionSound();
-//						StringBuffer stringBuffer = new StringBuffer();
-//
-//						for (SpBidding bidder : mReAuctionBidderDataList) {
-//							stringBuffer.append(String.format(mResMsg.getString("str.sound.user.number"), bidder.getAuctionJoinNum().getValue()));
-//						}
-//
-//						stringBuffer.append(mResMsg.getString("str.sound.user.sam.price"));
-//						stringBuffer.append(stringBuffer.toString());
-//						stringBuffer.append(mResMsg.getString("str.sound.user.re.auction"));
-//
-//						addLogItem("[재경매 중 타이머 초기화]");
-//
-//						stopAutoAuctionScheduler();
-//
-//						isPlayReAuctionSound = true;
-//
-//						SoundUtil.getInstance().playSound(stringBuffer.toString(), new PlaybackListener() {
-//							@Override
-//							public void playbackFinished(PlaybackEvent evt) {
-//								isPlayReAuctionSound = false;
-//								// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
-//								if (SettingApplication.getInstance().isUseSoundAuction() && !isReAuction) {
-//									// 응찰 가격이 정상인경우 설정 대기시간 기다린 후 경매 정지
-//									addLogItem("[카운트다운 완료 정지 타이머 실행]");
-//									startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
-//								} else {
-//									checkBiddingUserPlaySound();
-//								}
-//							}
-//						});
-//					}
-//					});
 
 					Platform.runLater(() -> {
 						// 재경매중 라벨 보이게.
@@ -3067,15 +3045,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			SoundUtil.getInstance().playSound(stringBuffer.toString(), new PlaybackListener() {
 				@Override
 				public void playbackFinished(PlaybackEvent evt) {
+					
 					isPlayReAuctionSound = false;
-					// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
-					if (SettingApplication.getInstance().isUseSoundAuction() && !isReAuction) {
-						// 응찰 가격이 정상인경우 설정 대기시간 기다린 후 경매 정지
-						addLogItem("[카운트다운 완료 정지 타이머 실행]");
+				
+					// 1순위 회원
+					SpBidding rank_1_user = mBiddingUserInfoDataList.get(0);
+
+					// 최저가 + 상한가 / 응찰가 비교.
+					// 이상인 경우 팝업.
+					if (!checkOverPrice(rank_1_user)) {
+						// 낙찰금액을 확인해주세요.
+						playOverPriceSound(rank_1_user.getAuctionJoinNum().getValue());
+						
+					}else {
 						startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
-					} else {
-						checkBiddingUserPlaySound();
 					}
+					
 				}
 			});
 		}
@@ -3999,7 +3984,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		if (SettingApplication.getInstance().isUseSoundAuction()) {
 
-			if (isStartSoundPlaying) {
+			if (isStartSoundPlaying || isOverPricePlaySound) {
 				return;
 			}
 
@@ -4214,6 +4199,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void playOverPriceSound(String joinNumber) {
 		
+		System.out.println("[########3] : " + isStartSoundPlaying
+				+"[########3] : " + isOverPricePlaySound
+				+"[########3] : " + isPlayReAuctionSound
+				+"[########3] : " + isPause);
+		
 		if (isStartSoundPlaying || isOverPricePlaySound || isPlayReAuctionSound || isPause) {
 			return;
 		}
@@ -4223,9 +4213,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		isOverPricePlaySound = true;
 
-		System.out.println("[SOUND 응찰 금액 확인] : " + overPriceSoundMessage);
-		
-		
 		// 사운드 시작
 		SoundUtil.getInstance().playSound(overPriceSoundMessage, new PlaybackListener() {
 			@Override
