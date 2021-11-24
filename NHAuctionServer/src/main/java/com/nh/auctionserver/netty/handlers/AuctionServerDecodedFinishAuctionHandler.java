@@ -55,8 +55,8 @@ public final class AuctionServerDecodedFinishAuctionHandler extends SimpleChanne
 	protected void channelRead0(ChannelHandlerContext ctx, FinishAuction finishAuction) throws Exception {
 		mLogger.info("경매 종료 요청 : " + (finishAuction.getEncodedMessage()));
 
-		if (mAuctionScheduler.getCurrentAuctionStatus(finishAuction.getAuctionHouseCode())
-				.equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+		if (!mAuctionScheduler.getCurrentAuctionStatus(finishAuction.getAuctionHouseCode())
+				.equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
 			if (mControllerChannelsMap.get(finishAuction.getAuctionHouseCode()).contains(ctx.channel()) == true) {
 				mLogger.info("정상 채널에서 경매 종료를 요청하였습니다.");
 				mAuctionServer.itemAdded(finishAuction.getEncodedMessage());

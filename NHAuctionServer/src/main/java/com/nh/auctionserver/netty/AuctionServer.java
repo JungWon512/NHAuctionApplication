@@ -536,8 +536,8 @@ public class AuctionServer {
 			if (controllerParsedMessage instanceof FinishAuction) {
 				mLogger.info("경매 종료 요청 거점코드 : " + ((FinishAuction) controllerParsedMessage).getAuctionHouseCode());
 
-				if (mAuctioneer.getCurrentAuctionStatus(((FinishAuction) controllerParsedMessage).getAuctionHouseCode())
-						.equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
+				if (!mAuctioneer.getCurrentAuctionStatus(((FinishAuction) controllerParsedMessage).getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
 					mAuctioneer.finishAuction(((FinishAuction) controllerParsedMessage).getAuctionHouseCode());
 				} else {
 					mControllerChannelsMap.get(((FinishAuction) controllerParsedMessage).getAuctionHouseCode())
