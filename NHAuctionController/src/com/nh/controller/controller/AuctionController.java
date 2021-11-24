@@ -1867,7 +1867,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
-			SoundUtil.getInstance().stopSound();
+			if(isStartSoundPlaying) {
+				SoundUtil.getInstance().stopSound();
+			}
+		
 //			isOverPricePlaySound = false;
 //			isPlayReAuctionSound = false;
 
