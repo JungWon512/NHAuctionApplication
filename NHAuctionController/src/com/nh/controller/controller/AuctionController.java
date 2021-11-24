@@ -346,7 +346,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		
 		mBtnRefresh.setOnMouseClicked(event -> {
 			Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
-			refreshWaitAllEntryDataList(-1);
+			refreshWaitAllEntryDataList(mWaitTableView.getSelectionModel().getSelectedIndex());
 		});
 		
 		// mBtnSave.setOnMouseClicked(event -> saveMainSoundEntryInfo()); 메인 저장 버튼 일단
@@ -659,7 +659,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					public void handle(ActionEvent event) {
 						// 새로고침
 						Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
-						refreshWaitAllEntryDataList(-1);
+						refreshWaitAllEntryDataList(mWaitTableView.getSelectionModel().getSelectedIndex());
 					}
 				});
 
@@ -764,7 +764,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							selectIndexWaitTable(index, true);
 						}
 						
-						setCurrentEntryInfo(true);
+					
 						
 						CommonUtils.getInstance().dismissLoadingDialog();
 					});
