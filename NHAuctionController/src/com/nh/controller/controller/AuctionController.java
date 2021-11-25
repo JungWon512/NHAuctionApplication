@@ -1847,18 +1847,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 
 			if (!isPause) {
-
+				isPause = true;
 				mBtnReStart.setDisable(false);
 				mBtnPause.setDisable(true);
 
 				// 자동경매 카운트다운중인경우 스케줄러 멈춤.
 				if (SettingApplication.getInstance().isUseSoundAuction()) {
-
 					stopAutoAuctionScheduler();
 					mBtnSpace.setUserData("");
 				}
 
-				isPause = true;
 				onPause();
 			}
 		}
@@ -1904,7 +1902,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mBtnReStart.setDisable(true);
 			mBtnPause.setDisable(false);
 			isPause = false;
-
 			mLogger.debug("isStartSoundPlaying : " + isStartSoundPlaying);
 			// 출품정보 읽는 도중 정지눌렀다가 다시 시작 하는경우. 다시 읽음
 			if (isStartSoundPlaying) {
@@ -1918,64 +1915,51 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 						// 가격 체크
 						if (!checkOverPrice(mBiddingUserInfoDataList.get(0))) {
+							
 							if (mBiddingUserInfoDataList.get(0).getAuctionJoinNum() != null && CommonUtils.getInstance().isValidString(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue())) {
 								playOverPriceSound(mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue());
 							} else {
 								
-								if (!mCountDownLabel.isVisible()) {
-									if(!isPause) {
-										startAutoAuctionScheduler(mRemainingTimeCount);
-									}
-								}else {
-									SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
-										@Override
-										public void playbackFinished(PlaybackEvent evt) {
-											if(!isPause) {
-												onStopAuction(mRemainingTimeCount);
-											}
-											isRestart = false;
-										}
-									});
-								}
+								stopAuctionFromReStart();
 							}
+							
 						} else {
 							
 							
-							if (!mCountDownLabel.isVisible()) {
-								startAutoAuctionScheduler(mRemainingTimeCount);
-							}else {
-								SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
-									@Override
-									public void playbackFinished(PlaybackEvent evt) {
-										if(!isPause) {
-											onStopAuction(mRemainingTimeCount);
-										}
+							if(isReAuction) {
+								
+								mLogger.debug("[재시작 재경매 상태] : " + isReAuction);
+								
+								if(!CommonUtils.getInstance().isListEmpty(mBiddingUserInfoDataList)){
+									
+									if(mBiddingUserInfoDataList.size() > 1) {
 										
-										isRestart = false;
+										SpBidding rank_1 = mBiddingUserInfoDataList.get(0);
+										SpBidding rank_2 = mBiddingUserInfoDataList.get(1);
+										
+										mLogger.debug("[재시작 1,2순위 금액 확인] : 1순위자: " + rank_1.getPriceInt() + " / 2순위자: " + rank_2.getPriceInt());
+										
+										// 1순위와 같은 가격 목록
+										if (rank_1.getPriceInt() != rank_2.getPriceInt()) {
+											
+											stopAuctionFromReStart();
+											
+										}
 									}
-								});
+								}
+								
+								
+							}else {
+								
+								stopAuctionFromReStart();
+						
 							}
-					
 						
 						}
 					} else {
 						
-						
-						if (!mCountDownLabel.isVisible()) {
-							startAutoAuctionScheduler(mRemainingTimeCount);
-						}else {
-							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
-								@Override
-								public void playbackFinished(PlaybackEvent evt) {
-									if(!isPause) {
-										onStopAuction(mRemainingTimeCount);
-									}
-									isRestart = false;
-								}
-							});
-						}
-				
-					
+						stopAuctionFromReStart();
+							
 					}
 
 				} else {
@@ -1987,7 +1971,26 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					isRestart = false;
 				}
 			}
-
+		}
+	}
+	
+	
+	private void stopAuctionFromReStart() {
+		
+		if (!mCountDownLabel.isVisible()) {
+			if(!isPause) {
+		    	startAutoAuctionScheduler(mRemainingTimeCount);
+			}
+		}else {
+			SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
+				@Override
+				public void playbackFinished(PlaybackEvent evt) {
+					if(!isPause) {
+						onStopAuction(mRemainingTimeCount);
+					}
+					isRestart = false;
+				}
+			});
 		}
 	}
 
@@ -2486,6 +2489,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			public void playbackFinished(PlaybackEvent evt) {
 				super.playbackFinished(evt);
 				
+				
+				if(isPause) {
+					return;
+				}
+				
 				if(mBiddingUserInfoDataList != null && mBiddingUserInfoDataList.size() > 0 && mBiddingUserInfoDataList.get(0).getAuctionJoinNum() != null 
 						&& mBiddingUserInfoDataList.get(0).getAuctionJoinNum().getValue() != null ) {
 					
@@ -2539,6 +2547,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@Override
 	protected synchronized void soundAuctionTimerTask() {
 
+		mLogger.debug("[soundAuctionTimerTask 응찰자 맵 카운트] " + isCancel + " / "  + isPause  );
+		
 		if (isCancel) {
 			return;
 		}
