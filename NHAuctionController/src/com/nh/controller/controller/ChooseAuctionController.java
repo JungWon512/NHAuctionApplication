@@ -410,7 +410,7 @@ public class ChooseAuctionController implements Initializable {
 			public void initServer() {
 			}
 
-		}, null, null);
+		}, null, null, null);
 	}
 
 	

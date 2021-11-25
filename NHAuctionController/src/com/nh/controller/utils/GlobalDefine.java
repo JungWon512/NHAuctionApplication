@@ -48,7 +48,8 @@ public class GlobalDefine {
 		public static final char TIME_CODE = 'T'; // UDP 전광판 시간 전송
 		public static final char DATA_CODE = '1'; // UDP 전광판 데이터 전송
 		public static final String NOTE_CODE = "B42"; // UDP 전광판 비고(흐름타입) 전송
-		public static final char COUNTDOWN_CODE = 'N'; // UDP 통신 카운드다운
+		public static final char COUNTDOWN_CODE1 = 'N'; // UDP 통신 카운드다운
+		public static final char COUNTDOWN_CODE2 = 'M'; // UDP 통신 카운드다운
 	}
 
 	public static final class PDP {

@@ -247,7 +247,7 @@ public class MoveStageUtil {
 	/**
 	 * @Description 환경설정 Dialog
 	 */
-	public void openSettingDialog(Stage stage,boolean isDisplayBordConnection,SettingListener listener , UdpBillBoardStatusListener udpStatusListener, UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
+	public void openSettingDialog(Stage stage,boolean isDisplayBordConnection,SettingListener listener , UdpBillBoardStatusListener udpStatusListener1, UdpBillBoardStatusListener udpStatusListener2, UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
 
 		if(mDialog != null && mDialog.isShowing()) {
 			return;
@@ -261,7 +261,8 @@ public class MoveStageUtil {
 
 			SettingController controller = fxmlLoader.getController();
 
-			controller.setStage(stage,isDisplayBordConnection,listener,udpStatusListener,udpPdpBoardStatusListener);
+			controller.setStage(stage, isDisplayBordConnection, listener, udpStatusListener1, udpStatusListener2,
+					udpPdpBoardStatusListener);
 
 			openDialog(stage, parent,getResourceBundle().getString("app.title.setting.config"));
 			setStageDisable(stage);

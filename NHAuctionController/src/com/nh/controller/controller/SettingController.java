@@ -17,7 +17,8 @@ import com.nh.common.interfaces.UdpBillBoardStatusListener;
 import com.nh.common.interfaces.UdpPdpBoardStatusListener;
 import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.netty.AuctionDelegate;
-import com.nh.controller.netty.BillboardDelegate;
+import com.nh.controller.netty.BillboardDelegate1;
+import com.nh.controller.netty.BillboardDelegate2;
 import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
@@ -128,7 +129,8 @@ public class SettingController implements Initializable {
 	private String pdpToggleType = "BoardType";
 	private String auctionToggleType = "Single";
 	private SettingListener mSettingListener = null;
-	private UdpBillBoardStatusListener mUdpBillBoardStatusListener = null;
+	private UdpBillBoardStatusListener mUdpBillBoardStatusListener1 = null;
+	private UdpBillBoardStatusListener mUdpBillBoardStatusListener2 = null;
 	private UdpPdpBoardStatusListener mUdpPdpBoardStatusListener = null;
 	private boolean isDisplayBordConnection = false; //경매일선택 -> 전광판 접속 안함.
 
@@ -173,10 +175,11 @@ public class SettingController implements Initializable {
 	 *
 	 * @param stage
 	 */
-	public void setStage(Stage stage, boolean isDisplayBordConnection, SettingListener listener , UdpBillBoardStatusListener udpStatusListener,UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
+	public void setStage(Stage stage, boolean isDisplayBordConnection, SettingListener listener , UdpBillBoardStatusListener udpStatusListener1, UdpBillBoardStatusListener udpStatusListener2, UdpPdpBoardStatusListener udpPdpBoardStatusListener) {
 		this.mStage = stage;
 		this.mSettingListener = listener;
-		this.mUdpBillBoardStatusListener = udpStatusListener;
+		this.mUdpBillBoardStatusListener1 = udpStatusListener1;
+		this.mUdpBillBoardStatusListener2 = udpStatusListener2;
 		this.mUdpPdpBoardStatusListener = udpPdpBoardStatusListener;
 		this.isDisplayBordConnection = isDisplayBordConnection;
 
@@ -905,28 +908,28 @@ public class SettingController implements Initializable {
 			
 			if (this.isDisplayBordConnection) {
 
-					// UDP 전광판
+					// UDP 전광판1
 					if (SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, "") != null && !SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, "").isEmpty()) {
 	
-						if (BillboardDelegate.getInstance().isActive()) {
-							BillboardDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+						if (BillboardDelegate1.getInstance().isActive()) {
+							BillboardDelegate1.getInstance().onDisconnect(new NettyClientShutDownListener() {
 	
 								@Override
 								public void onShutDown(int port) {
-									BillboardDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""),mUdpBillBoardStatusListener);
+									BillboardDelegate1.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""),mUdpBillBoardStatusListener1);
 									
 									// 전광판 셋팅
-									BillboardDelegate.getInstance().initBillboard();
+									BillboardDelegate1.getInstance().initBillboard();
 								}
 							});
 						} else {
-							BillboardDelegate.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""),mUdpBillBoardStatusListener);
+							BillboardDelegate1.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""),mUdpBillBoardStatusListener1);
 							
 							// 전광판 셋팅
-							BillboardDelegate.getInstance().initBillboard();
+							BillboardDelegate1.getInstance().initBillboard();
 						}
 					} else {
-						BillboardDelegate.getInstance().onDisconnect(new NettyClientShutDownListener() {
+						BillboardDelegate1.getInstance().onDisconnect(new NettyClientShutDownListener() {
 							
 							@Override
 							public void onShutDown(int port) {
@@ -935,6 +938,36 @@ public class SettingController implements Initializable {
 						});
 					}
 	
+					// UDP 전광판2
+					if (SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT2, "") != null && !SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT2, "").isEmpty()) {
+	
+						if (BillboardDelegate2.getInstance().isActive()) {
+							BillboardDelegate2.getInstance().onDisconnect(new NettyClientShutDownListener() {
+	
+								@Override
+								public void onShutDown(int port) {
+									BillboardDelegate2.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT2, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT2, ""),mUdpBillBoardStatusListener2);
+									
+									// 전광판 셋팅
+									BillboardDelegate2.getInstance().initBillboard();
+								}
+							});
+						} else {
+							BillboardDelegate2.getInstance().createClients(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT2, ""), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT2, ""),mUdpBillBoardStatusListener2);
+							
+							// 전광판 셋팅
+							BillboardDelegate2.getInstance().initBillboard();
+						}
+					} else {
+						BillboardDelegate2.getInstance().onDisconnect(new NettyClientShutDownListener() {
+							
+							@Override
+							public void onShutDown(int port) {
+								mLogger.debug("Billboard UDP Disconnect");
+							}
+						});
+					}
+					
 					// UDP PDP
 					if (SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, "") != null && !SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, "").isEmpty()) {
 	

@@ -36,7 +36,7 @@ import com.nh.controller.model.SpBidderConnectInfo;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.netty.AuctionDelegate;
-import com.nh.controller.netty.BillboardDelegate;
+import com.nh.controller.netty.BillboardDelegate1;
 import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.ApiUtils;
@@ -257,7 +257,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// 경매 데이터 set
 				requestAuctionInfo();
 				// 전광판
-				createUdpClient(mUdpBillBoardStatusListener, mUdpPdpBoardStatusListener);
+				createUdpClient(mUdpBillBoardStatusListener1, mUdpBillBoardStatusListener2, mUdpPdpBoardStatusListener);
 			}
 		};
 		thread.setDaemon(true);
@@ -1344,7 +1344,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				onServerAndClose();
 			}
 
-		}, mUdpBillBoardStatusListener, mUdpPdpBoardStatusListener);
+		}, mUdpBillBoardStatusListener1, mUdpBillBoardStatusListener2, mUdpPdpBoardStatusListener);
 	}
 
 	/**
@@ -1427,7 +1427,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			saveAuctionResult(false, mCurrentSpEntryInfo, null, GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
 			mBiddingInfoTableView.setDisable(false);
 			// 전광판 전달.
-			BillboardDelegate.getInstance().completeBillboard();
+			BillboardDelegate1.getInstance().completeBillboard();
 			PdpDelegate.getInstance().completePdp();
 
 		} else {
@@ -2621,7 +2621,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			setCountDownLabelState(mRemainingTimeCount, false);
 
 			// 전광판 카운트다운 전송
-			BillboardDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
+			BillboardDelegate1.getInstance().onCountDown(auctionCountDown.getCountDownTime());
 
 			// PDP 카운트다운 전송
 			PdpDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
@@ -4395,9 +4395,30 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	}
 
 	/**
-	 * 전광판 종합안내 상태 리스너
+	 * 전광판1 종합안내 상태 리스너
 	 */
-	private UdpBillBoardStatusListener mUdpBillBoardStatusListener = new UdpBillBoardStatusListener() {
+	private UdpBillBoardStatusListener mUdpBillBoardStatusListener1 = new UdpBillBoardStatusListener() {
+
+		@Override
+		public void onActive() {
+			setDisplayBilboard(true);
+		}
+
+		@Override
+		public void onInActive() {
+			setDisplayBilboard(false);
+		}
+
+		@Override
+		public void exceptionCaught() {
+			setDisplayBilboard(false);
+		}
+	};
+	
+	/**
+	 * 전광판2 종합안내 상태 리스너
+	 */
+	private UdpBillBoardStatusListener mUdpBillBoardStatusListener2 = new UdpBillBoardStatusListener() {
 
 		@Override
 		public void onActive() {

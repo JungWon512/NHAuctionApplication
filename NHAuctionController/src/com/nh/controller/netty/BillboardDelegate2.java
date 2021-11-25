@@ -13,17 +13,17 @@ import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.interfaces.NettySendable;
 
-public class BillboardDelegate {
+public class BillboardDelegate2 {
 
     private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private static BillboardDelegate instance = null;
+    private static BillboardDelegate2 instance = null;
 
     private BillboardShareNettyClient mClient; // 네티 접속 객체
 
-    public static synchronized BillboardDelegate getInstance() {
+    public static synchronized BillboardDelegate2 getInstance() {
         if (instance == null) {
-            instance = new BillboardDelegate();
+            instance = new BillboardDelegate2();
         }
         return instance;
     }
@@ -36,6 +36,7 @@ public class BillboardDelegate {
      */
     public void createClients(String host_, String port_, UdpBillBoardStatusListener udpBillBoardStatusListener_) {
         this.mClient = new BillboardShareNettyClient.Builder(host_, port_,udpBillBoardStatusListener_).buildAndRun();
+        clearBillboardNote();
     }
 
     /**
@@ -126,7 +127,8 @@ public class BillboardDelegate {
     	if(!isEmptyClient() && isActive()) {
         mLogger.debug("onCountDown " + number);
         String num = (number.equals("0")) ? " " : number;
-        sendMessage(String.format("%c%c%s%c", GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.COUNTDOWN_CODE, num, GlobalDefine.BILLBOARD.ETX));
+        sendMessage(String.format("%c%c%s%c", GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.COUNTDOWN_CODE1, num, GlobalDefine.BILLBOARD.ETX));
+        sendMessage(String.format("%c%c%s%c", GlobalDefine.BILLBOARD.STX, GlobalDefine.BILLBOARD.COUNTDOWN_CODE2, num, GlobalDefine.BILLBOARD.ETX));
     	}
     }
 
@@ -168,6 +170,13 @@ public class BillboardDelegate {
     public void clearBillboardNote() {
         String blanks = " ".repeat(100); // 공백 100 자리
         sendMessage(GlobalDefine.BILLBOARD.STX + GlobalDefine.BILLBOARD.NOTE_CODE + blanks + GlobalDefine.BILLBOARD.ETX);
+    }
+    
+    /**
+     * @Description 전광판 비고 전송
+     */
+    public void sendBillboardNote(String noteText) {
+        sendMessage(GlobalDefine.BILLBOARD.STX + GlobalDefine.BILLBOARD.NOTE_CODE + noteText + GlobalDefine.BILLBOARD.ETX);
     }
 
     /**
