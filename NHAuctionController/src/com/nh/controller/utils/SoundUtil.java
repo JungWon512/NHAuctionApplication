@@ -13,8 +13,10 @@ import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,7 @@ import com.nh.controller.model.SettingSound;
 
 import javazoom.jl.player.Player;
 import javazoom.jl.player.advanced.AdvancedPlayer;
+import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 
 /**
@@ -516,14 +519,14 @@ public class SoundUtil {
             }
         }
 
-        public void play(String text, PlaybackListener listener) {
+        public void play(String text, final PlaybackListener listener) {
             try {
                 mLogger.debug("TTS Play Message " + text + " Thread " + Thread.currentThread());
                 mMessage = text;
                 mPlayBackListener = listener;
                 mThreadService.submit(this);
             } catch (Exception ex) {
-                ex.printStackTrace();
+            	mLogger.debug("TTS Play Message Exception : " + ex);
             }
         }
 
@@ -546,7 +549,10 @@ public class SoundUtil {
                     }
                 }
             } catch (Exception ex) {
-                mLogger.error("RunException " + ex);
+                mLogger.error("Exception Tts  " + ex);
+                if(mPlayBackListener != null){
+                	mPlayBackListener.playbackFinished(null);
+                }
             }
         }
 

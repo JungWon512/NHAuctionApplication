@@ -191,10 +191,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private Button mHeaderBtnRefresh, mHeaderBtnStart, mHeaderBtnPause, mHeaderBtnFinish;
 
 	@FXML // 하단 버튼
-	private Button mBtnEsc, mBtnF4, mBtnF5, mBtnF8, mBtnStart, mBtnPause, mBtnFinish, mBtnMessage, mBtnSendPending, mBtnQcnFinish;
-
-	@FXML // 새로고침
-	private Button mBtnRefresh;
+	private Button mBtnEsc, mBtnF1, mBtnF2,mBtnF5, mBtnF8, mBtnStart, mBtnPause, mBtnFinish, mBtnMessage, mBtnSendPending, mBtnQcnFinish;
 
 	@FXML // 하단 메세지 전송 상위 뷰
 	private StackPane mSTPMessage;
@@ -379,8 +376,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		initTableConfiguration();
 
 		mBtnEsc.setOnMouseClicked(event -> onCloseApplication());
-		mBtnF4.setOnMouseClicked(event -> openEntryListPopUp());
-		mBtnF5.setOnMouseClicked(event -> openEntryPendingListPopUp());
+		mBtnF1.setOnMouseClicked(event -> openEntryListPopUp());
+		mBtnF2.setOnMouseClicked(event -> openEntryPendingListPopUp());
 		mBtnF8.setOnMouseClicked(event -> openSettingDialog());
 		mBtnStart.setOnMouseClicked(event -> onRefreshStartAuction());
 		mBtnPause.setOnMouseClicked(event -> onPause());
@@ -404,7 +401,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
 
-		mBtnRefresh.setOnMouseClicked(event -> {
+		mBtnF5.setOnMouseClicked(event -> {
 			Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
 			onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
 		});
@@ -1838,8 +1835,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		switch (state) {
 		case GlobalDefineCode.AUCTION_STATUS_READY:
 
-			mBtnF4.setDisable(false);
-			mBtnF5.setDisable(false);
+			mBtnF1.setDisable(false);
+			mBtnF2.setDisable(false);
 			mBtnF8.setDisable(false);
 
 			// 경매시작
@@ -1855,8 +1852,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 			
-			mBtnF4.setDisable(true);
-			mBtnF5.setDisable(true);
+			mBtnF1.setDisable(true);
+			mBtnF2.setDisable(true);
 			mBtnF8.setDisable(true);
 			
 			//1.경매 서버는 진행상태.
@@ -1904,8 +1901,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		case GlobalDefineCode.AUCTION_STATUS_PASS:
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 			
-			mBtnF4.setDisable(false);
-			mBtnF5.setDisable(false);
+			mBtnF1.setDisable(false);
+			mBtnF2.setDisable(false);
 			mBtnF8.setDisable(false);
 			
 			//1.경매 서버는 종료상태.
@@ -2624,12 +2621,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						ke.consume();
 					}
 
-					// 출품정보 전송
-					if (ke.getCode() == KeyCode.F1) {
-						onSendEntryData();
-						ke.consume();
-					}
-
 					// 키패드 up down 막음.
 					if (ke.getCode() == KeyCode.UP || ke.getCode() == KeyCode.DOWN) {
 						ke.consume();
@@ -2641,7 +2632,14 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						onRefreshStartAuction();
 						ke.consume();
 					}
-
+					
+					// 새로고침
+					if (ke.getCode() == KeyCode.F5) {
+						Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
+						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
+						ke.consume();
+					}
+					
 					switch (mAuctionStatus.getState()) {
 					case GlobalDefineCode.AUCTION_STATUS_START:
 					case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -2651,12 +2649,12 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					default:
 
 						// 전체보기
-						if (ke.getCode() == KeyCode.F4) {
+						if (ke.getCode() == KeyCode.F1) {
 							openEntryListPopUp();
 							ke.consume();
 						}
 						// 보류보기
-						if (ke.getCode() == KeyCode.F5) {
+						if (ke.getCode() == KeyCode.F2) {
 							openEntryPendingListPopUp();
 							ke.consume();
 						}

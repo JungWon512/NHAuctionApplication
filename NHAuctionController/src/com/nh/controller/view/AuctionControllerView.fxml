@@ -47,8 +47,11 @@
                            <font>
                               <Font name="Noto Sans CJK KR Regular" size="16.0" />
                            </font>
+                           <padding>
+                              <Insets right="4.0" />
+                           </padding>
                         </Label>
-                        <Label fx:id="mDeprePriceLabel" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="10000000" HBox.hgrow="ALWAYS">
+                        <Label fx:id="mDeprePriceLabel" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" HBox.hgrow="ALWAYS">
                            <graphic>
                               <Label contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="|" textFill="#cccccc">
                                  <graphic>
@@ -691,10 +694,10 @@
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.hgrow="ALWAYS">
                <children>
                   <Button fx:id="mBtnEsc" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[ESC]종료" />
-                  <Button fx:id="mBtnRefresh" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="새로고침" />
+                  <Button fx:id="mBtnF1" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F1]전체보기" />
+                  <Button fx:id="mBtnF2" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F2]보류보기" />
                   <Button fx:id="mBtnF3" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F3]보류" />
-                  <Button fx:id="mBtnF4" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F4]전체보기" />
-                  <Button fx:id="mBtnF5" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F5]보류보기" />
+                  <Button fx:id="mBtnF5" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F5]새로고침" />
                   <Button fx:id="mBtnF6" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="150.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F6]강제낙찰/유찰">
                      <HBox.margin>
                         <Insets />

@@ -745,22 +745,24 @@ public abstract class BaseAuctionController implements NettyControllable {
 				return;
 			}
 			
+			soundAuctionTimerTask();
+			
 			//재경매 상황 아님
-			if(!isReAuction) {
-				
-				mLogger.debug("[mCalculationRankCallBack 재경매 상황 아님");
-				
-				soundAuctionTimerTask();
-				
-			}else {
-				
-				//재경매 상황
-				mLogger.debug("[mCalculationRankCallBack 재경매 상황");
-				
-				if(!isPlayReAuctionSound) {
-					soundAuctionTimerTask();
-				}
-			}
+//			if(!isReAuction) {
+//				
+//				mLogger.debug("[mCalculationRankCallBack 재경매 상황 아님");
+//				
+//				soundAuctionTimerTask();
+//				
+//			}else {
+//				
+//				//재경매 상황
+//				mLogger.debug("[mCalculationRankCallBack 재경매 상황");
+//				
+//				if(!isPlayReAuctionSound) {
+//					soundAuctionTimerTask();
+//				}
+//			}
 			
 
 			// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.
