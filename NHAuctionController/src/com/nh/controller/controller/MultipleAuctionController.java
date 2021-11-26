@@ -2643,8 +2643,22 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 					// 경매 시작
 					if (ke.getCode() == KeyCode.ENTER) {
-						System.out.println("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
 						onRefreshStartAuction();
+						ke.consume();
+					}
+					// 경매정지
+					if (ke.getCode() == KeyCode.F9) {
+						onPause();
+						ke.consume();
+					}
+					// 경매종료
+					if (ke.getCode() == KeyCode.F10) {
+						onFinish();
+						ke.consume();
+					}
+					// 유찰대상목록표시
+					if (ke.getCode() == KeyCode.F12) {
+						onSendPendingList();
 						ke.consume();
 					}
 					

@@ -477,11 +477,11 @@ public class EntryListController implements Initializable {
 	 */
 	private void onClose() {
 	
-		if(mCurPageType.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
-			onCallBack();
-		}else {
+//		if(mCurPageType.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
+//			onCallBack();
+//		}else {
 			mSelectEntryListener.callBack(mCurPageType, -1, null);
-		}
+//		}
 	}
 
 	private void setAlignCenterCol(TableColumn<SpEntryInfo, String> col) {

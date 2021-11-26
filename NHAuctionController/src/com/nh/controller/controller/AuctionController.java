@@ -3990,7 +3990,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		if (SettingApplication.getInstance().isUseSoundAuction()) {
 			if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
-				onCancelOrClose();
+				//
+//				onCancelOrClose();
 			} else {
 				isPlusKeyStartAuction = false;
 				onStartSoundAuction();
