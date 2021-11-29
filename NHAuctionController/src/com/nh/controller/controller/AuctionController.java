@@ -2180,7 +2180,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 						if (!isUp) {
 							long soundPrice = price * -1;
-							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.change.low.price"), soundPrice), null);
+							
+							String wonMsg = "";
+							
+							if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+								wonMsg = mResMsg.getString("str.sound.change.low.price");
+							}else {
+								wonMsg = mResMsg.getString("str.sound.change.low.price.10000");
+							}
+							
+							SoundUtil.getInstance().playSound(String.format(wonMsg, soundPrice), null);
 						}
 						
 						mWaitTableView.refresh();
