@@ -454,6 +454,9 @@ public class SettingApplication {
 		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:
 			lowerLimitPrice = getLowerLimitBreedingCattle();
 			break;
+			default:
+			lowerLimitPrice = 100;
+			break;
 		}
 		return lowerLimitPrice;
 	}
