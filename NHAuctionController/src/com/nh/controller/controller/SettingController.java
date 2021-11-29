@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import com.nh.controller.netty.BillboardDelegate2;
 import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
+import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.controller.utils.SoundUtil;
@@ -37,12 +39,15 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 
 /**
  * 제어 메인 F8 -> 환경설정
@@ -208,6 +213,9 @@ public class SettingController implements Initializable {
 	}
 
 	private void initUI() {
+		
+		setNumberFmt();
+		
 		setMobileCheckBoxLists();
 		getAnnounceNoteCheckboxPreference();
 		getReAuctionCheckboxPreference();
@@ -220,6 +228,32 @@ public class SettingController implements Initializable {
 		addTextFieldListener();
 		mBtnSave.setOnMouseClicked(event -> saveSettings());
 		mBtnInitServer.setOnMouseClicked(event -> initServer());
+	}
+	
+	private void setNumberFmt() {
+		
+
+		UnaryOperator<Change> integerFilter = change -> {
+		    String newText = change.getControlNewText();
+		    if (newText.matches("-?([1-9][0-9]*)?")) { 
+		        return change;
+		    }
+		    return null;
+		};
+		
+		
+		mReAuctionCountTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		mCountTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		mSoundAuctionWaitTime.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		mUpperLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		mUpperLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		mUpperLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		mLowerLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		mLowerLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		mLowerLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		mLowerLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		
+		
 	}
 
 	private void initKeyConfig() {
@@ -350,6 +384,7 @@ public class SettingController implements Initializable {
 	 * @author dhKim
 	 */
 	private void getTextFields() {
+		
 		// 전광판 설정 IP, PORT
 		mIpBoardTextField1.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT1, ""));
 		mPortBoardTextField1.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""));
@@ -698,6 +733,7 @@ public class SettingController implements Initializable {
 	 * valid listener
 	 */
 	private void addTextFieldListener() {
+	
 		
 		mReAuctionCountTextField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -816,6 +852,7 @@ public class SettingController implements Initializable {
 			}
 		});
 	
+		
 		mLowerLimitCalfTextField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
@@ -904,7 +941,10 @@ public class SettingController implements Initializable {
 	
 			
 			// 서버에 edit setting 전송
-			mLogger.debug(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(SettingApplication.getInstance().getSettingInfo()));
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData != null && GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc() != null) {
+				mLogger.debug(mResMsg.getString("msg.auction.send.setting.info") + AuctionDelegate.getInstance().onSendSettingInfo(SettingApplication.getInstance().getSettingInfo()));
+			}
+	
 			
 			if (this.isDisplayBordConnection) {
 

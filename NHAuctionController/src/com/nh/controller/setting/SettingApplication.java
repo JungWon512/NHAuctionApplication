@@ -83,16 +83,16 @@ public class SettingApplication {
 	public final String DEFAULT_PDP_DNA = "1";
 
 	// 응찰 상한가 기본값
-	public final String DEFAULT_SETTING_UPPER_CFB_MAX = "99999999";
-	public final String DEFAULT_SETTING_UPPER_CALF_TEXT = "1500000";
-	public final String DEFAULT_SETTING_UPPER_FATTENING_TEXT = "5000";
-	public final String DEFAULT_SETTING_UPPER_BREEDING_TEXT = "2500000";
+	public final String DEFAULT_SETTING_UPPER_CFB_MAX = "99999";
+	public final String DEFAULT_SETTING_UPPER_CALF_TEXT = "100";
+	public final String DEFAULT_SETTING_UPPER_FATTENING_TEXT = "100";
+	public final String DEFAULT_SETTING_UPPER_BREEDING_TEXT = "100";
 
 	// 하한가 낮추기 기본값
-	public final String DEFAULT_SETTING_LOWER_CALF_TEXT_MAX = "10000000";
-	public final String DEFAULT_SETTING_LOWER_CALF_TEXT = "100000";
-	public final String DEFAULT_SETTING_LOWER_FATTENING_TEXT = "200";
-	public final String DEFAULT_SETTING_LOWER_BREEDING_TEXT = "100000";
+	public final String DEFAULT_SETTING_LOWER_CALF_TEXT_MAX = "99999";
+	public final String DEFAULT_SETTING_LOWER_CALF_TEXT = "100";
+	public final String DEFAULT_SETTING_LOWER_FATTENING_TEXT = "100";
+	public final String DEFAULT_SETTING_LOWER_BREEDING_TEXT = "100";
 
 	// 경매종료 멘트 설정 - 멘트 사용 기본값
 	public final boolean DEFAULT_SETTING_ANNOUNCEMENT = true;
@@ -607,14 +607,30 @@ public class SettingApplication {
 	 * true 원단위 , false 만원단위
 	 * @return
 	 */
-	public boolean isWon() {
+	public boolean isWon(String aucObjDsc) {
 		
-		if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice() <= 1) {
-			return true;
-		}else {
-			return false;
+		boolean isWon = true;
+		
+		if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() > 1) {
+				isWon =  false;
+			}
+			
+		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() > 1) {
+				isWon =  false;
+			}
+			
+		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() > 1) {
+				isWon =  false;
+			}	
 		}
 		
+		return isWon;
 	}
 	
 	

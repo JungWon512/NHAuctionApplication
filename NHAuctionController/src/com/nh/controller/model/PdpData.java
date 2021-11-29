@@ -337,7 +337,7 @@ public class PdpData implements NettySendable {
             return "";
         }
         int price = Integer.parseInt(str);
-        int resultPrice = price / GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice();
+        int resultPrice = price;  // / GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice();
         return String.valueOf(resultPrice);
     }
 

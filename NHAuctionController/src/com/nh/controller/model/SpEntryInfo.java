@@ -327,19 +327,6 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
         return returnValue(mLowPrice);
     }
     
-    public StringProperty getOriLowPrice() {
-    	
-    	String val = returnValue(mLowPrice).getValue();
-    	
-    	if(CommonUtils.getInstance().isValidString(val)) {
-    		
-    		long reVal = Long.parseLong(val) * GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice();
-    		return new SimpleStringProperty(Long.toString(reVal));
-    	}else {
-            return new SimpleStringProperty("");
-    	}
-    	
-    }
 
     public void setMaMonth(StringProperty maMonth) {
         this.mMaMonth = maMonth;

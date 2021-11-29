@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
 import com.nh.common.interfaces.UdpBillBoardStatusListener;
@@ -65,7 +64,6 @@ import com.nh.share.api.request.body.RequestBidLogBody;
 import com.nh.share.api.request.body.RequestBidNumBody;
 import com.nh.share.api.request.body.RequestCowInfoBody;
 import com.nh.share.api.request.body.RequestMultipleAuctionStatusBody;
-import com.nh.share.api.request.body.RequestUpdateLowsBidAmtBody;
 import com.nh.share.api.response.BaseResponse;
 import com.nh.share.api.response.ResponseBidEntry;
 import com.nh.share.api.response.ResponseCowInfo;
@@ -805,130 +803,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			mAuctionInfoGubunLabel.setText(AuctionUtil.AucObjDsc.which(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc())));
 		});
 	}
-
-	/**
-	 * 예정가 높이기
-	 *
-	 * @param event
-	 */
-	public void onUpPrice(MouseEvent event) {
-		System.out.println("예정가 높이기");
-		long upPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
-		setLowPrice(upPrice, true);
-	}
-
-	/**
-	 * 예정가 낮추기
-	 *
-	 * @param event
-	 */
-	public void onDownPrice(MouseEvent event) {
-		System.out.println("예정가 낮추기");
-		long lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()) * -1;
-		setLowPrice(lowPrice, false);
-	}
-
-	/**
-	 * 예정가 Set
-	 *
-	 * @param price
-	 */
-	private void setLowPrice(long price, boolean isUp) {
-
-		Platform.runLater(() -> {
-			// 현재 선택된 row
-			SpEntryInfo spEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
-
-			String targetEntryNum = spEntryInfo.getEntryNum().getValue();
-			String targetAuctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
-			String targetEntryType = spEntryInfo.getEntryType().getValue();
-			String targetAucDt = spEntryInfo.getAucDt().getValue();
-			long targetPrice = spEntryInfo.getLowPriceInt() * GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice();
-			String oslpNo = spEntryInfo.getOslpNo().getValue();
-			String ledSqNo = spEntryInfo.getLedSqno().getValue();
-			int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
-
-			if (isUp) {
-				lowPriceCnt -= 1;
-			} else {
-				lowPriceCnt += 1;
-			}
-
-			String updatePrice = Long.toString(targetPrice + price);
-
-			EntryInfo entryInfo = new EntryInfo();
-			entryInfo.setEntryNum(targetEntryNum);
-			entryInfo.setAuctionHouseCode(targetAuctionHouseCode);
-			entryInfo.setEntryType(targetEntryType);
-			entryInfo.setAucDt(targetAucDt);
-			entryInfo.setLowPrice(Integer.parseInt(updatePrice));
-			entryInfo.setOslpNo(oslpNo);
-			entryInfo.setLedSqno(ledSqNo);
-			entryInfo.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
-			entryInfo.setLwprChgNt(lowPriceCnt);
-
-			if (updatePrice == null || updatePrice.isEmpty() || Integer.parseInt(updatePrice) < 0) {
-				// 가격정보 null, 0보다 작으면 리턴
-				mLogger.debug("하한가 낮추기 => 0원 미만은 낮출 수 없습니다.");
-				return;
-			}
-
-			if (updatePrice == null || updatePrice.isEmpty() || Integer.parseInt(updatePrice) > Integer.parseInt(SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX)) {
-				// 가격정보 null, 0보다 작으면 리턴
-				mLogger.debug("하한가 높이기 => 99999999원 이상 높일 수 없습니다.");
-				return;
-			}
-
-			ArrayList<EntryInfo> entryInfoList = new ArrayList<>();
-			entryInfoList.add(entryInfo);
-
-			Gson gson = new Gson();
-			String jsonPlace = gson.toJson(entryInfoList);
-
-			RequestUpdateLowsBidAmtBody body = new RequestUpdateLowsBidAmtBody(jsonPlace);
-
-			ApiUtils.getInstance().requestUpdateLowsBidAmt(body, new ActionResultListener<ResponseNumber>() {
-
-				@Override
-				public void onResponseResult(ResponseNumber result) {
-
-					if (result != null && result.getSuccess() && result.getData() > 0) {
-
-						mLogger.debug("[최저가 수정 Success]");
-
-						String divisPrice = Long.toString(Long.parseLong(updatePrice) / GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice());
-						spEntryInfo.setLowPrice(new SimpleStringProperty(divisPrice));
-						spEntryInfo.setLwprChgNt(new SimpleStringProperty(Integer.toString(entryInfo.getLwprChgNt())));
-						setCurrentEntryInfo();
-
-						String tmpIsLastEntry = spEntryInfo.getIsLastEntry().getValue();
-
-						spEntryInfo.getIsLastEntry().setValue(GlobalDefine.ETC_INFO.AUCTION_DATA_MODIFY_M);
-
-						mLogger.debug("[가격 변경 정보 보냄]=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
-
-						spEntryInfo.getIsLastEntry().setValue(tmpIsLastEntry);
-
-//						if (!isUp) {
-//							long soundPrice = price * -1;
-//							SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.change.low.price"), soundPrice), null);
-//						}
-
-					} else {
-						mLogger.debug("[최저가 수정 Fail]");
-						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.fail")));
-					}
-				}
-
-				@Override
-				public void onResponseError(String message) {
-					mLogger.debug("[최저가 수정 Fail]");
-					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.fail")));
-				}
-			});
-		});
-	}
-
+	
 	/**
 	 * 경매 출품 데이터
 	 */
@@ -1792,12 +1667,12 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				mLogger.debug(String.format(mResMsg.getString("msg.auction.status.start"), mAuctionStatus.getEntryNum()));
 
 				// 시작 로그 저장
-				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
-					AucEntrData aucEntrData = getCurrentBaseEntrData(true);
-					aucEntrData.setRgSqno(GlobalDefine.AUCTION_INFO.LOG_AUCTION_START);
-					aucEntrData.setRmkCntn(mResMsg.getString("str.auction.start"));
-					requestInsertBiddingHistory(aucEntrData, GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_START);
-				}
+//				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
+//					AucEntrData aucEntrData = getCurrentBaseEntrData(true);
+//					aucEntrData.setRgSqno(GlobalDefine.AUCTION_INFO.LOG_AUCTION_START);
+//					aucEntrData.setRmkCntn(mResMsg.getString("str.auction.start"));
+//					requestInsertBiddingHistory(aucEntrData, GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_START);
+//				}
 
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -1818,12 +1693,12 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 				shutDownExecutorService();
 
-				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
-					AucEntrData aucEntrData = getCurrentBaseEntrData(true);
-					aucEntrData.setRgSqno(GlobalDefine.AUCTION_INFO.LOG_AUCTION_FINISH);
-					aucEntrData.setRmkCntn(mResMsg.getString("str.auction.finish"));
-					requestInsertBiddingHistory(aucEntrData, GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_FINISH);
-				}
+//				if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
+//					AucEntrData aucEntrData = getCurrentBaseEntrData(true);
+//					aucEntrData.setRgSqno(GlobalDefine.AUCTION_INFO.LOG_AUCTION_FINISH);
+//					aucEntrData.setRmkCntn(mResMsg.getString("str.auction.finish"));
+//					requestInsertBiddingHistory(aucEntrData, GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_FINISH);
+//				}
 
 				break;
 			case GlobalDefineCode.AUCTION_STATUS_FINISH:
@@ -2148,20 +2023,17 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				AucEntrData aucEntrData = new AucEntrData();
 
 				aucEntrData.setNaBzplc(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
-				aucEntrData.setAucObjDsc(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 				aucEntrData.setAucDt(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt());
-//				aucEntrData.setOslpNo(mCurrentSpEntryInfo.getOslpNo().getValue());
-				aucEntrData.setAucPrgSq(bidding.getEntryNum());
-
-				String olspNo = "";
-
+		
 				for (SpEntryInfo spEntryInfo : mWaitEntryInfoDataList) {
 					if (spEntryInfo.getEntryNum().getValue().equals(bidding.getEntryNum())) {
-						olspNo = spEntryInfo.getOslpNo().getValue();
+						aucEntrData.setAucObjDsc(Integer.parseInt(spEntryInfo.getEntryType().getValue()));
+						aucEntrData.setOslpNo(spEntryInfo.getOslpNo().getValue());
 						break;
 					}
 				}
-				aucEntrData.setOslpNo(olspNo);
+		
+				aucEntrData.setAucPrgSq(bidding.getEntryNum());
 				aucEntrData.setTrmnAmnno(bidding.getUserNo());
 				aucEntrData.setLvstAucPtcMnNo(bidding.getAuctionJoinNum());
 				aucEntrData.setAtdrDtm(CommonUtils.getInstance().getCurrentTime_yyyyMMddHHmmssSSS(bidding.getBiddingTime()));
@@ -3178,6 +3050,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		});
 	}
 
+	/**
+	 * 응찰자 현황
+	 * @param spBiddingDataList
+	 */
 	private synchronized void updateBidderList(List<SpBidding> spBiddingDataList) {
 
 		Platform.runLater(() -> {

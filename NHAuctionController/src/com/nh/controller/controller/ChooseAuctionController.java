@@ -112,7 +112,7 @@ public class ChooseAuctionController implements Initializable {
 
 		setDefaultSetting();
 		
-		toggleAllCowDisable();
+//		toggleAllCowDisable();
 	}
 
 	private void setApplicationInfo() {
@@ -402,7 +402,7 @@ public class ChooseAuctionController implements Initializable {
 
 				dismissShowingDialog();
 				
-				toggleAllCowDisable();
+//				toggleAllCowDisable();
 
 			}
 

@@ -315,7 +315,7 @@
                                           </Label>
                                           <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" styleClass="bg-color-cccccc" text="완료" textFill="#111111" VBox.vgrow="ALWAYS">
                                              <font>
-                                                <Font name="Noto Sans CJK KR Bold" size="17.0" />
+                                                <Font name="Noto Sans CJK KR Regular" size="17.0" />
                                              </font>
                                           </Label>
                                        </children>
@@ -446,7 +446,7 @@
                            <children>
                               <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" styleClass="bg-color-cccccc" text="대기">
                                  <font>
-                                    <Font name="Noto Sans CJK KR Bold" size="18.0" />
+                                    <Font name="Noto Sans CJK KR Regular" size="18.0" />
                                  </font>
                               </Label>
                               <TableView fx:id="mWaitTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">

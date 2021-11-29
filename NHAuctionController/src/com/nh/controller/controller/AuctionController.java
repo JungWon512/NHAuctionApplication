@@ -584,8 +584,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mAuctionInfoDateLabel.setText(CommonUtils.getInstance().getCurrentTime_yyyyMMdd(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt()));
 			mAuctionInfoRoundLabel.setText(String.valueOf(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()));
 			mAuctionInfoGubunLabel.setText(AuctionUtil.AucObjDsc.which(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc())));
-			int BaselowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
-			setBaseDownPrice(Integer.toString(BaselowPrice));
 		});
 	}
 
@@ -1278,8 +1276,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			@Override
 			public void callBack(Boolean isRefresh) {
 				mLogger.debug("openSettingSoundDialog ");
-				int BaselowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
-				setBaseDownPrice(Integer.toString(BaselowPrice));
 			}
 		});
 	}
@@ -1320,7 +1316,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					}
 
 					// 최저가 낮추기 금액
-					int BaselowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+					int BaselowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue()));
 
 					setBaseDownPrice(Integer.toString(BaselowPrice));
 
@@ -2079,47 +2075,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	}
 
 	/**
-	 * 경매 수수료 기준 정보 조회
-	 */
-	private void reqeustFee() {
-
-		FeeData feeData = new FeeData();
-
-		feeData.setNaBzplc(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc());
-		feeData.setAucObjDsc(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()));
-		feeData.setAplDt(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt());
-		if (GlobalDefine.AUCTION_INFO.feeData != null && GlobalDefine.AUCTION_INFO.feeData.size() > 0) {
-			GlobalDefine.AUCTION_INFO.feeData.clear();
-		}
-
-		RequestFeeBody feeBody = new RequestFeeBody(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()), GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt());
-
-		ApiUtils.getInstance().requestSelectFeeInfo(feeBody, new ActionResultListener<ResponseFee>() {
-
-			@Override
-			public void onResponseResult(ResponseFee result) {
-
-				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
-					GlobalDefine.AUCTION_INFO.feeData = result.getData().stream().map(item -> new FeeData(item)).collect(Collectors.toList());
-					mLogger.debug("[수수료 기준 정보 조회 성공] " + GlobalDefine.AUCTION_INFO.feeData.size());
-				}
-			}
-
-			@Override
-			public void onResponseError(String message) {
-				mLogger.debug("[onResponseError] 수수료 기준 정보 조회 :  " + message);
-			}
-		});
-	}
-
-	/**
 	 * 예정가 높이기
 	 *
 	 * @param event
 	 */
 	public void onUpPrice(MouseEvent event) {
 		System.out.println("예정가 높이기");
-		long upPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		long upPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue()));
 		setLowPrice(upPrice, true);
 	}
 
@@ -2130,7 +2092,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	public void onDownPrice(MouseEvent event) {
 		System.out.println("예정가 낮추기");
-		long lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()) * -1;
+		long lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue())) * -1;
 		setLowPrice(lowPrice, false);
 	}
 
@@ -2149,7 +2111,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			String targetAuctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
 			String targetEntryType = spEntryInfo.getEntryType().getValue();
 			String targetAucDt = spEntryInfo.getAucDt().getValue();
-			long targetPrice = spEntryInfo.getLowPriceInt() * GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice();
+			long targetPrice = spEntryInfo.getLowPriceInt();
 			String oslpNo = spEntryInfo.getOslpNo().getValue();
 			String ledSqNo = spEntryInfo.getLedSqno().getValue();
 			int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
@@ -2181,7 +2143,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			if (updatePrice == null || updatePrice.isEmpty() || Integer.parseInt(updatePrice) > Integer.parseInt(SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX)) {
 				// 가격정보 null, 0보다 작으면 리턴
-				mLogger.debug("하한가 높이기 => 99999999원 이상 높일 수 없습니다.");
+				mLogger.debug("하한가 높이기 => 99999원 이상 높일 수 없습니다.");
 				return;
 			}
 
@@ -2189,9 +2151,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			entryInfoList.add(entryInfo);
 
 			Gson gson = new Gson();
-			String jsonPlace = gson.toJson(entryInfoList);
+			String jonData = gson.toJson(entryInfoList);
+			
+			mLogger.debug("[가격변경]=> " + jonData );
 
-			RequestUpdateLowsBidAmtBody body = new RequestUpdateLowsBidAmtBody(jsonPlace);
+			RequestUpdateLowsBidAmtBody body = new RequestUpdateLowsBidAmtBody(jonData);
 
 			ApiUtils.getInstance().requestUpdateLowsBidAmt(body, new ActionResultListener<ResponseNumber>() {
 
@@ -2202,8 +2166,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 						mLogger.debug("[최저가 수정 Success]");
 
-						String divisPrice = Long.toString(Long.parseLong(updatePrice) / GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice());
-						spEntryInfo.setLowPrice(new SimpleStringProperty(divisPrice));
+						spEntryInfo.setLowPrice(new SimpleStringProperty(updatePrice));
 						spEntryInfo.setLwprChgNt(new SimpleStringProperty(Integer.toString(entryInfo.getLwprChgNt())));
 						setCurrentEntryInfo(true);
 
@@ -3404,7 +3367,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			
 				String succMsg = "";
 				
-				if(SettingApplication.getInstance().isWon()) {
+				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
 					succMsg = mResMsg.getString("str.sound.auction.result.success.won");
 				}else {
 					succMsg = mResMsg.getString("str.sound.auction.result.success");
@@ -3623,7 +3586,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mCurWeightLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getWeight().getValue())));
 			mCurLowPriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getLowPrice().getValue())));
 			mCurSuccessPriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(mCurrentSpEntryInfo.getSraSbidUpPrice().getValue())));
-
+			//예정가 낮추기 금액
+			int BaselowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(currentEntryInfo.getEntryType().getValue()));
+			setBaseDownPrice(Integer.toString(BaselowPrice));
+			//비고 사용유무 show or hide
 			if (SettingApplication.getInstance().isNote()) {
 				mNoteVbox.setVisible(true);
 				mNoteTextArea.setText(mCurrentSpEntryInfo.getNote().getValue());
@@ -3635,7 +3601,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				setCurrentEntrySoundData();
 			}
 
-			Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+			CommonUtils.getInstance().dismissLoadingDialog();
 		});
 	}
 
@@ -3735,7 +3701,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				
 				String wonMsg = "";
 				
-				if(SettingApplication.getInstance().isWon()) {
+				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
 					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");
 				}else {
 					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.10000");

@@ -47,7 +47,7 @@ public class AuctionUtil {
 		FEMALE("1", "암송아지"),
 		MALE("2", "숫송아지"),
 		CAST("3", "거세우"),
-		VIR("4", "미경산"),
+		VIR("4", "미경산우"),
 		NONCAST("5", "비거세우"),
 		FREE("6", "프리마틴"),
 		COMMON("9", "공통");
@@ -75,7 +75,7 @@ public class AuctionUtil {
 		FEMALE("1", "암송아지"),
 		MALE("2", "숫송아지"),
 		CAST("3", "거세우"),
-		VIR("4", "미경산"),
+		VIR("4", "미경산우"),
 		NONCAST("5", "비거세우"),
 		FREE("6", "프리마틴"),
 		COMMON("9", "공통");
@@ -123,6 +123,7 @@ public class AuctionUtil {
     
     // 경매 대상 구분명
     public enum AucObjDsc {
+    	ALLOBJ("0", "일괄"),
    		CALF("1", "송아지"),
    		FATTENINGCATTLE("2", "비육우"),
    		BREEDINGCATTLE("3", "번식우");
