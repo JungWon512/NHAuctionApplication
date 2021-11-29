@@ -17,7 +17,9 @@ public class QcnData {
 	private String AUC_OBJ_DSC;
 	private String LS_CMENO;
 	private int FEMALE_KG;
-	private int DIVISION_PRICE;
+	private int DIVISION_PRICE1; //송아지
+	private int DIVISION_PRICE2; //비육우
+	private int DIVISION_PRICE3; //번식우
 	private String DEL_YN;
 	private int MALE_KG;
 	private String FSRGMN_ENO;
@@ -182,12 +184,30 @@ public class QcnData {
 		RG_SQNO = rG_SQNO;
 	}
 
-	public int getDIVISION_PRICE() {
-		return DIVISION_PRICE;
+	public int getDIVISION_PRICE1() {
+		return DIVISION_PRICE1;
 	}
 
-	public void setDIVISION_PRICE(int dIVISION_PRICE) {
-		DIVISION_PRICE = dIVISION_PRICE;
+	public void setDIVISION_PRICE1(int dIVISION_PRICE1) {
+		DIVISION_PRICE1 = dIVISION_PRICE1;
 	}
+
+	public int getDIVISION_PRICE2() {
+		return DIVISION_PRICE2;
+	}
+
+	public void setDIVISION_PRICE2(int dIVISION_PRICE2) {
+		DIVISION_PRICE2 = dIVISION_PRICE2;
+	}
+
+	public int getDIVISION_PRICE3() {
+		return DIVISION_PRICE3;
+	}
+
+	public void setDIVISION_PRICE3(int dIVISION_PRICE3) {
+		DIVISION_PRICE3 = dIVISION_PRICE3;
+	}
+	
+	
 
 }
