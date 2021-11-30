@@ -37,6 +37,7 @@ import com.nh.share.api.request.body.RequestQcnBody;
 import com.nh.share.api.request.body.RequestUpdateLowsBidAmtBody;
 import com.nh.share.api.response.BaseResponse;
 import com.nh.share.api.response.ResponseAuctionLogin;
+import com.nh.share.api.response.ResponseAuctionResult;
 import com.nh.share.api.response.ResponseBidEntry;
 import com.nh.share.api.response.ResponseCowInfo;
 import com.nh.share.api.response.ResponseFee;
@@ -82,8 +83,8 @@ public class ApiUtils {
 	 * @param body
 	 * @param listener_
 	 */
-	public void requestAuctionResult(String params, ActionResultListener<BaseResponse> listener_) {
-		ActionRuler.getInstance().addAction(new ActionRequestAuctionResult(params,GlobalDefine.ADMIN_INFO.adminData.getAccessToken() ,listener_));
+	public void requestAuctionResult(String params, ActionResultListener<ResponseAuctionResult> listener_) {
+		ActionRuler.getInstance().addAction(new ActionRequestAuctionResult(params,listener_));
 		ActionRuler.getInstance().runNext();
 	}
 	

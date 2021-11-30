@@ -2080,8 +2080,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param event
 	 */
 	public void onUpPrice(MouseEvent event) {
-		System.out.println("예정가 높이기");
+	
 		long upPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue()));
+		
+		System.out.println("예정가 높이기 : "  + upPrice + " / 구분코드 :  " + mCurrentSpEntryInfo.getEntryType().getValue());
+		
 		setLowPrice(upPrice, true);
 	}
 
@@ -2091,8 +2094,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param event
 	 */
 	public void onDownPrice(MouseEvent event) {
-		System.out.println("예정가 낮추기");
+
 		long lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue())) * -1;
+		
+		System.out.println("예정가 낮추기 : " + lowPrice + " / 구분코드 : " + mCurrentSpEntryInfo.getEntryType().getValue());
+		
 		setLowPrice(lowPrice, false);
 	}
 
@@ -3403,6 +3409,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 상단 경매 상태 라벨 낙/유찰 에 따라 표시
 			auctionStateLabelToggle(spEntryInfo.getAuctionResult().getValue());
 
+			mWaitTableView.refresh();
+			
 			AudioFilePlay.getInstance().setTargetPlay(this.getClass().getResource(AudioPlayTypes.which(AudioPlayTypes.FINISH)).toExternalForm(), new AudioPlayListener() {
 
 				@Override

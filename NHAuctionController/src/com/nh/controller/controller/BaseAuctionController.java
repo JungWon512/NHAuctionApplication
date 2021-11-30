@@ -48,6 +48,7 @@ import com.nh.share.api.request.body.RequestBidEntryBody;
 import com.nh.share.api.request.body.RequestBidLogBody;
 import com.nh.share.api.request.body.RequestBidNumBody;
 import com.nh.share.api.response.BaseResponse;
+import com.nh.share.api.response.ResponseAuctionResult;
 import com.nh.share.api.response.ResponseBidEntry;
 import com.nh.share.api.response.ResponseJoinNumber;
 import com.nh.share.api.response.ResponseNumber;
@@ -1026,25 +1027,36 @@ public abstract class BaseAuctionController implements NettyControllable {
 			mLogger.debug("[경매결과 param] : " + jsonResult.toString());
 			
 			// 경매 결과 API 전송
-			ApiUtils.getInstance().requestAuctionResult(jsonResult, new ActionResultListener<BaseResponse>() {
+			ApiUtils.getInstance().requestAuctionResult(jsonResult, new ActionResultListener<ResponseAuctionResult>() {
 				@Override
-				public void onResponseResult(BaseResponse result) {
-				
+				public void onResponseResult(ResponseAuctionResult result) {
+					
 					if (result != null && result.getSuccess()) {
 						
 						mLogger.debug("[경매 결과 저장 성공] 결과코드 : " + auctionResult.getResultCode() + " /낙찰가 : " + auctionResult.getSuccessBidUpr() + " /낙찰자 : " + auctionResult.getSuccessAuctionJoinNum());
 
-						// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
-						if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
-							auctionResult.setSuccessBidder("");
-							auctionResult.setSuccessAuctionJoinNum("");
+						
+						//Fail list 있으면 저장 실패
+						if(CommonUtils.getInstance().isListEmpty(result.getFailList())) {
+							
+							// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
+							if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+								auctionResult.setSuccessBidder("");
+								auctionResult.setSuccessAuctionJoinNum("");
+							}
+							
+							// 낙유찰 결과 전송
+							addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+							
+							// 낙유찰 결과 UI 업데이트
+							updateAuctionStateInfo(isSuccess, bidder);
+							
+						}else {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.auction.result.fail")));
+							mLogger.debug("[경매 결과 업데이트 실패. 취소처리]");
+							isResultCompleteFlag = false;
+							onCancelOrClose();
 						}
-						
-						// 낙유찰 결과 전송
-						addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
-						
-						// 낙유찰 결과 UI 업데이트
-						updateAuctionStateInfo(isSuccess, bidder);
 						
 						
 					} else {
