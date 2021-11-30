@@ -4,6 +4,7 @@ import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.ActionRuler;
 import com.nh.share.api.NetworkDefine;
 import com.nh.share.api.response.BaseResponse;
+import com.nh.share.api.response.ResponseAuctionResult;
 import com.nh.share.utils.CommonUtils;
 
 import okhttp3.Headers;
@@ -25,8 +26,7 @@ public class ActionRequestAuctionResult extends Action {
 	
 	private String body = null;
 	
-	public ActionRequestAuctionResult(String body, String token ,ActionResultListener<BaseResponse> resultListener) {
-		this.mAccessToken = token;
+	public ActionRequestAuctionResult(String body,ActionResultListener<ResponseAuctionResult> resultListener) {
 		this.body = body;
 		this.mResultListenerBase = resultListener;
 	}
@@ -35,18 +35,18 @@ public class ActionRequestAuctionResult extends Action {
 
 		@FormUrlEncoded
 		@POST(NetworkDefine.API_REQUEST_AUCTION_RESULT)
-		Call<BaseResponse> requestAuctionResult(
+		Call<ResponseAuctionResult> requestAuctionResult(
 				@Path("version") String apiVer,
 				@Field("list") String paramBody);
 	}
 
-	private final Callback<BaseResponse> mCallBack = new Callback<BaseResponse>() {
+	private final Callback<ResponseAuctionResult> mCallBack = new Callback<ResponseAuctionResult>() {
 		@Override
-		public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+		public void onResponse(Call<ResponseAuctionResult> call, Response<ResponseAuctionResult> response) {
 			actionDone(resultType.ACTION_RESULT_RUNNEXT);
 			Headers headers = response.headers();
 			String type = headers.get(CONTENT_TYPE);
-			BaseResponse body = response.body();
+			ResponseAuctionResult body = response.body();
 
 			switch (response.code()) {
 			case 200:
@@ -68,7 +68,7 @@ public class ActionRequestAuctionResult extends Action {
 		}
 
 		@Override
-		public void onFailure(Call<BaseResponse> call, Throwable t) {
+		public void onFailure(Call<ResponseAuctionResult> call, Throwable t) {
 			if (t.toString().contains("Exception") || t.toString().contains("JsonSyntaxException") || t.toString().contains("MalformedJsonException") || t.toString().contains("NoRouteToHostException") || t.toString().contains("SocketTimeoutException")) {
 				ActionRuler.getInstance().finish();
 				actionDone(resultType.ACTION_RESULT_ERROR_NOT_RESPONSE);
