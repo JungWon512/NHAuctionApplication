@@ -138,7 +138,12 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 							
 							// 출하안내시스템 접속 상태 전송
 							if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
-
+								if (mStandChannelsMap != null) {
+									if (mStandChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mStandChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {
+										mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()).setIsStandConnect(true);
+									}
+								}
+								
 								if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()).getIsStandConnect()) {
 									ctx.writeAndFlush(new StandConnectInfo(connectionInfo.getAuctionHouseCode(), GlobalDefineCode.CONNECT_SUCCESS).getEncodedMessage() + "\r\n");
 								} else {
@@ -340,7 +345,12 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 						
 						// 출하안내시스템 접속 상태 전송
 						if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
-
+							if (mStandChannelsMap != null) {
+								if (mStandChannelsMap.containsKey(connectionInfo.getAuctionHouseCode()) && mStandChannelsMap.get(connectionInfo.getAuctionHouseCode()).size() > 0) {
+									mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()).setIsStandConnect(true);
+								}
+							}
+							
 							if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()).getIsStandConnect()) {
 								ctx.writeAndFlush(new StandConnectInfo(connectionInfo.getAuctionHouseCode(), GlobalDefineCode.CONNECT_SUCCESS).getEncodedMessage() + "\r\n");
 							} else {
