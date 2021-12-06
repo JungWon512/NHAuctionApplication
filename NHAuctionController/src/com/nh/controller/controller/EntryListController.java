@@ -414,9 +414,9 @@ public class EntryListController implements Initializable {
 			
 		}
 		
-		int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText());
-		int cowLowerLimitPrice2 = Integer.parseInt(mDownPriceTextField2.getText());
-		int cowLowerLimitPrice3 = Integer.parseInt(mDownPriceTextField3.getText());
+		int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText()); //송아지
+		int cowLowerLimitPrice2 = Integer.parseInt(mDownPriceTextField2.getText()); //비육우
+		int cowLowerLimitPrice3 = Integer.parseInt(mDownPriceTextField3.getText()); //번식우
 		
 
 		List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
