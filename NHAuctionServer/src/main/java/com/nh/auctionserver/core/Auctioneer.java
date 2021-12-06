@@ -114,10 +114,10 @@ public class Auctioneer {
 			mAuctionStateMap = new HashMap<String, AuctionState>();
 		}
 		
-		mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
-//		if (!mAuctionStateMap.containsKey(auctionHouseCode)) {
-//			mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
-//		}
+//		mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
+		if (!mAuctionStateMap.containsKey(auctionHouseCode)) {
+			mAuctionStateMap.put(auctionHouseCode, new AuctionState(auctionHouseCode));
+		}
 
 		// 경매 응찰 정보 Reset
 		resetAuctionData(auctionHouseCode);
@@ -261,6 +261,8 @@ public class Auctioneer {
 		if (mAuctionServer != null) {
 			mAuctionServer.itemAdded(mAuctionStateMap.get(auctionHouseCode).getAuctionStatus().getEncodedMessage());
 		}
+		
+		requestInitAuction(auctionHouseCode);
 	}
 	
 	public synchronized void broadcastToastMessage(ToastMessageRequest requestToastMessage) {
