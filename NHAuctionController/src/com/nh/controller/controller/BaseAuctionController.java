@@ -115,7 +115,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected boolean isAuctionComplete = false; // 낙찰자 예정 여부
 
 	protected boolean isReAuction = false; // 재경매 여부
-
+	
+	protected boolean isReAuctionNewBidding = false; // 재경매 응찰 여부
+	
 	protected boolean isCountDownRunning = false; // 카운트다운 실행 여부
 	protected boolean isCountDownBtnPressed = false; // 카운트다운 버튼 눌림 여부
 
@@ -467,6 +469,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 								setBidding(bidding,true);
 
+								isReAuctionNewBidding = true;
+								
 								mLogger.debug("[onBidding] 재경매 응찰 저장 : " + bidding.getPriceInt());
 							} else {
 								addLogItem("재경매시 응찰 안 됨 " + bidding.getAuctionJoinNum());
@@ -761,24 +765,26 @@ public abstract class BaseAuctionController implements NettyControllable {
 				return;
 			}
 			
-			soundAuctionTimerTask();
+			
+//			soundAuctionTimerTask();
 			
 			//재경매 상황 아님
-//			if(!isReAuction) {
-//				
-//				mLogger.debug("[mCalculationRankCallBack 재경매 상황 아님");
-//				
-//				soundAuctionTimerTask();
-//				
-//			}else {
-//				
-//				//재경매 상황
-//				mLogger.debug("[mCalculationRankCallBack 재경매 상황");
-//				
-//				if(!isPlayReAuctionSound) {
-//					soundAuctionTimerTask();
-//				}
-//			}
+			//경매 정지 주석 해제 2021-12-06
+			if(!isReAuction) {
+				
+				mLogger.debug("[mCalculationRankCallBack 재경매 상황 아님]");
+				
+				soundAuctionTimerTask();
+				
+			}else {
+				
+				//재경매 상황
+				mLogger.debug("[mCalculationRankCallBack 재경매 상황]");
+				
+				if(!isPlayReAuctionSound) {
+					soundAuctionTimerTask();
+				}
+			}
 			
 
 			// 음성경매시 응찰 금액 들어오면 타이머 동작 변경.

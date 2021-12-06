@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRoot" prefHeight="860.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/entry_list.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.EntryListController">
+<BorderPane fx:id="mRoot" prefHeight="860.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/entry_list.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.EntryListController">
    <center>
       <AnchorPane BorderPane.alignment="CENTER">
          <children>
@@ -20,11 +20,23 @@
                <children>
                   <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="header-button">
                      <children>
-                        <Label fx:id="mDownPriceLabel" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="최저가 낮춤" textFill="#1a1a1a" visible="false">
+                        <Label fx:id="mDownPriceLabel" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="최저가 낮춤 - 송아지 :" textFill="#1a1a1a" visible="false">
                            <font>
                               <Font name="Noto Sans CJK KR Regular" size="21.0" />
                            </font></Label>
-                        <TextField fx:id="mDownPriceTextField" focusTraversable="false" maxHeight="40.0" maxWidth="120.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
+                        <TextField fx:id="mDownPriceTextField" focusTraversable="false" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
+                        <Label fx:id="mDownPriceLabel2" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text=",비육우 :" textFill="#1a1a1a" visible="false">
+                           <font>
+                              <Font name="Noto Sans CJK KR Regular" size="21.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="mDownPriceTextField2" focusTraversable="false" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
+                        <Label fx:id="mDownPriceLabel3" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text=",번식우 :" textFill="#1a1a1a" visible="false">
+                           <font>
+                              <Font name="Noto Sans CJK KR Regular" size="21.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="mDownPriceTextField3" focusTraversable="false" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
                         <Button fx:id="mBtnDownPrice" maxHeight="50.0" maxWidth="110.0" minHeight="50.0" minWidth="0.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="110.0" styleClass="button-12" text="최저가낮춤" visible="false" />
                         <Button fx:id="mBtnSelect" maxHeight="50.0" maxWidth="110.0" minHeight="50.0" minWidth="0.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="110.0" styleClass="button-12" text="[ENT]선택" visible="false" />
                         <Button fx:id="mBtnClose" maxHeight="50.0" maxWidth="110.0" minHeight="50.0" minWidth="0.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="110.0" styleClass="button-12" text="[ESC]종료" visible="false" />

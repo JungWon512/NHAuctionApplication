@@ -31,7 +31,6 @@ import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.MessageStringListener;
 import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.SettingListener;
-import com.nh.controller.model.FeeData;
 import com.nh.controller.model.SpBidderConnectInfo;
 import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
@@ -52,10 +51,8 @@ import com.nh.controller.utils.SharedPreference;
 import com.nh.controller.utils.SoundUtil;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.request.body.RequestCowInfoBody;
-import com.nh.share.api.request.body.RequestFeeBody;
 import com.nh.share.api.request.body.RequestUpdateLowsBidAmtBody;
 import com.nh.share.api.response.ResponseCowInfo;
-import com.nh.share.api.response.ResponseFee;
 import com.nh.share.api.response.ResponseNumber;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
@@ -668,7 +665,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				});
 			}
 			
-			
 
 			if (mWaitTableView.getItems().size() > 0) {
 
@@ -701,14 +697,26 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //						mWaitTableView.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> { 선택 콜백 인덱스	 필요시 주석 해제
 //						});
 
-						if (!isSendEnterInfo() && !isQcnChange) {
-							// 출장우 전송
-							onSendEntryData();
-						} else {
-							mLogger.debug("[출장우 데이터 전송 X. 현재 경매 상태 ]=> " + mAuctionStatus.getState());
-							Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
-						}
+//						PauseTransition pauseTransition = new PauseTransition(Duration.millis(9000));
+//						pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
+//							@Override
+//							public void handle(ActionEvent event) {
+//								mLogger.debug("[????????????????????????출장우 데이터 전송????????????????????????] " + isQcnChange);
+//								
+								if (!isSendEnterInfo() && !isQcnChange) {
+									// 출장우 전송
+									onSendEntryData();
+								} else {
+									mLogger.debug("[출장우 데이터 전송 X. 현재 경매 상태 ]=> " + mAuctionStatus.getState());
+									Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+								}
 
+//							}
+//						});
+//						pauseTransition.play();
+						
+						
+					
 					}
 				});
 				pauseTransition.play();
@@ -758,6 +766,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						}
 						
 					
+						setCurrentEntryInfo(true);
 						
 						CommonUtils.getInstance().dismissLoadingDialog();
 					});
@@ -819,6 +828,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 						String curEntryNum = mWaitEntryInfoDataList.get(i).getEntryNum().getValue();
 
+						
 						for (int j = 0; newEntryDataList.size() > j; j++) {
 
 							String newEntryNum = newEntryDataList.get(j).getEntryNum().getValue();
@@ -832,6 +842,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 								long newDt = Long.parseLong(newEntryDataList.get(j).getLsChgDtm().getValue());
 								long curDt = Long.parseLong(mWaitEntryInfoDataList.get(i).getLsChgDtm().getValue());
 
+								
 								if (newDt > curDt) {
 									mWaitEntryInfoDataList.set(i, newEntryDataList.get(j));
 									// 출품정보 전송 후 변경된 사항 전달.
@@ -1238,17 +1249,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			public void callBack(EntryDialogType type, int index, ObservableList<SpEntryInfo> dataList) {
 
 				dismissShowingDialog();
-
-				if (index < 0) {
-					return;
-				}
-
-				if (CommonUtils.getInstance().isListEmpty(dataList)) {
-					return;
-				}
 				
-				// 낙찰 결과보기는 이동,갱신 안 함
-				if (type.equals(EntryDialogType.ENTRY_FINISH_LIST)) {
+				if (index < 0 || CommonUtils.getInstance().isListEmpty(dataList) || type.equals(EntryDialogType.ENTRY_FINISH_LIST) ) {
+					refreshWaitAllEntryDataList(mWaitTableView.getSelectionModel().getSelectedIndex());
 					return;
 				}
 				
@@ -2359,7 +2362,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.msg.send.data"));
 					
 					mAuctionStatus.setState(GlobalDefineCode.AUCTION_STATUS_NONE);
-					AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(auctionStatus.getAuctionHouseCode(), auctionStatus.getAuctionQcn()));
+					mLogger.debug("[CLEAR INIT SERVER] : " + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(auctionStatus.getAuctionHouseCode(), auctionStatus.getAuctionQcn())));
 					isSendEntryData = false;
 					onSendEntryData();
 				} else {
@@ -3091,10 +3094,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						playOverPriceSound(rank_1_user.getAuctionJoinNum().getValue());
 						
 					}else {
-						//경매 정지 주석 처리
-//						startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
-					}
-					
+						if(isReAuctionNewBidding) {
+							//경매 정지 주석 처리
+							//경매 정지 주석 해제 2021-12-06
+							startAutoAuctionScheduler(SettingApplication.getInstance().getAuctionCountdown());
+							isReAuctionNewBidding = false;
+						}
+						
+					}	
 				}
 			});
 		}
@@ -3269,6 +3276,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			isPlayReAuctionSound = false;
 			// 경매 시작 ~ 경과시간 초
 			mStartAuctionSec = 0;
+			//재경매시 응찰 여부
+			isReAuctionNewBidding = false;
 			break;
 		// case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:

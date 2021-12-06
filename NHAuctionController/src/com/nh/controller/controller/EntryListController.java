@@ -68,13 +68,13 @@ public class EntryListController implements Initializable {
 	private TableView<SpEntryInfo> mEntryTableView;
 
 	@FXML // 페이지 타이틀 , 최저가 낮춤
-	private Label mTitleLabel, mDownPriceLabel;
+	private Label mTitleLabel, mDownPriceLabel , mDownPriceLabel2,mDownPriceLabel3;
 
 	@FXML // 대기중인 출품
 	private TableColumn<SpEntryInfo, String> mEntryNumColumn, mExhibitorColumn, mGenderColumn, mMotherColumn, mMatimeColumn, mPasgQcnColumn, mWeightColumn, mLowPriceColumn, mSuccessPriceColumn, mSuccessfulBidderColumn, mResultColumn, mNoteColumn;
 
 	@FXML // 최저가 낮춤
-	private TextField mDownPriceTextField;
+	private TextField mDownPriceTextField,mDownPriceTextField2,mDownPriceTextField3;
 
 	@FXML // 최저가 낮춤,선택,종료
 	private Button mBtnDownPrice, mBtnSelect, mBtnClose;
@@ -147,24 +147,73 @@ public class EntryListController implements Initializable {
 			
 			if(SettingApplication.getInstance().isSingleAuction()) {
 				
-				int cowLowerLimitPrice = SettingApplication.getInstance().getCowLowerLimitPrice(auctionRound.getAucObjDsc());
+				int cowLowerLimitPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1);
+				int cowLowerLimitPrice2 = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2);
+				int cowLowerLimitPrice3 = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3);
+				
 				mDownPriceTextField.setText(Integer.toString(cowLowerLimitPrice));
+				mDownPriceTextField2.setText(Integer.toString(cowLowerLimitPrice2));
+				mDownPriceTextField3.setText(Integer.toString(cowLowerLimitPrice3));
+				
 				mBtnDownPrice.setOnMouseClicked(event -> onDownPrice(event));
 				
 				mDownPriceLabel.setVisible(true);
+				mDownPriceLabel2.setVisible(true);
+				mDownPriceLabel3.setVisible(true);
+				
 				mDownPriceTextField.setVisible(true);
+				mDownPriceTextField2.setVisible(true);
+				mDownPriceTextField3.setVisible(true);
 				mBtnDownPrice.setVisible(true);
+				
+				CommonUtils.getInstance().setNumberTextField(mDownPriceTextField);
+				CommonUtils.getInstance().setNumberTextField(mDownPriceTextField2);
+				CommonUtils.getInstance().setNumberTextField(mDownPriceTextField3);
+				
+				
+				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1) {
+					
+					mDownPriceTextField.setDisable(false);
+					mDownPriceTextField2.setDisable(true);
+					mDownPriceTextField3.setDisable(true);
+					
+					
+				}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2) {
+					
+					mDownPriceTextField.setDisable(true);
+					mDownPriceTextField2.setDisable(false);
+					mDownPriceTextField3.setDisable(true);
+					
+					
+				}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3) {
+					
+					mDownPriceTextField.setDisable(true);
+					mDownPriceTextField2.setDisable(true);
+					mDownPriceTextField3.setDisable(false);
+					
+				}else {
+
+					mDownPriceTextField.setDisable(false);
+					mDownPriceTextField2.setDisable(false);
+					mDownPriceTextField3.setDisable(false);
+				}
+				
+				
 			}else {
 				
 				mDownPriceLabel.setVisible(false);
+				mDownPriceLabel2.setVisible(false);
+				mDownPriceLabel3.setVisible(false);
 				mDownPriceTextField.setVisible(false);
+				mDownPriceTextField2.setVisible(false);
+				mDownPriceTextField3.setVisible(false);
 				mBtnDownPrice.setVisible(false);
 			}
 		
 			pageTitle = mResMsg.getString("str.page.title.auction_pending_list");
 			mBtnSelect.setVisible(true);
 			mBtnSelect.setOnMouseClicked(event -> onCallBack());
-			CommonUtils.getInstance().setNumberTextField(mDownPriceTextField);
+		
 			searchAuctionResult = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
 			break;
 		case ENTRY_FINISH_LIST:
@@ -296,16 +345,79 @@ public class EntryListController implements Initializable {
 	 * @param event
 	 */
 	public void onDownPrice(MouseEvent event) {
+		
+		if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_0) {
+		
+			if (!CommonUtils.getInstance().isValidString(mDownPriceTextField.getText())
+					|| !CommonUtils.getInstance().isValidString(mDownPriceTextField2.getText())
+					|| !CommonUtils.getInstance().isValidString(mDownPriceTextField3.getText())) {
+				return;
+			}
 
-		if (!CommonUtils.getInstance().isValidString(mDownPriceTextField.getText())) {
-			return;
+			int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText());
+			int cowLowerLimitPrice2 = Integer.parseInt(mDownPriceTextField2.getText());
+			int cowLowerLimitPrice3 = Integer.parseInt(mDownPriceTextField3.getText());
+		
+			if (cowLowerLimitPrice <= 0 || cowLowerLimitPrice2 <= 0 || cowLowerLimitPrice3 <= 0) {
+				
+				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+				
+				return;
+			}
+			
+			
+		}else {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1) {
+		
+				if (!CommonUtils.getInstance().isValidString(mDownPriceTextField.getText())) {
+					return;
+				}
+
+				int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText());
+			
+				if (cowLowerLimitPrice <= 0 ) {
+					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+					return;
+				}
+				
+				
+			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2) {
+				
+				if (!CommonUtils.getInstance().isValidString(mDownPriceTextField2.getText())) {
+					return;
+				}
+
+				int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField2.getText());
+			
+				if (cowLowerLimitPrice <= 0 ) {
+					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+					return;
+				}
+				
+				
+			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3) {
+				
+				
+				if (!CommonUtils.getInstance().isValidString(mDownPriceTextField3.getText())) {
+					return;
+				}
+
+				int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField3.getText());
+			
+				if (cowLowerLimitPrice <= 0 ) {
+					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+					return;
+				}
+				
+			}
+			
 		}
-
+		
 		int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText());
-
-		if (cowLowerLimitPrice <= 0) {
-			return;
-		}
+		int cowLowerLimitPrice2 = Integer.parseInt(mDownPriceTextField2.getText());
+		int cowLowerLimitPrice3 = Integer.parseInt(mDownPriceTextField3.getText());
+		
 
 		List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
 
@@ -319,18 +431,53 @@ public class EntryListController implements Initializable {
 
 				int targetPrice = spEntryInfo.getLowPriceInt();
 				
-				if (targetPrice < cowLowerLimitPrice) {
-					System.out.println("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
-					continue;
+				
+				if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+				
+					if (targetPrice < cowLowerLimitPrice) {
+						System.out.println("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+						continue;
+					}
+					
+					
+				}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+					if (targetPrice < cowLowerLimitPrice2) {
+						System.out.println("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+						continue;
+					}
+					
+				}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
+					if (targetPrice < cowLowerLimitPrice3) {
+						System.out.println("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+						continue;
+					}
 				}
+				
+				
 
 				String targetEntryNum = spEntryInfo.getEntryNum().getValue();
 				String targetAuctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
 				String targetEntryType = spEntryInfo.getEntryType().getValue();
 				String targetAucDt = spEntryInfo.getAucDt().getValue();
-				String updatePrice = Integer.toString(targetPrice - cowLowerLimitPrice);
+				String updatePrice = "";
 				String oslpNo = spEntryInfo.getOslpNo().getValue();
 				String ledSqNo = spEntryInfo.getLedSqno().getValue();
+				
+				
+				if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+
+					updatePrice = 	Integer.toString(targetPrice - cowLowerLimitPrice);
+
+				}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+			
+					updatePrice = 	Integer.toString(targetPrice - cowLowerLimitPrice2);
+					
+				}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
+				
+					updatePrice = 	Integer.toString(targetPrice - cowLowerLimitPrice3);
+					
+				}
+				
 				
 				//한번더체크
 				if(Integer.parseInt(updatePrice) <= 0) {
