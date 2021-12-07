@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "hadong-auction",
+  "private_key_id": "9c14c88845e672e9eaff04699ef986a47ceb9562",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDmFa7SFxij2/Jw\nGpxeo3xRZZ7Mnv7nQyJ9rwRT/JSIvNNTQQRfl959G9+3BzGlB/cJOIwYbHp4yJeV\nhU0vvgw3uF018vM8knjyGENeRAqH/qIz+qjM8ctu07NG7h0gE9g7vNKJ3wWomvHX\niPnAko9EZK5bKsGa4TretTwYscuz8dhQB32PoF3NXmM7Ku+63Yz2uyn9stlznhnr\nOkylnxqWyCuKFGbjw/YSnDx4sivtWY19YbNIeKswf3WsWfSEGLk95rNY2eXoJJvi\nehuLl9y1/sR+hE/e7q5YnrQZLchmLV7v8pvPqWsolj46UKyvFLUTDKI45dg91VgQ\nS1Lmw20lAgMBAAECggEAGruRNNK/J6ax++lzmqFXG+P5N+APUNJhiwXPNGzn2x1J\nVmZ6+hpcnN+kthDNaVXME5Ow31OXRTpVNmenCLGFnOG8XrzMGxEPoV1FUooISTXC\nJdTtUOaVEtrg/RBEbQoxOPue4Kr7btQV3kuJbSD6KWGjSm9k0Dh0DRU0ls/tkYoD\nAvgIThBTn9Z71ENtMaRlA/wNWGPGHKeGqDb+1vgTRMS5cCPX2f9/XYpr4max/O1a\n+ikxJxcwbbYQ0N1LN4g/0+bbZrwHEZgUy2EnC2DfnR8VhrGA9n/NxQaWu4MXcpGB\nidlUwrMQCdEP3+l4RYExFZToz9pxZtJxsX41dR5dbwKBgQD5wtYk/oJaG1t87uWe\nCAbFeBoIZafJ7QoX0KDNDRb1QhLois0SdXXW7uajA50v8/2XkIEb2P95gmCwhe+0\n6VBy1JF/rdHweVwpABbKCm8Z9HUrmNhLmZUfTLIjjvhLsd9goGdDbCOFNiYDUWuO\nUOiaRK1q2XfGZFmgvBniBuBp7wKBgQDr1QVCxx+a5WVd/m6Fn1pp0P8N+oMrFGql\nIuYMqrTRo5S6M6HnDacNInj8J6+XAkYYEODzaRL4uyo70H7Jnu9/YCX45aq4V0ta\nLMYuRQhRUnM8JZl4T3ox39G+cdcd8NbSz6y+PV7F9iq21Y1HsBJuy/OV0cv+4QCm\nPDVgSfJ+KwKBgQCOmoNAjhyJLDOZaqGqEHUlTIS4pKofrfrkTBdz3HRuRnKbWZzr\nXCuTM8Z17vtRxOLXJgfBia2ciCeCwoZx6gEn/1yv5OQIhJJtSoK4iyqSTDSWVuew\niplNTLItgVUdiwq6lfs/0L+bMKaVoGhj0qhsZKgLaO1tViCimKPCnSCG+wKBgH+V\nU+5HiYqj9c3++s3hYumCPqnSUCn7NqK2GZzasU4E4E5H5pv4X9qUPr2zvqPEgCU+\n5GPrAW982iFX72+mQ002t/RKU6y81TAoruKTSCeuolb0xG05GhNnUbJlJgq1o5KS\n9ZJJ4z7XqU4WhAM3dxFn1xTDVkhCc7Z7NikseDrXAoGBAOyOLNcx+Adqim4bjZFK\nLbXQ9N0WPj7LrZXqMZdc0he5xwbodDprgf4Omv4Odz9CFjiynQJD3IkmYzMPd7hO\nyzNnPKdGM8boIUZl2W9bdVzmVG8+Or5DS1fji4x1CCA76gqRTRlS/GCeJRjqAadS\n0zfdhQEauwoF6k5hPhAA6F1t\n-----END PRIVATE KEY-----\n",
+  "client_email": "hadong-auction@hadong-auction.iam.gserviceaccount.com",
+  "client_id": "105812862840566919661",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/hadong-auction%40hadong-auction.iam.gserviceaccount.com"
+}
