@@ -319,6 +319,17 @@ public abstract class BaseAuctionController implements NettyControllable {
 					BillboardDelegate1.getInstance().sendBillboardNote(billboardData.getbNote());
 					BillboardDelegate1.getInstance().startBillboard();
 					addLogItem(mResMsg.getString("msg.billboard.send.current.entry.data") + billboardData.getEncodedMessage());
+					
+					//전광판 1 비고 흐름 사용 여부
+					if(SettingApplication.getInstance().isBoardUseNote1()) {
+						
+					}
+					
+					//전광판 2 비고 흐름 사용 여부
+					if(SettingApplication.getInstance().isBoardUseNote2()) {
+						
+					}
+					
 				}
 
 				if (!PdpDelegate.getInstance().isEmptyClient() && PdpDelegate.getInstance().isActive()) {

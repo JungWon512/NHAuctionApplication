@@ -69,7 +69,10 @@ public class SettingController implements Initializable {
 	// 전광판 설정 IP, PORT
 	@FXML
 	private TextField mIpBoardTextField1, mPortBoardTextField1, mIpBoardTextField2, mPortBoardTextField2;
-
+	
+	@FXML
+	private CheckBox mBoardUseNote1, mBoardUseNote2;
+	
 	// PDP, 응찰석, PDP3 셋톱박스 IP, PORT
 	@FXML
 	private TextField mIpPdpTextField1, mPortPdpTextField1;
@@ -199,6 +202,7 @@ public class SettingController implements Initializable {
 		getReAuctionCheckboxPreference();
 		getUseOneAuctionCheckboxPreference();
 		getSoundAuctionCheckboxPreference();
+		getBoardUseNoteCheckboxPreference();
 		setToggleGroups();
 		getCountTextField();
 		getTextFields();
@@ -430,6 +434,30 @@ public class SettingController implements Initializable {
 		boolean isNote = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, true);
 		mUseAnnouncementCheckBox.setSelected(isAnnouncement);
 		mUseNoteCheckBox.setSelected(isNote);
+	}
+	
+	/**
+	 * 전광판 비고 흐름 여부value 가져오기
+	 *
+	 * @author jhlee
+	 */
+	private void getBoardUseNoteCheckboxPreference() {
+		
+		boolean isUseNote_1 = sharedPreference.getBoolean(SharedPreference.PREFERENCE_BOARD_USE_NOTE_1, false);
+		boolean isUseNote_2 = sharedPreference.getBoolean(SharedPreference.PREFERENCE_BOARD_USE_NOTE_2, false);
+		
+		mBoardUseNote1.setSelected(isUseNote_1);
+		mBoardUseNote2.setSelected(isUseNote_2);
+	}
+	
+	/**
+	 * 전광판 비고 흐름 여부 value setting
+	 *
+	 * @author jhlee
+	 */
+	private void setBoardUseNoteCheckboxPreference() {
+		sharedPreference.setBoolean(SharedPreference.PREFERENCE_BOARD_USE_NOTE_1, (mBoardUseNote1.isSelected()));
+		sharedPreference.setBoolean(SharedPreference.PREFERENCE_BOARD_USE_NOTE_2, (mBoardUseNote2.isSelected()));
 	}
 
 	/**
@@ -876,6 +904,7 @@ public class SettingController implements Initializable {
 			setReAuctionCheckboxPreference();
 			setUseOneAuctionCheckboxPreference();
 			setSoundAuctionCheckboxPreference();
+			setBoardUseNoteCheckboxPreference();
 			setCountTextField();
 			setMobileCheckboxPreference(mobileCheckBoxSelectedList);
 			setToggleTypes();

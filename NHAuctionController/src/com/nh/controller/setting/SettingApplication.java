@@ -146,6 +146,10 @@ public class SettingApplication {
 	private boolean useSoundAuction = false; // 음성경매 - 음성경부 여부
 	private boolean isSingleAuction = true;	//경매 타입
 	private boolean isNote = false; //비고
+	
+	private boolean isBoardUseNote1 = false; // 전광판 비고 흐름 야부
+	private boolean isBoardUseNote2 = false; // 전광판2 비고 흐름 야부
+	
 
 	private int aucObjDsc = 0; // 경매 구분
 
@@ -341,6 +345,10 @@ public class SettingApplication {
 		standPosition = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, DEFAULT_SETTING_STAND_POSITION);
 	
 		isNote = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, DEFAULT_SETTING_NOTE);
+		
+		//전광판 비고
+		isBoardUseNote1 = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_BOARD_USE_NOTE_1, false);
+		isBoardUseNote2 = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_BOARD_USE_NOTE_2, false);
 	}
 
 	/**
@@ -550,6 +558,21 @@ public class SettingApplication {
 		return isNote;
 	}
 	
+	/**
+	 * 전광판1 비고 흐름 사용여부
+	 * @return
+	 */
+	public boolean isBoardUseNote1() {
+		return isBoardUseNote1;
+	}
+	
+	/**
+	 * 전광판2 비고 흐름 사용여부
+	 * @return
+	 */
+	public boolean isBoardUseNote2() {
+		return isBoardUseNote2;
+	}
 
 	/**
 	 * API 경매 Param시 사용.

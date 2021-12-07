@@ -150,6 +150,11 @@ public class SharedPreference {
 	public static final String PREFERENCE_SERVER_IP = "PREFERENCE_SERVER_IP";
 	public static final String PREFERENCE_SERVER_PORT = "PREFERENCE_SERVER_PORT";
 	public static final String PREFERENCE_SELECTED_OBJ = "PREFERENCE_SELECTED_OBJ";
+	
+	//전광판 비고 흐름 여부
+	public static final String PREFERENCE_BOARD_USE_NOTE_1 = "PREFERENCE_BOARD_USE_NOTE_1";
+	public static final String PREFERENCE_BOARD_USE_NOTE_2 = "PREFERENCE_BOARD_USE_NOTE_2";
+	
 
 	public final Preferences prefs;
 
