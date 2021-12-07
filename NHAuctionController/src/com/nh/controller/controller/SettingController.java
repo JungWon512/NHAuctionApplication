@@ -68,23 +68,11 @@ public class SettingController implements Initializable {
 	private Button mBtnSave,mBtnInitServer;
 	// 전광판 설정 IP, PORT
 	@FXML
-	private TextField mIpBoardTextField1, mPortBoardTextField1, mIpBoardTextField2, mPortBoardTextField2, mIpBoardTextField3, mPortBoardTextField3;
-	// 전광판 설정 문구
-	@FXML
-	private ToggleGroup boardToggleGroup;
-	@FXML
-	private ToggleButton mBoardNoneToggleButton, mBoardFixedToggleButton, mBoardMarqueeToggleButton;
-	// PDP 화면 설정
-	@FXML
-	private ToggleGroup pdpToggleGroup;
-	@FXML
-	private ToggleButton mPdpViewBoardTypeToggleButton, mPdpViewAuctionTypeToggleButton;
-	// 표출 데이터 포맷 (1,2)
-	@FXML
-	private TextField mFormatTextField;
+	private TextField mIpBoardTextField1, mPortBoardTextField1, mIpBoardTextField2, mPortBoardTextField2;
+
 	// PDP, 응찰석, PDP3 셋톱박스 IP, PORT
 	@FXML
-	private TextField mIpPdpTextField1, mPortPdpTextField1, mIpBidderTextField, mPortBidderTextField, mIpPdpTextField2, mPortPdpTextField2;
+	private TextField mIpPdpTextField1, mPortPdpTextField1;
 	// 전광판 표출 설정
 	@FXML
 	private TextField mBoardEntryNumTextField, mBoardKpnTextField, mBoardExhibitorTextField, mBoardRegionTextField, mBoardGenderTextField, mBoardNoteTextField, mBoardWeightTextField, mBoardLowPriceTextField, mBoardMotherTextField, mBoardSucPriceTextField, mBoardPassageTextField,
@@ -130,8 +118,6 @@ public class SettingController implements Initializable {
 
 	private ArrayList<CheckBox> mobileCheckBoxSelectedList = null;
 	private ArrayList<CheckBox> mobileCheckBoxList = null;
-	private String boardToggleType = "None";
-	private String pdpToggleType = "BoardType";
 	private String auctionToggleType = "Single";
 	private SettingListener mSettingListener = null;
 	private UdpBillBoardStatusListener mUdpBillBoardStatusListener1 = null;
@@ -161,14 +147,6 @@ public class SettingController implements Initializable {
 			}
 			throw new RuntimeException();
 		}
-	}
-
-	public enum BoardToggle {
-		NONE, FIXED, MARQUEE
-	}
-
-	public enum PdpToggle {
-		BOARDTYPE, AUCTIONTYPE
 	}
 
 	public enum AuctionToggle {
@@ -278,17 +256,9 @@ public class SettingController implements Initializable {
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, mPortBoardTextField1.getText().trim());
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT2, mIpBoardTextField2.getText().trim());
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT2, mPortBoardTextField2.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT3, mIpBoardTextField3.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT3, mPortBoardTextField3.getText().trim());
-		// 표출 데이터 포맷 (1,2)
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_FORMAT, mFormatTextField.getText().trim());
-		// PDP, 응찰석, PDP3 셋톱박스 IP, PORT
+		// PDP IP, PORT
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, mIpPdpTextField1.getText().trim());
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, mPortPdpTextField1.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT2, mIpPdpTextField2.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT2, mPortPdpTextField2.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_IP_BIDDER_TEXT, mIpBidderTextField.getText().trim());
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PORT_BIDDER_TEXT, mPortBidderTextField.getText().trim());
 		// 전광판 표출 설정
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_BOARD_ENTRYNUM, mBoardEntryNumTextField.getText().trim());
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_BOARD_KPN, mBoardKpnTextField.getText().trim());
@@ -390,17 +360,9 @@ public class SettingController implements Initializable {
 		mPortBoardTextField1.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, ""));
 		mIpBoardTextField2.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT2, ""));
 		mPortBoardTextField2.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT2, ""));
-		mIpBoardTextField3.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT3, ""));
-		mPortBoardTextField3.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT3, ""));
-		// 표출 데이터 포맷 (1,2)
-		mFormatTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_FORMAT, ""));
 		// PDP, 응찰석, PDP3 셋톱박스 IP, PORT
 		mIpPdpTextField1.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1, ""));
 		mPortPdpTextField1.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1, ""));
-		mIpPdpTextField2.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT2, ""));
-		mPortPdpTextField2.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT2, ""));
-		mIpBidderTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_IP_BIDDER_TEXT, ""));
-		mPortBidderTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PORT_BIDDER_TEXT, ""));
 		// 전광판 표출 설정
 		mBoardEntryNumTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_BOARD_ENTRYNUM, ""));
 		mBoardKpnTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_BOARD_KPN, ""));
@@ -552,10 +514,6 @@ public class SettingController implements Initializable {
 	 * @author dhKim
 	 */
 	private void setToggleGroups() {
-		
-		boardToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> boardToggleType = newValue.getUserData().toString().trim());
-
-		pdpToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> pdpToggleType = newValue.getUserData().toString().trim());
 
 		auctionTypeToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> {
 			
@@ -583,8 +541,6 @@ public class SettingController implements Initializable {
 	 * @author dhKim
 	 */
 	private void setToggleTypes() {
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_BOARD_TOGGLE_TYPE, boardToggleType);
-		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_PDP_TOGGLE_TYPE, pdpToggleType);
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, auctionToggleType);
 	}
 
@@ -594,20 +550,8 @@ public class SettingController implements Initializable {
 	 * @author dhKim
 	 */
 	private void getToggleTypes() {
-		String boardToggle = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_BOARD_TOGGLE_TYPE, "None");
-		String pdpToggle = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_PDP_TOGGLE_TYPE, "BoardType");
+		
 		String auctionToggle = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, "Single");
-
-		switch (BoardToggle.valueOf(boardToggle.toUpperCase())) {
-		case NONE -> mBoardNoneToggleButton.setSelected(true);
-		case FIXED -> mBoardFixedToggleButton.setSelected(true);
-		case MARQUEE -> mBoardMarqueeToggleButton.setSelected(true);
-		}
-
-		switch (PdpToggle.valueOf(pdpToggle.toUpperCase())) {
-		case BOARDTYPE -> mPdpViewBoardTypeToggleButton.setSelected(true);
-		case AUCTIONTYPE -> mPdpViewAuctionTypeToggleButton.setSelected(true);
-		}
 
 		mLogger.debug("auctionToggle : " + auctionToggle);
 		switch (AuctionToggle.valueOf(auctionToggle.toUpperCase())) {
@@ -1072,18 +1016,7 @@ public class SettingController implements Initializable {
 	 * @author dhKim
 	 */
 	private boolean isValid() {
-		// 표출 데이터 포맷 (1 또는 2)
-		if (!mFormatTextField.getText().equals("") || !mFormatTextField.getText().isEmpty()) {
-			int format = Integer.parseInt(mFormatTextField.getText());
-			if (format < 1 || format > 2) {
-				showAlertDataFormat();
-				return false;
-			}
-		} else {
-			showAlertDataFormat();
-			return false;
-		}
-
+	
 		// 카운트 설정 1 ~ 9 초
 		if (!mCountTextField.getText().equals("") || !mCountTextField.getText().isEmpty()) {
 			int second = Integer.parseInt(mCountTextField.getText());

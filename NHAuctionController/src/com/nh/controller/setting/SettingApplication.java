@@ -9,9 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.controller.controller.SettingController.AuctionToggle;
-import com.nh.controller.controller.SettingController.BoardToggle;
-import com.nh.controller.controller.SettingController.PdpToggle;
-import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.controller.models.EditSetting;
@@ -33,10 +30,7 @@ public class SettingApplication {
 	public final String DEFAULT_SETTING_PORT_BOARD_TEXT2 = "";
 	public final String DEFAULT_SETTING_IP_BOARD_TEXT3 = "";
 	public final String DEFAULT_SETTING_PORT_BOARD_TEXT3 = "";
-	public final String DEFAULT_SETTING_BOARD_TOGGLE_TYPE = BoardToggle.NONE.toString();
 
-	// PDP 환경설정 기본값
-	public final String DEFAULT_SETTING_PDP_TOGGLE_TYPE = PdpToggle.BOARDTYPE.toString();
 	public final String DEFAULT_SETTING_FORMAT = "1";
 
 	// PDP 셋톱박스 기본값
@@ -192,26 +186,11 @@ public class SettingApplication {
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT1, DEFAULT_SETTING_PORT_BOARD_TEXT1);
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT2, DEFAULT_SETTING_IP_BOARD_TEXT2);
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT2, DEFAULT_SETTING_PORT_BOARD_TEXT2);
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_IP_BOARD_TEXT3, DEFAULT_SETTING_IP_BOARD_TEXT3);
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PORT_BOARD_TEXT3, DEFAULT_SETTING_PORT_BOARD_TEXT3);
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_TOGGLE_TYPE, DEFAULT_SETTING_BOARD_TOGGLE_TYPE);
-
-			// PDP 환경설정 기본값
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_TOGGLE_TYPE,DEFAULT_SETTING_PDP_TOGGLE_TYPE);
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_FORMAT,DEFAULT_SETTING_FORMAT);
 			
 			// PDP 셋톱박스 기본값
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT1,DEFAULT_SETTING_IP_PDP_TEXT1);
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT1,DEFAULT_SETTING_PORT_PDP_TEXT1);
-		
-			// PDP 셋톱박스3 기본값
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_IP_PDP_TEXT2,DEFAULT_SETTING_IP_PDP_TEXT2);
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PORT_PDP_TEXT2,DEFAULT_SETTING_PORT_PDP_TEXT2);
-			
-			// 응찰석 셋톱박스 기본값
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_IP_BIDDER_TEXT,DEFAULT_SETTING_IP_BIDDER_TEXT);
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PORT_BIDDER_TEXT,DEFAULT_SETTING_PORT_BIDDER_TEXT);
-
+	
 			// [S] 메인 경매 정보 음성 노출 여부 기본 설정
 			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_NUMBER, true);
 			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_MAIN_SOUND_ENTRY_EXHIBITOR, true);

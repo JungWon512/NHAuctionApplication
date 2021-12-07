@@ -146,7 +146,7 @@
 /* 라디오버튼 */
 .radio-button {
     -fx-text-fill: #111;
-    -fx-font-size: 13px;
+    -fx-font-size: 15px;
 	-fx-font-family: "Noto Sans CJK KR Regular";
 }
 
