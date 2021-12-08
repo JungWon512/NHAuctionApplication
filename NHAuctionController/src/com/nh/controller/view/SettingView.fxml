@@ -39,19 +39,19 @@
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="95.0" vgrow="ALWAYS" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="75.0" vgrow="ALWAYS" />
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="95.0" vgrow="ALWAYS" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="75.0" vgrow="ALWAYS" />
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
                 <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
             <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
-            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
@@ -234,15 +234,9 @@
                                     </children>
                                 </VBox>
                             </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-                            <children>
-                                <Label alignment="CENTER" styleClass="font-s" text="낙찰자 3 입력시 참가번호 6 입력시 성명으로 출력됨">
-                                    <HBox.margin>
-                                        <Insets left="10.0" />
-                                    </HBox.margin>
-                                </Label>
-                            </children>
+                     <VBox.margin>
+                        <Insets top="-10.0" />
+                     </VBox.margin>
                         </HBox>
                     </children>
                     <GridPane.margin>
@@ -370,18 +364,9 @@
                                     </children>
                                 </VBox>
                             </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-                            <children>
-                                <Label alignment="CENTER" styleClass="font-s" text="낙찰자 3 입력시 참가번호 6 입력시 성명으로 출력됨">
-                                    <HBox.margin>
-                                        <Insets />
-                                    </HBox.margin>
-                                </Label>
-                            </children>
-                            <VBox.margin>
-                                <Insets left="10.0" />
-                            </VBox.margin>
+                     <VBox.margin>
+                        <Insets top="-10.0" />
+                     </VBox.margin>
                         </HBox>
                     </children>
                     <padding>
