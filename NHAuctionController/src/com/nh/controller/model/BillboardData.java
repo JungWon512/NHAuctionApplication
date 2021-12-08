@@ -380,7 +380,6 @@ public class BillboardData implements NettySendable {
      * @Description 한글이 들어가는 전광판
      */
     private String makeBoardKoreanMessage(String s, String sharedPreference) {
-    	int temp = Integer.parseInt(sharedPreference);
         int count = Integer.parseInt(sharedPreference);
         int stringToByteSize = s.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
         int doubleCount = count / 2; // byte[]와 비교하기위한 length
@@ -388,7 +387,15 @@ public class BillboardData implements NettySendable {
         if (stringToByteSize < count) {
             return " ".repeat(count - stringToByteSize) + s;
         } else {
-            return s.replaceAll(",", " ").substring(0, doubleCount);
+        	String resultString = s.replaceAll(",", " ").substring(0, doubleCount);
+        	
+        	if (resultString.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length < count) {
+        		return resultString + " ".repeat(count - resultString.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length);
+        	} else {
+        		return resultString;
+        	}
+        	
+        	//return s.replaceAll(",", " ").substring(0, doubleCount);
         }
     }
 
@@ -400,6 +407,7 @@ public class BillboardData implements NettySendable {
 
         if (s.length() < count) {
             return " ".repeat(count - s.length()) + s;
+//        	System.out.println("adkfjladfj : " + "x".repeat(count - s.length()) + s);
         } else {
             return s.substring(0, count);
         }
