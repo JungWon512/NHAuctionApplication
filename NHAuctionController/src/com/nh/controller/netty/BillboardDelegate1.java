@@ -104,7 +104,7 @@ public class BillboardDelegate1 {
      */
     public void sendBillboardData(NettySendable sendable) {
     	if(!isEmptyClient() && isActive()) {
-            clearBillboard();
+            //clearBillboard();
             sendMessage(sendable);
     	}
     }

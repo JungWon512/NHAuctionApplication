@@ -36,6 +36,7 @@ import com.nh.controller.model.SpBidding;
 import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.netty.BillboardDelegate1;
+import com.nh.controller.netty.BillboardDelegate2;
 import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.ApiUtils;
@@ -1427,6 +1428,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mBiddingInfoTableView.setDisable(false);
 			// 전광판 전달.
 			BillboardDelegate1.getInstance().completeBillboard();
+			BillboardDelegate2.getInstance().completeBillboard();
 			PdpDelegate.getInstance().completePdp();
 
 		} else {
@@ -2613,6 +2615,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			// 전광판 카운트다운 전송
 			BillboardDelegate1.getInstance().onCountDown(auctionCountDown.getCountDownTime());
+			BillboardDelegate2.getInstance().onCountDown(auctionCountDown.getCountDownTime());
 
 			// PDP 카운트다운 전송
 			PdpDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());

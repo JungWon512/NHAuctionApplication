@@ -250,7 +250,8 @@ public class BillboardData implements NettySendable {
         sb.append(makeBoardNumberMessage(getbMatime(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_MATIME, "")));
         sb.append(makeBoardNumberMessage(getKPN(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_KPN, "")));
         sb.append(makeBoardKoreanMessage(getbRegion(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_REGION, "")));
-        sb.append(makeNoteMessage(getbNote(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_NOTE, "")));
+        sb.append(makeBoardKoreanMessage(getbNote(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_NOTE, "")));
+        //sb.append(makeNoteMessage(getbNote(), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_NOTE, "")));
         sb.append(makeBoardNumberMessage(getBaseUnitDivision(getbLowPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_LOWPRICE, "")));
         sb.append(makeBoardNumberMessage(getBaseUnitDivision(getbAuctionBidPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_BOARD_SUCPRICE, "")));
         
@@ -379,6 +380,7 @@ public class BillboardData implements NettySendable {
      * @Description 한글이 들어가는 전광판
      */
     private String makeBoardKoreanMessage(String s, String sharedPreference) {
+    	int temp = Integer.parseInt(sharedPreference);
         int count = Integer.parseInt(sharedPreference);
         int stringToByteSize = s.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
         int doubleCount = count / 2; // byte[]와 비교하기위한 length
