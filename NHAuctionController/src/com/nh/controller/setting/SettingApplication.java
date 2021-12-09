@@ -638,4 +638,14 @@ public class SettingApplication {
 	}
 	
 	
+	/**
+	 * 음성 재생 속도
+	 * @return
+	 */
+	public boolean isSoundRate() {
+		boolean isSoundRate = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, false);
+		return isSoundRate;
+	}
+	
+	
 }

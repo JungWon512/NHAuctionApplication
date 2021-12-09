@@ -42,6 +42,7 @@ public class SharedPreference {
 	public static final String PREFERENCE_SETTING_MOBILE_DNA = "PREFERENCE_SETTING_MOBILE_DNA"; // 친자노출여부
 
 	public static final String PREFERENCE_SETTING_ANNOUNCEMENT = "PREFERENCE_SETTING_ANNOUNCEMENT"; // 경매종료 멘트 설정
+	public static final String PREFERENCE_SETTING_SOUND_RATE = "PREFERENCE_SETTING_SOUND_RATE"; // 음성 재생 속도
 	public static final String PREFERENCE_SETTING_NOTE = "PREFERENCE_SETTING_NOTE"; // 비고창 설정
 	public static final String PREFERENCE_SETTING_COUNTDOWN = "PREFERENCE_SETTING_COUNTDOWN"; // 카운트다운 설정
 	public static final String PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE = "PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE"; // 경매타입 toggle button

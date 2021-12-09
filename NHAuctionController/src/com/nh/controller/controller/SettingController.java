@@ -89,7 +89,7 @@ public class SettingController implements Initializable {
 	private TextField mUpperLimitCalfTextField, mUpperLimitFatteningCattleTextField, mUpperLimitBreedingCattleTextField, mLowerLimitCalfTextField, mLowerLimitFatteningCattleTextField, mLowerLimitBreedingCattleTextField;
 	// 경매종료멘트, 비고 창 설정
 	@FXML
-	private CheckBox mUseAnnouncementCheckBox, mUseNoteCheckBox;
+	private CheckBox mUseSoundRateCheckBox, mUseNoteCheckBox;
 	// 카운트 (1-9초)
 	@FXML
 	private TextField mCountTextField;
@@ -415,24 +415,24 @@ public class SettingController implements Initializable {
 	}
 
 	/**
-	 * 경매종료멘트, 비고 창 value setting
+	 * 음성재생속도, 비고 창 value setting
 	 *
 	 * @author dhKim
 	 */
 	private void setAnnounceNoteCheckboxPreference() {
-		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_ANNOUNCEMENT, (mUseAnnouncementCheckBox.isSelected()));
+		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, (mUseSoundRateCheckBox.isSelected()));
 		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, (mUseNoteCheckBox.isSelected()));
 	}
 
 	/**
-	 * 경매종료멘트, 비고 창 value 가져오기
+	 * 음성재생속도, 비고 창 value 가져오기
 	 *
 	 * @author dhKim
 	 */
 	private void getAnnounceNoteCheckboxPreference() {
-		boolean isAnnouncement = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_ANNOUNCEMENT, true);
+		boolean isSoundRate = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, false);
 		boolean isNote = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, true);
-		mUseAnnouncementCheckBox.setSelected(isAnnouncement);
+		mUseSoundRateCheckBox.setSelected(isSoundRate);
 		mUseNoteCheckBox.setSelected(isNote);
 	}
 	

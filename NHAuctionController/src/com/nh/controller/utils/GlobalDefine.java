@@ -163,6 +163,10 @@ public class GlobalDefine {
 		public static final String BID_LOG_TYPE_ING = "I";		// insert 응찰 로그 타입 - 응찰
 		public static final String BID_LOG_TYPE_FINISH = "F";	// insert 응찰 로그 타입 - 출장우 경매 종료
 		
+		
+		public static final Double PLAY_SOUND_SPEED_1_0 = 1.0;	// 음성 경매 재생속도 일반
+		public static final Double PLAY_SOUND_SPEED_1_1 = 1.1;	// 음성 경매 재생속도 배속
+		
 	}
 
 	/**
