@@ -762,6 +762,11 @@ public class AuctionServer {
 				}
 				break;
 			case ShowFailBidding.TYPE: // 일괄경매 유찰 예상 경매번호 노출 요청(출하안내시스템)
+				// Web Socket Broadcast
+				if (mSocketIOHandler != null) {
+					mSocketIOHandler.sendPacketData(message);
+				}
+				
 				// Netty Broadcast
 				if (mStandChannelsMap != null) {
 					if (mStandChannelsMap.containsKey(((ShowFailBidding) event).getAuctionHouseCode())) {

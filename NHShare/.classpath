@@ -22,9 +22,6 @@
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/gson-2.8.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/jdk-misc-3.Final.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/jlayer-1.0.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-api-2.12.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-core-2.12.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-slf4j-impl-2.12.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/logging-interceptor-3.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/mariadb-java-client-2.7.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/mssql-jdbc-9.4.0.jre16.jar"/>
@@ -41,5 +38,8 @@
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/javafx16/lib/javafx.swing.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/javafx16/lib/javafx.web.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/javafx16/lib/javafx-swt.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-api-2.15.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-core-2.15.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-slf4j-impl-2.15.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

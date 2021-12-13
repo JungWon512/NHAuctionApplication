@@ -41,6 +41,7 @@ import com.nh.share.server.models.BidderConnectInfo;
 import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ShowEntryInfo;
+import com.nh.share.server.models.ShowFailBidding;
 import com.nh.share.server.models.ToastMessage;
 import com.nh.share.setting.AuctionShareSetting;
 import com.nh.share.utils.JwtCertTokenUtils;
@@ -1449,6 +1450,16 @@ public class SocketIOHandler {
 							.keySet()) {
 						mWatchChannelClientMap.get(((AuctionBidStatus) parseObject).getAuctionHouseCode()).get(uuid)
 								.sendEvent("AuctionBidStatus", message);
+					}
+				}
+			}
+		} else if (parseObject instanceof ShowFailBidding) {
+			if (mWatchChannelClientMap.containsKey(((ShowFailBidding) parseObject).getAuctionHouseCode())) {
+				if (mWatchChannelClientMap.get(((ShowFailBidding) parseObject).getAuctionHouseCode()).size() > 0) {
+					for (UUID uuid : mWatchChannelClientMap.get(((ShowFailBidding) parseObject).getAuctionHouseCode())
+							.keySet()) {
+						mWatchChannelClientMap.get(((ShowFailBidding) parseObject).getAuctionHouseCode()).get(uuid)
+								.sendEvent("ShowFailBidding", message);
 					}
 				}
 			}

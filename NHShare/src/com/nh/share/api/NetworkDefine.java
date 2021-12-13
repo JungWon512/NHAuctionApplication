@@ -20,11 +20,8 @@ public class NetworkDefine {
 	
 	public static String ADMIN_ACCESS_TOKEN = "";
 	
-//	public static final String NH_AUCTION_API_HOST = "https://난장.kr"; // 개발 API의 호스트
-//	public static final String NH_AUCTION_API_HOST = "http://nhlva.nonghyup.com"; // 개발 API의 호스트
-//	public static final String NH_AUCTION_API_HOST = "http://192.168.0.92:8080"; // 개발 API의 호스트
-//	public static final String NH_AUCTION_API_HOST = "http://1.201.161.58:8080"; // 운영 API의 호스트
-	public static final String NH_AUCTION_API_HOST = "https://www.가축시장.kr"; // 개발 API의 호스트
+//	public static final String NH_AUCTION_API_HOST = "https://xn--e20bw05b.kr"; // 개발 API의 호스트
+	public static final String NH_AUCTION_API_HOST = "https://www.xn--o39an74b9ldx9g.kr"; // 운영 API의 호스트
 
 	public static final String API_VERSION =  "v2"; // API Version
 	
