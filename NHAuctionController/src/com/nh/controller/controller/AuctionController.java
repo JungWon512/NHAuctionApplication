@@ -2619,12 +2619,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 카운트다운 라벨 상태
 			setCountDownLabelState(mRemainingTimeCount, false);
 
-			// 전광판 카운트다운 전송
-			BillboardDelegate1.getInstance().onCountDown(auctionCountDown.getCountDownTime());
-			BillboardDelegate2.getInstance().onCountDown(auctionCountDown.getCountDownTime());
-
-			// PDP 카운트다운 전송
-			PdpDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
+//			// 전광판 카운트다운 전송
+//			BillboardDelegate1.getInstance().onCountDown(auctionCountDown.getCountDownTime());
+//			BillboardDelegate2.getInstance().onCountDown(auctionCountDown.getCountDownTime());
+//
+//			// PDP 카운트다운 전송
+//			PdpDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
 
 			// 카운트다운 효과음
 			if (isStartSoundPlaying) {

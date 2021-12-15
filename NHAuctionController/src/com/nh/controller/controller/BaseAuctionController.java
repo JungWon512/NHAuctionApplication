@@ -442,6 +442,13 @@ public abstract class BaseAuctionController implements NettyControllable {
 		mLogger.debug("onAuctionCountDown : " + auctionCountDown.getEncodedMessage());
 
 		if (auctionCountDown.getStatus().equals(GlobalDefineCode.AUCTION_COUNT_DOWN)) {
+			// 전광판 카운트다운 전송
+			BillboardDelegate1.getInstance().onCountDown(auctionCountDown.getCountDownTime());
+			BillboardDelegate2.getInstance().onCountDown(auctionCountDown.getCountDownTime());
+
+			// PDP 카운트다운 전송
+			PdpDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
+			
 //            String msg = String.format(mResMsg.getString("msg.auction.get.count.down"), mCurrentSpEntryInfo.getEntryNum().getValue(), auctionCountDown.getCountDownTime());
 			addLogItem("onAuctionCountDown : " + auctionCountDown.getEncodedMessage());
 		}
