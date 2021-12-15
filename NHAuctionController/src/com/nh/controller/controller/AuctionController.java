@@ -891,6 +891,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					
 					}
 					
+					Platform.runLater(() -> setCurrentEntryInfo(false));
+					
 					PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
 					pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
 						@Override
@@ -1563,7 +1565,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			public void run() {
 				// 갱신 후 변경점 있으면 서버 전달.
 				refreshWaitEntryDataList(true,REFRESH_ENTRY_LIST_TYPE_START);
-				Platform.runLater(() -> setCurrentEntryInfo(false));
 			}
 		};
 
