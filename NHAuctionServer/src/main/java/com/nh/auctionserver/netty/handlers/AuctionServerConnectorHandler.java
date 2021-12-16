@@ -622,21 +622,22 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 										.writeAndFlush(mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
 												.getAuctionStatus().getEncodedMessage() + "\r\n");
 								
-								List<EntryInfo> entryList = mAuctionScheduler.getAuctionEntryRepositoryMap(connectionInfo.getAuctionHouseCode()).getEntryList();
-								
-								if (entryList != null) {
-									if (entryList.size() > 0) {
-										int i = 0;
-										for (EntryInfo entryInfo : entryList) {
-											i++;
-											StandEntryInfo standEntryInfo = new StandEntryInfo(entryInfo);
-											
-											ctx.channel().writeAndFlush(standEntryInfo.getEncodedMessage() + "\r\n");
-											
-											mLogger.info("StandEntryInfo[" + i + "] : " + standEntryInfo.getEncodedMessage());
-										}
-									}
-								}
+								// 출하 안내 시스템 접속 시 출장우 정보 송신하지 않도록 변경 2021.12.15
+//								List<EntryInfo> entryList = mAuctionScheduler.getAuctionEntryRepositoryMap(connectionInfo.getAuctionHouseCode()).getEntryList();
+//								
+//								if (entryList != null) {
+//									if (entryList.size() > 0) {
+//										int i = 0;
+//										for (EntryInfo entryInfo : entryList) {
+//											i++;
+//											StandEntryInfo standEntryInfo = new StandEntryInfo(entryInfo);
+//											
+//											ctx.channel().writeAndFlush(standEntryInfo.getEncodedMessage() + "\r\n");
+//											
+//											mLogger.info("StandEntryInfo[" + i + "] : " + standEntryInfo.getEncodedMessage());
+//										}
+//									}
+//								}
 							}
 						}
 					}
