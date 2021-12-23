@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1480.0" minHeight="1024.0" minWidth="1480.0" prefHeight="1024.0" prefWidth="1480.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
+<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1480.0" minHeight="1024.0" minWidth="1480.0" prefHeight="1024.0" prefWidth="1480.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
    <top>
       <GridPane maxHeight="71.0" minHeight="71.0" prefHeight="71.0" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -693,7 +693,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="mBtnEsc" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[ESC]종료" />
+                  <Button fx:id="mBtnEsc" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="프로그램종료" />
                   <Button fx:id="mBtnF1" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F1]전체보기" />
                   <Button fx:id="mBtnF2" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F2]보류보기" />
                   <Button fx:id="mBtnF3" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F3]보류" />

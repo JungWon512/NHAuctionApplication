@@ -38,8 +38,8 @@
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/javafx16/lib/javafx.swing.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/javafx16/lib/javafx.web.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/javafx16/lib/javafx-swt.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-api-2.16.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-core-2.16.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-slf4j-impl-2.16.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-api-2.17.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-core-2.17.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/NHWork/AuctionApplications/NHShare/libs/log4j-slf4j-impl-2.17.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

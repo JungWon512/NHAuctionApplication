@@ -83,6 +83,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -108,6 +110,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
@@ -261,13 +264,28 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		thread.setDaemon(true);
 		thread.start();
 
+		// 윈도우 x버튼 클릭시 팝업 노출되도록 변경 적용 2021.12.23 jspark
 		if (mStage != null) {
-			// 타이틀바 X 버튼 프로그램 완전 종료
-			stage.setOnCloseRequest(e -> {
-				isApplicationClosePopup = true;
-				onServerAndClose();
-				Platform.exit();
-				System.exit(0);
+			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+				@Override
+				public void handle(WindowEvent evt) {
+					Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, mResMsg.getString("str.ask.application.close"), mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.cancel"));
+
+					if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+						isApplicationClosePopup = true;
+						onServerAndClose();
+						Platform.exit();
+						System.exit(0);
+					} else {
+						evt.consume();
+						
+						if (!SettingApplication.getInstance().isSingleAuction()) {
+							// 환경설정 -> 일괄경매 변경 -> 팝업 -> 취소시 다시 단일로 설정
+							SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, AuctionToggle.SINGLE.toString());
+							SettingApplication.getInstance().initSharedData();
+						}
+					}
+				}
 			});
 		}
 	}
@@ -312,7 +330,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
 
-		mBtnEsc.setOnMouseClicked(event -> onCancelOrClose());
+		mBtnEsc.setOnMouseClicked(event -> onClose());
 		mBtnF1.setOnMouseClicked(event -> openEntryListPopUp());
 		mBtnF2.setOnMouseClicked(event -> openEntryPendingListPopUp());
 		mBtnF3.setOnMouseClicked(event -> onPending());
@@ -1385,6 +1403,35 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	}
 
 	/**
+	 * 경매 진행중 => 취소 경매 진행중 아님 => 종료
+	 */
+
+	/**
+	 * 프로그램 종료
+	 */
+	public void onCloseApplicationPopup() {
+
+		Platform.runLater(() -> {
+
+			Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, mResMsg.getString("str.ask.application.close"), mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.cancel"));
+
+			if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+				isApplicationClosePopup = true;
+				onServerAndClose();
+				Platform.exit();
+				System.exit(0);
+			} else {
+
+				if (!SettingApplication.getInstance().isSingleAuction()) {
+					// 환경설정 -> 일괄경매 변경 -> 팝업 -> 취소시 다시 단일로 설정
+					SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, AuctionToggle.SINGLE.toString());
+					SettingApplication.getInstance().initSharedData();
+				}
+			}
+		});
+	}
+	
+	/**
 	 * 경매 취소 모든 사운드 종료
 	 */
 	public void stopAllSound() {
@@ -1439,9 +1486,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			PdpDelegate.getInstance().completePdp();
 
 		} else {
-
 			if (SettingApplication.getInstance().isUseSoundAuction()) {
-
 				if (mBtnSpace.getUserData() != null && !mBtnSpace.getUserData().toString().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 					// 경매 진행중 아니면.. 프로그램 종료
 					onCloseApplication();
@@ -1453,7 +1498,57 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// 경매 진행중 아니면.. 프로그램 종료
 				onCloseApplication();
 			}
+		}
+	}
 
+	@Override
+	void onCancel() {
+		if (isCancel) {
+			return;
+		}
+
+		mLogger.debug("[출품 취소 처리 시작] " + isCancel);
+		isStartSoundPlaying = false;
+		isCancel = true;
+
+		stopAllSound();
+		stopStartAuctionSecScheduler();
+
+		// 정지
+		onPause();
+		// 음성경매에서 + 눌러 단일경매로 시작한 경우
+		if (!SettingApplication.getInstance().isUseSoundAuction() && isPlusKeyStartAuction) {
+			toggleAuctionType();
+			isPlusKeyStartAuction = false;
+			// ENTER 경매 시작으로.
+			Platform.runLater(() -> {
+				mBtnEnter.setText(mResMsg.getString("str.btn.start"));
+				CommonUtils.getInstance().removeStyleClass(mBtnEnter, "btn-auction-stop");
+			});
+
+		}
+
+		// 서버로 취소결과 전달.
+		saveAuctionResult(false, mCurrentSpEntryInfo, null, GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
+		mBiddingInfoTableView.setDisable(false);
+		// 전광판 전달.
+		BillboardDelegate1.getInstance().completeBillboard();
+		BillboardDelegate2.getInstance().completeBillboard();
+		PdpDelegate.getInstance().completePdp();
+	}
+
+	@Override
+	void onClose() {
+		if (SettingApplication.getInstance().isUseSoundAuction()) {
+			if (mBtnSpace.getUserData() != null && !mBtnSpace.getUserData().toString().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+				// 경매 진행중 아니면.. 프로그램 종료
+				onCloseApplication();
+			} else {
+				onCloseApplication();
+			}
+		} else {
+			// 경매 진행중 아니면.. 프로그램 종료
+			onCloseApplication();
 		}
 	}
 
@@ -3817,7 +3912,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					// 종료
 					if (ke.getCode() == KeyCode.ESCAPE) {
-						onCancelOrClose();
+						onCancel();
 						ke.consume(); // 다음 노드로 이벤트를 전달하지 않는다.
 					}
 

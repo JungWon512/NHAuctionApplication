@@ -1180,6 +1180,10 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	abstract void onCancelOrClose();
 	
+	abstract void onCancel();
+	
+	abstract void onClose();
+	
 	abstract void checkBiddingUserPlaySound();
 
 	/**
