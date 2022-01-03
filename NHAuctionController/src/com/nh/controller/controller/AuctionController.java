@@ -1888,7 +1888,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
 			// 카운트 다운 중일 경우 실행 안 함
 			// 정지상태인경우 실행 안함
-			if (isCountDownRunning || isPause) {
+			if (isCountDownRunning || mCountDownLabel.isVisible() || isPause) {
 				return;
 			}
 
