@@ -128,6 +128,7 @@ public class LoginController implements Initializable {
 						}
 						
 						mLogger.debug("[로그인성공]=> " +result.getNaBzplc() + " / " + result.getAccessToken());
+						
 						//정보저장
 						GlobalDefine.ADMIN_INFO.adminData = new AdminData();
 						GlobalDefine.ADMIN_INFO.adminData.setUserId(mIdTextField.getText().toString().trim());
