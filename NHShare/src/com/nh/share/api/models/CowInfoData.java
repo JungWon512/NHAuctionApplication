@@ -60,7 +60,7 @@ public class CowInfoData {
 	private String BIRTH_FMT;
 	private int EXP_ATDR_AM;
 	private int EXP_LVST_AUC_PTC_MN_NO;
-	
+	private String AUC_YN;   
 
 	
 	public String getSRA_SRS_DSC() {
@@ -363,5 +363,11 @@ public class CowInfoData {
 	}
 	public void setEXP_LVST_AUC_PTC_MN_NO(int eXP_LVST_AUC_PTC_MN_NO) {
 		EXP_LVST_AUC_PTC_MN_NO = eXP_LVST_AUC_PTC_MN_NO;
+	}
+	public String getAUC_YN() {
+		return AUC_YN;
+	}
+	public void setAUC_YN(String aUC_YN) {
+		AUC_YN = aUC_YN;
 	}    
 }

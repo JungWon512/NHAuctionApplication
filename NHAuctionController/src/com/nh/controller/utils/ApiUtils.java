@@ -39,6 +39,7 @@ import com.nh.share.api.response.BaseResponse;
 import com.nh.share.api.response.ResponseAuctionLogin;
 import com.nh.share.api.response.ResponseAuctionResult;
 import com.nh.share.api.response.ResponseBidEntry;
+import com.nh.share.api.response.ResponseChangeCowInfo;
 import com.nh.share.api.response.ResponseCowInfo;
 import com.nh.share.api.response.ResponseFee;
 import com.nh.share.api.response.ResponseJoinNumber;
@@ -234,7 +235,7 @@ public class ApiUtils {
 	 * @param body
 	 * @param listener_
 	 */
-	public void requestMultipleAuctionStatus(RequestMultipleAuctionStatusBody body, ActionResultListener<BaseResponse> listener_) {
+	public void requestMultipleAuctionStatus(RequestMultipleAuctionStatusBody body, ActionResultListener<ResponseChangeCowInfo> listener_) {
 		ActionRuler.getInstance().addAction(new ActionRequestMultipleAuctionStatus(body, listener_));
 		ActionRuler.getInstance().runNext();
 	}

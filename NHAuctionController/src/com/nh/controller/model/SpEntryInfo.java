@@ -86,7 +86,7 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
 
 	private StringProperty mExpAuctionBidPrice; //-일괄 낙찰 예정 금액
 	private StringProperty mExpAuctionSucBidder; //-일괄 낙찰 예정자
-	
+	private StringProperty aucYn; //출장우 경매 여부
 
     public SpEntryInfo() {
     }
@@ -144,6 +144,7 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
         this.mPpgcowFeeDsc = new SimpleStringProperty(entryInfo.getPpgcowFeeDsc());
         this.mExpAuctionBidPrice = new SimpleStringProperty(entryInfo.getExpAuctionBidPrice());
         this.mExpAuctionSucBidder = new SimpleStringProperty(entryInfo.getExpAuctionSucBidder());
+        this.aucYn = new SimpleStringProperty(entryInfo.getAucYn());
         
     }
 
@@ -567,6 +568,14 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
 		this.mExpAuctionSucBidder = mExpAuctionSucBidder;
 	}
 
+	public StringProperty getAucYn() {
+		return aucYn;
+	}
+
+	public void setAucYn(StringProperty aucYn) {
+		this.aucYn = aucYn;
+	}
+
 	public String getConvertBirthDay() {
 
 		String convertBirthDay = "";
@@ -624,7 +633,19 @@ public class SpEntryInfo implements FromAuctionController ,Cloneable{
             } else if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
                 resultStr.setValue("낙찰");
             } else if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
-                resultStr.setValue("보류");
+            	
+                
+            	if(SettingApplication.getInstance().isSingleAuction()) {
+            		resultStr.setValue("보류");
+            	}else {
+            		
+            		if(aucYn.getValue().equals("1")) {
+            			resultStr.setValue("대기");
+            		}else {
+            			resultStr.setValue("보류");
+            		}
+            	
+            	}
             }
         }
 

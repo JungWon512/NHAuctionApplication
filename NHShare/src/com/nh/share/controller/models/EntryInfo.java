@@ -75,6 +75,7 @@ public class EntryInfo implements FromAuctionController {
 	private String mExpAuctionBidPrice; //-일괄 낙찰 예정 금액
 	private String mExpAuctionSucBidder; //-일괄 낙찰 예정자
 	
+	private String aucYn; // 출장우 경매 여부
 	
 	public EntryInfo() {
 	}
@@ -213,7 +214,7 @@ public class EntryInfo implements FromAuctionController {
 		mIsExcessCow = cowInfoData.getIS_EXCESS_COW();
 		mExpAuctionBidPrice = Integer.toString(cowInfoData.getEXP_ATDR_AM()); 
 		mExpAuctionSucBidder = Integer.toString(cowInfoData.getEXP_LVST_AUC_PTC_MN_NO());
-		
+		aucYn = cowInfoData.getAUC_YN();
 	}
 	
 	
@@ -625,6 +626,14 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setExpAuctionSucBidder(String mExpAuctionSucBidder) {
 		this.mExpAuctionSucBidder = mExpAuctionSucBidder;
+	}
+	
+	public String getAucYn() {
+		return aucYn;
+	}
+
+	public void setAucYn(String aucYn) {
+		this.aucYn = aucYn;
 	}
 
 	@Override
