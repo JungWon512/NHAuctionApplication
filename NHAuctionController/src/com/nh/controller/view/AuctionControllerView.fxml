@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1480.0" minHeight="1024.0" minWidth="1480.0" prefHeight="1024.0" prefWidth="1480.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
+<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1480.0" minHeight="1024.0" minWidth="1480.0" prefHeight="1024.0" prefWidth="1480.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
    <top>
       <GridPane maxHeight="71.0" minHeight="71.0" prefHeight="71.0" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -126,7 +126,7 @@
                                        <font>
                                           <Font size="14.0" />
                                        </font></Button>
-                                    <Button fx:id="mBtnBuyerSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="경매 종료시" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="mBtnBuyerSound" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="main-top-text" text="매수인 안내" HBox.hgrow="ALWAYS">
                                        <font>
                                           <Font size="14.0" />
                                        </font></Button>

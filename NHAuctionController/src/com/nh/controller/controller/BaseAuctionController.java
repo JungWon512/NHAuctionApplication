@@ -1615,6 +1615,85 @@ public abstract class BaseAuctionController implements NettyControllable {
 		return resultDataList;
 	}
 	
-	
+	public void sendBillboardEntryData() {
+		if (!BillboardDelegate1.getInstance().isEmptyClient() && BillboardDelegate1.getInstance().isActive()) {
+
+			// UDP 통신
+			BillboardData billboardData1 = new BillboardData();
+			billboardData1.setbEntryNum(String.valueOf(mCurrentSpEntryInfo.getEntryNum().getValue()));
+			billboardData1.setbExhibitor(String.valueOf(mCurrentSpEntryInfo.getExhibitor().getValue()));
+			billboardData1.setbWeight(String.valueOf(mCurrentSpEntryInfo.getWeight().getValue()));
+			billboardData1.setbGender(String.valueOf(mCurrentSpEntryInfo.getGender().getValue()));
+			billboardData1.setbMotherTypeCode(String.valueOf(mCurrentSpEntryInfo.getMotherTypeCode().getValue()));
+			billboardData1.setbPasgQcn(String.valueOf(mCurrentSpEntryInfo.getPasgQcn().getValue()));
+			billboardData1.setbMatime(String.valueOf(mCurrentSpEntryInfo.getMatime().getValue()));
+			billboardData1.setbKpn(String.valueOf(mCurrentSpEntryInfo.getKpn().getValue()));
+			billboardData1.setbRegion(String.valueOf(mCurrentSpEntryInfo.getRgnName().getValue()));
+			billboardData1.setbNote(String.valueOf(mCurrentSpEntryInfo.getNote().getValue()));
+			billboardData1.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
+			billboardData1.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));
+
+			BillboardDelegate1.getInstance().sendBillboardData(billboardData1);
+
+			// 전광판1 비고 흐름 사용 여부
+			if (SettingApplication.getInstance().isBoardUseNote1()) {
+				BillboardDelegate1.getInstance().clearBillboardNote();
+				BillboardDelegate1.getInstance().sendBillboardNote(billboardData1.getbNote());
+			}
+
+			addLogItem(mResMsg.getString("msg.billboard.send.current.entry.data") + billboardData1.getEncodedMessage());
+		}
+		
+		if (!BillboardDelegate2.getInstance().isEmptyClient() && BillboardDelegate2.getInstance().isActive()) {
+
+			// UDP 통신
+			BillboardData billboardData2 = new BillboardData();
+			billboardData2.setbEntryNum(String.valueOf(mCurrentSpEntryInfo.getEntryNum().getValue()));
+			billboardData2.setbExhibitor(String.valueOf(mCurrentSpEntryInfo.getExhibitor().getValue()));
+			billboardData2.setbWeight(String.valueOf(mCurrentSpEntryInfo.getWeight().getValue()));
+			billboardData2.setbGender(String.valueOf(mCurrentSpEntryInfo.getGender().getValue()));
+			billboardData2.setbMotherTypeCode(String.valueOf(mCurrentSpEntryInfo.getMotherTypeCode().getValue()));
+			billboardData2.setbPasgQcn(String.valueOf(mCurrentSpEntryInfo.getPasgQcn().getValue()));
+			billboardData2.setbMatime(String.valueOf(mCurrentSpEntryInfo.getMatime().getValue()));
+			billboardData2.setbKpn(String.valueOf(mCurrentSpEntryInfo.getKpn().getValue()));
+			billboardData2.setbRegion(String.valueOf(mCurrentSpEntryInfo.getRgnName().getValue()));
+			billboardData2.setbNote(String.valueOf(mCurrentSpEntryInfo.getNote().getValue()));
+			billboardData2.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
+			billboardData2.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));
+
+			BillboardDelegate2.getInstance().sendBillboardData(billboardData2);
+			
+			// 전광판2 비고 흐름 사용 여부
+			if (SettingApplication.getInstance().isBoardUseNote2()) {
+				BillboardDelegate2.getInstance().clearBillboardNote();
+				BillboardDelegate2.getInstance().sendBillboardNote(billboardData2.getbNote());
+			}
+			
+			addLogItem(mResMsg.getString("msg.billboard.send.current.entry.data") + billboardData2.getEncodedMessage());
+		}
+//		BillboardDelegate1.getInstance().completeBillboard();
+//		BillboardDelegate2.getInstance().completeBillboard();
+//		PdpDelegate.getInstance().completePdp();
+		if (!PdpDelegate.getInstance().isEmptyClient() && PdpDelegate.getInstance().isActive()) {
+
+			PdpData pdpData = new PdpData();
+			pdpData.setbEntryType(String.valueOf(mCurrentSpEntryInfo.getEntryType().getValue()));
+			pdpData.setbEntryNum(String.valueOf(mCurrentSpEntryInfo.getEntryNum().getValue()));
+			pdpData.setbExhibitor(String.valueOf(mCurrentSpEntryInfo.getExhibitor().getValue()));
+			pdpData.setbWeight(String.valueOf(mCurrentSpEntryInfo.getWeight().getValue()));
+			pdpData.setbGender(String.valueOf(mCurrentSpEntryInfo.getGender().getValue()));
+			pdpData.setbMotherTypeCode(String.valueOf(mCurrentSpEntryInfo.getMotherTypeCode().getValue()));
+			pdpData.setbPasgQcn(String.valueOf(mCurrentSpEntryInfo.getPasgQcn().getValue()));
+			pdpData.setbMatime(String.valueOf(mCurrentSpEntryInfo.getMatime().getValue()));
+			pdpData.setbKpn(String.valueOf(mCurrentSpEntryInfo.getKpn().getValue()));
+			pdpData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getRgnName().getValue()));
+			pdpData.setbNote(String.valueOf(mCurrentSpEntryInfo.getNote().getValue()));
+			pdpData.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
+			pdpData.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));
+
+			PdpDelegate.getInstance().sendPdpData(pdpData);
+			addLogItem(mResMsg.getString("msg.pdp.send.current.entry.data") + pdpData.getEncodedMessage());
+		}
+	}
 
 }

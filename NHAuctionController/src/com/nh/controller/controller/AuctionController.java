@@ -83,6 +83,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -2304,6 +2306,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						
 						mWaitTableView.refresh();
 
+						sendBillboardEntryData();
 					} else {
 						mLogger.debug("[최저가 수정 Fail]");
 						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.fail")));

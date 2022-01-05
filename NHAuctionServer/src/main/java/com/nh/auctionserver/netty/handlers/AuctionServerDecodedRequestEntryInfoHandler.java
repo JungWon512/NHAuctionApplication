@@ -75,16 +75,21 @@ public final class AuctionServerDecodedRequestEntryInfoHandler extends SimpleCha
 				ctx.writeAndFlush(new ResponseCode(requestEntryInfo.getAuctionHouseCode(),
 						GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage() + "\r\n");
 			} else {
-				EntryInfo entryInfo = null;
-				entryInfo = mAuctionScheduler.getEntryInfo(requestEntryInfo.getAuctionHouseCode(),
-						requestEntryInfo.getEntryNum());
-				
-				if (entryInfo != null) {
-					ctx.writeAndFlush(
-							new CurrentEntryInfo(entryInfo).getEncodedMessage() + "\r\n");
-				} else {
+				if (mAuctionScheduler.getAuctionState(requestEntryInfo.getAuctionHouseCode()).getIsAuctionPause()) {
 					ctx.writeAndFlush(new ResponseCode(requestEntryInfo.getAuctionHouseCode(),
-							GlobalDefineCode.RESPONSE_REQUEST_NOT_RESULT).getEncodedMessage() + "\r\n");
+							GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage() + "\r\n");
+				} else {
+					EntryInfo entryInfo = null;
+					entryInfo = mAuctionScheduler.getEntryInfo(requestEntryInfo.getAuctionHouseCode(),
+							requestEntryInfo.getEntryNum());
+					
+					if (entryInfo != null) {
+						ctx.writeAndFlush(
+								new CurrentEntryInfo(entryInfo).getEncodedMessage() + "\r\n");
+					} else {
+						ctx.writeAndFlush(new ResponseCode(requestEntryInfo.getAuctionHouseCode(),
+								GlobalDefineCode.RESPONSE_REQUEST_NOT_RESULT).getEncodedMessage() + "\r\n");
+					}
 				}
 			}
 		} else {

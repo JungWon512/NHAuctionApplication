@@ -14,6 +14,7 @@ import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
+import com.nh.controller.utils.AudioFilePlay.AudioPlayTypes;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.NetworkDefine;
 import com.nh.share.api.request.body.RequestLoginBody;
@@ -127,7 +128,6 @@ public class LoginController implements Initializable {
 						}
 						
 						mLogger.debug("[로그인성공]=> " +result.getNaBzplc() + " / " + result.getAccessToken());
-						
 						//정보저장
 						GlobalDefine.ADMIN_INFO.adminData = new AdminData();
 						GlobalDefine.ADMIN_INFO.adminData.setUserId(mIdTextField.getText().toString().trim());
