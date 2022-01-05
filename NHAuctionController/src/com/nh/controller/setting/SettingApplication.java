@@ -209,18 +209,18 @@ public class SettingApplication {
 			// [E] 메인 경매 정보 음성 노출 여부 기본 설정
 
 			// [S] 경매 음성 메세지 기본 설정
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, resMsg.getString("default.msg.setting.sound.intro"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, resMsg.getString("default.msg.setting.sound.buyer"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, resMsg.getString("default.msg.setting.sound.guide"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE, resMsg.getString("default.msg.setting.sound.practice"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER, resMsg.getString("default.msg.setting.sound.gender"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_USE, resMsg.getString("default.msg.setting.sound.use"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1, resMsg.getString("default.msg.setting.sound.etc1"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2, resMsg.getString("default.msg.setting.sound.etc2"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3, resMsg.getString("default.msg.setting.sound.etc3"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4, resMsg.getString("default.msg.setting.sound.etc4"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, resMsg.getString("default.msg.setting.sound.etc5"));
-			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, resMsg.getString("default.msg.setting.sound.etc6"));
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_USE,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5,"");
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6,"");
 			// [E] 경매 음성 메세지 기본 설정
 			
 			// 상한가
