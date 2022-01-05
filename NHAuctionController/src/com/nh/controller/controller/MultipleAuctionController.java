@@ -66,6 +66,7 @@ import com.nh.share.api.request.body.RequestCowInfoBody;
 import com.nh.share.api.request.body.RequestMultipleAuctionStatusBody;
 import com.nh.share.api.response.BaseResponse;
 import com.nh.share.api.response.ResponseBidEntry;
+import com.nh.share.api.response.ResponseChangeCowInfo;
 import com.nh.share.api.response.ResponseCowInfo;
 import com.nh.share.api.response.ResponseJoinNumber;
 import com.nh.share.api.response.ResponseNumber;
@@ -857,6 +858,14 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		refreshWaitEntryDataList(true, type);
 	}
 
+
+	/**
+	 * 새로고침 버튼
+	 */
+	private void onResponseCowInfoRefresh(List<CowInfoData> resDataList,String type) {
+		refreshWaitEntryDataList(type,resDataList);
+	}
+
 	/**
 	 * 전체 보기
 	 */
@@ -985,11 +994,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 							ObservableList<SpEntryInfo> newEntryDataList = getParsingCowEntryDataList(dataList);
 							
 							mLogger.debug("[현재 타입 mCurPageType] => " + mCurPageType);
-							
-							for(SpEntryInfo cowInfoData : newEntryDataList) {
-								mLogger.debug("[필터링된 데이터] => " + cowInfoData.getEntryNum().getValue() + " / " + cowInfoData.getExhibitor().getValue());
-							}
-							
+					
 
 							// 조회 데이터 없으면 리턴
 							if (CommonUtils.getInstance().isListEmpty(newEntryDataList)) {
@@ -1131,6 +1136,154 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	/**
 	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
 	 */
+	private void refreshWaitEntryDataList(String type , List<CowInfoData> resDataList) {
+
+		if(!CommonUtils.getInstance().isListEmpty(resDataList)) {
+
+			mLogger.debug("[출장우 정보 조회 데이터 수] " + resDataList.size());
+
+			List<CowInfoData> dataList = new ArrayList<CowInfoData>();
+			
+			dataList.addAll(resDataList);
+
+			ObservableList<SpEntryInfo> newEntryDataList = getParsingCowEntryDataList(dataList);
+
+			mLogger.debug("[현재 타입 mCurPageType] => " + mCurPageType);
+		
+			// 조회 데이터 없으면 리턴
+			if (CommonUtils.getInstance().isListEmpty(newEntryDataList)) {
+				mLogger.debug("조회 데이터 없음.");
+				return;
+			}
+
+			// 현재 최종 수정시간 < 조회된 최종 수정시간 -> 데이터 갱신&서버 전달
+			for (int i = 0; mRecordCount > i; i++) {
+
+				String curEntryNum = mWaitEntryInfoDataList.get(i).getEntryNum().getValue();
+
+				for (int j = 0; newEntryDataList.size() > j; j++) {
+
+					String newEntryNum = newEntryDataList.get(j).getEntryNum().getValue();
+
+					if (curEntryNum.equals(newEntryNum)) {
+
+						if (CommonUtils.getInstance().isEmptyProperty(newEntryDataList.get(j).getLsChgDtm()) || CommonUtils.getInstance().isEmptyProperty(mWaitEntryInfoDataList.get(i).getLsChgDtm())) {
+							break;
+						}
+
+						long newDt = Long.parseLong(newEntryDataList.get(j).getLsChgDtm().getValue());
+						long curDt = Long.parseLong(mWaitEntryInfoDataList.get(i).getLsChgDtm().getValue());
+
+						if ((newDt > curDt) || type.equals(REFRESH_ENTRY_LIST_TYPE_REFRESH)) {
+
+							mWaitEntryInfoDataList.set(i, newEntryDataList.get(j));
+
+							// 출품정보 전송 후 변경된 사항 전달.
+							if (isSendEnterInfo()) {
+
+								String tmpIsLastEntry = newEntryDataList.get(j).getIsLastEntry().getValue();
+
+								newEntryDataList.get(j).getIsLastEntry().setValue(GlobalDefine.ETC_INFO.AUCTION_DATA_MODIFY_M);
+
+								AuctionDelegate.getInstance().onSendEntryData(newEntryDataList.get(j));
+
+								newEntryDataList.get(j).getIsLastEntry().setValue(tmpIsLastEntry);
+
+								mLogger.debug("변경된 출품 정보 서버 전송 : " + newEntryDataList.get(j).getEntryNum().getValue());
+							}
+						} 
+						
+						break;
+					}
+				}
+			}
+				
+				ObservableList<SpEntryInfo> newDataList = null;
+				
+				// 보류목록일경우
+				if (mCurPageType.equals(EntryDialogType.ENTRY_LIST)) {
+				
+					newDataList = newEntryDataList.stream()
+							.filter(e -> !mWaitEntryInfoDataList.contains(e))
+							.collect(Collectors.toCollection(FXCollections::observableArrayList));
+					
+				}else {
+					
+					newDataList = newEntryDataList.stream()
+							.filter(e -> !mWaitEntryInfoDataList.contains(e))
+							.filter(c -> c.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING) || c.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_READY))
+							.collect(Collectors.toCollection(FXCollections::observableArrayList));
+				}
+				
+				// 추가된 데이터 항목이 있으면 add
+				if (!CommonUtils.getInstance().isListEmpty(newDataList)) {
+
+					mLogger.debug("추가된 데이터 있음.");
+
+					for (SpEntryInfo spEntryInfo : newDataList) {
+						mLogger.debug("추가된 데이터 전송=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
+					}
+
+					mWaitEntryInfoDataList.addAll(mRecordCount, newDataList);
+					mRecordCount += newDataList.size();
+
+				} else {
+					mLogger.debug("추기된 데이터 없음.");
+				}
+
+				mWaitTableView.refresh();
+
+			setCurrentEntryInfo();
+
+			PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
+			pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					onCowInfoSendOrStartAuction(type);
+				}
+			});
+			pauseTransition.play();
+			
+		}
+		
+		
+		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
+		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
+		String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
+		String selStsDsc = "";
+
+		// 보류목록일경우
+//		if (mCurPageType.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
+//			selStsDsc = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
+//		}
+
+		// 출장우 데이터 조회
+		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn);
+
+		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
+			@Override
+			public void onResponseResult(final ResponseCowInfo result) {
+
+				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
+					
+				}
+			}
+
+			@Override
+			public void onResponseError(String message) {
+				mLogger.debug("[onResponseError] 출장우 정보 " + message);
+				onCowInfoSendOrStartAuction(type);
+				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+				// ChooseAuctionController 에서 처리
+			}
+		});
+	}
+
+	
+	/**
+	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
+	 */
 	private void refreshWaitEntryDataList(boolean isRefresh, String type) {
 
 		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
@@ -1162,12 +1315,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					ObservableList<SpEntryInfo> newEntryDataList = getParsingCowEntryDataList(dataList);
 
 					mLogger.debug("[현재 타입 mCurPageType] => " + mCurPageType);
-					
-					for(SpEntryInfo cowInfoData : newEntryDataList) {
-						mLogger.debug("[필터링된 데이터] => " + cowInfoData.getEntryNum().getValue() + " / " + cowInfoData.getExhibitor().getValue());
-					}
-					
-					
+				
 					// 조회 데이터 없으면 리턴
 					if (CommonUtils.getInstance().isListEmpty(newEntryDataList)) {
 						mLogger.debug("조회 데이터 없음.");
@@ -1278,6 +1426,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		});
 	}
 
+	
 	/**
 	 * ( 출품 이관 전 체크
 	 * 
@@ -1326,10 +1475,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mLogger.debug("경매 Status 전송 : " + type);
 
 		RequestMultipleAuctionStatusBody body = new RequestMultipleAuctionStatusBody(naBzplc, aucObjDsc, aucDate, type, rgSqNo);
-		ApiUtils.getInstance().requestMultipleAuctionStatus(body, new ActionResultListener<BaseResponse>() {
+		ApiUtils.getInstance().requestMultipleAuctionStatus(body, new ActionResultListener<ResponseChangeCowInfo>() {
 
 			@Override
-			public void onResponseResult(BaseResponse result) {
+			public void onResponseResult(ResponseChangeCowInfo result) {
 
 				if (result != null && result.getSuccess()) {
 					mLogger.debug("[일괄경매 Status Success] : " + type);
@@ -1338,7 +1487,11 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 						GlobalDefine.AUCTION_INFO.auctionRoundData.setSelStsDsc(GlobalDefineCode.STN_AUCTION_STATUS_PROGRESS);
 						
-						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
+						if(!CommonUtils.getInstance().isListEmpty(result.getData())) {
+							onResponseCowInfoRefresh(result.getData(),REFRESH_ENTRY_LIST_TYPE_REFRESH);
+						}
+						
+//						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
 
 						onAuctionStatusStart();
 
@@ -1346,6 +1499,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 						GlobalDefine.AUCTION_INFO.auctionRoundData.setSelStsDsc(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE);
 
+//						if(!CommonUtils.getInstance().isListEmpty(result.getData())) {
+//							onResponseCowInfoRefresh(result.getData(),REFRESH_ENTRY_LIST_TYPE_REFRESH);
+//						}
+//						
 						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
 
 						onAuctionStatusPause();
@@ -1359,6 +1516,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 						GlobalDefine.AUCTION_INFO.auctionRoundData.setSelStsDsc(GlobalDefineCode.STN_AUCTION_STATUS_FINISH);
 
+//						if(!CommonUtils.getInstance().isListEmpty(result.getData())) {
+//							onResponseCowInfoRefresh(result.getData(),REFRESH_ENTRY_LIST_TYPE_REFRESH);
+//						}
+						
 						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
 
 						onAuctionStatusFinish();

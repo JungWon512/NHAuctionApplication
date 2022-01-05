@@ -7,6 +7,8 @@ import com.nh.share.api.ActionRuler;
 import com.nh.share.api.NetworkDefine;
 import com.nh.share.api.request.body.RequestMultipleAuctionStatusBody;
 import com.nh.share.api.response.BaseResponse;
+import com.nh.share.api.response.ResponseChangeCowInfo;
+import com.nh.share.api.response.ResponseCowInfo;
 import com.nh.share.utils.CommonUtils;
 
 import okhttp3.Headers;
@@ -28,7 +30,7 @@ public class ActionRequestMultipleAuctionStatus extends Action {
 	
 	private RequestMultipleAuctionStatusBody mBody = null;
 	
-	public ActionRequestMultipleAuctionStatus(RequestMultipleAuctionStatusBody body, ActionResultListener<BaseResponse> resultListener) {
+	public ActionRequestMultipleAuctionStatus(RequestMultipleAuctionStatusBody body, ActionResultListener<ResponseChangeCowInfo> resultListener) {
 		this.mBody = body;
 		this.mResultListenerBase = resultListener;
 	}
@@ -37,18 +39,18 @@ public class ActionRequestMultipleAuctionStatus extends Action {
 
 		@FormUrlEncoded
 		@POST(NetworkDefine.API_REQUEST_MULTIPLE_AUCTION_STATUS)
-		Call<BaseResponse> requestMultipleAuctionStatus(
+		Call<ResponseChangeCowInfo> requestMultipleAuctionStatus(
 				@Path("version") String apiVer,
 				@FieldMap HashMap<String, Object> paramBody);
 	}
 
-	private final Callback<BaseResponse> mCallBack = new Callback<BaseResponse>() {
+	private final Callback<ResponseChangeCowInfo> mCallBack = new Callback<ResponseChangeCowInfo>() {
 		@Override
-		public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+		public void onResponse(Call<ResponseChangeCowInfo> call, Response<ResponseChangeCowInfo> response) {
 			actionDone(resultType.ACTION_RESULT_RUNNEXT);
 			Headers headers = response.headers();
 			String type = headers.get(CONTENT_TYPE);
-			BaseResponse body = response.body();
+			ResponseChangeCowInfo body = response.body();
 
 			switch (response.code()) {
 			case 200:
@@ -61,7 +63,7 @@ public class ActionRequestMultipleAuctionStatus extends Action {
 		}
 
 		@Override
-		public void onFailure(Call<BaseResponse> call, Throwable t) {
+		public void onFailure(Call<ResponseChangeCowInfo> call, Throwable t) {
 			if (t.toString().contains("Exception") || t.toString().contains("JsonSyntaxException") || t.toString().contains("MalformedJsonException") || t.toString().contains("NoRouteToHostException") || t.toString().contains("SocketTimeoutException")) {
 				ActionRuler.getInstance().finish();
 				actionDone(resultType.ACTION_RESULT_ERROR_NOT_RESPONSE);
