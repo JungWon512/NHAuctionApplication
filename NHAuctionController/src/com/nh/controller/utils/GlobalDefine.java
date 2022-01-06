@@ -1,11 +1,7 @@
 package com.nh.controller.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.nh.controller.model.AdminData;
 import com.nh.controller.model.AuctionRound;
-import com.nh.controller.model.FeeData;
 
 /**
  * 공통 Define
@@ -79,19 +75,19 @@ public class GlobalDefine {
 	 */
 	public static final class AUCTION_INFO {
 
-//		public static final String AUCTION_HOST = "1.201.161.58"; // 운영 서버
-//		public static final String AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
-//		public static final String AUCTION_HOST = "210.107.78.140"; // 출하안내 교수
-//		public static final String AUCTION_HOST = "192.168.0.18"; // Server Host pc
-//		public static final String AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
-//		public static final String AUCTION_HOST = "192.168.0.25"; // Server Host  홍민
-//		public static final String AUCTION_HOST = "192.168.0.23"; // dev local server
-		public static final String AUCTION_HOST = "115.41.222.25"; // dev remote server
+		public static final String AUCTION_HOST = "1.201.161.58"; // 운영 서버
+		public static final String DEV_AUCTION_HOST = "115.41.222.25"; // dev remote server
+//		public static final String DEV_AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
+//		public static final String DEV_AUCTION_HOST = "210.107.78.140"; // 출하안내 교수
+//		public static final String DEV_AUCTION_HOST = "192.168.0.18"; // Server Host pc
+//		public static final String DEV_AUCTION_HOST = "192.168.0.23"; // Server Host  팀장님
+//		public static final String DEV_AUCTION_HOST = "192.168.0.25"; // Server Host  홍민
+//		public static final String DEV_AUCTION_HOST = "192.168.0.23"; // dev local server
+//		public static final String DEV_AUCTION_HOST = "115.41.222.25"; // dev remote server
 
 		public static final int AUCTION_PORT = 5001; // Server Port
 
 		public static AuctionRound auctionRoundData = null;	//경매 회차 데이터
-		public static List<FeeData> feeData = new ArrayList<FeeData>();	//경매 수수료
 		
 		// 경매 진행 상태
 		public static final String AUCTION_STATUS_NONE = "8000";

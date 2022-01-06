@@ -4,7 +4,6 @@ import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
@@ -33,7 +32,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -71,7 +69,7 @@ public class ChooseAuctionController implements Initializable {
 	private DatePicker mAuctionDatePicker;
 
 	@FXML
-	private Label mVersionLabel, mReleaseDateLabel;
+	private Label mTitleLabel,mVersionLabel, mReleaseDateLabel;
 
 	@FXML
 	private TextField mIp, mPort;
@@ -116,6 +114,12 @@ public class ChooseAuctionController implements Initializable {
 	}
 
 	private void setApplicationInfo() {
+		
+		if(!GlobalDefineCode.FLAG_PRD) {
+			String devStr = "[난장]" + mTitleLabel.getText();
+			mTitleLabel.setText(devStr);
+		}
+		
 		mVersionLabel.setText(GlobalDefine.APPLICATION_INFO.RELEASE_VERION);
 		mReleaseDateLabel.setText(GlobalDefine.APPLICATION_INFO.RELEASE_DATE);
 	}
@@ -125,7 +129,15 @@ public class ChooseAuctionController implements Initializable {
 	 */
 	private void setDefaultSetting() {
 
-		String ip = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SERVER_IP, GlobalDefine.AUCTION_INFO.AUCTION_HOST);
+		String host = GlobalDefine.AUCTION_INFO.AUCTION_HOST;
+		
+		if(GlobalDefineCode.FLAG_PRD) {
+			host = GlobalDefine.AUCTION_INFO.AUCTION_HOST;
+		}else {
+			host = GlobalDefine.AUCTION_INFO.DEV_AUCTION_HOST;
+		}
+		
+		String ip = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SERVER_IP, host);
 		int port = SharedPreference.getInstance().getInt(SharedPreference.PREFERENCE_SERVER_PORT, GlobalDefine.AUCTION_INFO.AUCTION_PORT);
 		int obj = SharedPreference.getInstance().getInt(SharedPreference.PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1);
 
@@ -359,7 +371,6 @@ public class ChooseAuctionController implements Initializable {
 	 */
 	private void clearGlobalData() {
 		GlobalDefine.AUCTION_INFO.auctionRoundData = null;
-		GlobalDefine.AUCTION_INFO.feeData = null;
 	}
 
 	/**

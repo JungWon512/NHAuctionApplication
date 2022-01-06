@@ -131,7 +131,7 @@ public class ActionRequestAuctionResult extends Action {
 
 	@Override
 	public void run() {
-		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.NH_AUCTION_API_HOST).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
 		RetrofitAPIService mRetrofitAPIService = mRetrofit.create(RetrofitAPIService.class);
 		mRetrofitAPIService.requestAuctionResult(NetworkDefine.API_VERSION,body).enqueue(mCallBack);
 	}
