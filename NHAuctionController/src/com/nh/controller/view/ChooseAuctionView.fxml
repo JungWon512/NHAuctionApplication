@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.0" prefWidth="920.0" styleClass="base-pane" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.ChooseAuctionController">
+<BorderPane fx:id="mRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.0" prefWidth="920.0" styleClass="base-pane" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.ChooseAuctionController">
    <top>
       <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="100.0" styleClass="text-bold-008fff" text="전자경매 시스템" textFill="#56afff" BorderPane.alignment="CENTER">
          <graphic>
-            <Label styleClass="text-bold-111111" text="가축시장" textFill="WHITE">
+            <Label fx:id="mTitleLabel" styleClass="text-bold-111111" text="가축시장" textFill="WHITE">
                <font>
                   <Font name="Noto Sans CJK KR Regular" size="36.0" />
                </font>
@@ -44,7 +44,7 @@
                   </RadioButton>
                   <RadioButton fx:id="mFatteningCattleToggleButton" mnemonicParsing="false" text="비육우" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="2" />
                   <RadioButton fx:id="mBreedingCattleToggleButton" mnemonicParsing="false" text="번식우" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="3" />
-                  <RadioButton fx:id="mAllCowToggleButton" mnemonicParsing="false" text="일괄" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="0" >
+                  <RadioButton fx:id="mAllCowToggleButton" mnemonicParsing="false" text="일괄" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="0">
                      <toggleGroup>
                         <ToggleGroup fx:id="cowTypeToggleGroup1" />
                      </toggleGroup>

@@ -22,6 +22,7 @@ import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.setting.SettingApplication;
+import com.nh.share.code.GlobalDefineCode;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -634,7 +635,13 @@ public class MoveStageUtil {
 	 * @param resources
 	 */
 	private void setWindowTitle(Stage stage, ResourceBundle resources) {
-		stage.setTitle(	String.format(resources.getString("app.title"), GlobalDefine.APPLICATION_INFO.RELEASE_VERION));
+		
+		if(GlobalDefineCode.FLAG_PRD) {
+			stage.setTitle(	String.format(resources.getString("app.title"), GlobalDefine.APPLICATION_INFO.RELEASE_VERION));	
+		}else {
+			stage.setTitle(	String.format(resources.getString("app.title.dev"), GlobalDefine.APPLICATION_INFO.RELEASE_VERION));
+		}
+		
 		stage.getIcons().add(new Image(getApplicationClass().getResourceAsStream("resource/images/ic_logo.png")));
 	}
 	

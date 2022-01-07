@@ -122,7 +122,7 @@ public class ActionRequestUpdateLowsBidAmt extends Action {
 
 	@Override
 	public void run() {
-		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.NH_AUCTION_API_HOST).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
 		RetrofitAPIService mRetrofitAPIService = mRetrofit.create(RetrofitAPIService.class);
 		mRetrofitAPIService.requestUpdateLowsBidAmt(NetworkDefine.API_VERSION,mBody.get("list").toString()).enqueue(mCallBack);
 	}

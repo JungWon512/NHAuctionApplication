@@ -30,6 +30,7 @@ import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
 import com.nh.common.interfaces.UdpBillBoardStatusListener;
 import com.nh.common.interfaces.UdpPdpBoardStatusListener;
+import com.nh.controller.controller.SettingController.AuctionToggle;
 import com.nh.controller.interfaces.AudioPlayListener;
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.MessageStringListener;
@@ -126,6 +127,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 /**
@@ -269,12 +271,28 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		thread.setDaemon(true);
 		thread.start();
 
+		// 윈도우 x버튼 클릭시 팝업 노출되도록 변경 적용 2021.12.23 jspark
 		if (mStage != null) {
-			// 타이틀바 X 버튼 프로그램 완전 종료
-			stage.setOnCloseRequest(e -> {
-				onServerAndClose();
-				Platform.exit();
-				System.exit(0);
+			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+				@Override
+				public void handle(WindowEvent evt) {
+					Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, mResMsg.getString("str.ask.application.close"), mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.cancel"));
+
+					if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+						isApplicationClosePopup = true;
+						onServerAndClose();
+						Platform.exit();
+						System.exit(0);
+					} else {
+						evt.consume();
+						
+						if (!SettingApplication.getInstance().isSingleAuction()) {
+							// 환경설정 -> 일괄경매 변경 -> 팝업 -> 취소시 다시 단일로 설정
+							SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, AuctionToggle.SINGLE.toString());
+							SettingApplication.getInstance().initSharedData();
+						}
+					}
+				}
 			});
 		}
 	}
@@ -863,7 +881,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 * 새로고침 버튼
 	 */
 	private void onResponseCowInfoRefresh(List<CowInfoData> resDataList,String type) {
-		refreshWaitEntryDataList(type,resDataList);
+		clearRefreshWaitEntryDataList(type,resDataList);
 	}
 
 	/**
@@ -1136,7 +1154,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	/**
 	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
 	 */
-	private void refreshWaitEntryDataList(String type , List<CowInfoData> resDataList) {
+	private void clearRefreshWaitEntryDataList(String type , List<CowInfoData> resDataList) {
 
 		if(!CommonUtils.getInstance().isListEmpty(resDataList)) {
 
@@ -1156,128 +1174,27 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				return;
 			}
 
-			// 현재 최종 수정시간 < 조회된 최종 수정시간 -> 데이터 갱신&서버 전달
-			for (int i = 0; mRecordCount > i; i++) {
-
-				String curEntryNum = mWaitEntryInfoDataList.get(i).getEntryNum().getValue();
-
-				for (int j = 0; newEntryDataList.size() > j; j++) {
-
-					String newEntryNum = newEntryDataList.get(j).getEntryNum().getValue();
-
-					if (curEntryNum.equals(newEntryNum)) {
-
-						if (CommonUtils.getInstance().isEmptyProperty(newEntryDataList.get(j).getLsChgDtm()) || CommonUtils.getInstance().isEmptyProperty(mWaitEntryInfoDataList.get(i).getLsChgDtm())) {
-							break;
-						}
-
-						long newDt = Long.parseLong(newEntryDataList.get(j).getLsChgDtm().getValue());
-						long curDt = Long.parseLong(mWaitEntryInfoDataList.get(i).getLsChgDtm().getValue());
-
-						if ((newDt > curDt) || type.equals(REFRESH_ENTRY_LIST_TYPE_REFRESH)) {
-
-							mWaitEntryInfoDataList.set(i, newEntryDataList.get(j));
-
-							// 출품정보 전송 후 변경된 사항 전달.
-							if (isSendEnterInfo()) {
-
-								String tmpIsLastEntry = newEntryDataList.get(j).getIsLastEntry().getValue();
-
-								newEntryDataList.get(j).getIsLastEntry().setValue(GlobalDefine.ETC_INFO.AUCTION_DATA_MODIFY_M);
-
-								AuctionDelegate.getInstance().onSendEntryData(newEntryDataList.get(j));
-
-								newEntryDataList.get(j).getIsLastEntry().setValue(tmpIsLastEntry);
-
-								mLogger.debug("변경된 출품 정보 서버 전송 : " + newEntryDataList.get(j).getEntryNum().getValue());
-							}
-						} 
-						
-						break;
-					}
-				}
-			}
-				
-				ObservableList<SpEntryInfo> newDataList = null;
-				
-				// 보류목록일경우
-				if (mCurPageType.equals(EntryDialogType.ENTRY_LIST)) {
-				
-					newDataList = newEntryDataList.stream()
-							.filter(e -> !mWaitEntryInfoDataList.contains(e))
-							.collect(Collectors.toCollection(FXCollections::observableArrayList));
-					
-				}else {
-					
-					newDataList = newEntryDataList.stream()
-							.filter(e -> !mWaitEntryInfoDataList.contains(e))
-							.filter(c -> c.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING) || c.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_READY))
-							.collect(Collectors.toCollection(FXCollections::observableArrayList));
-				}
-				
-				// 추가된 데이터 항목이 있으면 add
-				if (!CommonUtils.getInstance().isListEmpty(newDataList)) {
-
-					mLogger.debug("추가된 데이터 있음.");
-
-					for (SpEntryInfo spEntryInfo : newDataList) {
-						mLogger.debug("추가된 데이터 전송=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
-					}
-
-					mWaitEntryInfoDataList.addAll(mRecordCount, newDataList);
-					mRecordCount += newDataList.size();
-
-				} else {
-					mLogger.debug("추기된 데이터 없음.");
-				}
-
-				mWaitTableView.refresh();
-
-			setCurrentEntryInfo();
-
-			PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
-			pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					onCowInfoSendOrStartAuction(type);
-				}
-			});
-			pauseTransition.play();
+			mLogger.debug("[CLEAR INIT SERVER] : " + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
 			
+			mRecordCount = newEntryDataList.size();
+			mWaitEntryInfoDataList.clear();
+			mWaitEntryInfoDataList.addAll(newEntryDataList);
+
+			for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
+				mWaitEntryInfoDataList.add(new SpEntryInfo());
+			}
+
+			Platform.runLater(() -> {
+		
+				mWaitTableView.refresh();
+				selectIndexWaitTable(0,false);
+				setCurrentEntryInfo();
+			});
+			
+			for (SpEntryInfo spEntryInfo : newEntryDataList) {
+				mLogger.debug("추가된 데이터 전송=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
+			}
 		}
-		
-		
-		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
-		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
-		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
-		String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
-		String selStsDsc = "";
-
-		// 보류목록일경우
-//		if (mCurPageType.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
-//			selStsDsc = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
-//		}
-
-		// 출장우 데이터 조회
-		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn);
-
-		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
-			@Override
-			public void onResponseResult(final ResponseCowInfo result) {
-
-				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
-					
-				}
-			}
-
-			@Override
-			public void onResponseError(String message) {
-				mLogger.debug("[onResponseError] 출장우 정보 " + message);
-				onCowInfoSendOrStartAuction(type);
-				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
-				// ChooseAuctionController 에서 처리
-			}
-		});
 	}
 
 	
