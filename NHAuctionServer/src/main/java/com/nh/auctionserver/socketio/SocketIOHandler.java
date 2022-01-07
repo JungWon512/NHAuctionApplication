@@ -401,23 +401,30 @@ public class SocketIOHandler {
 									GlobalDefineCode.RESPONSE_NOT_TRANSMISSION_ENTRY_INFO).getEncodedMessage());
 						} else {
 							if (mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
-								client.sendEvent("CurrentEntryInfo",
-										new CurrentEntryInfo(
-												mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
-														.getCurrentEntryInfo()).getEncodedMessage());
+								if (mAuctioneer.getAuctionEditSetting(connectionInfo.getAuctionHouseCode()).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+									client.sendEvent("CurrentEntryInfo",
+											new CurrentEntryInfo(
+													mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
+															.getCurrentEntryInfo()).getEncodedMessage());
 
-								// 정상 접속자 초기 경매 상태 정보 전달 처리
-								client.sendEvent("AuctionStatus",
-										mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
-												.getAuctionStatus().getEncodedMessage());
-								
-								if (mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getRetryTargetInfo() != null) {
-									client.sendEvent("RetryTargetInfo",mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getRetryTargetInfo().getEncodedMessage() + "\r\n");
-								}
-								
-								if (!mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
-										.equals(GlobalDefineCode.AUCTION_STATUS_READY) && mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getAuctionBidStatus() != null) {
-									client.sendEvent("AuctionBidStatus", mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getAuctionBidStatus().getEncodedMessage() + "\r\n");
+									// 정상 접속자 초기 경매 상태 정보 전달 처리
+									client.sendEvent("AuctionStatus",
+											mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
+													.getAuctionStatus().getEncodedMessage());
+									
+									if (mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getRetryTargetInfo() != null) {
+										client.sendEvent("RetryTargetInfo",mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getRetryTargetInfo().getEncodedMessage() + "\r\n");
+									}
+									
+									if (!mAuctioneer.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
+											.equals(GlobalDefineCode.AUCTION_STATUS_READY) && mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getAuctionBidStatus() != null) {
+										client.sendEvent("AuctionBidStatus", mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode()).getAuctionBidStatus().getEncodedMessage() + "\r\n");
+									}
+								} else {
+									// 정상 접속자 초기 경매 상태 정보 전달 처리
+									client.sendEvent("AuctionStatus",
+											mAuctioneer.getAuctionState(connectionInfo.getAuctionHouseCode())
+													.getAuctionStatus().getEncodedMessage());
 								}
 							}
 						}
@@ -936,6 +943,9 @@ public class SocketIOHandler {
 			case ShowEntryInfo.TYPE: // 출품 정보 노출 설정 요청
 				result = new ShowEntryInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6],
 						messages[7], messages[8], messages[9], messages[10], messages[11]);
+				break;
+			case ShowFailBidding.TYPE: // 일괄경매 미응찰 노출 요청
+				result = new ShowFailBidding(messages[1], messages[2], messages[3], messages[4]);
 				break;
 			default:
 				result = null;

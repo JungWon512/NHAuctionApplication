@@ -863,11 +863,13 @@ public class AuctionServer {
 //				}
 				break;
 			case StandEntryInfo.TYPE: // 출하 안내 시스템 출품 정보 전송
-				// Netty Broadcast
-				if (mStandChannelsMap != null) {
-					if (mStandChannelsMap.containsKey(((StandEntryInfo) event).getAuctionHouseCode())) {
-						if (mStandChannelsMap.get(((StandEntryInfo) event).getAuctionHouseCode()).size() > 0) {
-							mStandChannelsMap.get(((StandEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+				if (mAuctioneer.getAuctionEditSetting(((StandEntryInfo) event).getAuctionHouseCode()).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+					// Netty Broadcast
+					if (mStandChannelsMap != null) {
+						if (mStandChannelsMap.containsKey(((StandEntryInfo) event).getAuctionHouseCode())) {
+							if (mStandChannelsMap.get(((StandEntryInfo) event).getAuctionHouseCode()).size() > 0) {
+								mStandChannelsMap.get(((StandEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+							}
 						}
 					}
 				}

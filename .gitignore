@@ -1,0 +1,10 @@
+/.metadata/
+NHAuctionController/.settings
+NHAuctionController/bin
+NHAuctionScheduler/bin
+NHAuctionServer/target
+NHCommon/bin
+NHShare/target
+NHShare/.classpath
+*.classpath
+NHAuctionServer/.factorypath
