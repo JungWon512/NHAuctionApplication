@@ -26,7 +26,7 @@ public class AuctionServerSetting {
     public static long BASE_DELAY_TIME = 0; // 타이머 동작 시작 딜레이 시간(ms)
     
     // 경매 유효 세션 확인 간격
-    public static long CHECK_SESSION_TIME = 10000;
+    public static long CHECK_SESSION_TIME = 5000;
 
     public static int AUCTION_ENTRY_TOTAL_COUNT = 0; // 출품 총 수
     public static int AUCTION_ENTRY_REMAIN_COUNT = 0; // 경매 남은 출풀 수
