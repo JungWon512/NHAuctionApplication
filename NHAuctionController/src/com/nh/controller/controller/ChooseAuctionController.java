@@ -267,12 +267,19 @@ public class ChooseAuctionController implements Initializable {
 		final String naBzplc = GlobalDefine.ADMIN_INFO.adminData.getNabzplc();
 		final String aucObjDsc = cowTypeToggleGroup.getSelectedToggle().getUserData().toString();
 		final String aucDate = mAuctionDatePicker.getValue().toString().replace("-", "");
-
-		// 회차,수수료정보 초기화
+		String aucDsc = ""; 	//단일 1 , 일괄 2
+		
+		if(SettingApplication.getInstance().isSingleAuction()) {
+			aucDsc = GlobalDefine.AUCTION_INFO.QCN_TYPE_PARAM_1;
+		}else {
+			aucDsc = GlobalDefine.AUCTION_INFO.QCN_TYPE_PARAM_2;
+		}
+		
+		// 회차 정보 초기화
 		clearGlobalData();
 
 		// 회차 조회
-		RequestQcnBody qcnBody = new RequestQcnBody(naBzplc, aucObjDsc, aucDate, GlobalDefine.ADMIN_INFO.adminData.getAccessToken());
+		RequestQcnBody qcnBody = new RequestQcnBody(naBzplc, aucObjDsc, aucDate,aucDsc, GlobalDefine.ADMIN_INFO.adminData.getAccessToken());
 
 		ApiUtils.getInstance().requestSelectQcn(qcnBody, new ActionResultListener<ResponseQcn>() {
 
@@ -298,7 +305,12 @@ public class ChooseAuctionController implements Initializable {
 						}
 
 					} else {
-						showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
+						
+						if(CommonUtils.getInstance().isValidString(result.getMessage())) {
+							showAlertPopupOneButton(result.getMessage());	
+						}else {
+							showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));	
+						}
 					}
 
 				} else {
@@ -367,7 +379,7 @@ public class ChooseAuctionController implements Initializable {
 	}
 
 	/**
-	 * 전역 변수 초기화 경매 회차 수수료 기준 정보
+	 * 전역 변수 초기화 경매 회차 정보
 	 */
 	private void clearGlobalData() {
 		GlobalDefine.AUCTION_INFO.auctionRoundData = null;

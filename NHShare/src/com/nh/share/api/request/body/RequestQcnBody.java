@@ -8,7 +8,8 @@ package com.nh.share.api.request.body;
  */
 public class RequestQcnBody extends RequestBaseBody {
 
-	public RequestQcnBody(String naBzplc, String aucObjDsc, String aucDt,String token) {
+	public RequestQcnBody(String naBzplc, String aucObjDsc, String aucDt,String aucDsc,String token) {
 		super(naBzplc, aucObjDsc, aucDt);
+		put("aucDsc", aucDsc);
 	}
 }

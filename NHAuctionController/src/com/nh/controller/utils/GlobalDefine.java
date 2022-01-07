@@ -163,6 +163,8 @@ public class GlobalDefine {
 		public static final Double PLAY_SOUND_SPEED_1_0 = 1.0;	// 음성 경매 재생속도 일반
 		public static final Double PLAY_SOUND_SPEED_1_1 = 1.1;	// 음성 경매 재생속도 배속
 		
+		public static final String QCN_TYPE_PARAM_1 = "1";	// 회차 정보 조회 단일 
+		public static final String QCN_TYPE_PARAM_2 = "2";	// 회차 정보 조회 일괄
 	}
 
 	/**
