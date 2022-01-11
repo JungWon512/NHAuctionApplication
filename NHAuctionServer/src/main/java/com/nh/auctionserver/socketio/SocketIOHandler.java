@@ -1571,22 +1571,36 @@ public class SocketIOHandler {
 								client.sendEvent("ResponseCode", new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
 										GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage());
 							} else if (((Bidding) parseObject).getPriceInt() >= Integer.valueOf(
-									mAuctioneer.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getLowPrice())
-									&& ((Bidding) parseObject).getPriceInt() <= Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice())) {
-								client.sendEvent("ResponseCode",
-										new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
-												GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage());
-
-								// 응찰 정보 수집
-								mAuctionServer.itemAdded(((Bidding) parseObject).getEncodedMessage());
-
-							} else {
-								log.info("=============================================");
-								log.info("잘못 된 가격 응찰 시도 : " + ((Bidding) parseObject).getEncodedMessage());
-								log.info("=============================================");
-								client.sendEvent("ResponseCode",
-										new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
-												GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage());
+									mAuctioneer.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getLowPrice())) {
+								
+								int objLimitPrice = 0;
+								
+								if (mAuctioneer
+											.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_1)) {
+									objLimitPrice = Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice1());
+								} else if (mAuctioneer
+										.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_2)) {
+									objLimitPrice = Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice2());
+								} else if (mAuctioneer
+										.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_3)) {
+									objLimitPrice = Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice3());
+								}
+								
+								if (((Bidding) parseObject).getPriceInt() <= objLimitPrice) {
+									client.sendEvent("ResponseCode",
+											new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
+													GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage());
+	
+									// 응찰 정보 수집
+									mAuctionServer.itemAdded(((Bidding) parseObject).getEncodedMessage());
+								} else {
+									log.info("=============================================");
+									log.info("잘못 된 가격 응찰 시도 : " + ((Bidding) parseObject).getEncodedMessage());
+									log.info("=============================================");
+									client.sendEvent("ResponseCode",
+											new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
+													GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage());
+								}
 							}
 						}
 					} else {

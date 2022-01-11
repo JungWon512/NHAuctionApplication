@@ -102,6 +102,12 @@ public class GlobalDefineCode {
 	public static final String AUCTION_RESULT_CODE_PENDING = "23";		//보류
 	public static final String AUCTION_RESULT_CODE_CANCEL = "24";		//취소
 	
+	// 개체 유형 코드
+	public static final String AUCTION_OBJ_TYPE_1 = "1"; // 경매 구분 - 송아지
+	public static final String AUCTION_OBJ_TYPE_2 = "2"; // 경매 구분 - 비육우
+	public static final String AUCTION_OBJ_TYPE_3 = "3"; // 경매 구분 - 번육우
+	public static final String AUCTION_OBJ_TYPE_0 = "0"; // 경매 구분 - 일괄
+	
 	// 경매 유형 코드
 	public static final String AUCTION_TYPE_SINGLE = "20";		// 단일
 	public static final String AUCTION_TYPE_BUNDLE = "10";		// 일괄

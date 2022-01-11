@@ -10,7 +10,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * <p>
  * CE | 조합구분코드 | 경매번호노출여부 | 출하주노출여부 | 성별노출여부 | 중량노출여부 | 어미노출여부 | 계대노출여부 | 산차노출여부
  * | KPN노출여부 | 지여명노출여부 | 비고노출여부 | 최저가노출여부 | 친자노출여부 | 카운트다운초설정값(1 ~ 9) |
- * 경매유형코드(10:일괄 / 20:단일) | 경매상한가
+ * 경매유형코드(10:일괄 / 20:단일) | 경매상한가(송아지) | 경매상한가(비육우) | 경매상한가(번식우)
  */
 public class EditSetting implements FromAuctionController {
 	public static final char TYPE = 'E';
@@ -29,7 +29,9 @@ public class EditSetting implements FromAuctionController {
 	private String mIsShowDna; // 친자노출여부
 	private String mCountDown; // 카운트다운횟수(초)
 	private String mAuctionType; // 경매유형코드(10:일괄/20:단일)
-	private String mAuctionLimitPrice; // 경매상한가(일괄경매사용)
+	private String mAuctionLimitPrice1; // 경매상한가(송아지 일괄경매사용)
+	private String mAuctionLimitPrice2; // 경매상한가(비육우 일괄경매사용)
+	private String mAuctionLimitPrice3; // 경매상한가(번식우 일괄경매사용)
 
 	public EditSetting(String[] messages) {
 		this.mAuctionHouseCode = messages[1];
@@ -47,13 +49,15 @@ public class EditSetting implements FromAuctionController {
 		this.mIsShowDna = messages[13];
 		this.mCountDown = messages[14];
 		this.mAuctionType = messages[15];
-		this.mAuctionLimitPrice = messages[16];
+		this.mAuctionLimitPrice1 = messages[16];
+		this.mAuctionLimitPrice2 = messages[17];
+		this.mAuctionLimitPrice3 = messages[18];
 	}
 
 	public EditSetting(String mAuctionHouseCode, String mIsShowEntryNum, String mIsShowExhUser, String mIsShowGender,
 			String mIsShowWeight, String mIsShowMother, String mIsShowPasg, String mIsShowCaving, String mIsShowKpn,
 			String mIsShowLocation, String mIsShowNote, String mIsShowLowPrice, String mIsShowDna, String mCountDown,
-			String mAuctionType, String mAuctionLimitPrice) {
+			String mAuctionType, String mAuctionLimitPrice1, String mAuctionLimitPrice2, String mAuctionLimitPrice3) {
 		this.mAuctionHouseCode = mAuctionHouseCode;
 		this.mIsShowEntryNum = mIsShowEntryNum;
 		this.mIsShowExhUser = mIsShowExhUser;
@@ -69,7 +73,9 @@ public class EditSetting implements FromAuctionController {
 		this.mIsShowDna = mIsShowDna;
 		this.mCountDown = mCountDown;
 		this.mAuctionType = mAuctionType;
-		this.mAuctionLimitPrice = mAuctionLimitPrice;
+		this.mAuctionLimitPrice1 = mAuctionLimitPrice1;
+		this.mAuctionLimitPrice2 = mAuctionLimitPrice2;
+		this.mAuctionLimitPrice3 = mAuctionLimitPrice3;
 	}
 
 	public String getAuctionHouseCode() {
@@ -192,17 +198,33 @@ public class EditSetting implements FromAuctionController {
 		this.mAuctionType = auctionType;
 	}
 
-	public String getmAuctionLimitPrice() {
-		return mAuctionLimitPrice;
+	public String getmAuctionLimitPrice1() {
+		return mAuctionLimitPrice1;
 	}
 
-	public void setmAuctionLimitPrice(String mAuctionLimitPrice) {
-		this.mAuctionLimitPrice = mAuctionLimitPrice;
+	public void setmAuctionLimitPrice1(String mAuctionLimitPrice1) {
+		this.mAuctionLimitPrice1 = mAuctionLimitPrice1;
+	}
+	
+	public String getmAuctionLimitPrice2() {
+		return mAuctionLimitPrice2;
+	}
+
+	public void setmAuctionLimitPrice2(String mAuctionLimitPrice2) {
+		this.mAuctionLimitPrice2 = mAuctionLimitPrice2;
+	}
+	
+	public String getmAuctionLimitPrice3() {
+		return mAuctionLimitPrice3;
+	}
+
+	public void setmAuctionLimitPrice3(String mAuctionLimitPrice3) {
+		this.mAuctionLimitPrice3 = mAuctionLimitPrice3;
 	}
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
 				AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mIsShowEntryNum,
 				AuctionShareSetting.DELIMITER, mIsShowExhUser, AuctionShareSetting.DELIMITER, mIsShowGender,
 				AuctionShareSetting.DELIMITER, mIsShowWeight, AuctionShareSetting.DELIMITER, mIsShowMother,
@@ -210,6 +232,7 @@ public class EditSetting implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mIsShowKpn, AuctionShareSetting.DELIMITER, mIsShowLocation,
 				AuctionShareSetting.DELIMITER, mIsShowNote, AuctionShareSetting.DELIMITER, mIsShowLowPrice,
 				AuctionShareSetting.DELIMITER, mIsShowDna, AuctionShareSetting.DELIMITER, mCountDown,
-				AuctionShareSetting.DELIMITER, mAuctionType, AuctionShareSetting.DELIMITER, mAuctionLimitPrice);
+				AuctionShareSetting.DELIMITER, mAuctionType, AuctionShareSetting.DELIMITER, mAuctionLimitPrice1,
+				AuctionShareSetting.DELIMITER, mAuctionLimitPrice2, AuctionShareSetting.DELIMITER, mAuctionLimitPrice3);
 	}
 }
