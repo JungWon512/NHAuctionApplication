@@ -78,9 +78,9 @@ public class SettingApplication {
 
 	// 응찰 상한가 기본값
 	public final String DEFAULT_SETTING_UPPER_CFB_MAX = "99999";
-	public final String DEFAULT_SETTING_UPPER_CALF_TEXT = "100";
-	public final String DEFAULT_SETTING_UPPER_FATTENING_TEXT = "100";
-	public final String DEFAULT_SETTING_UPPER_BREEDING_TEXT = "100";
+	public final String DEFAULT_SETTING_UPPER_CALF_TEXT = "100"; //송아지
+	public final String DEFAULT_SETTING_UPPER_FATTENING_TEXT = "100"; //비육우
+	public final String DEFAULT_SETTING_UPPER_BREEDING_TEXT = "100"; //번식우
 
 	// 하한가 낮추기 기본값
 	public final String DEFAULT_SETTING_LOWER_CALF_TEXT_MAX = "99999";
@@ -596,12 +596,17 @@ public class SettingApplication {
 	 * @return
 	 */
 	public EditSetting getSettingInfo() {
+	
 		
 		EditSetting setting = new EditSetting(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, "Y"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, "Y"),
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, "Y"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT, "Y"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, "Y"),
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, "Y"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, "Y"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, "N"),
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_REGION, "N"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_NOTE, "N"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_LOWPRICE, "Y"),
-				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"), SettingApplication.getInstance().getSettingAuctionType(),Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getBaseLmtAm()));
+				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"), getSettingAuctionType(),
+				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, DEFAULT_SETTING_UPPER_CALF_TEXT),
+				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, DEFAULT_SETTING_UPPER_FATTENING_TEXT),
+				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, DEFAULT_SETTING_UPPER_BREEDING_TEXT)
+				);
 		
 		return setting;
 	}
