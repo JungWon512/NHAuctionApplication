@@ -12,7 +12,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * CI | 조합구분코드 | 출품번호 | 경매회차 | 경매대상구분코드 | 축산개체관리번호 | 축산축종구분코드 | 농가식별번호 | 농장관리번호
  * | 농가명 | 브랜드명 | 생년월일 | KPN번호 | 개체성별코드 | 어미소구분코드 | 어미소축산개체관리번호 | 산차 | 임신개월수 |
  * 계대 | 계체식별번호 | 축산개체종축등록번호 | 등록구분번호 | 출하생산지역 | 친자검사결과여부 | 신규여부 | 우출하중량 |
- * 최초최저낙찰한도금액 | 최저낙찰한도금액 | 비고내용 | 낙유찰결과 | 낙찰자 | 낙찰금액 | 응찰일시 | 마지막출품여부 | 계류대번호 | 초과출장우여부
+ * 최초최저낙찰한도금액 | 최저낙찰한도금액 | 비고내용 | 낙유찰결과 | 낙찰자 | 낙찰금액 | 응찰일시 | 마지막출품여부 | 계류대번호 | 초과출장우여부 | 일괄경매구간번호
  *
  */
 public class EntryInfo implements FromAuctionController {
@@ -22,7 +22,7 @@ public class EntryInfo implements FromAuctionController {
 	private String mEntryNum; // 출품 번호
 	private String mAuctionQcn; // 경매회차
 	private String mEntryType; // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
-	private String mIndNum; // 축산개체관리번호 
+	private String mIndNum; // 축산개체관리번호
 	private String mIndMngCd; // 축산축종구분코드
 	private String mFhsNum; // 농가식별번호
 	private String mFarmMngNum; // 농장관리번호
@@ -77,7 +77,7 @@ public class EntryInfo implements FromAuctionController {
 	
 	private String aucYn; // 출장우 경매 여부
 	
-	private String rgSqno;  //일괄경매 구간 정보
+	private String mExpAuctionIntNum; // 일괄 경매 구간 번호
 	
 	public EntryInfo() {
 	}
@@ -88,7 +88,7 @@ public class EntryInfo implements FromAuctionController {
 			String pasgQcn, String objIdNum, String objRegNum, String objRegTypeNum, String rgnName, String dnaYn,
 			String isNew, String weight, String initPrice, String lowPrice, String note, String auctionResult,
 			String auctionSucBidder, String auctionBidPrice, String auctionBidDateTime, String isLastEntry,
-			String standPosition, String isExcessCow) {
+			String standPosition, String isExcessCow, String expAuctionIntNum) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 		mAuctionQcn = auctionQcn;
@@ -124,6 +124,7 @@ public class EntryInfo implements FromAuctionController {
 		mIsLastEntry = isLastEntry;
 		mStandPosition = standPosition;
 		mIsExcessCow = isExcessCow;
+		mExpAuctionIntNum = expAuctionIntNum;
 	}
 
 	public EntryInfo(String[] messages) {
@@ -162,6 +163,7 @@ public class EntryInfo implements FromAuctionController {
 		mIsLastEntry = messages[33];
 		mStandPosition = messages[34];
 		mIsExcessCow = messages[35];
+		mExpAuctionIntNum = messages[36];
 	}
 
 	
@@ -637,19 +639,19 @@ public class EntryInfo implements FromAuctionController {
 	public void setAucYn(String aucYn) {
 		this.aucYn = aucYn;
 	}
-	
-	public String getRgSqno() {
-		return rgSqno;
+
+	public String getExpAuctionIntNum() {
+		return mExpAuctionIntNum;
 	}
 
-	public void setRgSqno(String rgSqno) {
-		this.rgSqno = rgSqno;
+	public void setExpAuctionIntNum(String expAuctionIntNum) {
+		this.mExpAuctionIntNum = expAuctionIntNum;
 	}
 
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
-				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
 				mEntryNum, AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mEntryType,
 				AuctionShareSetting.DELIMITER, mIndNum, AuctionShareSetting.DELIMITER, mIndMngCd,
@@ -667,7 +669,7 @@ public class EntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mAuctionResult, AuctionShareSetting.DELIMITER, mAuctionSucBidder,
 				AuctionShareSetting.DELIMITER, mAuctionBidPrice, AuctionShareSetting.DELIMITER, mAuctionBidDateTime,
 				AuctionShareSetting.DELIMITER, mIsLastEntry, AuctionShareSetting.DELIMITER, mStandPosition,
-				AuctionShareSetting.DELIMITER, mIsExcessCow);
+				AuctionShareSetting.DELIMITER, mIsExcessCow, AuctionShareSetting.DELIMITER, mExpAuctionIntNum);
 	}
 
 }

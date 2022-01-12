@@ -47,10 +47,10 @@ public class SchedulerJob implements Job {
 		Date from = new Date();
 		SimpleDateFormat transFormat = new SimpleDateFormat("yyyyMMdd");
 		String auctionDateTime = transFormat.format(from);
-		RequestQcnBody requestQcnBody = new RequestQcnBody("", "", "", "");
-
+		RequestQcnBody qcnBody = new RequestQcnBody("", "", "", "", "");
+		
 		ActionRuler.getInstance()
-				.addAction(new ActionRequestSelectQcn(requestQcnBody, mActionRequestSelectQcnListener));
+				.addAction(new ActionRequestSelectQcn(qcnBody, mActionRequestSelectQcnListener));
 		ActionRuler.getInstance().runNext();
 	}
 

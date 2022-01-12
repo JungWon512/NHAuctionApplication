@@ -60,7 +60,7 @@ public class CowInfoData {
 	private String BIRTH_FMT;
 	private int EXP_ATDR_AM;
 	private int EXP_LVST_AUC_PTC_MN_NO;
-	private String AUC_YN;   
+	private String AUC_YN;
 
 	
 	public String getSRA_SRS_DSC() {

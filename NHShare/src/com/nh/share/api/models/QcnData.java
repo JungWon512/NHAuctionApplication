@@ -1,5 +1,7 @@
 package com.nh.share.api.models;
 
+import java.util.List;
+
 /**
  * 
  * 회차 정보
@@ -29,8 +31,7 @@ public class QcnData {
 	private String SGNO_PRC_DSC;
 	private String LSCHG_DTM;
 	private int QCN;
-	private String SEL_STS_DSC;
-	private int RG_SQNO;
+
 
 	public String getTT_SCR() {
 		return TT_SCR;
@@ -168,22 +169,6 @@ public class QcnData {
 		QCN = qCN;
 	}
 
-	public String getSEL_STS_DSC() {
-		return SEL_STS_DSC;
-	}
-
-	public void setSEL_STS_DSC(String sEL_STS_DSC) {
-		SEL_STS_DSC = sEL_STS_DSC;
-	}
-	
-	public int getRG_SQNO() {
-		return RG_SQNO;
-	}
-
-	public void setRG_SQNO(int rG_SQNO) {
-		RG_SQNO = rG_SQNO;
-	}
-
 	public int getDIVISION_PRICE1() {
 		return DIVISION_PRICE1;
 	}
@@ -207,7 +192,4 @@ public class QcnData {
 	public void setDIVISION_PRICE3(int dIVISION_PRICE3) {
 		DIVISION_PRICE3 = dIVISION_PRICE3;
 	}
-	
-	
-
 }

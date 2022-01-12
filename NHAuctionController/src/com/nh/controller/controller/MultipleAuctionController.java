@@ -1624,33 +1624,26 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		mLogger.debug("[회차정보 확인. 현재 거점 : " + GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc()  + " /  :  " +  auctionStatus.getAuctionHouseCode());
 		mLogger.debug("[회차정보 확인. 현재 qcn : " + GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()  + " /  :  " +  Integer.parseInt(auctionStatus.getAuctionQcn()));
+		mLogger.debug("[회차정보 확인. 현재 rgSqno : " + GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo()  + " /  :  " +  Integer.parseInt(auctionStatus.getExpAuctionIntNum()));
 		
-		// 회차정보 다를경우 처리
+		// 회차 정보 변경. 서버 데이터 초기화 ,출장우 정보 다시 보냄
 		if ((GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc().equals(auctionStatus.getAuctionHouseCode()))
 				&& (GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn() != Integer.parseInt(auctionStatus.getAuctionQcn()))
 			|| auctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_FINISH)) {
 			
 			isQcnChange = true;
-
-			Platform.runLater(() -> {
-
-				Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, mResMsg.getString("dialog.change.qcn"), mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.exit"));
-
-				if (btnResult.get().getButtonData() == ButtonData.LEFT) {
-					mAuctionStatus.setState(GlobalDefineCode.AUCTION_STATUS_NONE);
-					AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(auctionStatus.getAuctionHouseCode(), auctionStatus.getAuctionQcn()));
-					isSendEntryData = false;
-					onSendEntryData();
-				} else {
-					isApplicationClosePopup = true;
-					onServerAndClose();
-				}
-
-			});
-
+			
+			showChangeQcnPopup(mResMsg.getString("dialog.change.qcn"),auctionStatus);
+			
 			return;
 		}else {
 			isQcnChange = false;	
+		}
+		
+		// 구간 정보 변경. 서버 데이터 초기화 ,출장우 정보 다시 보냄
+		if(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo()) != auctionStatus.getExpAuctionIntNum()) {
+			showChangeQcnPopup(mResMsg.getString("dialog.change.rgsqno"),auctionStatus);
+			return;
 		}
 
 		mAuctionStatus = auctionStatus;
@@ -1697,6 +1690,31 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 	}
 
+	
+	/**
+	 * 회차, 구간 정보 다를경우 팝업 노출
+	 * left : 출장우 정보 다시 전송 , right : 종료 후 경매일 선택 이동.
+	 * @param auctionStatus
+	 */
+	private void showChangeQcnPopup(String msg, AuctionStatus auctionStatus) {
+		
+		Platform.runLater(() -> {
+
+			Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, msg, mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.exit"));
+
+			if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+				mAuctionStatus.setState(GlobalDefineCode.AUCTION_STATUS_NONE);
+				AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(auctionStatus.getAuctionHouseCode(), auctionStatus.getAuctionQcn()));
+				isSendEntryData = false;
+				onSendEntryData();
+			} else {
+				isApplicationClosePopup = true;
+				onServerAndClose();
+			}
+
+		});
+	}
+	
 	/**
 	 * 전광판으로 경매 상태 전송
 	 */
@@ -2913,6 +2931,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			EntryInfo entryInfo = new EntryInfo(dataList.get(i));
 			String flag = (i == dataList.size() - 1) ? "Y" : "N";
 			entryInfo.setIsLastEntry(flag);
+			entryInfo.setExpAuctionIntNum(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo()));
 			entryInfoDataList.add(entryInfo);
 		}
 		

@@ -42,15 +42,6 @@ public class ChooseAuctionNumberRangeController implements Initializable {
 	 */
 	public void setData(List<StnData> stnList, IntegerListener listener) {
 		mListener = listener;
-		
-		for(int i = 0; i < 30 ; i++) {
-			StnData stnData = new StnData();
-			stnData.setRG_SQNO(i);
-			stnData.setST_AUC_NO(i);
-			stnData.setED_AUC_NO(i);
-			stnList.add(stnData);
-		}
-		
 		mRangeListView.getItems().addAll(stnList);
 	}
 

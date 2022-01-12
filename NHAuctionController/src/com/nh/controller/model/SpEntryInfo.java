@@ -86,6 +86,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 	private StringProperty mExpAuctionBidPrice; // -일괄 낙찰 예정 금액
 	private StringProperty mExpAuctionSucBidder; // -일괄 낙찰 예정자
 	private StringProperty aucYn; // 출장우 경매 여부
+	private StringProperty rgSqno; //일괄 - 경매 구간 정보
 
 	public SpEntryInfo() {
 	}
@@ -144,6 +145,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 		this.mExpAuctionBidPrice = new SimpleStringProperty(entryInfo.getExpAuctionBidPrice());
 		this.mExpAuctionSucBidder = new SimpleStringProperty(entryInfo.getExpAuctionSucBidder());
 		this.aucYn = new SimpleStringProperty(entryInfo.getAucYn());
+		this.rgSqno = new SimpleStringProperty(entryInfo.getExpAuctionIntNum());
 
 	}
 
@@ -573,6 +575,14 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 	public void setAucYn(StringProperty aucYn) {
 		this.aucYn = aucYn;
 	}
+	
+	public StringProperty getRgSqno() {
+		return returnValue(rgSqno);
+	}
+
+	public void setRgSqno(StringProperty rgSqno) {
+		this.rgSqno = rgSqno;
+	}
 
 	public String getConvertBirthDay() {
 
@@ -676,72 +686,80 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
-				"%c%c%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c"
-						+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c"
-						+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s%c"
-						+ "%s%c" + "%s%c" + "%s%c" + "%s%c" + "%s",
+				"%c%c%c" + "%s%c" 
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
-				CommonUtils.getInstance().replaceDelimiter(getAuctionHouseCode().getValue()),
-				AuctionShareSetting.DELIMITER, CommonUtils.getInstance().replaceDelimiter(getEntryNum().getValue()),
-				AuctionShareSetting.DELIMITER, CommonUtils.getInstance().replaceDelimiter(getAuctionQcn().getValue()),
-				AuctionShareSetting.DELIMITER, CommonUtils.getInstance().replaceDelimiter(getEntryType().getValue()),
-				AuctionShareSetting.DELIMITER, CommonUtils.getInstance().replaceDelimiter(getIndNum().getValue()),
-				AuctionShareSetting.DELIMITER, // 축산개체관리번호 SRA_INDV_AMNNO
-				CommonUtils.getInstance().replaceDelimiter(getIndMngCd().getValue()), AuctionShareSetting.DELIMITER, // 축산축종구분코드
-																														// SRA_SRS_DSC
-				CommonUtils.getInstance().replaceDelimiter(getFhsNum().getValue()), AuctionShareSetting.DELIMITER, // 농가
-																													// 식별번호
-																													// FHS_ID_NO
-				CommonUtils.getInstance().replaceDelimiter(getFarmMngNum().getValue()), AuctionShareSetting.DELIMITER, // 농장
-																														// 관리
-																														// 번호
-																														// FARM_AMNNO
-				CommonUtils.getInstance().replaceDelimiter(getExhibitor().getValue()), AuctionShareSetting.DELIMITER, // 농가명
-																														// FTSNM
-				CommonUtils.getInstance().replaceDelimiter(getBrandName().getValue()), AuctionShareSetting.DELIMITER, // 브랜드명
-																														// BRANDNM
-				CommonUtils.getInstance().replaceDelimiter(getBirthday().getValue()), AuctionShareSetting.DELIMITER, // 생년월일
-																														// BIRTH
-				CommonUtils.getInstance().replaceDelimiter(getKpn().getValue()), AuctionShareSetting.DELIMITER, // KPN
-																												// KPN_NO
-				CommonUtils.getInstance().replaceDelimiter(getGenderName().getValue()), AuctionShareSetting.DELIMITER, // 개체
-																														// 성별코드명
-																														// INDV_SEX_C_NAME
-				CommonUtils.getInstance().replaceDelimiter(getMotherCowName().getValue()),
-				AuctionShareSetting.DELIMITER, // 혈통명 SIMP_CNM AS MCOW_DSC
-				CommonUtils.getInstance().replaceDelimiter(getMotherObjNum().getValue()), AuctionShareSetting.DELIMITER, // 어미축산개체관리번호
-																															// MCOW_SRA_INDV_AMNNO
-				CommonUtils.getInstance().replaceDelimiter(getMatime().getValue()), AuctionShareSetting.DELIMITER, // 산차
-																													// MATIME
-				CommonUtils.getInstance().replaceDelimiter(getMaMonth().getValue()), AuctionShareSetting.DELIMITER, // 임신개월수
-																													// PRNY_MTCN
-				CommonUtils.getInstance().replaceDelimiter(getPasgQcn().getValue()), AuctionShareSetting.DELIMITER, // 계대
-																													// SRA_INDV_PASG_QCN
-				CommonUtils.getInstance().replaceDelimiter(getObjIdNum().getValue()), AuctionShareSetting.DELIMITER, // 개체
-																														// 식별번호
-																														// INDV_ID_NO
-				CommonUtils.getInstance().replaceDelimiter(getObjRegNum().getValue()), AuctionShareSetting.DELIMITER, // 축산개체종축등록번호
-																														// SRA_INDV_BRDSRA_RG_NO
-				CommonUtils.getInstance().replaceDelimiter(getObjRegTypeNum().getValue()),
-				AuctionShareSetting.DELIMITER, // 등록구분코드 RG_DSC
-				CommonUtils.getInstance().replaceDelimiter(getReRgnName().getValue()), AuctionShareSetting.DELIMITER, // 출하생산지역
-																														// SRA_PD_RGNNM
-				CommonUtils.getInstance().replaceDelimiter(getDnaYn().getValue()), AuctionShareSetting.DELIMITER, // 친자검사결과여부
-																													// DNA_YN
+				CommonUtils.getInstance().replaceDelimiter(getAuctionHouseCode().getValue()),AuctionShareSetting.DELIMITER, 
+				CommonUtils.getInstance().replaceDelimiter(getEntryNum().getValue()),AuctionShareSetting.DELIMITER, 
+				CommonUtils.getInstance().replaceDelimiter(getAuctionQcn().getValue()),AuctionShareSetting.DELIMITER, 
+				CommonUtils.getInstance().replaceDelimiter(getEntryType().getValue()),AuctionShareSetting.DELIMITER,
+				CommonUtils.getInstance().replaceDelimiter(getIndNum().getValue()),AuctionShareSetting.DELIMITER, 			// 축산개체관리번호 SRA_INDV_AMNNO
+				CommonUtils.getInstance().replaceDelimiter(getIndMngCd().getValue()), AuctionShareSetting.DELIMITER,		// 축산축종구분코드		SRA_SRS_DSC
+				CommonUtils.getInstance().replaceDelimiter(getFhsNum().getValue()), AuctionShareSetting.DELIMITER,			// 농가 식별번호			FHS_ID_NO
+				CommonUtils.getInstance().replaceDelimiter(getFarmMngNum().getValue()), AuctionShareSetting.DELIMITER,		// 농장관리번호		FARM_AMNNO
+				CommonUtils.getInstance().replaceDelimiter(getExhibitor().getValue()), AuctionShareSetting.DELIMITER,		// 농가명  			FTSNM
+				CommonUtils.getInstance().replaceDelimiter(getBrandName().getValue()), AuctionShareSetting.DELIMITER,		// 브랜드명			BRANDNM
+				CommonUtils.getInstance().replaceDelimiter(getBirthday().getValue()), AuctionShareSetting.DELIMITER,		// 생년월일 			BIRTH
+				CommonUtils.getInstance().replaceDelimiter(getKpn().getValue()), AuctionShareSetting.DELIMITER,				// KPN					KPN_NO
+				CommonUtils.getInstance().replaceDelimiter(getGenderName().getValue()), AuctionShareSetting.DELIMITER,		// 개체성별코드명     INDV_SEX_C_NAME
+				CommonUtils.getInstance().replaceDelimiter(getMotherCowName().getValue()),AuctionShareSetting.DELIMITER, // 혈통명 SIMP_CNM AS MCOW_DSC
+				CommonUtils.getInstance().replaceDelimiter(getMotherObjNum().getValue()), AuctionShareSetting.DELIMITER,	// 어미축산개체관리번호	 MCOW_SRA_INDV_AMNNO
+				CommonUtils.getInstance().replaceDelimiter(getMatime().getValue()), AuctionShareSetting.DELIMITER,			// 산차 MATIME
+				CommonUtils.getInstance().replaceDelimiter(getMaMonth().getValue()), AuctionShareSetting.DELIMITER,			// 임신개월수	PRNY_MTCN
+				CommonUtils.getInstance().replaceDelimiter(getPasgQcn().getValue()), AuctionShareSetting.DELIMITER,			// 계대	SRA_INDV_PASG_QCN
+				CommonUtils.getInstance().replaceDelimiter(getObjIdNum().getValue()), AuctionShareSetting.DELIMITER,		// 개체	 식별번호	INDV_ID_NO
+				CommonUtils.getInstance().replaceDelimiter(getObjRegNum().getValue()), AuctionShareSetting.DELIMITER,		// 축산개체종축등록번호	SRA_INDV_BRDSRA_RG_NO
+				CommonUtils.getInstance().replaceDelimiter(getObjRegTypeNum().getValue()),AuctionShareSetting.DELIMITER, 	// 등록구분코드 RG_DSC
+				CommonUtils.getInstance().replaceDelimiter(getReRgnName().getValue()), AuctionShareSetting.DELIMITER,	 	// 출하생산지역	 SRA_PD_RGNNM
+				CommonUtils.getInstance().replaceDelimiter(getDnaYn().getValue()), AuctionShareSetting.DELIMITER,		 	// 친자검사결과여부	 DNA_YN
 				CommonUtils.getInstance().replaceDelimiter(getIsNew().getValue()), AuctionShareSetting.DELIMITER,
-				getWeight().getValue(), AuctionShareSetting.DELIMITER, // 중량, 보낼때만 KG 붙임.
-				getInitPrice().getValue(), AuctionShareSetting.DELIMITER, getLowPrice().getValue(),
-				AuctionShareSetting.DELIMITER, CommonUtils.getInstance().replaceDelimiter(getNote().getValue()),
-				AuctionShareSetting.DELIMITER,
-				CommonUtils.getInstance().replaceDelimiter(getAuctionResult().getValue()),
-				AuctionShareSetting.DELIMITER,
-				CommonUtils.getInstance().replaceDelimiter(getAuctionSucBidder().getValue()),
-				AuctionShareSetting.DELIMITER, getSraSbidUpPrice().getValue(), AuctionShareSetting.DELIMITER,
-				CommonUtils.getInstance().replaceDelimiter(getAuctionBidDateTime().getValue()),
-				AuctionShareSetting.DELIMITER, CommonUtils.getInstance().replaceDelimiter(getIsLastEntry().getValue()),
-				AuctionShareSetting.DELIMITER,
-				CommonUtils.getInstance().replaceDelimiter(getStandPosition().getValue()),
-				AuctionShareSetting.DELIMITER, CommonUtils.getInstance().replaceDelimiter(getIsExcessCow().getValue()));
+				getWeight().getValue(), AuctionShareSetting.DELIMITER, 														// 중량, 보낼때만 KG 붙임.
+				getInitPrice().getValue(), AuctionShareSetting.DELIMITER, 
+				getLowPrice().getValue(),AuctionShareSetting.DELIMITER,
+				CommonUtils.getInstance().replaceDelimiter(getNote().getValue()),AuctionShareSetting.DELIMITER,
+				CommonUtils.getInstance().replaceDelimiter(getAuctionResult().getValue()),AuctionShareSetting.DELIMITER,
+				CommonUtils.getInstance().replaceDelimiter(getAuctionSucBidder().getValue()),AuctionShareSetting.DELIMITER,
+				getSraSbidUpPrice().getValue(), AuctionShareSetting.DELIMITER,
+				CommonUtils.getInstance().replaceDelimiter(getAuctionBidDateTime().getValue()),AuctionShareSetting.DELIMITER, 
+				CommonUtils.getInstance().replaceDelimiter(getIsLastEntry().getValue()),AuctionShareSetting.DELIMITER,
+				CommonUtils.getInstance().replaceDelimiter(getStandPosition().getValue()),AuctionShareSetting.DELIMITER,
+				CommonUtils.getInstance().replaceDelimiter(getIsExcessCow().getValue()),AuctionShareSetting.DELIMITER,
+				getRgSqno().getValue()
+				);
 	}
 
 	@Override

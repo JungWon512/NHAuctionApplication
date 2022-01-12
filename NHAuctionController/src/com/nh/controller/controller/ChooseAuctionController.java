@@ -310,7 +310,7 @@ public class ChooseAuctionController implements Initializable {
 								if(size == 1) {
 									
 									//구간 선택 안함. 0번째 선택
-									setQcnData(naBzplc,aucDate,qcnData,result.getStnList(),0);
+									setQcnData(naBzplc,aucDate,qcnData,result.getStnList().get(0));
 
 								}else {
 									
@@ -333,7 +333,7 @@ public class ChooseAuctionController implements Initializable {
 													
 													CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
 													
-													setQcnData(naBzplc,aucDate,qcnData,result.getStnList(),index);
+													setQcnData(naBzplc,aucDate,qcnData,result.getStnList().get(index));
 													
 												}
 											}
@@ -402,9 +402,9 @@ public class ChooseAuctionController implements Initializable {
 	 * @param aucDate
 	 * @param qcnData
 	 */
-	private void setQcnData(final String naBzplc,final String aucDate,QcnData qcnData,List<StnData> stnDataList, int index) {
+	private void setQcnData(final String naBzplc,final String aucDate,QcnData qcnData,StnData stnData) {
 		
-		GlobalDefine.AUCTION_INFO.auctionRoundData = new AuctionRound(qcnData,stnDataList.get(index));
+		GlobalDefine.AUCTION_INFO.auctionRoundData = new AuctionRound(qcnData,stnData);
 		
 		if (GlobalDefine.AUCTION_INFO.auctionRoundData != null) {
 			mLogger.debug("[경매 회차 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
