@@ -24,19 +24,46 @@
                            <font>
                               <Font name="Noto Sans CJK KR Regular" size="21.0" />
                            </font></Label>
-                        <TextField fx:id="mDownPriceTextField" focusTraversable="false" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
-                        <Label fx:id="mDownPriceLabel2" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text=",비육우 :" textFill="#1a1a1a" visible="false">
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <TextField fx:id="mDownPriceTextField" focusTraversable="false" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
+                              <Label fx:id="mLowerCalfMoneyUnitLabel" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="만원" textFill="#1a1a1a" visible="false">
+                                 <font>
+                                    <Font name="Noto Sans CJK KR Regular" size="21.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <Label fx:id="mDownPriceLabel2" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="/ 비육우 :" textFill="#1a1a1a" visible="false">
                            <font>
                               <Font name="Noto Sans CJK KR Regular" size="21.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="mDownPriceTextField2" focusTraversable="false" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
-                        <Label fx:id="mDownPriceLabel3" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text=",번식우 :" textFill="#1a1a1a" visible="false">
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <TextField fx:id="mDownPriceTextField2" focusTraversable="false" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
+                              <Label fx:id="mLowerFCattleMoneyUnitLabel" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="만원" textFill="#1a1a1a" visible="false">
+                                 <font>
+                                    <Font name="Noto Sans CJK KR Regular" size="21.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <Label fx:id="mDownPriceLabel3" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="/ 번식우 :" textFill="#1a1a1a" visible="false">
                            <font>
                               <Font name="Noto Sans CJK KR Regular" size="21.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="mDownPriceTextField3" focusTraversable="false" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <TextField fx:id="mDownPriceTextField3" focusTraversable="false" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="0" visible="false" />
+                              <Label fx:id="mLowerBCattleMoneyUnitLabel" maxHeight="40.0" minHeight="40.0" minWidth="0.0" prefHeight="40.0" text="만원" textFill="#1a1a1a" visible="false">
+                                 <font>
+                                    <Font name="Noto Sans CJK KR Regular" size="21.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
                         <Button fx:id="mBtnDownPrice" maxHeight="50.0" maxWidth="110.0" minHeight="50.0" minWidth="0.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="110.0" styleClass="button-12" text="최저가낮춤" visible="false" />
                         <Button fx:id="mBtnSelect" maxHeight="50.0" maxWidth="110.0" minHeight="50.0" minWidth="0.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="110.0" styleClass="button-12" text="[ENT]선택" visible="false" />
                         <Button fx:id="mBtnClose" maxHeight="50.0" maxWidth="110.0" minHeight="50.0" minWidth="0.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="110.0" styleClass="button-12" text="[ESC]종료" visible="false" />

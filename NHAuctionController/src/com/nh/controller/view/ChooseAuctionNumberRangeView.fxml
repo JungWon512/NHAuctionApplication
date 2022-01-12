@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="332.0" maxWidth="400.0" minHeight="332.0" minWidth="400.0" prefHeight="332.0" prefWidth="400.0" stylesheets="@../css/dialog.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.ChooseAuctionNumberRangeController">
+   <top>
+      <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="66.0" maxWidth="1.7976931348623157E308" minHeight="66.0" minWidth="66.0" prefHeight="66.0" prefWidth="66.0" style="-fx-background-color: #007eff;" text="경매 구간 선택" textFill="WHITE" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Noto Sans CJK KR Bold" size="20.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <ListView fx:id="mRangeListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

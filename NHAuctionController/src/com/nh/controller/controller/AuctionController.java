@@ -51,6 +51,7 @@ import com.nh.controller.utils.MoveStageUtil.EntryDialogType;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.controller.utils.SoundUtil;
 import com.nh.share.api.ActionResultListener;
+import com.nh.share.api.models.CowInfoData;
 import com.nh.share.api.request.body.RequestCowInfoBody;
 import com.nh.share.api.request.body.RequestUpdateLowsBidAmtBody;
 import com.nh.share.api.response.ResponseCowInfo;
@@ -83,8 +84,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -609,7 +608,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param downPrice
 	 */
 	private void setBaseDownPrice(String downPrice) {
-		Platform.runLater(() -> mDeprePriceLabel.setText(String.format(mResMsg.getString("str.price"), Integer.parseInt(downPrice))));
+		Platform.runLater(() -> {
+			
+			String priceText = "";
+			
+			if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+				
+				priceText = String.format(mResMsg.getString("fmt.money.unit.won"), Integer.parseInt(downPrice));
+				
+			}else {
+				
+				priceText = String.format(mResMsg.getString("fmt.money.unit.tenthousand.won"), Integer.parseInt(downPrice));
+				
+			}
+			
+			mDeprePriceLabel.setText(priceText);
+			
+		});
 	}
 
 	/**
@@ -758,6 +773,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			public void onResponseResult(final ResponseCowInfo result) {
 
 				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
+					
 					mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
 
 					ObservableList<SpEntryInfo> newEntryDataList = getParsingCowEntryDataList(result.getData());
@@ -768,6 +784,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						mWaitEntryInfoDataList.clear();
 						mWaitEntryInfoDataList.addAll(newEntryDataList);
 
+						
 						for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
 							mWaitEntryInfoDataList.add(new SpEntryInfo());
 						}
@@ -786,6 +803,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						
 					
 						setCurrentEntryInfo(true);
+						setCowTotalCount(result.getData().size());
 						
 						CommonUtils.getInstance().dismissLoadingDialog();
 					});
@@ -818,7 +836,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}
 		
 		// 출장우 데이터 조회
-		return new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn);
+		return new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn,"");
 	}
 	
 	/**
@@ -909,7 +927,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					
 					}
 					
-					Platform.runLater(() -> setCurrentEntryInfo(false));
+					Platform.runLater(() -> {
+						setCurrentEntryInfo(false);
+						setCowTotalCount(result.getData().size());
+					});
 					
 					PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
 					pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
@@ -2165,6 +2186,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			
 						initFinishedEntryDataList();
 						initWaitEntryDataList(mWaitEntryInfoDataList);
+						setCowTotalCount(result.getData().size());
 					} else {
 						Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 					}
@@ -2178,6 +2200,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				// ChooseAuctionController 에서 처리
 			}
 		});
+	}
+	
+	/**
+	 * 출장우 개체 총 수
+	 * @param totalCount
+	 */
+	private void setCowTotalCount(int totalCount) {
+		mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), totalCount));
 	}
 
 	/**

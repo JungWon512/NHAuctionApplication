@@ -627,10 +627,9 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 						resultStr.setValue("대기");
 
 					} else {
-
-						if (aucYn.getValue().equals("1") || GlobalDefine.AUCTION_INFO.auctionRoundData != null
-								&& GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc()
-										.equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
+						
+						if ((aucYn != null && aucYn.getValue().equals("1")) || GlobalDefine.AUCTION_INFO.auctionRoundData != null
+								&& GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
 							resultStr.setValue("진행");
 						} else {
 							resultStr.setValue("대기");
@@ -645,14 +644,15 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 			} else if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
 				resultStr.setValue("낙찰");
 			} else if (code.equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
-
+		
 				if (SettingApplication.getInstance().isSingleAuction()) {
+					
 					resultStr.setValue("보류");
+				
 				} else {
 
-					if (aucYn.getValue().equals("1") || GlobalDefine.AUCTION_INFO.auctionRoundData != null
-							&& GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc()
-									.equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
+					if ((aucYn != null && aucYn.getValue().equals("1")) || GlobalDefine.AUCTION_INFO.auctionRoundData != null
+							&& GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
 						resultStr.setValue("진행");
 					} else {
 						resultStr.setValue("보류");

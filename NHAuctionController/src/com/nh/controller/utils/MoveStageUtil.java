@@ -2,6 +2,8 @@ package com.nh.controller.utils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.nh.common.interfaces.UdpBillBoardStatusListener;
@@ -10,18 +12,21 @@ import com.nh.controller.ControllerApplication;
 import com.nh.controller.controller.AuctionController;
 import com.nh.controller.controller.AuctionMessageController;
 import com.nh.controller.controller.ChooseAuctionController;
+import com.nh.controller.controller.ChooseAuctionNumberRangeController;
 import com.nh.controller.controller.EntryListController;
 import com.nh.controller.controller.LoginController;
 import com.nh.controller.controller.MultipleAuctionController;
 import com.nh.controller.controller.SettingController;
 import com.nh.controller.controller.SettingSoundController;
 import com.nh.controller.interfaces.BooleanListener;
+import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.MessageStringListener;
 import com.nh.controller.interfaces.SelectEntryListener;
 import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.setting.SettingApplication;
+import com.nh.share.api.models.StnData;
 import com.nh.share.code.GlobalDefineCode;
 
 import javafx.animation.PauseTransition;
@@ -400,6 +405,48 @@ public class MoveStageUtil {
 		}
 	}
 	
+
+	/**
+	 * 일괄 경매 구간 선택
+	 */
+	public void showChooseAuctionNumberRange(Stage rootStage , List<StnData> stnList,IntegerListener listener) {
+
+		try {
+			
+
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("ChooseAuctionNumberRangeView.fxml"), getResourceBundle());
+			Parent parent = fxmlLoader.load();
+			ChooseAuctionNumberRangeController controller = fxmlLoader.getController();
+			controller.setData(stnList,listener);
+			
+			mDialog = new Dialog<>();
+			DialogPane dialogPane = new DialogPane();
+
+			dialogPane.getStylesheets().add(getApplicationClass().getResource("css/dialog.css").toExternalForm());
+
+			mDialog.setResizable(true);
+			mDialog.initModality(Modality.NONE);
+			mDialog.setDialogPane(dialogPane);
+			mDialog.setTitle(getResourceBundle().getString("app.title.auction.number.range"));
+
+
+			mDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+			Node closeButton = mDialog.getDialogPane().lookupButton(ButtonType.CLOSE);
+			closeButton.managedProperty().bind(closeButton.visibleProperty());
+			closeButton.setVisible(false);
+
+			dialogPane.setContent(parent);
+			mDialog.initOwner(rootStage);
+			mDialog.show();
+
+			setStageDisable(rootStage);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
 	/**
 	 * dialog 종료
@@ -438,7 +485,6 @@ public class MoveStageUtil {
 
 		Window window = mDialog.getDialogPane().getScene().getWindow();
 		window.setOnCloseRequest(e -> {
-			System.out.println("1 setStageDisable");
 			setBackStageDisableFalse(backStage);
 		});
 
