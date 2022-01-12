@@ -22,7 +22,7 @@ public class EntryInfo implements FromAuctionController {
 	private String mEntryNum; // 출품 번호
 	private String mAuctionQcn; // 경매회차
 	private String mEntryType; // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
-	private String mIndNum; // 축산개체관리번호
+	private String mIndNum; // 축산개체관리번호 
 	private String mIndMngCd; // 축산축종구분코드
 	private String mFhsNum; // 농가식별번호
 	private String mFarmMngNum; // 농장관리번호
@@ -76,6 +76,8 @@ public class EntryInfo implements FromAuctionController {
 	private String mExpAuctionSucBidder; //-일괄 낙찰 예정자
 	
 	private String aucYn; // 출장우 경매 여부
+	
+	private String rgSqno;  //일괄경매 구간 정보
 	
 	public EntryInfo() {
 	}
@@ -634,6 +636,14 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setAucYn(String aucYn) {
 		this.aucYn = aucYn;
+	}
+	
+	public String getRgSqno() {
+		return rgSqno;
+	}
+
+	public void setRgSqno(String rgSqno) {
+		this.rgSqno = rgSqno;
 	}
 
 	@Override
