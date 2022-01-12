@@ -46,6 +46,7 @@ public class AuctionState {
 	private String mEntryPositionCode = ""; // 출품 정보 거점 코드
 	private String mFinishEntryCount = ""; // 경매 진행 완료 출품수
 	private String mRemainEntryCount = ""; // 경매 잔여 출품수
+	private String mExpAuctionIntNum = ""; // 일괄경매구간번호
 	
 	private RetryTargetInfo mRetryTargetInfo = null; // 재경매상태정보
 
@@ -72,7 +73,7 @@ public class AuctionState {
 
 	public AuctionStatus getAuctionStatus() {
 		AuctionStatus auctionStatus = new AuctionStatus(mAuctionHouseCode, mEntryNum, mAuctionQcn, mStartPrice, mCurrentBidderCount,
-				mState, mRank1MemberNum, mRank2MemberNum, mRank3MemberNum, mFinishEntryCount, mRemainEntryCount);
+				mState, mRank1MemberNum, mRank2MemberNum, mRank3MemberNum, mFinishEntryCount, mRemainEntryCount, mExpAuctionIntNum);
 
 		return auctionStatus;
 	}
@@ -89,6 +90,7 @@ public class AuctionState {
 		mRank3MemberNum = auctionStatus.getRank1MemberNum();
 		mFinishEntryCount = auctionStatus.getFinishEntryCount();
 		mRemainEntryCount = auctionStatus.getRemainEntryCount();
+		mExpAuctionIntNum = auctionStatus.getExpAuctionIntNum();
 	}
 
 	public String getEntryNum() {
@@ -268,6 +270,14 @@ public class AuctionState {
 
 	public void setRemainEntryCount(String remainEntryCount) {
 		this.mRemainEntryCount = remainEntryCount;
+	}
+
+	public String getExpAuctionIntNum() {
+		return mExpAuctionIntNum;
+	}
+
+	public void setExpAuctionIntNum(String expAuctionIntNum) {
+		this.mExpAuctionIntNum = expAuctionIntNum;
 	}
 
 	public void setAuctionState(String auctionState) {

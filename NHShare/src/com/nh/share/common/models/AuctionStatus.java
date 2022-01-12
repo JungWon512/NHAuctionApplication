@@ -10,7 +10,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * AS | 조합구분코드 | 출품번호 | 경매회차 | 시작가 | 현재응찰자수 | 경매상태(NONE / READY / START /
  * PROGRESS / COMPETITIVE / SUCCESS / FAIL / STOP / COMPLETED / FINISH) |
- * 1순위회원번호 | 2순위회원번호 | 3순위회원번호 | 경매진행완료출품수 | 경매잔여출품수
+ * 1순위회원번호 | 2순위회원번호 | 3순위회원번호 | 경매진행완료출품수 | 경매잔여출품수 | 일괄경매구간번호
  *
  */
 public class AuctionStatus implements FromAuctionCommon {
@@ -26,6 +26,7 @@ public class AuctionStatus implements FromAuctionCommon {
 	private String mRank3MemberNum; // 3순위 회원번호
 	private String mFinishEntryCount; // 경매 진행 완료 출품수
 	private String mRemainEntryCount; // 경매 잔여 출품수
+	private String mExpAuctionIntNum; // 일괄경매구간번호
 
 	// HazelcastSerializeException을 막기위한 생성자
 	public AuctionStatus() {
@@ -34,7 +35,7 @@ public class AuctionStatus implements FromAuctionCommon {
 
 	public AuctionStatus(String auctionHouseCode, String entryNum, String auctionQcn, String startPrice,
 			String currentBidderCount, String state, String rank1, String rank2, String rank3, String finishEntryCount,
-			String remainEntryCount) {
+			String remainEntryCount, String expAuctionIntNum) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 		mAuctionQcn = auctionQcn;
@@ -46,6 +47,7 @@ public class AuctionStatus implements FromAuctionCommon {
 		mRank3MemberNum = rank3;
 		mFinishEntryCount = finishEntryCount;
 		mRemainEntryCount = remainEntryCount;
+		mExpAuctionIntNum = expAuctionIntNum;
 	}
 
 	public AuctionStatus(String[] messages) {
@@ -60,6 +62,7 @@ public class AuctionStatus implements FromAuctionCommon {
 		mRank3MemberNum = messages[9];
 		mFinishEntryCount = messages[10];
 		mRemainEntryCount = messages[11];
+		mExpAuctionIntNum = messages[12];
 	}
 
 	public String getAuctionHouseCode() {
@@ -150,14 +153,22 @@ public class AuctionStatus implements FromAuctionCommon {
 		this.mRemainEntryCount = remainEntryCount;
 	}
 
+	public String getExpAuctionIntNum() {
+		return mExpAuctionIntNum;
+	}
+
+	public void setExpAuctionIntNum(String expAuctionIntNum) {
+		this.mExpAuctionIntNum = expAuctionIntNum;
+	}
+
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
 				AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mEntryNum,
 				AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mStartPrice,
 				AuctionShareSetting.DELIMITER, mCurrentBidderCount, AuctionShareSetting.DELIMITER, mState,
 				AuctionShareSetting.DELIMITER, mRank1MemberNum, AuctionShareSetting.DELIMITER, mRank2MemberNum,
 				AuctionShareSetting.DELIMITER, mRank3MemberNum, AuctionShareSetting.DELIMITER, mFinishEntryCount,
-				AuctionShareSetting.DELIMITER, mRemainEntryCount);
+				AuctionShareSetting.DELIMITER, mRemainEntryCount, AuctionShareSetting.DELIMITER, mExpAuctionIntNum);
 	}
 }
