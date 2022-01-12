@@ -69,6 +69,9 @@ public class EntryListController implements Initializable {
 
 	@FXML // 페이지 타이틀 , 최저가 낮춤
 	private Label mTitleLabel, mDownPriceLabel , mDownPriceLabel2,mDownPriceLabel3;
+	
+	@FXML //가격 낮추기 단위
+	private Label mLowerCalfMoneyUnitLabel,mLowerFCattleMoneyUnitLabel,mLowerBCattleMoneyUnitLabel;
 
 	@FXML // 대기중인 출품
 	private TableColumn<SpEntryInfo, String> mEntryNumColumn, mExhibitorColumn, mGenderColumn, mMotherColumn, mMatimeColumn, mPasgQcnColumn, mWeightColumn, mLowPriceColumn, mSuccessPriceColumn, mSuccessfulBidderColumn, mResultColumn, mNoteColumn;
@@ -166,6 +169,10 @@ public class EntryListController implements Initializable {
 				mDownPriceTextField3.setVisible(true);
 				mBtnDownPrice.setVisible(true);
 				
+				mLowerCalfMoneyUnitLabel.setVisible(true);
+				mLowerFCattleMoneyUnitLabel.setVisible(true);
+				mLowerBCattleMoneyUnitLabel.setVisible(true);
+				
 				CommonUtils.getInstance().setNumberTextField(mDownPriceTextField);
 				CommonUtils.getInstance().setNumberTextField(mDownPriceTextField2);
 				CommonUtils.getInstance().setNumberTextField(mDownPriceTextField3);
@@ -199,6 +206,25 @@ public class EntryListController implements Initializable {
 				}
 				
 				
+				//최적 가격 낮추기 단위
+				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() > 1) {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}else {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				}
+				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() > 1) {
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}else {
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				}
+				
+				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() > 1) {
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}else {
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				}
+				
+				
 			}else {
 				
 				mDownPriceLabel.setVisible(false);
@@ -208,6 +234,9 @@ public class EntryListController implements Initializable {
 				mDownPriceTextField2.setVisible(false);
 				mDownPriceTextField3.setVisible(false);
 				mBtnDownPrice.setVisible(false);
+				mLowerCalfMoneyUnitLabel.setVisible(false);
+				mLowerFCattleMoneyUnitLabel.setVisible(false);
+				mLowerBCattleMoneyUnitLabel.setVisible(false);
 			}
 		
 			pageTitle = mResMsg.getString("str.page.title.auction_pending_list");
@@ -296,9 +325,14 @@ public class EntryListController implements Initializable {
 		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
 		String selStsDsc = aucResultCode;
 		String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
+		String rgSqno = "";
+		
+		if(!SettingApplication.getInstance().isSingleAuction()) {
+			rgSqno = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo());
+		}
 		
 		// 출장우 데이터 조회
-		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn);
+		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn,rgSqno);
 		
 		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
 			@Override

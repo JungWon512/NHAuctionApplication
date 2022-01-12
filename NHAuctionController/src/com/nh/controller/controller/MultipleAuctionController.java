@@ -590,6 +590,22 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		initConnectionUserDataList();
 
 	}
+	
+	/**
+	 * 출장우 정보 param
+	 * @return
+	 */
+	private RequestCowInfoBody getCowInfoParamBody() {
+		final String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
+		final String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		final String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
+		final String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
+		final String rgSqno = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo());
+		final String selStsDsc = "";
+		
+		// 출장우 데이터 조회
+		return new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn,rgSqno);
+	}
 
 	/**
 	 * 경매 대기~진행 낙찰 예정가,예정자 표시 경매 완료 낙찰가,낙찰자 표시
@@ -824,6 +840,19 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	}
 	
 	/**
+	 * 출장우 개체 총 수
+	 * @param totalCount
+	 */
+	private void setCowTotalCount(int totalCount) {
+		
+		// 시작.진행시 응찰 받음.
+		if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) && !mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+			mLogger.debug("현재 출장우 총 수 " + totalCount);
+			mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), totalCount));
+		}
+	}
+	
+	/**
 	 * 경매 출품 데이터
 	 */
 	private void requestEntryData() {
@@ -834,9 +863,9 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		final String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 		final String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
 		final String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
-
+		final String rgSqno = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo());
 		// 출장우 데이터 조회
-		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, "", stnYn);
+		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, "", stnYn,rgSqno);
 
 		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
 
@@ -850,12 +879,15 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
 						mWaitEntryInfoDataList.clear();
 						mWaitEntryInfoDataList = getParsingCowEntryDataList(result.getData());
-						mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), result.getData().size()));
+						setCowTotalCount(result.getData().size());
 
 						initWaitEntryDataList(mWaitEntryInfoDataList);
 
 					} else {
-						Platform.runLater(() -> showAlertPopupOneButton(result.getMessage()));
+						Platform.runLater(() ->{
+							CommonUtils.getInstance().dismissLoadingDialog();// dismiss loading
+							showAlertPopupOneButton(result.getMessage());	
+						});
 					}
 
 				});
@@ -863,6 +895,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 			@Override
 			public void onResponseError(String message) {
+				Platform.runLater(() ->CommonUtils.getInstance().dismissLoadingDialog());// dismiss loading
 				mLogger.debug("[onResponseError] 출장우 정보 " + message);
 				// ChooseAuctionController 에서 처리
 			}
@@ -974,18 +1007,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					return;
 				}
 				
-
-				//출장우 정보 갱신, 서버 전송
-				String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
-				String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
-				String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
-				String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
-				String selStsDsc = "";
-
-				// 출장우 데이터 조회
-				RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn);
-
-				ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
+				ApiUtils.getInstance().requestSelectCowInfo(getCowInfoParamBody(), new ActionResultListener<ResponseCowInfo>() {
 					@Override
 					public void onResponseResult(final ResponseCowInfo result) {
 
@@ -1025,6 +1047,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 								mRecordCount = newEntryDataList.size();
 								mWaitEntryInfoDataList.clear();
 								mWaitEntryInfoDataList.addAll(newEntryDataList);
+								setCowTotalCount(result.getData().size());
 
 								for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
 									mWaitEntryInfoDataList.add(new SpEntryInfo());
@@ -1059,6 +1082,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		});
 	}
 
+	
 	/**
 	 * 메세지 전송
 	 *
@@ -1189,8 +1213,11 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				mWaitTableView.refresh();
 				selectIndexWaitTable(0,false);
 				setCurrentEntryInfo();
+				setCowTotalCount(resDataList.size());
+				
 			});
 			
+
 			for (SpEntryInfo spEntryInfo : newEntryDataList) {
 				mLogger.debug("추가된 데이터 전송=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
 			}
@@ -1203,21 +1230,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 */
 	private void refreshWaitEntryDataList(boolean isRefresh, String type) {
 
-		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
-		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
-		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
-		String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
-		String selStsDsc = "";
-
-		// 보류목록일경우
-//		if (mCurPageType.equals(EntryDialogType.ENTRY_PENDING_LIST)) {
-//			selStsDsc = GlobalDefineCode.AUCTION_RESULT_CODE_PENDING;
-//		}
-
-		// 출장우 데이터 조회
-		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn);
-
-		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
+		ApiUtils.getInstance().requestSelectCowInfo(getCowInfoParamBody(), new ActionResultListener<ResponseCowInfo>() {
 			@Override
 			public void onResponseResult(final ResponseCowInfo result) {
 
@@ -1320,7 +1333,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 					}
 
-					setCurrentEntryInfo();
+					Platform.runLater(() -> {
+						setCowTotalCount(result.getData().size());
+						setCurrentEntryInfo();
+					});
 
 					PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
 					pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
@@ -2398,7 +2414,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	@Override
 	public void exceptionCaught(int port) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.nh.controller.model;
 import java.time.LocalDateTime;
 
 import com.nh.share.api.models.QcnData;
+import com.nh.share.api.models.StnData;
 /**
  * 경매 회차정보 DTO
  * 
@@ -60,6 +61,10 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 		this.lsCmeno = lsCmeno;
 	}
 	
+	/**
+	 * 경매 타입 - 단일
+	 * @param qcnData
+	 */
 	public AuctionRound(QcnData qcnData) {
 		
 		this.naBzplc = qcnData.getNA_BZPLC();
@@ -77,16 +82,35 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 		this.divisionPrice1 = qcnData.getDIVISION_PRICE1();
 		this.divisionPrice2 = qcnData.getDIVISION_PRICE2();
 		this.divisionPrice3 = qcnData.getDIVISION_PRICE3();
-		this.rgSqNo = qcnData.getRG_SQNO();
-		this.selStsDsc = qcnData.getSEL_STS_DSC();
-
-//		this.ttScr = qcnData.getTT_SCR();
-//		this.fsrgDtm = qcnDatagetFSRG_DTM;
-//		this.fsgmnEno = qcnData..getFSRGMN_ENO();
-//		this.lschgDtm = qcnData.getLSCHG_DTM();
-//		this.lsCmeno = qcnData.getLS_CMENO();
 	}
 	
+	/**
+	 * 경매 타입 - 일괄
+	 * @param qcnData
+	 * @param index 선택된 구간 정보
+	 */
+	public AuctionRound(QcnData qcnData, StnData stnData ) {
+		
+		this.qcn = qcnData.getQCN();
+		this.baseLmtAm = qcnData.getBASE_LMT_AM();
+		this.cutAm = qcnData.getCUT_AM();
+		this.sgnoPrcDsc = qcnData.getSGNO_PRC_DSC();
+		this.ddlYn = qcnData.getDDL_YN();
+		this.tmsYn = qcnData.getTMS_YN();
+		this.delYn = qcnData.getDEL_YN();
+		this.maleKg = qcnData.getMALE_KG();
+		this.femaleKg = qcnData.getFEMALE_KG();
+		this.divisionPrice1 = qcnData.getDIVISION_PRICE1();
+		this.divisionPrice2 = qcnData.getDIVISION_PRICE2();
+		this.divisionPrice3 = qcnData.getDIVISION_PRICE3();
+		
+		this.naBzplc = stnData.getNA_BZPLC();
+		this.aucDt = stnData.getAUC_DT();
+		this.aucObjDsc = Integer.parseInt(stnData.getAUC_OBJ_DSC());
+		this.rgSqNo = stnData.getRG_SQNO();
+		this.selStsDsc = stnData.getSEL_STS_DSC();
+	}
+
 
 	public String getNaBzplc() {
 		return naBzplc;
@@ -270,7 +294,7 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 				+ ttScr + ", fsrgDtm=" + fsrgDtm + ", fsgmnEno=" + fsgmnEno + ", lschgDtm=" + lschgDtm + ", lsCmeno="
 				+ lsCmeno + ", rgSqNo=" + rgSqNo +"]";
 	}
-	
+
 	public AuctionRound clone() {
 		AuctionRound vo = null;
 		try {

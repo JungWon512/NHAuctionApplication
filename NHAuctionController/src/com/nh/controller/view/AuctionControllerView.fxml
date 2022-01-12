@@ -54,13 +54,6 @@
                         <Label fx:id="mDeprePriceLabel" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" HBox.hgrow="ALWAYS">
                            <graphic>
                               <Label contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="|" textFill="#cccccc">
-                                 <graphic>
-                                    <Label fx:id="mLowPriceChgNtLabel" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" text="0" textFill="#ea0030">
-                                       <font>
-                                          <Font name="Noto Sans CJK KR Regular" size="16.0" />
-                                       </font>
-                                    </Label>
-                                 </graphic>
                                  <font>
                                     <Font name="Noto Sans CJK KR Regular" size="16.0" />
                                  </font>
@@ -69,6 +62,11 @@
                                  </padding>
                               </Label>
                            </graphic>
+                           <font>
+                              <Font name="Noto Sans CJK KR Regular" size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mLowPriceChgNtLabel" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" text="0" textFill="#ea0030">
                            <font>
                               <Font name="Noto Sans CJK KR Regular" size="16.0" />
                            </font>

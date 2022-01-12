@@ -37,6 +37,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -87,6 +88,13 @@ public class SettingController implements Initializable {
 	// 상한가/하한가
 	@FXML
 	private TextField mUpperLimitCalfTextField, mUpperLimitFatteningCattleTextField, mUpperLimitBreedingCattleTextField, mLowerLimitCalfTextField, mLowerLimitFatteningCattleTextField, mLowerLimitBreedingCattleTextField;
+	
+	@FXML //상한가 단위
+	private Label mUpCalfMoneyUnitLabel,mUpFCattleMoneyUnitLabel,mUpBCattleMoneyUnitLabel;
+	
+	@FXML //가격 낮추기 단위
+	private Label mLowerCalfMoneyUnitLabel,mLowerFCattleMoneyUnitLabel,mLowerBCattleMoneyUnitLabel;
+	
 	// 경매종료멘트, 비고 창 설정
 	@FXML
 	private CheckBox mUseSoundRateCheckBox, mUseNoteCheckBox;
@@ -208,6 +216,7 @@ public class SettingController implements Initializable {
 		getTextFields();
 		initKeyConfig();
 		addTextFieldListener();
+		setMoneyUnit();
 		mBtnSave.setOnMouseClicked(event -> saveSettings());
 		mBtnInitServer.setOnMouseClicked(event -> initServer());
 	}
@@ -701,6 +710,66 @@ public class SettingController implements Initializable {
 		mobileCheckBoxSelectedList = new ArrayList<>(Arrays.asList(mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox));
 	}
 
+	/**
+	 * 개체 경매 단위, 최저 가격 낮추기 단위
+	 */
+	private void setMoneyUnit() {
+		
+		if(GlobalDefine.AUCTION_INFO.auctionRoundData != null) {
+			mUpperLimitCalfTextField.setDisable(false);
+			mUpperLimitFatteningCattleTextField.setDisable(false);
+			mUpperLimitBreedingCattleTextField.setDisable(false);
+			mLowerLimitCalfTextField.setDisable(false);
+			mLowerLimitFatteningCattleTextField.setDisable(false);
+			mLowerLimitBreedingCattleTextField.setDisable(false);
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() > 1) {
+				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+			}else {
+				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+			}
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() > 1) {
+				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+			}else {
+				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+			}
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() > 1) {
+				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+			}else {
+				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+			}
+			
+		}else {
+			
+			//기본 단위 가격. 송아지,번식우(만원)/비육우(원)
+			
+			mUpperLimitCalfTextField.setDisable(true);
+			mUpperLimitFatteningCattleTextField.setDisable(true);
+			mUpperLimitBreedingCattleTextField.setDisable(true);
+			mLowerLimitCalfTextField.setDisable(true);
+			mLowerLimitFatteningCattleTextField.setDisable(true);
+			mLowerLimitBreedingCattleTextField.setDisable(true);
+			
+			mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+			mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+			
+			mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+			mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+			
+			mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+			mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+		
+		}
+		
+	}
+	
 	/**
 	 * valid listener
 	 */

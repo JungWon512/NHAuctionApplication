@@ -25,10 +25,11 @@ public class RequestCowInfoBody extends RequestBaseBody {
 	 * @param selStsDsc 경매 상태
 	 * @param stnYn     단일or일반 구분
 	 */
-	public RequestCowInfoBody(String naBzplc, String aucObjDsc, String aucDt, String selStsDsc, String stnYn) {
+	public RequestCowInfoBody(String naBzplc, String aucObjDsc, String aucDt, String selStsDsc, String stnYn,String rgSqno) {
 		super(naBzplc, aucObjDsc, aucDt);
 		this.put("mAuctionResult", selStsDsc); // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
 		this.put("stnYn", stnYn); // 단일or일반 구분
+		this.put("rgSqno", rgSqno); // 일괄경매시 사용
 	}
 
 	/**

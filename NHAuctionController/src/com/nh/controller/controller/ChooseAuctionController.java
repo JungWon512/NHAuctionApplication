@@ -4,11 +4,13 @@ import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nh.controller.interfaces.IntegerListener;
 import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.setting.SettingApplication;
@@ -19,6 +21,7 @@ import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.models.QcnData;
+import com.nh.share.api.models.StnData;
 import com.nh.share.api.request.body.RequestCowInfoBody;
 import com.nh.share.api.request.body.RequestQcnBody;
 import com.nh.share.api.response.ResponseNumber;
@@ -227,7 +230,7 @@ public class ChooseAuctionController implements Initializable {
 	 * 경매 접속
 	 */
 	public void onConnection() {
-
+		
 		if (!CommonUtils.getInstance().isValidString(mIp.getText()) || !CommonUtils.getInstance().isValidString(mPort.getText())) {
 			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.check.ip.port"), mResMsg.getString("popup.btn.ok"));
 			return;
@@ -238,14 +241,13 @@ public class ChooseAuctionController implements Initializable {
 			return;
 		}
 
-		CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
-
 		// 선택된 경매일
 		if (mAuctionDatePicker.getValue() == null) {
-			CommonUtils.getInstance().dismissLoadingDialog();
 			CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("dialog.auction.no.data"), mResMsg.getString("popup.btn.ok"));
 			return;
 		}
+
+		CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
 
 		PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
 		pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
@@ -285,24 +287,65 @@ public class ChooseAuctionController implements Initializable {
 
 			@Override
 			public void onResponseResult(ResponseQcn result) {
+				
 
-				if (result != null && result.getData() != null) {
+//				Platform.runLater(()->CommonUtils.getInstance().dismissLoadingDialog());
+				
+				if (result != null ) {
 
-					if (result.getSuccess()) {
+					if (result.getSuccess() && result.getData() != null) {
 
 						QcnData qcnData = result.getData();
+						
+						if(SettingApplication.getInstance().isSingleAuction()) {
+							//단일
+							setQcnData(naBzplc,aucObjDsc,aucDate,qcnData);
+						}else {
+							
+							//일괄
+							if(!CommonUtils.getInstance().isListEmpty(result.getStnList())) {
+								
+								int size  = result.getStnList().size();
+								
+								if(size == 1) {
+									
+									//구간 선택 안함. 0번째 선택
+									setQcnData(naBzplc,aucDate,qcnData,result.getStnList(),0);
 
-						GlobalDefine.AUCTION_INFO.auctionRoundData = new AuctionRound(qcnData);
+								}else {
+									
+									Platform.runLater(() -> {
+									
+										CommonUtils.getInstance().dismissLoadingDialog();
+										
+										//구간 선택 팝업
+										MoveStageUtil.getInstance().showChooseAuctionNumberRange(mStage ,result.getStnList(), new IntegerListener() {
+											@Override
+											public void callBack(int index) {
+									
+												if(index > -1) {
+													
+													//뒷배경 활성화
+													MoveStageUtil.getInstance().dismissDialog();
+													MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
 
-						mLogger.debug("[경매 회차 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
-
-						if (GlobalDefine.AUCTION_INFO.auctionRoundData != null) {
-							// 출장우 카운트
-							requestCowCnt(naBzplc, aucObjDsc, aucDate);
-						} else {
-							// 경매 회차 존재 하지 않음.
-							showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
+													mLogger.debug("구간 선택 index : " + index);
+													
+													CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
+													
+													setQcnData(naBzplc,aucDate,qcnData,result.getStnList(),index);
+													
+												}
+											}
+										});	
+									});
+								}
+								
+							}else {
+								showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
+							}
 						}
+						
 
 					} else {
 						
@@ -321,13 +364,64 @@ public class ChooseAuctionController implements Initializable {
 			@Override
 			public void onResponseError(String message) {
 				mLogger.debug("[회차정보검색 onResponseError] : " + message);
+				Platform.runLater(()->CommonUtils.getInstance().dismissLoadingDialog());
 				showAlertPopupOneButton(mResMsg.getString("str.api.response.fail"));
 			}
 		});
 	}
+	
+	
+	/**
+	 * 회차 정보 셋팅 - 단일 경매 
+	 * @param naBzplc
+	 * @param aucObjDsc
+	 * @param aucDate
+	 * @param qcnData
+	 */
+	private void setQcnData(final String naBzplc,final String aucObjDsc,final String aucDate,QcnData qcnData) {
+		
+		GlobalDefine.AUCTION_INFO.auctionRoundData = new AuctionRound(qcnData);
+		
+		if (GlobalDefine.AUCTION_INFO.auctionRoundData != null) {
 
-	private void requestCowCnt(final String naBzplc, final String aucObjDsc, final String aucDate) {
+			mLogger.debug("[경매 회차 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
+			// 출장우 카운트
+			requestCowCnt(naBzplc, aucObjDsc, aucDate,"");
+		} else {
+			// 경매 회차 존재 하지 않음.
+			showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
+		}
+		
+	}
+	
+	
+	/**
+	 * 회차 정보 셋팅 - 일괄 경매 
+	 * @param naBzplc
+	 * @param aucObjDsc
+	 * @param aucDate
+	 * @param qcnData
+	 */
+	private void setQcnData(final String naBzplc,final String aucDate,QcnData qcnData,List<StnData> stnDataList, int index) {
+		
+		GlobalDefine.AUCTION_INFO.auctionRoundData = new AuctionRound(qcnData,stnDataList.get(index));
+		
+		if (GlobalDefine.AUCTION_INFO.auctionRoundData != null) {
+			mLogger.debug("[경매 회차 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
+//			Platform.runLater(()->CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection")));
+			// 출장우 카운트
+			requestCowCnt(naBzplc, Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()), aucDate,Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo()));
+		} else {
+			// 경매 회차 존재 하지 않음.
+			showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
+		}
+		
+	}
+	
 
+	private void requestCowCnt(final String naBzplc, final String aucObjDsc, final String aucDate,String rgSqno) {
+
+		
 		// 단일or일괄 플래그 기본 단일 N
 		String stnYn = "N";
 
@@ -335,7 +429,7 @@ public class ChooseAuctionController implements Initializable {
 			stnYn = "Y"; // 일괄이면 Y
 		}
 		// 출장우 수
-		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, "", stnYn);
+		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, "", stnYn,rgSqno);
 
 		ApiUtils.getInstance().requestSelectCowCnt(cowInfoBody, new ActionResultListener<ResponseNumber>() {
 
@@ -344,8 +438,10 @@ public class ChooseAuctionController implements Initializable {
 
 				if (result != null && result.getSuccess()) {
 
+					mLogger.debug("[출장우 수] : " + result.getData());
+					
 					if (result.getData() > 0) {
-
+					
 						new Thread() {
 							public void run() {
 								try {
