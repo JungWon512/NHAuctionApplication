@@ -31,6 +31,8 @@ import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.controller.models.EntryInfo;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -148,7 +150,7 @@ public class EntryListController implements Initializable {
 
 			initClickCallback();
 			
-			if(SettingApplication.getInstance().isSingleAuction()) {
+//			if(SettingApplication.getInstance().isSingleAuction()) {
 				
 				int cowLowerLimitPrice = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1);
 				int cowLowerLimitPrice2 = SettingApplication.getInstance().getCowLowerLimitPrice(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2);
@@ -205,7 +207,6 @@ public class EntryListController implements Initializable {
 					mDownPriceTextField3.setDisable(false);
 				}
 				
-				
 				//최적 가격 낮추기 단위
 				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() > 1) {
 					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
@@ -225,20 +226,20 @@ public class EntryListController implements Initializable {
 				}
 				
 				
-			}else {
-				
-				mDownPriceLabel.setVisible(false);
-				mDownPriceLabel2.setVisible(false);
-				mDownPriceLabel3.setVisible(false);
-				mDownPriceTextField.setVisible(false);
-				mDownPriceTextField2.setVisible(false);
-				mDownPriceTextField3.setVisible(false);
-				mBtnDownPrice.setVisible(false);
-				mLowerCalfMoneyUnitLabel.setVisible(false);
-				mLowerFCattleMoneyUnitLabel.setVisible(false);
-				mLowerBCattleMoneyUnitLabel.setVisible(false);
-			}
-		
+//			} else {
+//				
+//				mDownPriceLabel.setVisible(false);
+//				mDownPriceLabel2.setVisible(false);
+//				mDownPriceLabel3.setVisible(false);
+//				mDownPriceTextField.setVisible(false);
+//				mDownPriceTextField2.setVisible(false);
+//				mDownPriceTextField3.setVisible(false);
+//				mBtnDownPrice.setVisible(false);
+//				mLowerCalfMoneyUnitLabel.setVisible(false);
+//				mLowerFCattleMoneyUnitLabel.setVisible(false);
+//				mLowerBCattleMoneyUnitLabel.setVisible(false);
+//			}
+//		
 			pageTitle = mResMsg.getString("str.page.title.auction_pending_list");
 			mBtnSelect.setVisible(true);
 			mBtnSelect.setOnMouseClicked(event -> onCallBack());
@@ -270,9 +271,11 @@ public class EntryListController implements Initializable {
 			mResMsg = resources;
 		}
 
-		initKeyConfig();
+		initKeyConfiguration();
 
 		initTableConfiguration();
+		
+		initTextfieldConfiguration();
 	}
 
 	private void initTableConfiguration() {
@@ -385,6 +388,9 @@ public class EntryListController implements Initializable {
 			if (!CommonUtils.getInstance().isValidString(mDownPriceTextField.getText())
 					|| !CommonUtils.getInstance().isValidString(mDownPriceTextField2.getText())
 					|| !CommonUtils.getInstance().isValidString(mDownPriceTextField3.getText())) {
+				
+				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+				
 				return;
 			}
 
@@ -405,6 +411,7 @@ public class EntryListController implements Initializable {
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1) {
 		
 				if (!CommonUtils.getInstance().isValidString(mDownPriceTextField.getText())) {
+					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
 					return;
 				}
 
@@ -419,6 +426,7 @@ public class EntryListController implements Initializable {
 			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2) {
 				
 				if (!CommonUtils.getInstance().isValidString(mDownPriceTextField2.getText())) {
+					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
 					return;
 				}
 
@@ -434,6 +442,7 @@ public class EntryListController implements Initializable {
 				
 				
 				if (!CommonUtils.getInstance().isValidString(mDownPriceTextField3.getText())) {
+					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
 					return;
 				}
 
@@ -536,7 +545,7 @@ public class EntryListController implements Initializable {
 			}
 		}
 
-		if (!CommonUtils.getInstance().isListEmpty(mEntryDataList)) {
+		if (!CommonUtils.getInstance().isListEmpty(entryInfoDataList)) {
 			
 			Gson gson = new Gson();
 			String jonDataList = gson.toJson(entryInfoDataList);
@@ -573,6 +582,8 @@ public class EntryListController implements Initializable {
 				}
 			});
 
+		}else {
+			Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.fail.empty"),mResMsg.getString("popup.btn.close")));
 		}
 	}
 
@@ -616,7 +627,10 @@ public class EntryListController implements Initializable {
 
 	}
 
-	private void initKeyConfig() {
+	/**
+	 * 키 설정
+	 */
+	private void initKeyConfiguration() {
 
 		mRoot.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
 
@@ -638,6 +652,51 @@ public class EntryListController implements Initializable {
 			}
 
 		});
+	}
+	
+	/**
+	 * 덱스트 필드 설정
+	 */
+	private void initTextfieldConfiguration() {
+		
+		//송아지
+		mDownPriceTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+
+				if (mDownPriceTextField.getText().length() > 5) {
+					String str = mDownPriceTextField.getText().substring(0, 5);
+					mDownPriceTextField.setText(str);
+				}
+			}
+		});
+		
+		//비육우
+		mDownPriceTextField2.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+
+				if (mDownPriceTextField2.getText().length() > 5) {
+
+					String str = mDownPriceTextField2.getText().substring(0, 5);
+					mDownPriceTextField2.setText(str);
+				}
+			}
+		});
+		
+		//번식우
+		mDownPriceTextField3.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+
+				if (mDownPriceTextField3.getText().length() > 5) {
+
+					String str = mDownPriceTextField3.getText().substring(0, 5);
+					mDownPriceTextField3.setText(str);
+				}
+			}
+		});
+		
 	}
 
 	/**

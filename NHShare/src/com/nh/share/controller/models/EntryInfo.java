@@ -79,6 +79,8 @@ public class EntryInfo implements FromAuctionController {
 	
 	private String mExpAuctionIntNum; // 일괄 경매 구간 번호
 	
+	private String mAuctionTypeCode;	//경매 회차 유형 코드 (0:일괄,1:송아지,2:비육우.3:번식우)
+	
 	public EntryInfo() {
 	}
 
@@ -88,7 +90,7 @@ public class EntryInfo implements FromAuctionController {
 			String pasgQcn, String objIdNum, String objRegNum, String objRegTypeNum, String rgnName, String dnaYn,
 			String isNew, String weight, String initPrice, String lowPrice, String note, String auctionResult,
 			String auctionSucBidder, String auctionBidPrice, String auctionBidDateTime, String isLastEntry,
-			String standPosition, String isExcessCow, String expAuctionIntNum) {
+			String standPosition, String isExcessCow, String expAuctionIntNum, String auctionTypeCode) {
 		mAuctionHouseCode = auctionHouseCode;
 		mEntryNum = entryNum;
 		mAuctionQcn = auctionQcn;
@@ -125,6 +127,7 @@ public class EntryInfo implements FromAuctionController {
 		mStandPosition = standPosition;
 		mIsExcessCow = isExcessCow;
 		mExpAuctionIntNum = expAuctionIntNum;
+		mAuctionTypeCode = auctionTypeCode;
 	}
 
 	public EntryInfo(String[] messages) {
@@ -164,6 +167,7 @@ public class EntryInfo implements FromAuctionController {
 		mStandPosition = messages[34];
 		mIsExcessCow = messages[35];
 		mExpAuctionIntNum = messages[36];
+		mAuctionTypeCode = messages[37];
 	}
 
 	
@@ -647,11 +651,19 @@ public class EntryInfo implements FromAuctionController {
 	public void setExpAuctionIntNum(String expAuctionIntNum) {
 		this.mExpAuctionIntNum = expAuctionIntNum;
 	}
+	
+	public String getAuctionTypeCode() {
+		return mAuctionTypeCode;
+	}
+
+	public void setAuctionTypeCode(String mAuctionTypeCode) {
+		this.mAuctionTypeCode = mAuctionTypeCode;
+	}
 
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
-				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
 				mEntryNum, AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mEntryType,
 				AuctionShareSetting.DELIMITER, mIndNum, AuctionShareSetting.DELIMITER, mIndMngCd,

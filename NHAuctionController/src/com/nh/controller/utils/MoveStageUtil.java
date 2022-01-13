@@ -26,6 +26,7 @@ import com.nh.controller.interfaces.SettingListener;
 import com.nh.controller.model.AuctionRound;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.setting.SettingApplication;
+import com.nh.share.api.models.CowInfoData;
 import com.nh.share.api.models.StnData;
 import com.nh.share.code.GlobalDefineCode;
 
@@ -169,7 +170,6 @@ public class MoveStageUtil {
 		}
 	}
 	
-	
 	/**
 	 * 로그인 -> 경매 서버 접속 -> 경매 화면 이동
 	 * 
@@ -189,6 +189,32 @@ public class MoveStageUtil {
 			fxmlLoader.load();
 			MultipleAuctionController controller = fxmlLoader.getController();
 			controller.onConnectServer(chooseAuctionStage, fxmlLoader, ip, port, id);
+		}
+
+	}
+	
+	
+	/**
+	 * 로그인 -> 경매 서버 접속 -> 경매 화면 이동
+	 * 
+	 * @param stage
+	 */
+	public synchronized void onConnectServer(Stage chooseAuctionStage, String ip, int port, String id,List<CowInfoData> cowDataList) throws Exception{
+		
+		isShowingAuctionStage = false;
+		
+		if(SettingApplication.getInstance().isSingleAuction()) {
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("AuctionControllerView.fxml"), getResourceBundle());
+			fxmlLoader.load();
+			AuctionController controller = fxmlLoader.getController();
+			controller.onConnectServer(chooseAuctionStage, fxmlLoader, ip, port, id);
+			controller.setCowData(cowDataList);
+		}else {
+			FXMLLoader fxmlLoader = new FXMLLoader(getFXMLResource("MultipleAuctionControllerView.fxml"), getResourceBundle());
+			fxmlLoader.load();
+			MultipleAuctionController controller = fxmlLoader.getController();
+			controller.onConnectServer(chooseAuctionStage, fxmlLoader, ip, port, id);
+			controller.setCowData(cowDataList);
 		}
 
 	}
@@ -231,7 +257,8 @@ public class MoveStageUtil {
 				controller.initConfiguration(stage);
 			}
 			
-			auctionStageShowLoadingDialog(stage,fxmlLoader.getResources());
+			Platform.runLater(()->CommonUtils.getInstance().showLoadingDialog(stage, fxmlLoader.getResources().getString("dialog.searching.entry.list")));
+//			auctionStageShowLoadingDialog(stage,fxmlLoader.getResources());
 			
 		} catch (Exception e) {
 			e.printStackTrace();

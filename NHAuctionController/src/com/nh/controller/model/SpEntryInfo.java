@@ -87,6 +87,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 	private StringProperty mExpAuctionSucBidder; // -일괄 낙찰 예정자
 	private StringProperty aucYn; // 출장우 경매 여부
 	private StringProperty rgSqno; //일괄 - 경매 구간 정보
+	private StringProperty auctionTypeCode;	//경매 회차 유형 코드 (0:일괄,1:송아지,2:비육우.3:번식우)
 
 	public SpEntryInfo() {
 	}
@@ -146,7 +147,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 		this.mExpAuctionSucBidder = new SimpleStringProperty(entryInfo.getExpAuctionSucBidder());
 		this.aucYn = new SimpleStringProperty(entryInfo.getAucYn());
 		this.rgSqno = new SimpleStringProperty(entryInfo.getExpAuctionIntNum());
-
+		this.auctionTypeCode = new SimpleStringProperty(entryInfo.getAuctionTypeCode());
 	}
 
 	public StringProperty getAuctionHouseCode() {
@@ -584,6 +585,14 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 		this.rgSqno = rgSqno;
 	}
 
+	public StringProperty getAuctionTypeCode() {
+		return auctionTypeCode;
+	}
+
+	public void setAuctionTypeCode(StringProperty auctionTypeCode) {
+		this.auctionTypeCode = auctionTypeCode;
+	}
+
 	public String getConvertBirthDay() {
 
 		String convertBirthDay = "";
@@ -721,6 +730,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 						+ "%s%c"
 						+ "%s%c"
 						+ "%s%c"
+						+ "%s%c"
 						+ "%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getAuctionHouseCode().getValue()),AuctionShareSetting.DELIMITER, 
@@ -758,7 +768,8 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 				CommonUtils.getInstance().replaceDelimiter(getIsLastEntry().getValue()),AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getStandPosition().getValue()),AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getIsExcessCow().getValue()),AuctionShareSetting.DELIMITER,
-				getRgSqno().getValue()
+				getRgSqno().getValue(),AuctionShareSetting.DELIMITER, 				
+				getAuctionTypeCode()
 				);
 	}
 

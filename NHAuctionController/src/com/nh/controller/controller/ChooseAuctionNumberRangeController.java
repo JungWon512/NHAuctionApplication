@@ -62,7 +62,7 @@ public class ChooseAuctionNumberRangeController implements Initializable {
 		        if (empty || item == null) {
 		            setText(null);
 		        } else {
-		        	setText(String.format(mResMsg.getString("str.auction.number.range"),item.getRG_SQNO(),item.getST_AUC_NO(),item.getED_AUC_NO()));
+		        	setText(String.format(mResMsg.getString("str.auction.number.range"),item.getST_AUC_NO(),item.getED_AUC_NO()));
 		        }
 		    }
 		});
