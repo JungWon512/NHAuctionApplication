@@ -122,7 +122,8 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 							objLimitPrice = Integer.valueOf(mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmAuctionLimitPrice3());
 						}
 						
-						if (bidding.getPriceInt() <= objLimitPrice) {
+						if (bidding.getPriceInt() <= (Integer.valueOf(mAuctionScheduler
+								.getEntryInfo(bidding.getAuctionHouseCode(), bidding.getEntryNum()).getLowPrice()) + objLimitPrice)) {
 							ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
 									GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage() + "\r\n");
 
