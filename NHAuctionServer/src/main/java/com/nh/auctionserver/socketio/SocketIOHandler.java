@@ -1586,7 +1586,8 @@ public class SocketIOHandler {
 									objLimitPrice = Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice3());
 								}
 								
-								if (((Bidding) parseObject).getPriceInt() <= objLimitPrice) {
+								if (((Bidding) parseObject).getPriceInt() <= (Integer.valueOf(
+										mAuctioneer.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getLowPrice()) + objLimitPrice)) {
 									client.sendEvent("ResponseCode",
 											new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
 													GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage());
