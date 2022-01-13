@@ -1595,6 +1595,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 			String flag = (i == dataList.size() - 1) ? "Y" : "N";
 			entryInfo.setIsLastEntry(flag);
 			entryInfo.setExpAuctionIntNum(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo()));
+			entryInfo.setAuctionTypeCode(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()));
 			entryInfoDataList.add(entryInfo);
 		}
 		

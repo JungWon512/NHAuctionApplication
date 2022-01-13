@@ -769,7 +769,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 				CommonUtils.getInstance().replaceDelimiter(getStandPosition().getValue()),AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getIsExcessCow().getValue()),AuctionShareSetting.DELIMITER,
 				getRgSqno().getValue(),AuctionShareSetting.DELIMITER, 				
-				getAuctionTypeCode()
+				getAuctionTypeCode().getValue()
 				);
 	}
 

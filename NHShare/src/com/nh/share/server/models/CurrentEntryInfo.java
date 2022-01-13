@@ -179,6 +179,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mIsExcessCow = entryInfo.getIsExcessCow();
 		mSraSbidUpPrice = Integer.toString(entryInfo.getSraSbidUpPrice());
 		mExpAuctionIntNum = entryInfo.getExpAuctionIntNum();
+		mAuctionTypeCode = entryInfo.getAuctionTypeCode();
 	}
 
 	public String getAuctionHouseCode() {
