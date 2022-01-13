@@ -681,7 +681,7 @@ public class EntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mAuctionResult, AuctionShareSetting.DELIMITER, mAuctionSucBidder,
 				AuctionShareSetting.DELIMITER, mAuctionBidPrice, AuctionShareSetting.DELIMITER, mAuctionBidDateTime,
 				AuctionShareSetting.DELIMITER, mIsLastEntry, AuctionShareSetting.DELIMITER, mStandPosition,
-				AuctionShareSetting.DELIMITER, mIsExcessCow, AuctionShareSetting.DELIMITER, mExpAuctionIntNum);
+				AuctionShareSetting.DELIMITER, mIsExcessCow, AuctionShareSetting.DELIMITER, mExpAuctionIntNum, AuctionShareSetting.DELIMITER, mAuctionTypeCode);
 	}
 
 }

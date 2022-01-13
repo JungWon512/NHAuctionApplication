@@ -321,6 +321,7 @@ public class Auctioneer {
 
 		mAuctionStateMap.get(auctionHouseCode).setAuctionQcn(entryInfo.getAuctionQcn());
 		mAuctionStateMap.get(auctionHouseCode).setExpAuctionIntNum(entryInfo.getExpAuctionIntNum());
+		mAuctionStateMap.get(auctionHouseCode).setAuctionTypeCode(entryInfo.getAuctionTypeCode());
 
 		if (entryInfo != null) {
 			mLogger.info("readyEntryInfo : " + entryInfo.getEncodedMessage());
@@ -403,6 +404,7 @@ public class Auctioneer {
 
 		mAuctionStateMap.get(auctionHouseCode).setAuctionQcn(entryInfo.getAuctionQcn());
 		mAuctionStateMap.get(auctionHouseCode).setExpAuctionIntNum(entryInfo.getExpAuctionIntNum());
+		mAuctionStateMap.get(auctionHouseCode).setAuctionTypeCode(entryInfo.getAuctionTypeCode());
 
 		if (entryInfo != null) {
 			mLogger.info("readyEntryInfo : " + entryInfo.getEncodedMessage());
