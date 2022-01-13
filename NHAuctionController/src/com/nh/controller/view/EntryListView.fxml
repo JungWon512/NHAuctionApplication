@@ -182,7 +182,7 @@
             <Font name="System Bold" size="36.0" />
          </font>
          <graphic>
-            <Label fx:id="mTitleLabel1" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="100.0" text="를 조회합니다." textFill="#111111">
+            <Label fx:id="mTitleLabel1" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="100.0" text="목록" textFill="#111111">
                <font>
                   <Font name="Noto Sans CJK KR Bold" size="31.0" />
                </font>

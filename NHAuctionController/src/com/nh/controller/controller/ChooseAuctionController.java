@@ -24,6 +24,7 @@ import com.nh.share.api.models.QcnData;
 import com.nh.share.api.models.StnData;
 import com.nh.share.api.request.body.RequestCowInfoBody;
 import com.nh.share.api.request.body.RequestQcnBody;
+import com.nh.share.api.response.ResponseCowInfo;
 import com.nh.share.api.response.ResponseNumber;
 import com.nh.share.api.response.ResponseQcn;
 import com.nh.share.code.GlobalDefineCode;
@@ -386,7 +387,7 @@ public class ChooseAuctionController implements Initializable {
 
 			mLogger.debug("[경매 회차 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
 			// 출장우 카운트
-			requestCowCnt(naBzplc, aucObjDsc, aucDate,"");
+			requestCowInfo(naBzplc, aucObjDsc, aucDate,"");
 		} else {
 			// 경매 회차 존재 하지 않음.
 			showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
@@ -410,7 +411,7 @@ public class ChooseAuctionController implements Initializable {
 			mLogger.debug("[경매 회차 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
 //			Platform.runLater(()->CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection")));
 			// 출장우 카운트
-			requestCowCnt(naBzplc, Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()), aucDate,Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo()));
+			requestCowInfo(naBzplc, Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()), aucDate,Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo()));
 		} else {
 			// 경매 회차 존재 하지 않음.
 			showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
@@ -419,8 +420,14 @@ public class ChooseAuctionController implements Initializable {
 	}
 	
 
-	private void requestCowCnt(final String naBzplc, final String aucObjDsc, final String aucDate,String rgSqno) {
-
+	/**
+	 * 출장우 데이터 조회
+	 * @param naBzplc
+	 * @param aucObjDsc
+	 * @param aucDate
+	 * @param rgSqno
+	 */
+	private void requestCowInfo(final String naBzplc, final String aucObjDsc, final String aucDate,String rgSqno) {
 		
 		// 단일or일괄 플래그 기본 단일 N
 		String stnYn = "N";
@@ -431,22 +438,20 @@ public class ChooseAuctionController implements Initializable {
 		// 출장우 수
 		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, "", stnYn,rgSqno);
 
-		ApiUtils.getInstance().requestSelectCowCnt(cowInfoBody, new ActionResultListener<ResponseNumber>() {
+		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
 
 			@Override
-			public void onResponseResult(ResponseNumber result) {
+			public void onResponseResult(final ResponseCowInfo result) {
 
-				if (result != null && result.getSuccess()) {
+				Platform.runLater(() -> {
 
-					mLogger.debug("[출장우 수] : " + result.getData());
-					
-					if (result.getData() > 0) {
-					
+					if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
+
 						new Thread() {
 							public void run() {
 								try {
 
-									MoveStageUtil.getInstance().onConnectServer(mStage, mIp.getText().toString(), Integer.parseInt(mPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId());
+									MoveStageUtil.getInstance().onConnectServer(mStage, mIp.getText().toString(), Integer.parseInt(mPort.getText().toString()), GlobalDefine.ADMIN_INFO.adminData.getUserId(),result.getData());
 
 								} catch (Exception e) {
 									e.printStackTrace();
@@ -456,20 +461,18 @@ public class ChooseAuctionController implements Initializable {
 								}
 							}
 						}.start();
-
+						
 					} else {
-						showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data")));
 					}
 
-				} else {
-					showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
-				}
+				});
 			}
 
 			@Override
 			public void onResponseError(String message) {
-				mLogger.debug("[출장우 수 Error] : " + message);
-				showAlertPopupOneButton(mResMsg.getString("str.api.response.fail"));
+				mLogger.debug("[error 출장우 조회] : " + message);
+				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("str.api.response.fail")));
 			}
 		});
 	}
@@ -520,9 +523,7 @@ public class ChooseAuctionController implements Initializable {
 			public void callBack(Boolean isClose) {
 
 				dismissShowingDialog();
-				
 //				toggleAllCowDisable();
-
 			}
 
 			@Override

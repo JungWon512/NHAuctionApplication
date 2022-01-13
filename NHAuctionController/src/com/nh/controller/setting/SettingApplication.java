@@ -608,6 +608,8 @@ public class SettingApplication {
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, DEFAULT_SETTING_UPPER_BREEDING_TEXT)
 				);
 		
+		mLogger.debug("환경설정 보냄 => " +setting.getEncodedMessage().toString());
+		
 		return setting;
 	}
 	

@@ -240,6 +240,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	// 우클릭 새로고침 적용
 	private ContextMenu mRefreshContextMenu = null;
 	
+	private List<CowInfoData> mTmpCowDataList = null; //경매일 선택에서 조회된 출장우 데이터 set
+	
 
 	/**
 	 * setStage
@@ -287,6 +289,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				}
 			});
 		}
+	}
+	
+	/**
+	 * 경매일 선택에서 조회된 출장우 데이터 set
+	 * @param dataList
+	 */
+	public void setCowData(List<CowInfoData> dataList) {
+		mTmpCowDataList = new ArrayList<CowInfoData>();
+		mTmpCowDataList.addAll(dataList);
 	}
 
 	/**
@@ -2164,42 +2175,25 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	/**
 	 * 경매 출품 데이터
+	 * 2022.01.13 경매일선택에서 조회된 출장우 데이터로 수정
 	 */
 	private void requestEntryData() {
 
 		mCurPageType = EntryDialogType.ENTRY_LIST;
-
-		ApiUtils.getInstance().requestSelectCowInfo(getCowInfoParam(), new ActionResultListener<ResponseCowInfo>() {
-
-			@Override
-			public void onResponseResult(final ResponseCowInfo result) {
-
-				Platform.runLater(() -> {
-
-					if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
-
-						mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
-
-						mWaitEntryInfoDataList.clear();
-						mWaitEntryInfoDataList = getParsingCowEntryDataList(result.getData());
-						mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), result.getData().size()));
-			
-						initFinishedEntryDataList();
-						initWaitEntryDataList(mWaitEntryInfoDataList);
-						setCowTotalCount(result.getData().size());
-					} else {
-						Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
-					}
-
-				});
-			}
-
-			@Override
-			public void onResponseError(String message) {
-				mLogger.debug("[onResponseError] 출장우 정보 " + message);
-				// ChooseAuctionController 에서 처리
-			}
-		});
+		
+		if(!CommonUtils.getInstance().isListEmpty(mTmpCowDataList)) {
+			Platform.runLater(() -> {
+					mLogger.debug("[출장우 정보 조회 데이터 수] " + mTmpCowDataList.size());
+					mWaitEntryInfoDataList.clear();
+					mWaitEntryInfoDataList = getParsingCowEntryDataList(mTmpCowDataList);
+					initFinishedEntryDataList();
+					initWaitEntryDataList(mWaitEntryInfoDataList);
+					setCowTotalCount(mTmpCowDataList.size());
+					mTmpCowDataList = null;
+			});
+		}else {
+			Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+		}
 	}
 	
 	/**

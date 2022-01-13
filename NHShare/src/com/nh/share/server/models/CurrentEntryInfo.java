@@ -54,6 +54,8 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	private String mStandPosition; // 계류대 번호
 	private String mIsExcessCow; // 초과출장우여부
 	private String mExpAuctionIntNum; // 일괄 경매 구간 번호
+	private String mAuctionTypeCode;	//경매 회차 유형 코드 (0:일괄,1:송아지,2:비육우.3:번식우)
+	
 	
 	public CurrentEntryInfo(String auctionHouseCode, String entryNum, String auctionQcn, String entryType, String indNum, String indMngCd,
 			String fhsNum, String farmMngNum, String exhibitor, String brandName, String birthday, String kpn,
@@ -136,6 +138,7 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mStandPosition = messages[34];
 		mIsExcessCow = messages[35];
 		mExpAuctionIntNum = messages[36];
+		mAuctionTypeCode = messages[37];
 	}
 
 	public CurrentEntryInfo(EntryInfo entryInfo) {
@@ -474,10 +477,19 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		this.mExpAuctionIntNum = expAuctionIntNum;
 	}
 	
+	public String getmAuctionTypeCode() {
+		return mAuctionTypeCode;
+	}
+
+	public void setmAuctionTypeCode(String mAuctionTypeCode) {
+		this.mAuctionTypeCode = mAuctionTypeCode;
+	}
+	
+	
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
-				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
 				mEntryNum, AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mEntryType, AuctionShareSetting.DELIMITER, mIndNum,
 				AuctionShareSetting.DELIMITER, mIndMngCd, AuctionShareSetting.DELIMITER, mFhsNum,
@@ -494,7 +506,8 @@ public class CurrentEntryInfo implements FromAuctionServer {
 				AuctionShareSetting.DELIMITER, mAuctionResult, AuctionShareSetting.DELIMITER, mAuctionSucBidder,
 				AuctionShareSetting.DELIMITER, mAuctionBidPrice, AuctionShareSetting.DELIMITER, mAuctionBidDateTime,
 				AuctionShareSetting.DELIMITER, mIsLastEntry, AuctionShareSetting.DELIMITER, mStandPosition,
-				AuctionShareSetting.DELIMITER, mIsExcessCow, AuctionShareSetting.DELIMITER, mExpAuctionIntNum);
+				AuctionShareSetting.DELIMITER, mIsExcessCow, AuctionShareSetting.DELIMITER, mExpAuctionIntNum,
+				AuctionShareSetting.DELIMITER, mAuctionTypeCode);
 	}
 
 }
