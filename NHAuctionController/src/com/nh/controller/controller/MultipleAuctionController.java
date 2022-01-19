@@ -30,7 +30,6 @@ import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
 import com.nh.common.interfaces.UdpBillBoardStatusListener;
 import com.nh.common.interfaces.UdpPdpBoardStatusListener;
-import com.nh.controller.controller.SettingController.AuctionToggle;
 import com.nh.controller.interfaces.AudioPlayListener;
 import com.nh.controller.interfaces.BooleanListener;
 import com.nh.controller.interfaces.MessageStringListener;
@@ -65,7 +64,6 @@ import com.nh.share.api.request.body.RequestBidLogBody;
 import com.nh.share.api.request.body.RequestBidNumBody;
 import com.nh.share.api.request.body.RequestCowInfoBody;
 import com.nh.share.api.request.body.RequestMultipleAuctionStatusBody;
-import com.nh.share.api.response.BaseResponse;
 import com.nh.share.api.response.ResponseBidEntry;
 import com.nh.share.api.response.ResponseChangeCowInfo;
 import com.nh.share.api.response.ResponseCowInfo;
@@ -114,6 +112,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -506,7 +505,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			}
 		});
 	}
-
+	
 	/**
 	 * 테이블뷰 관련
 	 */
@@ -594,6 +593,31 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		// 접속 현황
 		initConnectionUserDataList();
 
+		
+		//미 응찰건 색상 적용
+		mWaitTableView.setRowFactory(tbl -> new TableRow<SpEntryInfo>() {
+			 @Override
+		        protected void updateItem(SpEntryInfo item, boolean empty) {
+		            super.updateItem(item, empty);
+		            if(!empty) {
+		            	
+		            	if(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PROGRESS)
+		    					|| GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) { //경매 상태는 준비, 회차는 진행중
+		            		
+		            		if(CommonUtils.getInstance().isValidString(item.getExpAuctionBidPrice().getValue())) {
+		            			if(Integer.parseInt(item.getExpAuctionBidPrice().getValue()) <= 0) {
+		            				styleProperty().set("-fx-background-color: #eeeeee");
+		            			}else {
+		            				styleProperty().set("-fx-background-color: #ffffff");
+		            			}
+		            		} 
+		            	}else {
+            				styleProperty().set("-fx-background-color: #ffffff");
+            			}
+		            }
+		        }
+
+		});
 	}
 	
 	/**
@@ -1328,19 +1352,20 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 							for (SpEntryInfo spEntryInfo : newDataList) {
 								mLogger.debug("추가된 데이터 전송=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
 							}
-
+							
 							mWaitEntryInfoDataList.addAll(mRecordCount, newDataList);
+
 							mRecordCount += newDataList.size();
 
 						} else {
 							mLogger.debug("추기된 데이터 없음.");
 						}
-
-						mWaitTableView.refresh();
+//						mWaitTableView.refresh();
 
 					}
 
 					Platform.runLater(() -> {
+						mWaitTableView.refresh();
 						setCowTotalCount(result.getData().size());
 						setCurrentEntryInfo();
 					});
@@ -1460,7 +1485,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 //							onResponseCowInfoRefresh(result.getData(),REFRESH_ENTRY_LIST_TYPE_REFRESH);
 //						}
 						
-						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
+						onRefresh(REFRESH_ENTRY_LIST_TYPE_NONE);
 
 						onAuctionStatusFinish(true);
 					}
@@ -3224,6 +3249,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				mLogger.debug("[응찰자 목록 초기화] :  " + mBiddingUserInfoDataList.size());
 				initBiddingInfoDataList();
 			}
+			
 		});
 	}
 
