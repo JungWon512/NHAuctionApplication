@@ -262,6 +262,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				createUdpClient(mUdpBillBoardStatusListener1, mUdpBillBoardStatusListener2, mUdpPdpBoardStatusListener);
 			}
 		};
+		thread.setDaemon(true);
 		thread.start();
 
 		// 윈도우 x버튼 클릭시 팝업 노출되도록 변경 적용 2021.12.23 jspark
@@ -657,6 +658,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				createClient(ip, port, id, "N");
 			}
 		};
+		aucServer.setDaemon(true);
 		aucServer.start();
 
 	}
@@ -997,6 +999,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				}
 			};
 
+			thread.setDaemon(true);
 			thread.start();
 
 		} else if (type.equals(REFRESH_ENTRY_LIST_TYPE_START)) {
@@ -1154,6 +1157,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				}
 			};
 
+			refreshWaitThread.setDaemon(true);
 			refreshWaitThread.start();
 
 		} else {
@@ -1691,6 +1695,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		};
 
+		thread.setDaemon(true);
 		thread.start();
 	}
 
@@ -1819,7 +1824,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 시작 서버로 Start 보냄.
 			addLogItem(msgStart + AuctionDelegate.getInstance().onStartAuction(mCurrentSpEntryInfo.getEntryNum().getValue()));
 
-			mLogger.debug("[출품정보 음성 읽기 전 isCancel] " + isCancel);
+			System.out.println("[출품정보 음성 읽기 전 isCancel] " + isCancel);
 
 			AudioFilePlay.getInstance().setTargetPlay(this.getClass().getResource(AudioPlayTypes.which(AudioPlayTypes.START)).toExternalForm(), new AudioPlayListener() {
 				@Override
@@ -1850,7 +1855,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private void playStartCurrentEntrySound() {
 
 		if (isPause) {
-			mLogger.debug("[일시 정지 상태. 출품 정보 읽지 않음.]");
+			System.out.println("[일시 정지 상태. 출품 정보 읽지 않음.]");
 			return;
 		}
 
@@ -1859,14 +1864,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			@Override
 			public void playbackFinished(PlaybackEvent evt) {
 
-				mLogger.debug("[출품정보 음성 읽음.]");
+				System.out.println("[출품정보 음성 읽음.]");
 				isStartSoundPlaying = false;
 
 				if (isCancel) {
 					return;
 				}
 				// 음성 경매시 종료 타이머 시작.
-				mLogger.debug("[출품정보 음성 읽음. 정지 타이머 실행]");
+				System.out.println("[출품정보 음성 읽음. 정지 타이머 실행]");
 				soundAuctionTimerTask();
 			}
 		});
@@ -2208,7 +2213,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	
 		long upPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue()));
 		
-		mLogger.debug("예정가 높이기 : "  + upPrice + " / 구분코드 :  " + mCurrentSpEntryInfo.getEntryType().getValue());
+		System.out.println("예정가 높이기 : "  + upPrice + " / 구분코드 :  " + mCurrentSpEntryInfo.getEntryType().getValue());
 		
 		setLowPrice(upPrice, true);
 	}
@@ -2222,7 +2227,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		long lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue())) * -1;
 		
-		mLogger.debug("예정가 낮추기 : " + lowPrice + " / 구분코드 : " + mCurrentSpEntryInfo.getEntryType().getValue());
+		System.out.println("예정가 낮추기 : " + lowPrice + " / 구분코드 : " + mCurrentSpEntryInfo.getEntryType().getValue());
 		
 		setLowPrice(lowPrice, false);
 	}
@@ -2442,7 +2447,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				if (currentEntryNum.equals(entryNum)) {
 
-					mLogger.debug("[!! 재접속 스크롤 설정] : " + entryNum + " / index : " + i + "/ " + mAuctionStatus.getState());
+					System.out.println("[!! 재접속 스크롤 설정] : " + entryNum + " / index : " + i + "/ " + mAuctionStatus.getState());
 
 					mCurrentSpEntryInfo = mWaitTableView.getItems().get(i);
 
@@ -2852,6 +2857,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				}
 			}
 		};
+		thread.setDaemon(true);
 		thread.start();
 
 		try {
@@ -2933,7 +2939,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mConnectionUserDataList.stream().flatMap(a -> Arrays.stream(a.getUserNo())).filter(b -> b != null && b.getValue().equals(bidderConnectInfo.getUserJoinNum())).map(item -> {
 				item.setValue("");
 				return item;
-			});
+			}).forEach(System.out::println);
 
 			if (mConnectionUserMap.size() <= 0) {
 				sortConnectionUserDataList();
@@ -3339,7 +3345,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		case GlobalDefineCode.AUCTION_STATUS_READY:
 
-			mLogger.debug("#### AUCTION_STATUS_READY ####");
+			System.out.println("#### AUCTION_STATUS_READY ####");
 			// 타이머 초기화
 			stopAutoAuctionScheduler();
 			// 응찰 쓰레드폴 init
@@ -3413,7 +3419,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 사운드 경매인 경우 타이머 시작.
 			if (SettingApplication.getInstance().isUseSoundAuction() && !isStartSoundPlaying) {
 				// 음성 경매시 종료 타이머 시작.
-				mLogger.debug("[경매 상태에서. 정지 타이머 실행]");
+				System.out.println("[경매 상태에서. 정지 타이머 실행]");
 				soundAuctionTimerTask();
 			}
 
@@ -3482,7 +3488,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
 
-		mLogger.debug("[뷰 작업 완료]" + mAuctionStatus.getState());
+		System.out.println("[뷰 작업 완료]" + mAuctionStatus.getState());
 //		});
 	}
 
@@ -3631,7 +3637,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				if (spEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS)) {
 
 					if ((mWaitTableView.getSelectionModel().getSelectedIndex() + 1) == mRecordCount) {
-						mLogger.debug("마지막. 뷰 초기화");
+						System.out.println("마지막. 뷰 초기화");
 						// 경매 준비 상태로 뷰들 초기화
 						setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 						setCurrentEntryInfo(true);
@@ -3772,7 +3778,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (mCurrentSpEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
 				isSkipCowSound = true;
 				SoundUtil.getInstance().setCurrentEntryInfoMessage(null);
-				mLogger.debug("[보류. 사운드 재생 안 함]");
+				System.out.println("[보류. 사운드 재생 안 함]");
 			}
 		}
 
@@ -4051,10 +4057,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					// 경매 시작
 					if (ke.getCode() == KeyCode.ADD) {
 
-						mLogger.debug("[KeyCode.ADD]=> isStartedAuction : " + isStartedAuction);
-						mLogger.debug("[KeyCode.ADD]=> isPlusKeyStartAuction : " + isPlusKeyStartAuction);
-						mLogger.debug("[KeyCode.ADD]=> isStartSoundPlaying : " + isStartSoundPlaying);
-						mLogger.debug("[KeyCode.ADD]=> mAuctionStatus.getState() : " + mAuctionStatus.getState());
+						System.out.println("[KeyCode.ADD]=> isStartedAuction : " + isStartedAuction);
+						System.out.println("[KeyCode.ADD]=> isPlusKeyStartAuction : " + isPlusKeyStartAuction);
+						System.out.println("[KeyCode.ADD]=> isStartSoundPlaying : " + isStartSoundPlaying);
+						System.out.println("[KeyCode.ADD]=> mAuctionStatus.getState() : " + mAuctionStatus.getState());
 
 						if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_READY) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PASS)) {
 							// 출장우 정보 TTS 송출 여부 초기화
@@ -4082,13 +4088,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					// 경매 시작
 					if (ke.getCode() == KeyCode.ENTER) {
-						mLogger.debug("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
+						System.out.println("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
 						normalEnterStartAuction();
 						ke.consume();
 					}
 					// 음성 경매 시작
 					if (ke.getCode() == KeyCode.SPACE) {
-						mLogger.debug("[KeyCode.SPACE]=> " + mAuctionStatus.getState());
+						System.out.println("[KeyCode.SPACE]=> " + mAuctionStatus.getState());
 						normalSpaceStartAuction();
 						ke.consume();
 					}
@@ -4368,7 +4374,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void playOverPriceSound(String joinNumber) {
 		
-		mLogger.debug("[isStartSoundPlaying] : " + isStartSoundPlaying
+		System.out.println("[isStartSoundPlaying] : " + isStartSoundPlaying
 				+" [isOverPricePlaySound] : " + isOverPricePlaySound
 				+" [isPlayReAuctionSound] : " + isPlayReAuctionSound
 				+" [isPause] : " + isPause);
