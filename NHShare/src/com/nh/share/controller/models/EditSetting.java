@@ -32,8 +32,7 @@ public class EditSetting implements FromAuctionController {
 	private String mAuctionLimitPrice1; // 경매상한가(송아지 일괄경매사용)
 	private String mAuctionLimitPrice2; // 경매상한가(비육우 일괄경매사용)
 	private String mAuctionLimitPrice3; // 경매상한가(번식우 일괄경매사용)
-	private String mCutAm; // 비육우 응찰 단위
-	
+
 	public EditSetting(String[] messages) {
 		this.mAuctionHouseCode = messages[1];
 		this.mIsShowEntryNum = messages[2];
@@ -53,13 +52,12 @@ public class EditSetting implements FromAuctionController {
 		this.mAuctionLimitPrice1 = messages[16];
 		this.mAuctionLimitPrice2 = messages[17];
 		this.mAuctionLimitPrice3 = messages[18];
-		this.mCutAm = messages[19];
 	}
 
 	public EditSetting(String mAuctionHouseCode, String mIsShowEntryNum, String mIsShowExhUser, String mIsShowGender,
 			String mIsShowWeight, String mIsShowMother, String mIsShowPasg, String mIsShowCaving, String mIsShowKpn,
 			String mIsShowLocation, String mIsShowNote, String mIsShowLowPrice, String mIsShowDna, String mCountDown,
-			String mAuctionType, String mAuctionLimitPrice1, String mAuctionLimitPrice2, String mAuctionLimitPrice3,String cutAm) {
+			String mAuctionType, String mAuctionLimitPrice1, String mAuctionLimitPrice2, String mAuctionLimitPrice3) {
 		this.mAuctionHouseCode = mAuctionHouseCode;
 		this.mIsShowEntryNum = mIsShowEntryNum;
 		this.mIsShowExhUser = mIsShowExhUser;
@@ -78,7 +76,6 @@ public class EditSetting implements FromAuctionController {
 		this.mAuctionLimitPrice1 = mAuctionLimitPrice1;
 		this.mAuctionLimitPrice2 = mAuctionLimitPrice2;
 		this.mAuctionLimitPrice3 = mAuctionLimitPrice3;
-		this.mCutAm = cutAm;
 	}
 
 	public String getAuctionHouseCode() {
@@ -225,17 +222,9 @@ public class EditSetting implements FromAuctionController {
 		this.mAuctionLimitPrice3 = mAuctionLimitPrice3;
 	}
 
-	public String getmCutAm() {
-		return mCutAm;
-	}
-
-	public void setmCutAm(String mCutAm) {
-		this.mCutAm = mCutAm;
-	}
-
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
 				AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mIsShowEntryNum,
 				AuctionShareSetting.DELIMITER, mIsShowExhUser, AuctionShareSetting.DELIMITER, mIsShowGender,
 				AuctionShareSetting.DELIMITER, mIsShowWeight, AuctionShareSetting.DELIMITER, mIsShowMother,
@@ -244,7 +233,6 @@ public class EditSetting implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mIsShowNote, AuctionShareSetting.DELIMITER, mIsShowLowPrice,
 				AuctionShareSetting.DELIMITER, mIsShowDna, AuctionShareSetting.DELIMITER, mCountDown,
 				AuctionShareSetting.DELIMITER, mAuctionType, AuctionShareSetting.DELIMITER, mAuctionLimitPrice1,
-				AuctionShareSetting.DELIMITER, mAuctionLimitPrice2, AuctionShareSetting.DELIMITER, mAuctionLimitPrice3,
-				AuctionShareSetting.DELIMITER,mCutAm);
+				AuctionShareSetting.DELIMITER, mAuctionLimitPrice2, AuctionShareSetting.DELIMITER, mAuctionLimitPrice3);
 	}
 }

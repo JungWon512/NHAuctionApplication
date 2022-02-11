@@ -155,6 +155,7 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 	public int getCutAm() {
 		return cutAm;
 	}
+
 	public void setCutAm(int cutAm) {
 		this.cutAm = cutAm;
 	}
