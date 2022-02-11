@@ -2,12 +2,18 @@ package com.nh.controller.controller;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.controller.model.AdminData;
+import com.nh.controller.model.SpBidding;
+import com.nh.controller.model.SpEntryInfo;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.ApiUtils;
 import com.nh.controller.utils.CommonUtils;
@@ -19,8 +25,11 @@ import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.NetworkDefine;
 import com.nh.share.api.request.body.RequestLoginBody;
 import com.nh.share.api.response.ResponseAuctionLogin;
+import com.nh.share.controller.models.EntryInfo;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -95,7 +104,7 @@ public class LoginController implements Initializable {
 			Platform.runLater(()->mPwTextField.requestFocus());
 			mSaveIdCheckBox.setSelected(true);
 		}
-		
+
 	}
 
 	/**

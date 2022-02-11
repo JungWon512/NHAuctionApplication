@@ -531,7 +531,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 				}
 
 			} catch (Exception e) {
-				System.out.println("[onBidding Exception] : " + e.toString());
+				mLogger.debug("[onBidding Exception] : " + e.toString());
 				mCalculationRankCallBack.failed(e, null); // Error
 			}
 		});
@@ -602,7 +602,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 				});
 			}
 		};
-		thread.setDaemon(true);
+
 		thread.start();
 	}
 
@@ -887,7 +887,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 			result = true;
 		}
 
-		System.out.println("[응찰=최저가 비교] : " + result + " / 최저가 : " + lowPrice + " / 응찰가 : " + curPrice);
+		mLogger.debug("[응찰=최저가 비교] : " + result + " / 최저가 : " + lowPrice + " / 응찰가 : " + curPrice);
 
 		return result;
 	}
@@ -1203,7 +1203,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 				writeLogFile(mRankBiddingDataList, auctionStatus, isSuccess, userNo);
 			}
 		};
-		thread.setDaemon(true);
 		thread.start();
 
 	}
@@ -1520,7 +1519,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 				requestInsertBiddingHistory(aucEntrData,GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_ING);
 			}
 		};
-		thread.setDaemon(true);
 		thread.start();
 	}
 

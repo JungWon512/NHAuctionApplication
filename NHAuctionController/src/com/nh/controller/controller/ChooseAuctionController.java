@@ -172,7 +172,7 @@ public class ChooseAuctionController implements Initializable {
 	 */
 	private void initCowToggleTypes() {
 		// listener
-		cowTypeToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> System.out.println("소 타입 => " + newValue.getUserData().toString().trim()));
+		cowTypeToggleGroup.selectedToggleProperty().addListener((observableValue, oldValue, newValue) -> mLogger.debug("소 타입 => " + newValue.getUserData().toString().trim()));
 	}
 
 	/**
@@ -343,30 +343,44 @@ public class ChooseAuctionController implements Initializable {
 								}
 								
 							}else {
-								showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
+								
+								Platform.runLater(()->{
+									CommonUtils.getInstance().dismissLoadingDialog();
+									showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
+								});
+
 							}
 						}
 						
 
 					} else {
 						
-						if(CommonUtils.getInstance().isValidString(result.getMessage())) {
-							showAlertPopupOneButton(result.getMessage());	
-						}else {
-							showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));	
-						}
+						Platform.runLater(()->{
+							CommonUtils.getInstance().dismissLoadingDialog();
+							if(CommonUtils.getInstance().isValidString(result.getMessage())) {
+								showAlertPopupOneButton(result.getMessage());	
+							}else {
+								showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));	
+							}
+						});
+						
 					}
 
 				} else {
-					showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
+					Platform.runLater(()->{
+						CommonUtils.getInstance().dismissLoadingDialog();
+						showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
+					});
 				}
 			}
 
 			@Override
 			public void onResponseError(String message) {
 				mLogger.debug("[회차정보검색 onResponseError] : " + message);
-				Platform.runLater(()->CommonUtils.getInstance().dismissLoadingDialog());
-				showAlertPopupOneButton(mResMsg.getString("str.api.response.fail"));
+				Platform.runLater(()->{
+					CommonUtils.getInstance().dismissLoadingDialog();
+					showAlertPopupOneButton(mResMsg.getString("str.api.response.fail"));
+				});
 			}
 		});
 	}

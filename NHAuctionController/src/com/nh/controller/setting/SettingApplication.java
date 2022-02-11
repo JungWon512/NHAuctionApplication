@@ -605,10 +605,10 @@ public class SettingApplication {
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_MOBILE_DNA, "N"), SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5"), getSettingAuctionType(),
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, DEFAULT_SETTING_UPPER_CALF_TEXT),
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, DEFAULT_SETTING_UPPER_FATTENING_TEXT),
-				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, DEFAULT_SETTING_UPPER_BREEDING_TEXT)
-				);
+				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, DEFAULT_SETTING_UPPER_BREEDING_TEXT),
+				Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getCutAm()));
 		
-		mLogger.debug("환경설정 보냄 => " +setting.getEncodedMessage().toString());
+		mLogger.debug("[환경 설정 정보를 전송합니다.]=> " +setting.getEncodedMessage().toString());
 		
 		return setting;
 	}
