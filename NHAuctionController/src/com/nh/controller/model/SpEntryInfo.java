@@ -647,7 +647,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 
 					} else {
 						
-						if ((aucYn != null && aucYn.getValue().equals("1")) || GlobalDefine.AUCTION_INFO.auctionRoundData != null
+						if ((aucYn != null && "1".equals(aucYn.getValue())) || GlobalDefine.AUCTION_INFO.auctionRoundData != null
 								&& GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
 							resultStr.setValue("진행");
 						} else {
