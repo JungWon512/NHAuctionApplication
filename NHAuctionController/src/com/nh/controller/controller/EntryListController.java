@@ -478,20 +478,20 @@ public class EntryListController implements Initializable {
 				if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
 				
 					if (targetPrice < cowLowerLimitPrice) {
-						System.out.println("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+						mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
 						continue;
 					}
 					
 					
 				}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
 					if (targetPrice < cowLowerLimitPrice2) {
-						System.out.println("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+						mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
 						continue;
 					}
 					
 				}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
 					if (targetPrice < cowLowerLimitPrice3) {
-						System.out.println("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+						mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
 						continue;
 					}
 				}
@@ -638,7 +638,7 @@ public class EntryListController implements Initializable {
 				switch (mCurPageType) {
 				case ENTRY_LIST:
 				case ENTRY_PENDING_LIST:
-					System.out.println("F5");
+					mLogger.debug("F5");
 					onCallBack();
 					break;
 				}
@@ -646,7 +646,7 @@ public class EntryListController implements Initializable {
 			}
 
 			if (event.getCode() == KeyCode.ESCAPE) {
-				System.out.println("ESCAPE");
+				mLogger.debug("ESCAPE");
 				onClose();
 				event.consume();
 			}

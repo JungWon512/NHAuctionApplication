@@ -166,6 +166,16 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 		this.mEntryNum = mEntryNum;
 	}
 
+	public int getEntryNumberValue() {
+		
+		if(!CommonUtils.getInstance().isEmptyProperty(mEntryNum)) {
+			return Integer.parseInt(this.mEntryNum.getValue()) ;
+		}else {
+			return -1;
+		}
+	}
+
+
 	public StringProperty getEntryType() {
 		return returnValue(mEntryType);
 	}
@@ -647,7 +657,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 
 					} else {
 						
-						if ((aucYn != null && aucYn.getValue().equals("1")) || GlobalDefine.AUCTION_INFO.auctionRoundData != null
+						if ((aucYn != null && "1".equals(aucYn.getValue())) || GlobalDefine.AUCTION_INFO.auctionRoundData != null
 								&& GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
 							resultStr.setValue("진행");
 						} else {
@@ -670,7 +680,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 				
 				} else {
 
-					if ((aucYn != null && aucYn.getValue().equals("1")) || GlobalDefine.AUCTION_INFO.auctionRoundData != null
+					if ((aucYn != null && "1".equals(aucYn.getValue())) || GlobalDefine.AUCTION_INFO.auctionRoundData != null
 							&& GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {
 						resultStr.setValue("진행");
 					} else {
