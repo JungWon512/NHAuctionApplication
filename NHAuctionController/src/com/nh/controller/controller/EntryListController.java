@@ -208,18 +208,18 @@ public class EntryListController implements Initializable {
 				}
 				
 				//최적 가격 낮추기 단위
-				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() > 1) {
+				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 10000) {
 					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				}else {
 					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				}
-				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() > 1) {
+				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 10000) {
 					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				}else {
 					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				}
 				
-				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() > 1) {
+				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 10000) {
 					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				}else {
 					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));

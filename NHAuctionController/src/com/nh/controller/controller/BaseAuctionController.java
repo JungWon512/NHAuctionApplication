@@ -1101,6 +1101,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 			aucResultData.setLowsSbidLmtAm(Long.toString(resultLowPrice));
 			aucResultData.setLschgDtm("");
 			aucResultData.setLsCmeno(auctionResult.getLsCmeNo());
+//			aucResultData.setAucObjDscQcn(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()));
 			
 			ArrayList<AucResultData> entryInfoList = new ArrayList<>();
 			entryInfoList.add(aucResultData);
@@ -1117,11 +1118,11 @@ public abstract class BaseAuctionController implements NettyControllable {
 					
 					if (result != null && result.getSuccess()) {
 						
-						mLogger.debug("[경매 결과 저장 성공] 결과코드 : " + auctionResult.getResultCode() + " /낙찰가 : " + auctionResult.getSuccessBidUpr() + " /낙찰자 : " + auctionResult.getSuccessAuctionJoinNum());
-
 						
 						//Fail list 있으면 저장 실패
 						if(CommonUtils.getInstance().isListEmpty(result.getFailList())) {
+							
+							mLogger.debug("[경매 결과 저장 성공] 결과코드 : " + auctionResult.getResultCode() + " /낙찰가 : " + auctionResult.getSuccessBidUpr() + " /낙찰자 : " + auctionResult.getSuccessAuctionJoinNum());
 							
 							// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
 							if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
