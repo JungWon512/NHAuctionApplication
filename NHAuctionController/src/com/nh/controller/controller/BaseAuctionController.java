@@ -1101,7 +1101,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 			aucResultData.setLowsSbidLmtAm(Long.toString(resultLowPrice));
 			aucResultData.setLschgDtm("");
 			aucResultData.setLsCmeno(auctionResult.getLsCmeNo());
-//			aucResultData.setAucObjDscQcn(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()));
+			aucResultData.setAucObjDscQcn(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()));
 			
 			ArrayList<AucResultData> entryInfoList = new ArrayList<>();
 			entryInfoList.add(aucResultData);
@@ -1529,6 +1529,11 @@ public abstract class BaseAuctionController implements NettyControllable {
 	 * 응찰 목록
 	 */
 	protected void requestSelectBidEntry() {
+		
+		//재접속 상황일때 경매 진행 상태인경우에만 api 호출
+		if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) && !mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+			return;
+		}
 
 		final String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
 		final String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());

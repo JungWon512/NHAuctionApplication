@@ -242,6 +242,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	
 	private List<CowInfoData> mTmpCowDataList = null; //경매일 선택에서 조회된 출장우 데이터 set
 	
+	private boolean isRefreshData = false;						//새로고침 상태 플래그
+	private boolean isProgressFinishRefreshData = false; 	//경매 진행중 -> 경매 종료 -> 시작 -> 준비 상태일때 새로고침 플래그
+	
 
 	/**
 	 * setStage
@@ -751,7 +754,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 									onSendEntryData();
 								} else {
 									mLogger.debug("[출장우 데이터 전송 X. 현재 경매 상태 ]=> " + mAuctionStatus.getState());
-									Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+									Platform.runLater(() ->{
+										
+										if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+											CommonUtils.getInstance().dismissLoadingDialog();
+											isProgressFinishRefreshData = true;
+										}else {
+											goRefresh(false);
+										}
+								
+									});
 								}
 
 //							}
@@ -776,7 +788,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void refreshWaitAllEntryDataList(int index) {
 	
-		
 		ApiUtils.getInstance().requestSelectCowInfo(getCowInfoParam(), new ActionResultListener<ResponseCowInfo>() {
 			@Override
 			public void onResponseResult(final ResponseCowInfo result) {
@@ -809,12 +820,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						if (index > -1) {
 							selectIndexWaitTable(index, true);
 						}
-						
 					
 						setCurrentEntryInfo(true);
-						setCowTotalCount(result.getData().size());
-						
+						setCowTotalCount(result.getData().size());					
 						CommonUtils.getInstance().dismissLoadingDialog();
+					
 					});
 				}
 			}
@@ -989,11 +999,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					addLogItem(String.format(mResMsg.getString("msg.send.entry.data.result"), count));
 
 					isSendEntryData = true;
-
-//					Platform.runLater(() -> {
-//						CommonUtils.getInstance().dismissLoadingDialog();
-//					});
-
+				
+					PauseTransition pauseTransition = new PauseTransition(Duration.millis(1000));
+					pauseTransition.setOnFinished(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							mLogger.debug("[출장우 새로고침을 완료했습니다.]");
+							isRefreshData = false;
+						}
+					});
+					pauseTransition.play();
+		
 				}
 			};
 
@@ -2176,7 +2192,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		mCurPageType = EntryDialogType.ENTRY_LIST;
 		
-		if(!CommonUtils.getInstance().isListEmpty(mTmpCowDataList)) {
+		if(!CommonUtils.getInstance().isListEmpty(mTmpCowDataList) && mWaitEntryInfoDataList.size() <= 0) {
 			Platform.runLater(() -> {
 					mLogger.debug("[출장우 정보 조회 데이터 수] " + mTmpCowDataList.size());
 					mWaitEntryInfoDataList.clear();
@@ -2422,38 +2438,48 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-		Platform.runLater(() -> {
+		// 자동 시작
+		PauseTransition start = new PauseTransition(Duration.millis(1000));
+		start.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+			
+				Platform.runLater(() -> {
 
-			// 21-08-05 경매 도중 프로그램 재 시작시 현재 경매 진행중인 아이템으로 이동.
-			// 경매 종료 상태에 따라 라벨 표시
-			if (mWaitTableView.getItems().size() <= 0) {
-				return;
+					// 21-08-05 경매 도중 프로그램 재 시작시 현재 경매 진행중인 아이템으로 이동.
+					// 경매 종료 상태에 따라 라벨 표시
+					if (mWaitTableView.getItems().size() <= 0) {
+						return;
+					}
+
+					String currentEntryNum = currentEntryInfo.getEntryNum();
+
+					if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(currentEntryNum)) {
+						return;
+					}
+
+					for (int i = 0; mWaitTableView.getItems().size() > i; i++) {
+
+						String entryNum = mWaitTableView.getItems().get(i).getEntryNum().getValue();
+
+						if (currentEntryNum.equals(entryNum)) {
+
+							mLogger.debug("[!! 재접속 스크롤 설정] : " + entryNum + " / index : " + i + "/ " + mAuctionStatus.getState());
+
+							mCurrentSpEntryInfo = mWaitTableView.getItems().get(i);
+
+							selectIndexWaitTable(i, true);
+
+						}
+					}
+					
+					// 응찰내역
+					requestSelectBidEntry();
+				});
+				
 			}
-
-			String currentEntryNum = currentEntryInfo.getEntryNum();
-
-			if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getEntryNum().getValue().equals(currentEntryNum)) {
-				return;
-			}
-
-			for (int i = 0; mWaitTableView.getItems().size() > i; i++) {
-
-				String entryNum = mWaitTableView.getItems().get(i).getEntryNum().getValue();
-
-				if (currentEntryNum.equals(entryNum)) {
-
-					mLogger.debug("[!! 재접속 스크롤 설정] : " + entryNum + " / index : " + i + "/ " + mAuctionStatus.getState());
-
-					mCurrentSpEntryInfo = mWaitTableView.getItems().get(i);
-
-					selectIndexWaitTable(i, true);
-
-				}
-			}
-
-			// 응찰내역
-			requestSelectBidEntry();
 		});
+		start.play();
 
 		isFirst = true;
 	}
@@ -3401,6 +3427,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mStartAuctionSec = 0;
 			//재경매시 응찰 여부
 			isReAuctionNewBidding = false;
+			
+			if(isProgressFinishRefreshData) {
+				isProgressFinishRefreshData = false;
+				goRefresh(false);
+			}
+			
 			break;
 		// case GlobalDefineCode.AUCTION_STATUS_START:
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -4005,8 +4037,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 						//새로고침
 						if (ke.getCode() == KeyCode.F5) {
-							Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
-							refreshWaitAllEntryDataList(mWaitTableView.getSelectionModel().getSelectedIndex());
+							goRefresh(true);
 							ke.consume();
 						}
 
@@ -4095,6 +4126,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				}
 			});
 		});
+	}
+	
+	/**
+	 * 출장우 새로고침
+	 */
+	private void goRefresh(boolean isDialog) {
+		
+		if(!isRefreshData) {
+			
+			mLogger.debug("[출장우 새로고침을 진행합니다.]");
+			
+			if(isDialog) {
+				Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));	
+			}
+				
+			isRefreshData = true;
+			refreshWaitAllEntryDataList(mWaitTableView.getSelectionModel().getSelectedIndex());	
+			}
 	}
 
 	private void normalEnterStartAuction() {

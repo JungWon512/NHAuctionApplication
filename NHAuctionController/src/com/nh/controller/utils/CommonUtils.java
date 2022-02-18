@@ -432,6 +432,19 @@ public class CommonUtils {
 		mLoadingDialog.show();
 
 	}
+	
+	/**
+	 * dialog show 상태 체크
+	 * @return
+	 */
+	public boolean isLoadingDialogShowing() {
+		
+		if (mLoadingDialog != null) {
+			return mLoadingDialog.isShowing();
+		}else {
+			return false;
+		}
+	}
 
 	/**
 	 * @param stage

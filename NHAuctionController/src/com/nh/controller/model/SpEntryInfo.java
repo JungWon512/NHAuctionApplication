@@ -532,7 +532,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 	}
 
 	public StringProperty getReRgnName() {
-		return mReRgnName;
+		return returnValue(mReRgnName);
 	}
 
 	public void setReRgnName(StringProperty mReRgnName) {
