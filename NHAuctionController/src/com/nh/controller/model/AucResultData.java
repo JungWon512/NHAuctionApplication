@@ -20,6 +20,7 @@ public class AucResultData {
 	private String lowsSbidLmtAm;
 	private String lschgDtm;
 	private String lsCmeno;
+	private String aucObjDscQcn;
 
 	public String getNaBzPlc() {
 		return naBzPlc;
@@ -123,6 +124,14 @@ public class AucResultData {
 
 	public void setLsCmeno(String lsCmeno) {
 		this.lsCmeno = lsCmeno;
+	}
+
+	public String getAucObjDscQcn() {
+		return aucObjDscQcn;
+	}
+
+	public void setAucObjDscQcn(String aucObjDscQcn) {
+		this.aucObjDscQcn = aucObjDscQcn;
 	}
 
 }

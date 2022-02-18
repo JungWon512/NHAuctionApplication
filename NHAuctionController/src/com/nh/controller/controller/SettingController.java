@@ -723,14 +723,14 @@ public class SettingController implements Initializable {
 			mLowerLimitFatteningCattleTextField.setDisable(false);
 			mLowerLimitBreedingCattleTextField.setDisable(false);
 			
-			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() > 1) {
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 10000) {
 				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 			}else {
 				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 			}
-			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() > 1) {
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 10000) {
 				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 			}else {
@@ -738,7 +738,7 @@ public class SettingController implements Initializable {
 				mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 			}
 			
-			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() > 1) {
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 10000) {
 				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 			}else {
