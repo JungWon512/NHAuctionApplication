@@ -2,8 +2,8 @@ package com.nh.auctionserver.setting;
 
 public class AuctionServerSetting {
     // 경매 서버 버전정보
-    public static final String RELEASE_VERSION_NAME = "1.0.1";
-    public static final String RELEASE_VERSION_DATE = "2022.01.19";
+    public static final String RELEASE_VERSION_NAME = "1.0.2";
+    public static final String RELEASE_VERSION_DATE = "2022.02.18";
     
     public static final String DEFAULT_CONNECT_PORT = "5001";
 
