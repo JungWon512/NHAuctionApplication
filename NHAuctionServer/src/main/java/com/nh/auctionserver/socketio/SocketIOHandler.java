@@ -1548,6 +1548,53 @@ public class SocketIOHandler {
 							if (((Bidding) parseObject).getPriceInt() >= Integer.valueOf(mAuctioneer
 									.getAuctionState(((Bidding) parseObject).getAuctionHouseCode()).getStartPrice())) {
 
+								// 비육우 인 경우 유효한 응찰 단위로 응찰되었는지 확인
+								if (mAuctioneer
+										.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_2)) {
+									if (mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmCutAm() == null || mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmCutAm().equals("0")) {
+										mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).setmCutAm("0");
+									}
+									
+									if (mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1)) {
+										if ((((Bidding) parseObject).getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1) * 10)) != 0) {
+											log.info("=============================================");
+											log.info("잘못 된 가격 응찰 시도 : " + ((Bidding) parseObject).getEncodedMessage());
+											log.info("=============================================");
+											client.sendEvent("ResponseCode",
+													new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
+															GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage());
+											
+											return;
+										}
+									} else if (mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1000)) {
+										if ((((Bidding) parseObject).getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1000))) != 0) {
+											log.info("=============================================");
+											log.info("잘못 된 가격 응찰 시도 : " + ((Bidding) parseObject).getEncodedMessage());
+											log.info("=============================================");
+											client.sendEvent("ResponseCode",
+													new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
+															GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage());
+											
+											return;
+										}
+									} /*
+										 * else if (mAuctioneer.getAuctionEditSetting(((Bidding)
+										 * parseObject).getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.
+										 * BIDDING_CUT_UNIT_10000)) { if ((((Bidding) parseObject).getPriceInt() %
+										 * (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_10000))) != 0) {
+										 * log.info("=============================================");
+										 * log.info("잘못 된 가격 응찰 시도 : " + ((Bidding) parseObject).getEncodedMessage());
+										 * log.info("=============================================");
+										 * client.sendEvent("ResponseCode", new ResponseCode(((Bidding)
+										 * parseObject).getAuctionHouseCode(),
+										 * GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage())
+										 * ;
+										 * 
+										 * return; } }
+										 */
+									
+								}
+								
 								client.sendEvent("ResponseCode",
 										new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
 												GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage());
@@ -1586,14 +1633,66 @@ public class SocketIOHandler {
 									objLimitPrice = Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice3());
 								}
 								
-								if (((Bidding) parseObject).getPriceInt() <= (Integer.valueOf(
-										mAuctioneer.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getLowPrice()) + objLimitPrice)) {
+								
+								
+								// 유효한 최저가 이상 금액으로 응찰되었는지 확인
+								if (((Bidding) parseObject).getPriceInt() <= (Integer.valueOf(mAuctioneer
+										.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getLowPrice()) + objLimitPrice)) {
+									
+									// 비육우 인 경우 유효한 응찰 단위로 응찰되었는지 확인
+									if (mAuctioneer
+											.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_2)) {
+										if (mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmCutAm() == null || mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmCutAm().equals("0")) {
+											mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).setmCutAm("0");
+										}
+										
+										if (mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1)) {
+											if ((((Bidding) parseObject).getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1) * 10)) != 0) {
+												log.info("=============================================");
+												log.info("잘못 된 가격 응찰 시도 : " + ((Bidding) parseObject).getEncodedMessage());
+												log.info("=============================================");
+												client.sendEvent("ResponseCode",
+														new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
+																GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage());
+												
+												return;
+											}
+										} else if (mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1000)) {
+											if ((((Bidding) parseObject).getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1000))) != 0) {
+												log.info("=============================================");
+												log.info("잘못 된 가격 응찰 시도 : " + ((Bidding) parseObject).getEncodedMessage());
+												log.info("=============================================");
+												client.sendEvent("ResponseCode",
+														new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
+																GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage());
+												
+												return;
+											}
+										} /*
+											 * else if (mAuctioneer.getAuctionEditSetting(((Bidding)
+											 * parseObject).getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.
+											 * BIDDING_CUT_UNIT_10000)) { if ((((Bidding) parseObject).getPriceInt() %
+											 * (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_10000))) != 0) {
+											 * log.info("=============================================");
+											 * log.info("잘못 된 가격 응찰 시도 : " + ((Bidding)
+											 * parseObject).getEncodedMessage());
+											 * log.info("=============================================");
+											 * client.sendEvent("ResponseCode", new ResponseCode(((Bidding)
+											 * parseObject).getAuctionHouseCode(),
+											 * GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).
+											 * getEncodedMessage());
+											 * 
+											 * return; } }
+											 */
+										
+									}
+									
 									client.sendEvent("ResponseCode",
 											new ResponseCode(((Bidding) parseObject).getAuctionHouseCode(),
 													GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage());
-	
+
 									// 응찰 정보 수집
-									mAuctionServer.itemAdded(((Bidding) parseObject).getEncodedMessage());
+									mAuctionServer.itemAdded(((Bidding) parseObject).getEncodedMessage());							
 								} else {
 									log.info("=============================================");
 									log.info("잘못 된 가격 응찰 시도 : " + ((Bidding) parseObject).getEncodedMessage());

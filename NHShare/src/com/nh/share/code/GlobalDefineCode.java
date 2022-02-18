@@ -11,7 +11,7 @@ public class GlobalDefineCode {
 	// SSL 적용 여부
 	public static final boolean FLAG_SSL = true;
 	// 개발,운영 여부
-	public static final boolean FLAG_PRD = true;
+	public static final boolean FLAG_PRD = false;
 	// 응찰자 테스트 모드
 	public static final boolean FLAG_TEST_MODE = false;
 	// 응찰 로그 테스트 모드
@@ -127,6 +127,11 @@ public class GlobalDefineCode {
 	// 정상 응찰 취소 응답 
 	public static final String RESPONSE_SUCCESS_CANCEL_BIDDING = "4007";
 
+	// 비육우 응찰 단위
+	public static final String BIDDING_CUT_UNIT_1 = "1";
+	public static final String BIDDING_CUT_UNIT_1000 = "1000";
+	public static final String BIDDING_CUT_UNIT_10000 = "10000";
+	
 	// 프로그램 사용자 로그인 요청 타입
 	public static final String AUCTION_LOGIN_TYPE_MANAGER = "MANAGER"; // 관리자
 	public static final String AUCTION_LOGIN_TYPE_AUCTIONMEMBER = "AUCTIONMEMBER"; // 경매회원

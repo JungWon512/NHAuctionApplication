@@ -85,6 +85,51 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 							&& bidding.getPriceInt() >= Integer.valueOf(
 									mAuctionScheduler.getAuctionState(bidding.getAuctionHouseCode()).getStartPrice())) {
 
+						// 비육우 인 경우 유효한 응찰 단위로 응찰되었는지 확인
+						if (mAuctionScheduler
+								.getEntryInfo(bidding.getAuctionHouseCode(), bidding.getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_2)) {
+							if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm() == null || mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm().equals("0")) {
+								mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).setmCutAm("0");
+							}
+							
+							if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1)) {
+								if ((bidding.getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1) * 10)) != 0) {
+									mLogger.debug("=============================================");
+									mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+									mLogger.debug("=============================================");
+									ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+											GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage() + "\r\n");
+									
+									return;
+								}
+							} else if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1000)) {
+								if ((bidding.getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1000))) != 0) {
+									mLogger.debug("=============================================");
+									mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+									mLogger.debug("=============================================");
+									ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+											GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage() + "\r\n");
+									
+									return;
+								}
+							} /*
+								 * else if
+								 * (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).
+								 * getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_10000)) { if
+								 * ((bidding.getPriceInt() %
+								 * (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_10000))) != 0) {
+								 * mLogger.debug("=============================================");
+								 * mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+								 * mLogger.debug("=============================================");
+								 * ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+								 * GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage()
+								 * + "\r\n");
+								 * 
+								 * return; } }
+								 */
+							
+						}
+						
 						ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
 								GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage() + "\r\n");
 
@@ -122,8 +167,55 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 							objLimitPrice = Integer.valueOf(mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmAuctionLimitPrice3());
 						}
 						
+						// 유효한 최저가 이상 금액으로 응찰되었는지 확인
 						if (bidding.getPriceInt() <= (Integer.valueOf(mAuctionScheduler
 								.getEntryInfo(bidding.getAuctionHouseCode(), bidding.getEntryNum()).getLowPrice()) + objLimitPrice)) {
+							
+							// 비육우 인 경우 유효한 응찰 단위로 응찰되었는지 확인
+							if (mAuctionScheduler
+									.getEntryInfo(bidding.getAuctionHouseCode(), bidding.getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_2)) {
+								if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm() == null || mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm().equals("0")) {
+									mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).setmCutAm("0");
+								}
+								
+								if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1)) {
+									if ((bidding.getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1) * 10)) != 0) {
+										mLogger.debug("=============================================");
+										mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+										mLogger.debug("=============================================");
+										ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+												GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage() + "\r\n");
+										
+										return;
+									}
+								} else if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1000)) {
+									if ((bidding.getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1000))) != 0) {
+										mLogger.debug("=============================================");
+										mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+										mLogger.debug("=============================================");
+										ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+												GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage() + "\r\n");
+										
+										return;
+									}
+								} /*
+									 * else if
+									 * (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).
+									 * getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_10000)) { if
+									 * ((bidding.getPriceInt() %
+									 * (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_10000))) != 0) {
+									 * mLogger.debug("=============================================");
+									 * mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+									 * mLogger.debug("=============================================");
+									 * ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+									 * GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage()
+									 * + "\r\n");
+									 * 
+									 * return; } }
+									 */
+								
+							}
+							
 							ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
 									GlobalDefineCode.RESPONSE_SUCCESS_BIDDING).getEncodedMessage() + "\r\n");
 
