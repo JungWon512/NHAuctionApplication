@@ -774,12 +774,13 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 							}
 						});
 
-						if (!isQcnChange && !isRgsqNoChange) {
+						if (!isSendEnterInfo() && !isQcnChange && !isRgsqNoChange) {
 							// 출장우 전송
 							onSendEntryData();							
+						}else {
+							syncAuctionInfo();							
 						}
 
-						syncAuctionInfo();
 						
 //						if (!isSendEnterInfo() && !isQcnChange && !isRgsqNoChange) {
 //							mLogger.debug("[출장우 정보 전송]");							
@@ -825,22 +826,31 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	
 	private void syncAuctionInfo() {
 		
+		
 		mWaitTableView.getSelectionModel().select(0);
 	
 		if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_READY)) {//경매 상태 준비
 			
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PROGRESS)) { //경매 상태는 준비, 회차는 진행중
+
+				mLogger.debug("[경매 상태는 준비, 회차는 진행중]");
 				
 				onAuctionStatusStart(false);
 
 			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_PAUSE)) {//경매 상태는 준비, 회차는 정지중
+				
+				mLogger.debug("[경매 상태는 준비, 회차는 정지중]");
+				
+				onAuctionStatusStart(false);
+				
 				onAuctionStatusPause();
 				// 경매 상태 버튼 제어
 				auctionStateButtonToggle(mAuctionStatus.getState());
 				// 상단 경매 진행 상태
 				auctionStateLabelToggle(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc());
 			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc().equals(GlobalDefineCode.STN_AUCTION_STATUS_FINISH)) { //경매 상태는 준비, 회차는 종료
-				//겨
+				mLogger.debug("[경매 상태는 준비, 회차는 종료중]");
+				onAuctionStatusStart(false);
 				onAuctionStatusFinish(false);
 			}
 			
@@ -926,7 +936,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		
 		// 시작.진행시 응찰 받음.
 //		if (!mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) && !mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
-			mLogger.debug("현재 출장우 총 수 " + totalCount);
+			mLogger.debug("[현재 출장우 총 수]=> " + totalCount);
 			mAuctionInfoTotalCountLabel.setText(String.format(mResMsg.getString("str.total.cow.count"), totalCount));
 //		}
 	}
@@ -941,7 +951,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		
 		if(!CommonUtils.getInstance().isListEmpty(mTmpCowDataList)) {
 			Platform.runLater(() -> {
-					mLogger.debug("[출장우 정보 조회 데이터 수] " + mTmpCowDataList.size());
 					mWaitEntryInfoDataList.clear();
 					mWaitEntryInfoDataList = getParsingCowEntryDataList(mTmpCowDataList);
 					initWaitEntryDataList(mWaitEntryInfoDataList);
@@ -3215,6 +3224,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 * 응찰 목록
 	 */
 	private void requestSelectBidEntry() {
+		
+		if(mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_NONE) && mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_READY)){
+			return;
+		}
 
 		final String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
 		final String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
