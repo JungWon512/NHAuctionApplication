@@ -1,6 +1,10 @@
 package com.nh.controller.utils;
 
+import java.awt.Desktop;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -12,7 +16,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Encoder;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +25,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -1427,5 +1431,39 @@ public class CommonUtils {
 		}
 	}
 	
+	/**
+	 * 어플리케이션 종료
+	 */
+	public void applicationExit() {
+		Platform.exit();
+		System.exit(0);
+	}
 	
+	
+	/**
+	 * 기본 브라우저 open
+	 */
+	public void openBrowse(String url , boolean isAppExit) {
+		
+		if(!isValidString(url)) {
+			return;
+		}
+		
+		try {
+
+			//브라우저
+			if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+				Desktop.getDesktop().browse(new URI(url));
+			}
+			
+			if(isAppExit) {
+				applicationExit();
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
 }

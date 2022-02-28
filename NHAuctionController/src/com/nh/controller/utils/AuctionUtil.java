@@ -1,8 +1,6 @@
 package com.nh.controller.utils;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.stream.IntStream;
 
 import javafx.scene.text.Font;
 
@@ -158,5 +156,4 @@ public class AuctionUtil {
 		System.out.println(fontFamily);
 		
     }
-    
 }

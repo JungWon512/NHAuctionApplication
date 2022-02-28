@@ -608,8 +608,6 @@ public class SettingApplication {
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, DEFAULT_SETTING_UPPER_BREEDING_TEXT),
 				Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2()));
 		
-		mLogger.debug("[환경 설정 정보를 전송합니다.]=> " +setting.getEncodedMessage().toString());
-		
 		return setting;
 	}
 	

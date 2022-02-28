@@ -29,6 +29,7 @@ import com.nh.share.api.response.ResponseCowInfo;
 import com.nh.share.api.response.ResponseNumber;
 import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.controller.models.EntryInfo;
+import com.nh.share.utils.SentryUtil;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -341,31 +342,38 @@ public class EntryListController implements Initializable {
 			@Override
 			public void onResponseResult(final ResponseCowInfo result) {
 				
-				if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
-
-					mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
-
-					List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
-
-					for (CowInfoData cowInfo : result.getData()) {
-						entryInfoDataList.add(new EntryInfo(cowInfo));
-					}
+				try {
 					
-					if (!CommonUtils.getInstance().isListEmpty(entryInfoDataList)) {
-						ObservableList<SpEntryInfo> resultDataList = entryInfoDataList.stream().map(item -> new SpEntryInfo(item)).collect(Collectors.toCollection(FXCollections::observableArrayList));
-						mEntryDataList.clear();
-						mEntryDataList.addAll(resultDataList);
-
-						if (mEntryTableView.getItems().size() <= 0) {
-							mEntryTableView.setItems(mEntryDataList);
-						} else {
-							mEntryTableView.refresh();
+					if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
+	
+						mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
+	
+						List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
+	
+						for (CowInfoData cowInfo : result.getData()) {
+							entryInfoDataList.add(new EntryInfo(cowInfo));
 						}
+						
+						if (!CommonUtils.getInstance().isListEmpty(entryInfoDataList)) {
+							ObservableList<SpEntryInfo> resultDataList = entryInfoDataList.stream().map(item -> new SpEntryInfo(item)).collect(Collectors.toCollection(FXCollections::observableArrayList));
+							mEntryDataList.clear();
+							mEntryDataList.addAll(resultDataList);
+	
+							if (mEntryTableView.getItems().size() <= 0) {
+								mEntryTableView.setItems(mEntryDataList);
+							} else {
+								mEntryTableView.refresh();
+							}
+						}
+					}else {
+						mLogger.debug("[조회된 출장우 정보 없음]");
 					}
-				}else {
-					mLogger.debug("[조회된 출장우 정보 없음]");
+					dismissLoadingDialog();
+					
+				}catch (Exception e) {
+					e.printStackTrace();
+					SentryUtil.getInstance().sendExceptionLog(e);
 				}
-				dismissLoadingDialog();
 			}
 
 			@Override
@@ -383,207 +391,214 @@ public class EntryListController implements Initializable {
 	 */
 	public void onDownPrice(MouseEvent event) {
 		
-		if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_0) {
+		try {
 		
-			if (!CommonUtils.getInstance().isValidString(mDownPriceTextField.getText())
-					|| !CommonUtils.getInstance().isValidString(mDownPriceTextField2.getText())
-					|| !CommonUtils.getInstance().isValidString(mDownPriceTextField3.getText())) {
-				
-				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
-				
-				return;
-			}
-
-			int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText());
-			int cowLowerLimitPrice2 = Integer.parseInt(mDownPriceTextField2.getText());
-			int cowLowerLimitPrice3 = Integer.parseInt(mDownPriceTextField3.getText());
-		
-			if (cowLowerLimitPrice <= 0 || cowLowerLimitPrice2 <= 0 || cowLowerLimitPrice3 <= 0) {
-				
-				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
-				
-				return;
-			}
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_0) {
 			
-			
-		}else {
-			
-			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1) {
-		
-				if (!CommonUtils.getInstance().isValidString(mDownPriceTextField.getText())) {
+				if (!CommonUtils.getInstance().isValidString(mDownPriceTextField.getText())
+						|| !CommonUtils.getInstance().isValidString(mDownPriceTextField2.getText())
+						|| !CommonUtils.getInstance().isValidString(mDownPriceTextField3.getText())) {
+					
 					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+					
 					return;
 				}
-
+	
 				int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText());
+				int cowLowerLimitPrice2 = Integer.parseInt(mDownPriceTextField2.getText());
+				int cowLowerLimitPrice3 = Integer.parseInt(mDownPriceTextField3.getText());
 			
-				if (cowLowerLimitPrice <= 0 ) {
+				if (cowLowerLimitPrice <= 0 || cowLowerLimitPrice2 <= 0 || cowLowerLimitPrice3 <= 0) {
+					
 					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+					
 					return;
 				}
 				
 				
-			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2) {
+			}else {
 				
-				if (!CommonUtils.getInstance().isValidString(mDownPriceTextField2.getText())) {
-					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
-					return;
-				}
-
-				int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField2.getText());
+				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1) {
 			
-				if (cowLowerLimitPrice <= 0 ) {
-					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
-					return;
-				}
+					if (!CommonUtils.getInstance().isValidString(mDownPriceTextField.getText())) {
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						return;
+					}
+	
+					int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText());
 				
+					if (cowLowerLimitPrice <= 0 ) {
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						return;
+					}
+					
+					
+				}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2) {
+					
+					if (!CommonUtils.getInstance().isValidString(mDownPriceTextField2.getText())) {
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						return;
+					}
+	
+					int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField2.getText());
 				
-			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3) {
+					if (cowLowerLimitPrice <= 0 ) {
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						return;
+					}
+					
+					
+				}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3) {
+					
+					
+					if (!CommonUtils.getInstance().isValidString(mDownPriceTextField3.getText())) {
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						return;
+					}
+	
+					int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField3.getText());
 				
-				
-				if (!CommonUtils.getInstance().isValidString(mDownPriceTextField3.getText())) {
-					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
-					return;
-				}
-
-				int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField3.getText());
-			
-				if (cowLowerLimitPrice <= 0 ) {
-					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
-					return;
+					if (cowLowerLimitPrice <= 0 ) {
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						return;
+					}
+					
 				}
 				
 			}
 			
-		}
-		
-		int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText()); //송아지
-		int cowLowerLimitPrice2 = Integer.parseInt(mDownPriceTextField2.getText()); //비육우
-		int cowLowerLimitPrice3 = Integer.parseInt(mDownPriceTextField3.getText()); //번식우
-		
-
-		List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
-
-		if (!CommonUtils.getInstance().isListEmpty(mEntryDataList)) {
-
-			for (SpEntryInfo spEntryInfo : mEntryDataList) {
-				
-				if(spEntryInfo.getLowPriceInt() <= 0) {
-					continue;
-				}
-
-				int targetPrice = spEntryInfo.getLowPriceInt();
-				
-				
-				if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
-				
-					if (targetPrice < cowLowerLimitPrice) {
-						mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
-						continue;
-					}
-					
-					
-				}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
-					if (targetPrice < cowLowerLimitPrice2) {
-						mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
-						continue;
-					}
-					
-				}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
-					if (targetPrice < cowLowerLimitPrice3) {
-						mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
-						continue;
-					}
-				}
-				
-				
-
-				String targetEntryNum = spEntryInfo.getEntryNum().getValue();
-				String targetAuctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
-				String targetEntryType = spEntryInfo.getEntryType().getValue();
-				String targetAucDt = spEntryInfo.getAucDt().getValue();
-				String updatePrice = "";
-				String oslpNo = spEntryInfo.getOslpNo().getValue();
-				String ledSqNo = spEntryInfo.getLedSqno().getValue();
-				
-				
-				if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
-
-					updatePrice = 	Integer.toString(targetPrice - cowLowerLimitPrice);
-
-				}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+			int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText()); //송아지
+			int cowLowerLimitPrice2 = Integer.parseInt(mDownPriceTextField2.getText()); //비육우
+			int cowLowerLimitPrice3 = Integer.parseInt(mDownPriceTextField3.getText()); //번식우
 			
-					updatePrice = 	Integer.toString(targetPrice - cowLowerLimitPrice2);
+	
+			List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
+	
+			if (!CommonUtils.getInstance().isListEmpty(mEntryDataList)) {
+	
+				for (SpEntryInfo spEntryInfo : mEntryDataList) {
 					
-				}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
-				
-					updatePrice = 	Integer.toString(targetPrice - cowLowerLimitPrice3);
+					if(spEntryInfo.getLowPriceInt() <= 0) {
+						continue;
+					}
+	
+					int targetPrice = spEntryInfo.getLowPriceInt();
 					
-				}
+					
+					if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+					
+						if (targetPrice < cowLowerLimitPrice) {
+							mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+							continue;
+						}
+						
+						
+					}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+						if (targetPrice < cowLowerLimitPrice2) {
+							mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+							continue;
+						}
+						
+					}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
+						if (targetPrice < cowLowerLimitPrice3) {
+							mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+							continue;
+						}
+					}
+					
+					
+	
+					String targetEntryNum = spEntryInfo.getEntryNum().getValue();
+					String targetAuctionHouseCode = spEntryInfo.getAuctionHouseCode().getValue();
+					String targetEntryType = spEntryInfo.getEntryType().getValue();
+					String targetAucDt = spEntryInfo.getAucDt().getValue();
+					String updatePrice = "";
+					String oslpNo = spEntryInfo.getOslpNo().getValue();
+					String ledSqNo = spEntryInfo.getLedSqno().getValue();
+					
+					
+					if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+	
+						updatePrice = 	Integer.toString(targetPrice - cowLowerLimitPrice);
+	
+					}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
 				
-				
-				//한번더체크
-				if(Integer.parseInt(updatePrice) <= 0) {
-					continue;
+						updatePrice = 	Integer.toString(targetPrice - cowLowerLimitPrice2);
+						
+					}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
+					
+						updatePrice = 	Integer.toString(targetPrice - cowLowerLimitPrice3);
+						
+					}
+					
+					
+					//한번더체크
+					if(Integer.parseInt(updatePrice) <= 0) {
+						continue;
+					}
+	
+					int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
+	
+					lowPriceCnt += 1;
+	
+					EntryInfo entryInfo = new EntryInfo();
+					entryInfo.setEntryNum(targetEntryNum);
+					entryInfo.setAuctionHouseCode(targetAuctionHouseCode);
+					entryInfo.setEntryType(targetEntryType);
+					entryInfo.setAucDt(targetAucDt);
+					entryInfo.setLowPrice(Integer.parseInt(updatePrice));
+					entryInfo.setOslpNo(oslpNo);
+					entryInfo.setLedSqno(ledSqNo);
+					entryInfo.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
+					entryInfo.setLwprChgNt(lowPriceCnt);
+					entryInfoDataList.add(entryInfo);
 				}
-
-				int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
-
-				lowPriceCnt += 1;
-
-				EntryInfo entryInfo = new EntryInfo();
-				entryInfo.setEntryNum(targetEntryNum);
-				entryInfo.setAuctionHouseCode(targetAuctionHouseCode);
-				entryInfo.setEntryType(targetEntryType);
-				entryInfo.setAucDt(targetAucDt);
-				entryInfo.setLowPrice(Integer.parseInt(updatePrice));
-				entryInfo.setOslpNo(oslpNo);
-				entryInfo.setLedSqno(ledSqNo);
-				entryInfo.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
-				entryInfo.setLwprChgNt(lowPriceCnt);
-				entryInfoDataList.add(entryInfo);
 			}
-		}
-
-		if (!CommonUtils.getInstance().isListEmpty(entryInfoDataList)) {
-			
-			Gson gson = new Gson();
-			String jonDataList = gson.toJson(entryInfoDataList);
-			
-			mLogger.debug("[가격변경]=> " + jonDataList);
-			
-			RequestUpdateLowsBidAmtBody body = new RequestUpdateLowsBidAmtBody(jonDataList);
-			
-			ApiUtils.getInstance().requestUpdateLowsBidAmt(body, new ActionResultListener<ResponseNumber>() {
-
-				@Override
-				public void onResponseResult(ResponseNumber result) {
-
-					if (result != null && result.getSuccess()) {
-
-						mLogger.debug("[최저가 수정 Success]");
-						
-//						CommonUtils.getInstance().showAlertPopupOneButton(MoveStageUtil.getInstance().getDialog(), mResMsg.getString("dialog.change.low.price.complete"), mResMsg.getString("popup.btn.ok"));
-						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.complete"),mResMsg.getString("popup.btn.ok")));
-						
-						
-						searchEntryDataList(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
-
-					} else {
+	
+			if (!CommonUtils.getInstance().isListEmpty(entryInfoDataList)) {
+				
+				Gson gson = new Gson();
+				String jonDataList = gson.toJson(entryInfoDataList);
+				
+				mLogger.debug("[가격변경]=> " + jonDataList);
+				
+				RequestUpdateLowsBidAmtBody body = new RequestUpdateLowsBidAmtBody(jonDataList);
+				
+				ApiUtils.getInstance().requestUpdateLowsBidAmt(body, new ActionResultListener<ResponseNumber>() {
+	
+					@Override
+					public void onResponseResult(ResponseNumber result) {
+	
+						if (result != null && result.getSuccess()) {
+	
+							mLogger.debug("[최저가 수정 Success]");
+							
+	//						CommonUtils.getInstance().showAlertPopupOneButton(MoveStageUtil.getInstance().getDialog(), mResMsg.getString("dialog.change.low.price.complete"), mResMsg.getString("popup.btn.ok"));
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.complete"),mResMsg.getString("popup.btn.ok")));
+							
+							
+							searchEntryDataList(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
+	
+						} else {
+							mLogger.debug("[최저가 수정 Fail]");
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.fail"),mResMsg.getString("popup.btn.close")));
+						}
+					}
+	
+					@Override
+					public void onResponseError(String message) {
 						mLogger.debug("[최저가 수정 Fail]");
 						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.fail"),mResMsg.getString("popup.btn.close")));
 					}
-				}
-
-				@Override
-				public void onResponseError(String message) {
-					mLogger.debug("[최저가 수정 Fail]");
-					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.fail"),mResMsg.getString("popup.btn.close")));
-				}
-			});
-
-		}else {
-			Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.fail.empty"),mResMsg.getString("popup.btn.close")));
+				});
+	
+			}else {
+				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.fail.empty"),mResMsg.getString("popup.btn.close")));
+			}
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+			SentryUtil.getInstance().sendExceptionLog(e);
 		}
 	}
 

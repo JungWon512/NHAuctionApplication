@@ -32,7 +32,7 @@ public class ActionRuler {
 	public synchronized void runNext() {
 
 		if (!mRunnableList.isEmpty()) {
-			System.out.println("mRunnableList : " + mRunnableList.size());
+
 			if (!mRunnableList.isEmpty()) {
 				Runnable runnable = mRunnableList.poll();
 

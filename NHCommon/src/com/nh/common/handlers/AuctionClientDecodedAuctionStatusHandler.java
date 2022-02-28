@@ -20,9 +20,7 @@ public class AuctionClientDecodedAuctionStatusHandler extends SimpleChannelInbou
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, AuctionStatus auctionStatus) throws Exception {
-        mLogger.info("AuctionClientDecodedAuctionStatusHandler:channelRead0");
-        mLogger.info("auctionStatus : " + auctionStatus.getEncodedMessage());
-
+        
         if (mController != null) {
             mController.onAuctionStatus(auctionStatus);
         }

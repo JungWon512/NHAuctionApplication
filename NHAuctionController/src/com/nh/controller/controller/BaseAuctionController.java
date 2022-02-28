@@ -38,6 +38,7 @@ import com.nh.controller.netty.BillboardDelegate2;
 import com.nh.controller.netty.PdpDelegate;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.ApiUtils;
+import com.nh.controller.utils.AuctionUtil;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.GlobalDefine.FILE_INFO;
@@ -68,6 +69,7 @@ import com.nh.share.server.models.CurrentEntryInfo;
 import com.nh.share.server.models.RequestAuctionResult;
 import com.nh.share.server.models.ResponseCode;
 import com.nh.share.server.models.ToastMessage;
+import com.nh.share.utils.SentryUtil;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -255,6 +257,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			mLogger.debug("[UDP 전광판 Exception] : " + e);
 		}
 	}
@@ -427,6 +430,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			mLogger.debug("[onAuctionStatus Send Udp Server Exception] " + e);
 		}
 
@@ -448,9 +452,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 			// PDP 카운트다운 전송
 			PdpDelegate.getInstance().onCountDown(auctionCountDown.getCountDownTime());
-			
-//            String msg = String.format(mResMsg.getString("msg.auction.get.count.down"), mCurrentSpEntryInfo.getEntryNum().getValue(), auctionCountDown.getCountDownTime());
-			addLogItem("onAuctionCountDown : " + auctionCountDown.getEncodedMessage());
 		}
 	}
 
@@ -531,8 +532,10 @@ public abstract class BaseAuctionController implements NettyControllable {
 				}
 
 			} catch (Exception e) {
+				e.printStackTrace();
 				mLogger.debug("[onBidding Exception] : " + e.toString());
 				mCalculationRankCallBack.failed(e, null); // Error
+				SentryUtil.getInstance().sendExceptionLog(e);
 			}
 		});
 	}
@@ -602,7 +605,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 				});
 			}
 		};
-
+	
 		thread.start();
 	}
 
@@ -734,7 +737,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	@Override
 	public void onBidderConnectInfo(BidderConnectInfo bidderConnectInfo) {
-		mLogger.debug("onBidderConnectInfo : " + bidderConnectInfo.getEncodedMessage());
 	}
 
 	/**
@@ -764,13 +766,23 @@ public abstract class BaseAuctionController implements NettyControllable {
 			mCurrentBidderMap.put(spBidding.getAuctionJoinNum().getValue(), spBidding);
 		}
 
-		// 순위 실시간 계산
-		calculationRanking();
+		if(isInsertLog) {
+			// 순위 실시간 계산
+			calculationRanking();
 
-		// 응찰 로그 저장
-		if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
-			insertBiddingLog(bidding);
+			// 응찰 로그 저장
+			if (!GlobalDefineCode.FLAG_TEST_MODE_BIDDING_LOG) {
+				insertBiddingLog(bidding);
+			}
+		}else {
+			// 순위 정렬
+			List<SpBidding> list = new ArrayList<SpBidding>();
+
+			list.addAll(mCurrentBidderMap.values());
+
+			updateBidderList(list);
 		}
+	
 	}
 
 	/**
@@ -793,6 +805,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 				updateBidderList(null);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			mCalculationRankCallBack.failed(e, null); // Error
 		}
 	}
@@ -945,237 +958,247 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	protected void saveAuctionResult(boolean isSuccess, SpEntryInfo spEntryInfo, SpBidding bidder, String code) {
 
-
-		SendAuctionResult auctionResult = new SendAuctionResult();
-
-		auctionResult.setAuctionHouseCode(spEntryInfo.getAuctionHouseCode().getValue());
-		auctionResult.setEntryNum(spEntryInfo.getEntryNum().getValue());
-		auctionResult.setEntryType(spEntryInfo.getEntryType().getValue());
-		auctionResult.setAucDt(spEntryInfo.getAucDt().getValue());
-		auctionResult.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
-		auctionResult.setOslpNo(spEntryInfo.getOslpNo().getValue());
-		auctionResult.setLedSqno(spEntryInfo.getLedSqno().getValue());
-
-		switch (code) {
-		case GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS:
-		case GlobalDefineCode.AUCTION_RESULT_CODE_PENDING:
-			// 낙찰 , 유찰인 경우 DB업데이트
-			if (isSuccess) {
-				
-				addLogItem("[낙유찰 결과 낙찰 전송]");
-				
-				// 낙찰
-				auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS);
-				auctionResult.setSuccessBidder(bidder.getUserNo().getValue());
-				auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
-				auctionResult.setSuccessBidUpr(bidder.getPrice().getValue());
-
-				int sraSbidAm = bidder.getPriceInt();
-				
-				auctionResult.setSuccessBidPrice(Integer.toString(sraSbidAm));
-
-				bidder.setSraSbidAm(new SimpleStringProperty(Integer.toString(sraSbidAm)));
-
-				try {
-
-					if (!BillboardDelegate1.getInstance().isEmptyClient() && BillboardDelegate1.getInstance().isActive()) {
-						// // 전광판 전송
-						BillboardData billboardData1 = new BillboardData();
-						billboardData1.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
-						billboardData1.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
-						billboardData1.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
-						billboardData1.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
-						billboardData1.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
-						billboardData1.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
-						billboardData1.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
-						billboardData1.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
-						billboardData1.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
-						billboardData1.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
-						billboardData1.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
-						billboardData1.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
-						billboardData1.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
-						billboardData1.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
-
-						addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData1.getEncodedMessage());
-						BillboardDelegate1.getInstance().sendBillboardData(billboardData1);
+	
+				SendAuctionResult auctionResult = new SendAuctionResult();
+		
+				auctionResult.setAuctionHouseCode(spEntryInfo.getAuctionHouseCode().getValue());
+				auctionResult.setEntryNum(spEntryInfo.getEntryNum().getValue());
+				auctionResult.setEntryType(spEntryInfo.getEntryType().getValue());
+				auctionResult.setAucDt(spEntryInfo.getAucDt().getValue());
+				auctionResult.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
+				auctionResult.setOslpNo(spEntryInfo.getOslpNo().getValue());
+				auctionResult.setLedSqno(spEntryInfo.getLedSqno().getValue());
+		
+				switch (code) {
+				case GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS:
+				case GlobalDefineCode.AUCTION_RESULT_CODE_PENDING:
+					// 낙찰 , 유찰인 경우 DB업데이트
+					if (isSuccess) {
 						
-						// 전광판1 비고 흐름 사용 여부
-						if (SettingApplication.getInstance().isBoardUseNote1()) {
-							BillboardDelegate1.getInstance().clearBillboardNote();
-							BillboardDelegate1.getInstance().sendBillboardNote(billboardData1.getbNote());
-						}
-					}
-					
-					if (!BillboardDelegate2.getInstance().isEmptyClient() && BillboardDelegate2.getInstance().isActive()) {
-						// // 전광판 전송
-						BillboardData billboardData2 = new BillboardData();
-						billboardData2.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
-						billboardData2.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
-						billboardData2.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
-						billboardData2.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
-						billboardData2.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
-						billboardData2.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
-						billboardData2.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
-						billboardData2.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
-						billboardData2.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
-						billboardData2.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
-						billboardData2.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
-						billboardData2.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
-						billboardData2.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
-						billboardData2.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
-
-						addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData2.getEncodedMessage());
-						BillboardDelegate2.getInstance().sendBillboardData(billboardData2);
+						addLogItem("[낙유찰 결과 낙찰 전송]");
 						
-						// 전광판2 비고 흐름 사용 여부
-						if (SettingApplication.getInstance().isBoardUseNote2()) {
-							BillboardDelegate2.getInstance().clearBillboardNote();
-							BillboardDelegate2.getInstance().sendBillboardNote(billboardData2.getbNote());
-						}
-					}
-
-				} catch (Exception e) {
-					mLogger.debug("BillboardDelegate error " + e);
-				}
-
-				try {
-					if (!PdpDelegate.getInstance().isEmptyClient() && PdpDelegate.getInstance().isActive()) {
-						// // PDP 전송
-						PdpData pdpData = new PdpData();
-						pdpData.setbEntryType(String.valueOf(spEntryInfo.getEntryType().getValue()));
-						pdpData.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
-						pdpData.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
-						pdpData.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
-						pdpData.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
-						pdpData.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
-						pdpData.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
-						pdpData.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
-						pdpData.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
-						pdpData.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
-						pdpData.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
-						pdpData.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
-						pdpData.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
-						pdpData.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
-						pdpData.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
-
-						addLogItem(mResMsg.getString("log.pdp.auction.result.success") + pdpData.getEncodedMessage());
-						PdpDelegate.getInstance().sendPdpData(pdpData);
-					}
-
-				} catch (Exception e) {
-					mLogger.debug("BillboardDelegate error " + e);
-				}
-
-			} else {
-				
-				addLogItem("[낙유찰 결과 유찰 전송]");
-				
-				// 유찰&보류
-				auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
-				auctionResult.setSuccessBidder(null);
-				auctionResult.setSuccessAuctionJoinNum(null);
-				auctionResult.setSuccessBidPrice("0");
-				auctionResult.setSuccessBidUpr("0");
-			}
-
-			// 최저가
-			long resultLowPrice = 0;
-
-			// 최저가는 원단위로
-			if (CommonUtils.getInstance().isValidString(spEntryInfo.getLowPrice().getValue())) {
-				resultLowPrice = Integer.parseInt(spEntryInfo.getLowPrice().getValue());
-			}
-
-			
-			AucResultData aucResultData = new AucResultData();
-			aucResultData.setNaBzPlc(auctionResult.getAuctionHouseCode());
-			aucResultData.setAucObjDsc(auctionResult.getEntryType());
-			aucResultData.setAucDt(auctionResult.getAucDt());
-			aucResultData.setOslpNo(auctionResult.getOslpNo());
-			aucResultData.setLedSqno(auctionResult.getLedSqno());
-			aucResultData.setTrmnAmnno(auctionResult.getSuccessBidder());
-			aucResultData.setLvstAucPtcMnNo(auctionResult.getSuccessAuctionJoinNum());
-			aucResultData.setSraSbidAm(auctionResult.getSuccessBidPrice());
-			aucResultData.setSraSbidUpr(auctionResult.getSuccessBidUpr());
-			aucResultData.setSelStsDsc(auctionResult.getResultCode());
-			aucResultData.setLowsSbidLmtAm(Long.toString(resultLowPrice));
-			aucResultData.setLschgDtm("");
-			aucResultData.setLsCmeno(auctionResult.getLsCmeNo());
-			aucResultData.setAucObjDscQcn(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()));
-			
-			ArrayList<AucResultData> entryInfoList = new ArrayList<>();
-			entryInfoList.add(aucResultData);
-			
-			Gson gson = new Gson();
-			String jsonResult = gson.toJson(entryInfoList);
-
-			mLogger.debug("[경매결과 param] : " + jsonResult.toString());
-			
-			// 경매 결과 API 전송
-			ApiUtils.getInstance().requestAuctionResult(jsonResult, new ActionResultListener<ResponseAuctionResult>() {
-				@Override
-				public void onResponseResult(ResponseAuctionResult result) {
-					
-					if (result != null && result.getSuccess()) {
+						// 낙찰
+						auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS);
+						auctionResult.setSuccessBidder(bidder.getUserNo().getValue());
+						auctionResult.setSuccessAuctionJoinNum(bidder.getAuctionJoinNum().getValue());
+						auctionResult.setSuccessBidUpr(bidder.getPrice().getValue());
+		
+						int sraSbidAm = bidder.getPriceInt();
 						
-						
-						//Fail list 있으면 저장 실패
-						if(CommonUtils.getInstance().isListEmpty(result.getFailList())) {
-							
-							mLogger.debug("[경매 결과 저장 성공] 결과코드 : " + auctionResult.getResultCode() + " /낙찰가 : " + auctionResult.getSuccessBidUpr() + " /낙찰자 : " + auctionResult.getSuccessAuctionJoinNum());
-							
-							// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
-							if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
-								auctionResult.setSuccessBidder("");
-								auctionResult.setSuccessAuctionJoinNum("");
+						auctionResult.setSuccessBidPrice(Integer.toString(sraSbidAm));
+		
+						bidder.setSraSbidAm(new SimpleStringProperty(Integer.toString(sraSbidAm)));
+		
+						try {
+		
+							if (!BillboardDelegate1.getInstance().isEmptyClient() && BillboardDelegate1.getInstance().isActive()) {
+								// // 전광판 전송
+								BillboardData billboardData1 = new BillboardData();
+								billboardData1.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
+								billboardData1.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
+								billboardData1.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
+								billboardData1.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
+								billboardData1.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
+								billboardData1.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
+								billboardData1.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
+								billboardData1.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
+								billboardData1.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
+								billboardData1.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
+								billboardData1.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
+								billboardData1.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
+								billboardData1.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+								billboardData1.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
+		
+								addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData1.getEncodedMessage());
+								BillboardDelegate1.getInstance().sendBillboardData(billboardData1);
+								
+								// 전광판1 비고 흐름 사용 여부
+								if (SettingApplication.getInstance().isBoardUseNote1()) {
+									BillboardDelegate1.getInstance().clearBillboardNote();
+									BillboardDelegate1.getInstance().sendBillboardNote(billboardData1.getbNote());
+								}
 							}
 							
-							// 낙유찰 결과 전송
-							addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+							if (!BillboardDelegate2.getInstance().isEmptyClient() && BillboardDelegate2.getInstance().isActive()) {
+								// // 전광판 전송
+								BillboardData billboardData2 = new BillboardData();
+								billboardData2.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
+								billboardData2.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
+								billboardData2.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
+								billboardData2.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
+								billboardData2.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
+								billboardData2.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
+								billboardData2.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
+								billboardData2.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
+								billboardData2.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
+								billboardData2.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
+								billboardData2.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
+								billboardData2.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
+								billboardData2.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+								billboardData2.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
+		
+								addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData2.getEncodedMessage());
+								BillboardDelegate2.getInstance().sendBillboardData(billboardData2);
+								
+								// 전광판2 비고 흐름 사용 여부
+								if (SettingApplication.getInstance().isBoardUseNote2()) {
+									BillboardDelegate2.getInstance().clearBillboardNote();
+									BillboardDelegate2.getInstance().sendBillboardNote(billboardData2.getbNote());
+								}
+							}
+		
+						} catch (Exception e) {
+							e.printStackTrace();
+							mLogger.debug("BillboardDelegate error " + e);
+							SentryUtil.getInstance().sendExceptionLog(e);
+						}
+		
+						try {
+							if (!PdpDelegate.getInstance().isEmptyClient() && PdpDelegate.getInstance().isActive()) {
+								// // PDP 전송
+								PdpData pdpData = new PdpData();
+								pdpData.setbEntryType(String.valueOf(spEntryInfo.getEntryType().getValue()));
+								pdpData.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
+								pdpData.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
+								pdpData.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
+								pdpData.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
+								pdpData.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
+								pdpData.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
+								pdpData.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
+								pdpData.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
+								pdpData.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
+								pdpData.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
+								pdpData.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
+								pdpData.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
+								pdpData.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+								pdpData.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
+		
+								addLogItem(mResMsg.getString("log.pdp.auction.result.success") + pdpData.getEncodedMessage());
+								PdpDelegate.getInstance().sendPdpData(pdpData);
+							}
+		
+						} catch (Exception e) {
+							e.printStackTrace();
+							mLogger.debug("BillboardDelegate error " + e);
+							SentryUtil.getInstance().sendExceptionLog(e);
+						}
+		
+					} else {
+						
+						addLogItem("[낙유찰 결과 유찰 전송]");
+						
+						// 유찰&보류
+						auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING);
+						auctionResult.setSuccessBidder(null);
+						auctionResult.setSuccessAuctionJoinNum(null);
+						auctionResult.setSuccessBidPrice("0");
+						auctionResult.setSuccessBidUpr("0");
+					}
+		
+					// 최저가
+					long resultLowPrice = 0;
+		
+					// 최저가는 원단위로
+					if (CommonUtils.getInstance().isValidString(spEntryInfo.getLowPrice().getValue())) {
+						resultLowPrice = Integer.parseInt(spEntryInfo.getLowPrice().getValue());
+					}
+		
+					
+					AucResultData aucResultData = new AucResultData();
+					aucResultData.setNaBzPlc(auctionResult.getAuctionHouseCode());
+					aucResultData.setAucObjDsc(auctionResult.getEntryType());
+					aucResultData.setAucDt(auctionResult.getAucDt());
+					aucResultData.setOslpNo(auctionResult.getOslpNo());
+					aucResultData.setLedSqno(auctionResult.getLedSqno());
+					aucResultData.setTrmnAmnno(auctionResult.getSuccessBidder());
+					aucResultData.setLvstAucPtcMnNo(auctionResult.getSuccessAuctionJoinNum());
+					aucResultData.setSraSbidAm(auctionResult.getSuccessBidPrice());
+					aucResultData.setSraSbidUpr(auctionResult.getSuccessBidUpr());
+					aucResultData.setSelStsDsc(auctionResult.getResultCode());
+					aucResultData.setLowsSbidLmtAm(Long.toString(resultLowPrice));
+					aucResultData.setLschgDtm("");
+					aucResultData.setLsCmeno(auctionResult.getLsCmeNo());
+					aucResultData.setAucObjDscQcn(Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()));
+					
+					ArrayList<AucResultData> entryInfoList = new ArrayList<>();
+					entryInfoList.add(aucResultData);
+					
+					Gson gson = new Gson();
+					String jsonResult = gson.toJson(entryInfoList);
+		
+					mLogger.debug("[경매결과 param] : " + jsonResult.toString());
+					
+					// 경매 결과 API 전송
+					ApiUtils.getInstance().requestAuctionResult(jsonResult, new ActionResultListener<ResponseAuctionResult>() {
+						@Override
+						public void onResponseResult(ResponseAuctionResult result) {
 							
-							// 낙유찰 결과 UI 업데이트
-							updateAuctionStateInfo(isSuccess, bidder);
+							try {
 							
-						}else {
+								if (result != null && result.getSuccess()) {
+									
+									//Fail list 있으면 저장 실패
+									if(CommonUtils.getInstance().isListEmpty(result.getFailList())) {
+										
+										mLogger.debug("[경매 결과 저장 성공] 결과코드 : " + auctionResult.getResultCode() + " / 낙찰가 : " + auctionResult.getSuccessBidUpr() + " / 낙찰자 : " + auctionResult.getSuccessAuctionJoinNum());
+										
+										// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
+										if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+											auctionResult.setSuccessBidder("");
+											auctionResult.setSuccessAuctionJoinNum("");
+										}
+										
+										// 낙유찰 결과 전송
+										addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+										
+										// 낙유찰 결과 UI 업데이트
+										updateAuctionStateInfo(isSuccess, bidder);
+										
+									}else {
+										Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.auction.result.fail")));
+										mLogger.debug("[경매 결과 업데이트 실패. 취소처리]");
+										isResultCompleteFlag = false;
+										onCancelOrClose();
+									}
+									
+									
+								} else {
+									Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.auction.result.fail")));
+									mLogger.debug("[경매 결과 업데이트 실패. 취소처리]");
+									isResultCompleteFlag = false;
+									onCancelOrClose();
+								}
+							
+							}catch (Exception e) {
+								e.printStackTrace();
+								SentryUtil.getInstance().sendExceptionLog(e);
+							}
+						
+						}
+		
+						@Override
+						public void onResponseError(String message) {
 							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.auction.result.fail")));
 							mLogger.debug("[경매 결과 업데이트 실패. 취소처리]");
 							isResultCompleteFlag = false;
 							onCancelOrClose();
 						}
-						
-						
-					} else {
-						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.auction.result.fail")));
-						mLogger.debug("[경매 결과 업데이트 실패. 취소처리]");
-						isResultCompleteFlag = false;
-						onCancelOrClose();
-					}
+					});
 				
-				}
-
-				@Override
-				public void onResponseError(String message) {
-					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.auction.result.fail")));
-					mLogger.debug("[경매 결과 업데이트 실패. 취소처리]");
-					isResultCompleteFlag = false;
-					onCancelOrClose();
-				}
-			});
 		
-
-			break;
-		case GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL:
-			
-			addLogItem("[낙유찰 결과 취소]");
-			
-			auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
-			auctionResult.setSuccessBidder("");
-			auctionResult.setSuccessAuctionJoinNum("");
-			auctionResult.setSuccessBidPrice("0");
-			auctionResult.setSuccessBidUpr("0");
-			addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
-			break;
-		}
+					break;
+				case GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL:
+					
+					addLogItem("[경매 취소]");
+					
+					auctionResult.setResultCode(GlobalDefineCode.AUCTION_RESULT_CODE_CANCEL);
+					auctionResult.setSuccessBidder("");
+					auctionResult.setSuccessAuctionJoinNum("");
+					auctionResult.setSuccessBidPrice("0");
+					auctionResult.setSuccessBidUpr("0");
+					addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+					break;
+				}
 	}
 	
 
@@ -1420,7 +1443,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	 */
 	protected void addLogItem(String str) {
 		if (!str.isEmpty()) {
-			mLogger.debug("Log : " + str);
+			mLogger.debug("" + str);
 		}
 	}
 
@@ -1457,7 +1480,9 @@ public abstract class BaseAuctionController implements NettyControllable {
 	private void requestInsertBiddingHistory(final AucEntrData aucEntrData ,final String type) {
 
 		RequestBidLogBody insertBody = new RequestBidLogBody(aucEntrData.getNaBzplc(), Integer.toString(aucEntrData.getAucObjDsc()), aucEntrData.getAucDt(), aucEntrData.getOslpNo(), aucEntrData.getRgSqno(), aucEntrData.getTrmnAmnno(), aucEntrData.getLvstAucPtcMnNo(), aucEntrData.getAtdrAm(), aucEntrData.getRmkCntn(), aucEntrData.getAtdrDtm(), aucEntrData.getAucPrgSq());
+		
 		addLogItem("[응찰 로그 insertBody] : " +insertBody.toString());
+		
 		ApiUtils.getInstance().requestInsertBidLog(insertBody, new ActionResultListener<ResponseNumber>() {
 
 			@Override
@@ -1472,8 +1497,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 				}else if(type.equals(GlobalDefine.AUCTION_INFO.BID_LOG_TYPE_FINISH)) {
 					logStr = "종료";
 				}
-				
-				addLogItem("[" + logStr + "로그 onResponseResult] : " +result.getData() + " / " + result.getSuccess());
 				
 				if (result != null && result.getSuccess()) {
 					addLogItem("[" + logStr + "로그 저장 완료] 출품 번호 : " + aucEntrData.getAucPrgSq() + " rgSqno : " + aucEntrData.getRgSqno() + " 응찰금액 : " + aucEntrData.getAtdrAm());

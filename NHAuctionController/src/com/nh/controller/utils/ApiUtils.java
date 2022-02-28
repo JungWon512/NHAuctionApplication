@@ -1,12 +1,8 @@
 package com.nh.controller.utils;
 
-import java.lang.invoke.MethodHandles;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.ActionRuler;
+import com.nh.share.api.request.ActionRequestApplicationVersion;
 import com.nh.share.api.request.ActionRequestAuctionLogin;
 import com.nh.share.api.request.ActionRequestAuctionResult;
 import com.nh.share.api.request.ActionRequestInsertBidLog;
@@ -34,6 +30,7 @@ import com.nh.share.api.response.ResponseCowInfo;
 import com.nh.share.api.response.ResponseJoinNumber;
 import com.nh.share.api.response.ResponseNumber;
 import com.nh.share.api.response.ResponseQcn;
+import com.nh.share.api.response.ResponseVersion;
 
 /**
  * API Class
@@ -42,8 +39,6 @@ import com.nh.share.api.response.ResponseQcn;
  *
  */
 public class ApiUtils {
-
-	private final Logger mLogger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 	private static ApiUtils instance = null;
 
@@ -55,6 +50,15 @@ public class ApiUtils {
 			instance = new ApiUtils();
 		}
 		return instance;
+	}
+
+	/**
+	 * 버전체크
+	 * @param listener_
+	 */
+	public void requestVersion(ActionResultListener<ResponseVersion> listener_) {
+		ActionRuler.getInstance().addAction(new ActionRequestApplicationVersion(listener_));
+		ActionRuler.getInstance().runNext();
 	}
 
 	/**

@@ -8,6 +8,7 @@ import com.nh.share.api.NetworkDefine;
 import com.nh.share.api.request.body.RequestLoginBody;
 import com.nh.share.api.response.ResponseAuctionLogin;
 import com.nh.share.utils.CommonUtils;
+import com.nh.share.utils.SentryUtil;
 
 import okhttp3.Headers;
 import retrofit2.Call;
@@ -81,7 +82,6 @@ public class ActionRequestAuctionLogin extends Action {
 				actionDone(resultType.ACTION_RESULT_ERROR_NOT_RESPONSE);
 			}
 		}
-
 	};
 
 	@Override
