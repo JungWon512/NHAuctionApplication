@@ -35,7 +35,7 @@ public class ServerMessageParser {
 		case RequestAuctionResult.TYPE: // 낙유찰 결과 전송 요청
 			return new RequestAuctionResult(messages[1], messages[2]);
 		case ShowEntryInfo.TYPE: // 출품 정보 노출 설정 요청
-			return new ShowEntryInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6], messages[7], messages[8], messages[9], messages[10], messages[11]);
+			return new ShowEntryInfo(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6], messages[7], messages[8], messages[9], messages[10], messages[11], messages[12]);
 		case StandConnectInfo.TYPE: // 출하안내시스템 접속 상태 정보 전송
 			return new StandConnectInfo(messages[1], messages[2]);
 		case ShowFailBidding.TYPE: // 일괄경매 유찰 예상 목록 표시 요청(출하안내시스템)

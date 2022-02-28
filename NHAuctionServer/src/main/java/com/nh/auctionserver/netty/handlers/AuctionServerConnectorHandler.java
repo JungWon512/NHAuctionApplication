@@ -187,16 +187,16 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 														.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
 														.equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
 
-											ctx.writeAndFlush(new CurrentEntryInfo(
-													mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
-															.getCurrentEntryInfo()).getEncodedMessage()
-													+ "\r\n");
-
 											// 정상 접속자 초기 경매 상태 정보 전달 처리
 											ctx.channel()
 													.writeAndFlush(mAuctionScheduler
 															.getAuctionState(connectionInfo.getAuctionHouseCode())
 															.getAuctionStatus().getEncodedMessage() + "\r\n");
+
+											ctx.writeAndFlush(new CurrentEntryInfo(
+													mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
+															.getCurrentEntryInfo()).getEncodedMessage()
+													+ "\r\n");
 
 											// 낙유찰 정보 수신이 필요한 경우 확인
 											ctx.writeAndFlush(new RequestAuctionResult(connectionInfo.getAuctionHouseCode(),
@@ -389,15 +389,15 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 											|| mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
 													.equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED)) {
 										
-										ctx.writeAndFlush(new CurrentEntryInfo(mAuctionScheduler
-												.getAuctionState(connectionInfo.getAuctionHouseCode()).getCurrentEntryInfo())
-														.getEncodedMessage()
-												+ "\r\n");
-										
 										// 정상 접속자 초기 경매 상태 정보 전달 처리
 										ctx.channel().writeAndFlush(
 												mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode())
 														.getAuctionStatus().getEncodedMessage() + "\r\n");
+										
+										ctx.writeAndFlush(new CurrentEntryInfo(mAuctionScheduler
+												.getAuctionState(connectionInfo.getAuctionHouseCode()).getCurrentEntryInfo())
+														.getEncodedMessage()
+												+ "\r\n");
 
 										// 낙유찰 정보 수신이 필요한 경우 확인
 										ctx.writeAndFlush(new RequestAuctionResult(connectionInfo.getAuctionHouseCode(),

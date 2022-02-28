@@ -10,7 +10,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 경매서버 -> 응찰단말
  * 
  * SH | 조합구분코드 | 노출항목1 | 노출항목2 | 노출항목3 | 노출항목4 | 노출항목5 | 노출항목6 | 노출항목7 | 노출항목8 |
- * 노출항목9 | 노출항목10
+ * 노출항목9 | 노출항목10 | 비육우응찰단위(1 : 원 / 1000 : 천원 / 10000 : 만원)
  * 
  * 1.출품번호 / 2.출하주 / 3.성별 / 4.어미 / 5.친자 / 6.지역명 / 7.산차 / 8.계대 / 9.KPN / 10.중량 /
  * 11.최처가 / 12.비고
@@ -43,6 +43,7 @@ public class ShowEntryInfo implements FromAuctionServer {
 	private String mItem8 = ""; // 8번째 항목
 	private String mItem9 = ""; // 9번째 항목
 	private String mItem10 = ""; // 10번째 항목
+	private String mObj2PriceUnit = ""; // 비육우 응찰단위
 	private int currentItem = 0;
 
 	public ShowEntryInfo(EditSetting editSetting) {
@@ -110,10 +111,14 @@ public class ShowEntryInfo implements FromAuctionServer {
 			currentItem++;
 			setData(ITEM_NOTE);
 		}
+		
+		if (editSetting.getmCutAm() != null && !editSetting.getmCutAm().equals("")) {
+			mObj2PriceUnit = editSetting.getmCutAm();
+		}
 	}
 
 	public ShowEntryInfo(String auctionHouseCode, String item1, String item2, String item3, String item4, String item5,
-			String item6, String item7, String item8, String item9, String item10) {
+			String item6, String item7, String item8, String item9, String item10, String cutAm) {
 		mAuctionHouseCode = auctionHouseCode;
 		mItem1 = item1;
 		mItem2 = item2;
@@ -125,6 +130,7 @@ public class ShowEntryInfo implements FromAuctionServer {
 		mItem8 = item8;
 		mItem9 = item9;
 		mItem10 = item10;
+		mObj2PriceUnit = cutAm;
 	}
 
 	private void initData() {
@@ -140,6 +146,7 @@ public class ShowEntryInfo implements FromAuctionServer {
 		mItem8 = ""; // 8번째 항목
 		mItem9 = ""; // 9번째 항목
 		mItem10 = ""; // 10번째 항목
+		mObj2PriceUnit = ""; // 비육우 응찰단위
 	}
 
 	private void setData(String item) {
@@ -265,15 +272,23 @@ public class ShowEntryInfo implements FromAuctionServer {
 		this.mItem10 = item10;
 	}
 
+	public String getObj2PriceUnit() {
+		return mObj2PriceUnit;
+	}
+
+	public void setObj2PriceUnit(String obj2PriceUnit) {
+		this.mObj2PriceUnit = obj2PriceUnit;
+	}
+
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
 				AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mItem1,
 				AuctionShareSetting.DELIMITER, mItem2, AuctionShareSetting.DELIMITER, mItem3,
 				AuctionShareSetting.DELIMITER, mItem4, AuctionShareSetting.DELIMITER, mItem5,
 				AuctionShareSetting.DELIMITER, mItem6, AuctionShareSetting.DELIMITER, mItem7,
 				AuctionShareSetting.DELIMITER, mItem8, AuctionShareSetting.DELIMITER, mItem9,
-				AuctionShareSetting.DELIMITER, mItem10);
+				AuctionShareSetting.DELIMITER, mItem10, AuctionShareSetting.DELIMITER, mObj2PriceUnit);
 	}
 
 }

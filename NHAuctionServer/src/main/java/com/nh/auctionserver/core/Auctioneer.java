@@ -349,7 +349,7 @@ public class Auctioneer {
 						mAuctionStateMap.get(auctionHouseCode).getAuctionBidStatus().setStatus(GlobalDefineCode.AUCTION_BID_STATUS_N);
 					}
 
-					mAuctionStateMap.get(auctionHouseCode).onReady();
+					mAuctionStateMap.get(auctionHouseCode).onReady();						
 
 					// 출품 정보 및 경매 상태 전송
 					if (mAuctionServer != null) {
@@ -422,6 +422,7 @@ public class Auctioneer {
 							.setCurrentBidderCount(String.valueOf(mCurrentBidderMap.get(auctionHouseCode).size()));
 
 					mLogger.info(entryInfo.getEntryNum() + "번 출품 상품이 경매 준비되었습니다.");
+					
 					mAuctionStateMap.get(auctionHouseCode).onReady();
 
 					// 출품 정보 및 경매 상태 전송
@@ -444,6 +445,7 @@ public class Auctioneer {
 				if (mAuctionEntryRepositoryMap.containsKey(auctionHouseCode)
 						&& mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() >= 0) {
 					mLogger.info("총 " + mAuctionEntryRepositoryMap.get(auctionHouseCode).getTotalCount() + "건의 출장우가 경매 준비되었습니다.");
+
 					mAuctionStateMap.get(auctionHouseCode).onReady();
 
 					// 출품 정보 및 경매 상태 전송
