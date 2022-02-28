@@ -9,6 +9,7 @@ import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
+import com.nh.controller.utils.SharedPreference;
 import com.nh.share.utils.SentryUtil;
 
 import javafx.application.Application;
@@ -24,6 +25,8 @@ public class ControllerApplication extends Application {
 	public void start(Stage arg0) throws Exception {
 		
 		SentryUtil.getInstance().initSentry(GlobalDefine.APPLICATION_INFO.RELEASE_VERION);
+		
+		SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_APPLICATION_VERSION_INFO, GlobalDefine.APPLICATION_INFO.RELEASE_VERION);
 		
 		Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(this));
 		

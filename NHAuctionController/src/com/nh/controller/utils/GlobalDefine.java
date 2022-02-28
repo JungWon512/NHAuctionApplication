@@ -2,7 +2,6 @@ package com.nh.controller.utils;
 
 import com.nh.controller.model.AdminData;
 import com.nh.controller.model.AuctionRound;
-import com.nh.share.code.GlobalDefineCode;
 
 /**
  * 공통 Define
@@ -16,7 +15,7 @@ public class GlobalDefine {
 	 */
 	public static final class APPLICATION_INFO {
 
-		public static final String RELEASE_VERION = "1.0.9"; // application 버전
+		public static final String RELEASE_VERION = "1.0.8"; // application 버전
 		
 		public static final String RELEASE_DATE = "2022-02-28"; // 업데이트 날짜 
 

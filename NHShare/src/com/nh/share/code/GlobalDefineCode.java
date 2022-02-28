@@ -9,9 +9,9 @@ package com.nh.share.code;
  */
 public class GlobalDefineCode {
 	// SSL 적용 여부
-	public static final boolean FLAG_SSL = false;
+	public static final boolean FLAG_SSL = true;
 	// 개발,운영 여부
-	public static final boolean FLAG_PRD = false;
+	public static final boolean FLAG_PRD = true;
 	// 응찰자 테스트 모드
 	public static final boolean FLAG_TEST_MODE = false;
 	// 응찰 로그 테스트 모드

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="mRootLogin" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="331.0" prefWidth="430.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/Login.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.launcher.IntroController">
+   <children>
+      <ImageView fitHeight="338.0" fitWidth="430.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../NHAuctionController/src/com/nh/controller/resource/images/ic_logo.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="prgMsg" alignment="CENTER" layoutY="270.0" text="프로그램 구동 중입니다." textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <Label alignment="CENTER" layoutX="86.0" layoutY="290.0" text="잠시만 기다려주세요." textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+   </children>
+</AnchorPane>

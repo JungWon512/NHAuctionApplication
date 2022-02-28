@@ -26,6 +26,9 @@ public class SharedPreference {
 
 	// 프로그램 설치 후 첫 실행 여부
 	public static final String PREFERENCE_IS_FIRST_APPLICATION = "PREFERENCE_IS_FIRST_APPLICATION";
+	
+	// 프로그램 설치 후 첫 실행 여부
+	public static final String PREFERENCE_APPLICATION_VERSION_INFO = "PREFERENCE_APPLICATION_VERSION_INFO";
 
 	// --- 모바일 노출설정 ---
 	public static final String PREFERENCE_SETTING_MOBILE_ENTRYNUM = "PREFERENCE_SETTING_MOBILE_ENTRYNUM"; // 경매번호노출여부

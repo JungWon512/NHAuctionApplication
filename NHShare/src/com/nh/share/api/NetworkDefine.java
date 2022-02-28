@@ -29,7 +29,7 @@ public class NetworkDefine {
 	public static final String PRD_NH_AUCTION_API_HOST = "https://www.xn--o39an74b9ldx9g.kr";
 
 	//경매 진행 프로그램 다운로드 경로
-	public static final String APPLICATION_DOWNLOAD_URL = DEV_NH_AUCTION_API_HOST + "/static/file/NHControllerSetup.exe";
+	public static final String APPLICATION_DOWNLOAD_URL = DEV_NH_AUCTION_API_HOST + "/static/file/NHController.exe";
 	
 	public static final String API_VERSION = "v2"; // API Version
 
