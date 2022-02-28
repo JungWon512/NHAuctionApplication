@@ -1,15 +1,20 @@
 package com.nh.share.api.request;
 
 import java.io.IOException;
+import java.net.NoRouteToHostException;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.NetworkDefine;
 import com.nh.share.api.response.BaseResponse;
 import com.nh.share.code.GlobalDefineCode;
+import com.nh.share.utils.SentryUtil;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

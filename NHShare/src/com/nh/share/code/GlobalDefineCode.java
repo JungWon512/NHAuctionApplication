@@ -9,9 +9,9 @@ package com.nh.share.code;
  */
 public class GlobalDefineCode {
 	// SSL 적용 여부
-	public static final boolean FLAG_SSL = true;
+	public static final boolean FLAG_SSL = false;
 	// 개발,운영 여부
-	public static final boolean FLAG_PRD = true;
+	public static final boolean FLAG_PRD = false;
 	// 응찰자 테스트 모드
 	public static final boolean FLAG_TEST_MODE = false;
 	// 응찰 로그 테스트 모드
@@ -140,4 +140,50 @@ public class GlobalDefineCode {
 	public static final String BILLBOARD_CHARSET = "EUC-KR"; // 전광판 character set
 	
 	public static final String EMPTY_DATA = "";
+	
+
+	/**
+	 * Sentry Error Monitoring  Tool
+	 *
+	 */
+	public static final class SENTRY_INFO {
+
+		public static final String SENTRY_CLIENT_KEY = "https://14f5ec77e6074dff8e29b338f6f3fc2d@o1148992.ingest.sentry.io/6220683"; // Sentry Error Monitoring  Key
+		
+		public static final String SENTRY_PROJECT_NAME= "nhlyvly"; // Sentry Project Name
+		
+		public static final String SENTRY_CLIENT_ENVIRONMENTS_PRODUCTION = "production"; // 환경 - 운영
+		
+		public static final String SENTRY_CLIENT_ENVIRONMENTS_DEV = "dev"; // 환경 - 개발.
+		
+		public static final double SENTRY_RATE = 1.0; // default 1.0
+	
+	
+		/**
+		 * 환경 정보 
+		 * @return  ex) production (운영) or dev (개발)
+		 */
+		public static String getSentryEnvironment() {
+			
+			String environment = "";
+			
+			if(GlobalDefineCode.FLAG_PRD) {
+				environment = SENTRY_CLIENT_ENVIRONMENTS_PRODUCTION;
+			}else {
+				environment = SENTRY_CLIENT_ENVIRONMENTS_DEV;
+			}
+			
+			return environment;
+		}
+		
+		
+		/**
+		 * Sentry ProjectName
+		 * @return nhlyvly
+		 */
+		public static String getSentryName() {
+			return SENTRY_PROJECT_NAME; 
+		}
+	}
+	
 }

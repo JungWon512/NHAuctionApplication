@@ -110,7 +110,6 @@ public class PdpDelegate {
 	 * @Description PDP 카운트다운
 	 */
 	public void onCountDown(String number) {
-		mLogger.debug("onCountDown " + number);
 		String num = (number.equals("0")) ? " " : number;
 		sendMessage(String.format("%c%c%s%c", GlobalDefine.PDP.STX, GlobalDefine.PDP.COUNTDOWN_CODE, num,
 				GlobalDefine.PDP.ETX));

@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.controller.netty.AuctionDelegate;
+import com.nh.controller.utils.GlobalDefine;
 import com.nh.controller.utils.MoveStageUtil;
+import com.nh.share.utils.SentryUtil;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -20,11 +22,15 @@ public class ControllerApplication extends Application {
 
 	@Override
 	public void start(Stage arg0) throws Exception {
+		
+		SentryUtil.getInstance().initSentry(GlobalDefine.APPLICATION_INFO.RELEASE_VERION);
+		
 		Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(this));
-//		MoveStageUtil.getInstance().moveSampleStage(arg0);	
+		
 		MoveStageUtil.getInstance().moveLoginStage(arg0);
+		
 	}
-
+	
 	public static void main(String[] args) {
 		launch(args);
 	}

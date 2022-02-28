@@ -1,15 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO">
-	<Appenders>
-		<Console name="console" target="SYSTEM_OUT">
-			<PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
-		</Console>
-	</Appenders>
-	
-	<Loggers>
-		<Root level="debug" additivity="false">
-			<AppenderRef ref="console"/>
-		</Root>
-	</Loggers>
 
+    <Properties>
+        <Property name="logName">NHAuctionController</Property>
+        <Property name="layoutPattern">%d{yyyy/MM/dd HH:mm:ss,SSS} [%-5p] [%C] %style{[%t]}- %m%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console_Appender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${layoutPattern}" />
+        </Console>
+
+<!-- 
+        <RollingFile name="File_Appender" fileName="C:/Temp/NHControllerLogs/${logName}.log" filePattern="C:/Temp/NHControllerLogs/${logName}_%d{yyyy-MM-dd}_%i.log.gz">
+            <PatternLayout pattern="${layoutPattern}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="200MB"/>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1000" fileIndex="max"/>
+        </RollingFile>
+-->
+    </Appenders>
+
+    <Loggers>
+
+        <Root level="INFO" additivity="false">
+            <AppenderRef ref="Console_Appender"/>
+        </Root>
+  
+        <Logger name="com.nh" level="debug" additivity="false">
+            <AppenderRef ref="Console_Appender" />
+			<!-- <AppenderRef ref="File_Appender"/> -->
+        </Logger>
+        
+		<Logger name="io.netty" level="INFO" additivity="false">
+			<AppenderRef ref="Console_Appender" />
+		</Logger>
+    </Loggers>
 </Configuration>

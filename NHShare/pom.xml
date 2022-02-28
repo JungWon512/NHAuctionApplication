@@ -19,6 +19,13 @@
     <properties>
         <java.version>16</java.version>
         <webapp.lib>${basedir}/lib</webapp.lib>
+		<org-slf4j.version>2.17.1</org-slf4j.version>
+        <log4j2.version>2.17.1</log4j2.version>
+        <retrofit2.version>2.5.0</retrofit2.version>
+        <converter-son.version>2.5.0</converter-son.version>
+        <okhttp3.version>3.12.0</okhttp3.version>
+        <logging-interceptor.version>3.8.0</logging-interceptor.version>
+        <okio.version>1.15.0</okio.version>
     </properties>
 
     <dependencies>
@@ -46,7 +53,6 @@
             <version>3.5.7</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>libraries-bom</artifactId>
@@ -61,6 +67,12 @@
             <artifactId>google-cloud-texttospeech</artifactId>
             <version>2.0.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jboss/jdk-misc -->
+		<dependency>
+		    <groupId>org.jboss</groupId>
+		    <artifactId>jdk-misc</artifactId>
+		    <version>3.Final</version>
+		</dependency>
 
         <!-- https://mvnrepository.com/artifact/javazoom/jlayer -->
         <dependency>
@@ -68,6 +80,81 @@
             <artifactId>jlayer</artifactId>
             <version>1.0.1</version>
         </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.8.9</version>
+		</dependency>
+        
+
+		<!-- retrofit dependency-->
+		<dependency>
+		    <groupId>com.squareup.retrofit2</groupId>
+		    <artifactId>retrofit</artifactId>
+		    <version>${retrofit2.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.squareup.retrofit2</groupId>
+		    <artifactId>converter-jackson</artifactId>
+		    <version>${converter-son.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.squareup.retrofit2</groupId>
+		    <artifactId>converter-gson</artifactId>
+		     <version>${converter-son.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.squareup.okhttp3</groupId>
+		    <artifactId>okhttp</artifactId>
+		    <version>${okhttp3.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.squareup.okio</groupId>
+		    <artifactId>okio</artifactId>
+		    <version>${okio.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.squareup.okhttp3</groupId>
+		    <artifactId>logging-interceptor</artifactId>
+		    <version>${logging-interceptor.version}</version>
+		</dependency>
+				
+		<!-- log4j2 dependency-->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${org-slf4j.version}</version>
+		</dependency>
+
+		<!-- sentry log dependency-->
+		<dependency>
+	      <groupId>io.sentry</groupId>
+	      <artifactId>sentry-log4j2</artifactId>
+	      <version>5.6.1</version>
+	    </dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
+		<dependency>
+		    <groupId>org.controlsfx</groupId>
+		    <artifactId>controlsfx</artifactId>
+		    <version>11.1.1</version>
+		</dependency>
 
     </dependencies>
+    
+    
 </project>

@@ -22,12 +22,21 @@ public class NetworkDefine {
 	}
 
 	public static String ADMIN_ACCESS_TOKEN = "";
-
+//	115.41.222.25
+//	1.201.161.58
+	public static final String LOCAL_NH_AUCTION_API_HOST = "http://192.168.0.183:8080";
 	public static final String DEV_NH_AUCTION_API_HOST = "https://xn--e20bw05b.kr";
 	public static final String PRD_NH_AUCTION_API_HOST = "https://www.xn--o39an74b9ldx9g.kr";
 
+	//경매 진행 프로그램 다운로드 경로
+	public static final String APPLICATION_DOWNLOAD_URL = DEV_NH_AUCTION_API_HOST + "/static/file/NHControllerSetup.exe";
+	
 	public static final String API_VERSION = "v2"; // API Version
 
+	public static final String API_REQUEST_APPLICATION_VERSION= "/api/appversion"; // 경매 진행 프로그램 버전 체크
+	
+	public static final String PARAM_OS_TYPE = "EXE"; // 경매 진행 프로그램 버전 체크 파라미터값
+	
 	public static final String API_REQUEST_AUCTION_LOGIN = "/api/{version}/auth/login"; // 경매 로그인
 
 	public static final String API_REQUEST_AUCTION_RESULT = "/api/{version}/auction/result"; // 경매 경매 결과 전송

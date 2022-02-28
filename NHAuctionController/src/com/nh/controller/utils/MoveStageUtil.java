@@ -710,9 +710,9 @@ public class MoveStageUtil {
 	private void setWindowTitle(Stage stage, ResourceBundle resources) {
 		
 		if(GlobalDefineCode.FLAG_PRD) {
-			stage.setTitle(	String.format(resources.getString("app.title"), GlobalDefine.APPLICATION_INFO.RELEASE_VERION));	
+			stage.setTitle(	String.format(resources.getString("app.title"), "v" + GlobalDefine.APPLICATION_INFO.RELEASE_VERION));	
 		}else {
-			stage.setTitle(	String.format(resources.getString("app.title.dev"), GlobalDefine.APPLICATION_INFO.RELEASE_VERION));
+			stage.setTitle(	String.format(resources.getString("app.title.dev"), "v" +GlobalDefine.APPLICATION_INFO.RELEASE_VERION));
 		}
 		
 		stage.getIcons().add(new Image(getApplicationClass().getResourceAsStream("resource/images/ic_logo.png")));

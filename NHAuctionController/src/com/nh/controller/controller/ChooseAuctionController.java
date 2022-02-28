@@ -28,6 +28,7 @@ import com.nh.share.api.response.ResponseCowInfo;
 import com.nh.share.api.response.ResponseNumber;
 import com.nh.share.api.response.ResponseQcn;
 import com.nh.share.code.GlobalDefineCode;
+import com.nh.share.utils.SentryUtil;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -124,7 +125,7 @@ public class ChooseAuctionController implements Initializable {
 			mTitleLabel.setText(devStr);
 		}
 		
-		mVersionLabel.setText(GlobalDefine.APPLICATION_INFO.RELEASE_VERION);
+		mVersionLabel.setText("v" +GlobalDefine.APPLICATION_INFO.RELEASE_VERION);
 		mReleaseDateLabel.setText(GlobalDefine.APPLICATION_INFO.RELEASE_DATE);
 	}
 
@@ -291,86 +292,93 @@ public class ChooseAuctionController implements Initializable {
 				
 
 //				Platform.runLater(()->CommonUtils.getInstance().dismissLoadingDialog());
-				
-				if (result != null ) {
 
-					if (result.getSuccess() && result.getData() != null) {
+				try {
 
-						QcnData qcnData = result.getData();
+					if (result != null ) {
+	
+						if (result.getSuccess() && result.getData() != null) {
 						
-						if(SettingApplication.getInstance().isSingleAuction()) {
-							//단일
-							setQcnData(naBzplc,aucObjDsc,aucDate,qcnData);
-						}else {
+							QcnData qcnData = result.getData();
 							
-							//일괄
-							if(!CommonUtils.getInstance().isListEmpty(result.getStnList())) {
+							if(SettingApplication.getInstance().isSingleAuction()) {
+								//단일
+								setQcnData(naBzplc,aucObjDsc,aucDate,qcnData);
+							}else {
 								
-								int size  = result.getStnList().size();
-								
-								if(size == 1) {
+								//일괄
+								if(!CommonUtils.getInstance().isListEmpty(result.getStnList())) {
 									
-									//구간 선택 안함. 0번째 선택
-									setQcnData(naBzplc,aucDate,qcnData,result.getStnList().get(0));
-
+									int size  = result.getStnList().size();
+									
+									if(size == 1) {
+										
+										//구간 선택 안함. 0번째 선택
+										setQcnData(naBzplc,aucDate,qcnData,result.getStnList().get(0));
+	
+									}else {
+										
+										Platform.runLater(() -> {
+										
+											CommonUtils.getInstance().dismissLoadingDialog();
+											
+											//구간 선택 팝업
+											MoveStageUtil.getInstance().showChooseAuctionNumberRange(mStage ,result.getStnList(), new IntegerListener() {
+												@Override
+												public void callBack(int index) {
+										
+													if(index > -1) {
+														
+														//뒷배경 활성화
+														MoveStageUtil.getInstance().dismissDialog();
+														MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
+	
+														mLogger.debug("구간 선택 index : " + index);
+														
+														CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
+														
+														setQcnData(naBzplc,aucDate,qcnData,result.getStnList().get(index));
+														
+													}
+												}
+											});	
+										});
+									}
+									
 								}else {
 									
-									Platform.runLater(() -> {
-									
+									Platform.runLater(()->{
 										CommonUtils.getInstance().dismissLoadingDialog();
-										
-										//구간 선택 팝업
-										MoveStageUtil.getInstance().showChooseAuctionNumberRange(mStage ,result.getStnList(), new IntegerListener() {
-											@Override
-											public void callBack(int index) {
-									
-												if(index > -1) {
-													
-													//뒷배경 활성화
-													MoveStageUtil.getInstance().dismissDialog();
-													MoveStageUtil.getInstance().setBackStageDisableFalse(mStage);
-
-													mLogger.debug("구간 선택 index : " + index);
-													
-													CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection"));
-													
-													setQcnData(naBzplc,aucDate,qcnData,result.getStnList().get(index));
-													
-												}
-											}
-										});	
+										showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
 									});
+	
 								}
-								
-							}else {
-								
-								Platform.runLater(()->{
-									CommonUtils.getInstance().dismissLoadingDialog();
-									showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
-								});
-
 							}
+							
+	
+						} else {
+							
+							Platform.runLater(()->{
+								CommonUtils.getInstance().dismissLoadingDialog();
+								if(CommonUtils.getInstance().isValidString(result.getMessage())) {
+									showAlertPopupOneButton(result.getMessage());	
+								}else {
+									showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));	
+								}
+							});
+							
 						}
-						
-
+	
 					} else {
-						
 						Platform.runLater(()->{
 							CommonUtils.getInstance().dismissLoadingDialog();
-							if(CommonUtils.getInstance().isValidString(result.getMessage())) {
-								showAlertPopupOneButton(result.getMessage());	
-							}else {
-								showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));	
-							}
+							showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
 						});
-						
 					}
-
-				} else {
-					Platform.runLater(()->{
-						CommonUtils.getInstance().dismissLoadingDialog();
-						showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
-					});
+					
+				}catch (Exception e) {
+					e.printStackTrace();
+					SentryUtil.getInstance().sendExceptionLog(e);
 				}
 			}
 
