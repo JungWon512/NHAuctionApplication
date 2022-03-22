@@ -253,7 +253,7 @@ public class PdpData implements NettySendable {
         sb.append(makePdpNumberMessage(getbMatime(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_MATIME, "")));
         sb.append(makePdpNumberMessage(getKPN(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_KPN, "")));
         sb.append(makePdpKoreanMessage(getbRegion(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_REGION, "")));
-        sb.append(makeNoteMessage(getbNote(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_NOTE, "")));
+        sb.append(makePdpKoreanMessage(getbNote(), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_NOTE, "")));
         
         // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
         // 0 : 원단위 경매 / 1 : 만원단위 경매 
@@ -279,45 +279,90 @@ public class PdpData implements NettySendable {
     /**
      * @Description 비고 메세지
      */
-    private String makeNoteMessage(String s, String sharedPreference) {
-        int count = Integer.parseInt(sharedPreference);
-        int stringToByteSize = s.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
-        int doubleCount = count / 2; // byte[]와 비교하기위한 length
+//    private String makeNoteMessage(String s, String sharedPreference) {
+//        int count = Integer.parseInt(sharedPreference);
+//        int stringToByteSize = s.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
+//        int doubleCount = count / 2; // byte[]와 비교하기위한 length
+//
+//        StringBuilder temp = new StringBuilder();
+//
+//        if (s.length() < doubleCount) {
+//            return " ".repeat(count - stringToByteSize) + s;
+//        } else {
+//            if ((stringToByteSize < doubleCount)) {
+//                temp = new StringBuilder(" ".repeat(count - stringToByteSize) + s);
+//            } else {
+//                temp = new StringBuilder(s.substring(0, doubleCount));
+//            }
+//            for (int ch :
+//                    temp.toString().toCharArray()) {
+//                if ((33 <= ch) && (ch <= 126)) { // 특수문자, 알파벳, 숫자 등 => 1 byte 이기 때문에 빈 문자열 추가
+//                    temp.insert(0, " ");
+//                }
+//            }
+//            return temp.toString();
+//        }
+//    }
+    
+    private String makePdpKoreanMessage(String str, String sharedPreference) {
+		int count = Integer.parseInt(sharedPreference);
+		String result = "";
+		int resultStringSize = 0;
 
-        StringBuilder temp = new StringBuilder();
+		if (str == null || str.length() == 0) {
+			return "";
+		}
 
-        if (s.length() < doubleCount) {
-            return " ".repeat(count - stringToByteSize) + s;
-        } else {
-            if ((stringToByteSize < doubleCount)) {
-                temp = new StringBuilder(" ".repeat(count - stringToByteSize) + s);
-            } else {
-                temp = new StringBuilder(s.substring(0, doubleCount));
-            }
-            for (int ch :
-                    temp.toString().toCharArray()) {
-                if ((33 <= ch) && (ch <= 126)) { // 특수문자, 알파벳, 숫자 등 => 1 byte 이기 때문에 빈 문자열 추가
-                    temp.insert(0, " ");
-                }
-            }
-            return temp.toString();
-        }
-    }
+		if (count < 1) {
+			return "";
+		}
+
+		int len = str.length();
+
+		int beginIndex = -1;
+		int endIndex = 0;
+
+		int curBytes = 0;
+		String ch = null;
+		for (int i = 0; i < len; i++) {
+			ch = str.substring(i, i + 1);
+			curBytes += ch.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
+
+			if (beginIndex == -1 && curBytes >= 0) {
+				beginIndex = i;
+			}
+
+			if (curBytes > count) {
+				break;
+			} else {
+				endIndex = i + 1;
+			}
+		}
+
+		result = str.substring(beginIndex, endIndex);
+		resultStringSize = result.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
+		
+		if (resultStringSize < count) {
+			result = " ".repeat(count - resultStringSize) + result;
+		}
+
+		return result;
+	}
 
     /**
      * @Description 한글이 들어가는 전광판
      */
-    private String makePdpKoreanMessage(String s, String sharedPreference) {
-        int count = Integer.parseInt(sharedPreference);
-        int stringToByteSize = s.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
-        int doubleCount = count / 2; // byte[]와 비교하기위한 length
-
-        if (stringToByteSize < count) {
-            return " ".repeat(count - stringToByteSize) + s;
-        } else {
-            return s.replaceAll(",", " ").substring(0, doubleCount);
-        }
-    }
+//    private String makePdpKoreanMessage(String s, String sharedPreference) {
+//        int count = Integer.parseInt(sharedPreference);
+//        int stringToByteSize = s.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
+//        int doubleCount = count / 2; // byte[]와 비교하기위한 length
+//
+//        if (stringToByteSize < count) {
+//            return " ".repeat(count - stringToByteSize) + s;
+//        } else {
+//            return s.replaceAll(",", " ").substring(0, doubleCount);
+//        }
+//    }
 
     /**
      * @Description 숫자만 들어가는 전광판

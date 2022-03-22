@@ -379,25 +379,70 @@ public class BillboardData implements NettySendable {
     /**
      * @Description 한글이 들어가는 전광판
      */
-    private String makeBoardKoreanMessage(String s, String sharedPreference) {
-        int count = Integer.parseInt(sharedPreference);
-        int stringToByteSize = s.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
-        int doubleCount = count / 2; // byte[]와 비교하기위한 length
+//    private String makeBoardKoreanMessage(String s, String sharedPreference) {
+//        int count = Integer.parseInt(sharedPreference);
+//        int stringToByteSize = s.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
+//        int doubleCount = count / 2; // byte[]와 비교하기위한 length
+//
+//        if (stringToByteSize < count) {
+//            return " ".repeat(count - stringToByteSize) + s;
+//        } else {
+//        	String resultString = s.replaceAll(",", " ").substring(0, doubleCount);
+//        	
+//        	if (resultString.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length < count) {
+//        		return resultString + " ".repeat(count - resultString.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length);
+//        	} else {
+//        		return resultString;
+//        	}
+//        	
+//        	//return s.replaceAll(",", " ").substring(0, doubleCount);
+//        }
+//    }
+    
+    private String makeBoardKoreanMessage(String str, String sharedPreference) {
+		int count = Integer.parseInt(sharedPreference);
+		String result = "";
+		int resultStringSize = 0;
 
-        if (stringToByteSize < count) {
-            return " ".repeat(count - stringToByteSize) + s;
-        } else {
-        	String resultString = s.replaceAll(",", " ").substring(0, doubleCount);
-        	
-        	if (resultString.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length < count) {
-        		return resultString + " ".repeat(count - resultString.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length);
-        	} else {
-        		return resultString;
-        	}
-        	
-        	//return s.replaceAll(",", " ").substring(0, doubleCount);
-        }
-    }
+		if (str == null || str.length() == 0) {
+			return "";
+		}
+
+		if (count < 1) {
+			return "";
+		}
+
+		int len = str.length();
+
+		int beginIndex = -1;
+		int endIndex = 0;
+
+		int curBytes = 0;
+		String ch = null;
+		for (int i = 0; i < len; i++) {
+			ch = str.substring(i, i + 1);
+			curBytes += ch.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
+
+			if (beginIndex == -1 && curBytes >= 0) {
+				beginIndex = i;
+			}
+
+			if (curBytes > count) {
+				break;
+			} else {
+				endIndex = i + 1;
+			}
+		}
+
+		result = str.substring(beginIndex, endIndex);
+		resultStringSize = result.getBytes(Charset.forName(GlobalDefineCode.BILLBOARD_CHARSET)).length;
+		
+		if (resultStringSize < count) {
+			result = " ".repeat(count - resultStringSize) + result;
+		}
+
+		return result;
+	}
 
     /**
      * @Description 숫자만 들어가는 전광판
