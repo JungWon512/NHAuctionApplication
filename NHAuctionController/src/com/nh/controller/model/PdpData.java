@@ -309,12 +309,12 @@ public class PdpData implements NettySendable {
 		String result = "";
 		int resultStringSize = 0;
 
-		if (str == null || str.length() == 0) {
-			return "";
-		}
-
 		if (count < 1) {
 			return "";
+		}
+		
+		if (str == null || str.length() == 0) {
+			return " ".repeat(count);
 		}
 
 		int len = str.length();
