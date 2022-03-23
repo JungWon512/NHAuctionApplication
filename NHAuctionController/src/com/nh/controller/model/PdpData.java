@@ -258,11 +258,11 @@ public class PdpData implements NettySendable {
         // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
         // 0 : 원단위 경매 / 1 : 만원단위 경매 
         if(getbEntryType().equals("1")) {
-        	sb.append(makePdpNumberMessage("2", "1"));
+        	sb.append(makePdpNumberMessage("1", "1"));
         } else if(getbEntryType().equals("2")) {
         	sb.append(makePdpNumberMessage("0", "1"));
         } else if(getbEntryType().equals("3")) {
-        	sb.append(makePdpNumberMessage("2", "1"));
+        	sb.append(makePdpNumberMessage("1", "1"));
         }
         
         sb.append(makePdpNumberMessage(getBaseUnitDivision(getbLowPrice()), shared.getString(SharedPreference.PREFERENCE_SETTING_PDP_LOWPRICE, "0")));
