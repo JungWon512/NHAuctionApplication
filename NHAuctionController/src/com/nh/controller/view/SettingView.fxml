@@ -558,9 +558,9 @@
                                 </VBox>
                             </children>
                         </HBox>
-                        <Label alignment="CENTER" styleClass="font-s" text="최대 10개까지 선택 가능">
+                        <Label alignment="CENTER" styleClass="description-label" text="최대 10개까지 선택 가능" textFill="RED">
                             <VBox.margin>
-                                <Insets left="10.0" />
+                                <Insets />
                             </VBox.margin>
                         </Label>
                     </children>

@@ -63,7 +63,7 @@ public class AuctionUtil {
 				.filter(gender -> (gender.code.equals(code)))
 				.map(gender -> gender.description)
 				.findAny()
-				.orElse(NONE.description);
+				.orElse("");
 		}
 	}
 	
@@ -91,11 +91,11 @@ public class AuctionUtil {
 				.filter(gender -> (gender.code.equals(code)))
 				.map(gender -> gender.description)
 				.findAny()
-				.orElse(NONE.description);
+				.orElse("");
 		}
 	}
 	
-	 // 혈통
+	 // 어미
     public enum Lineage {
         BASE("01", "기초"),
         LINEAGE("02", "혈통"),
@@ -115,7 +115,7 @@ public class AuctionUtil {
                     .filter(lineage -> (lineage.code.equals(code)))
                     .map(lineage -> lineage.description)
                     .findAny()
-                    .orElse(BASE.description);
+                    .orElse("");
         }
     }
     
@@ -139,7 +139,7 @@ public class AuctionUtil {
                     .filter(objDsc -> (objDsc.code.equals(code)))
                     .map(objDsc -> objDsc.description)
                     .findAny()
-                    .orElse(CALF.description);
+                    .orElse("");
         }
     }
     

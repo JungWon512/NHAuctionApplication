@@ -66,6 +66,10 @@ public class MoveStageUtil {
 	private boolean isShowingAuctionStage = false;
 	
 	
+	/**
+	 * 전체,유찰,낙찰결과 팝업 타입.
+	 * @author jhlee
+	 */
 	public enum EntryDialogType{
 		ENTRY_LIST,
 		ENTRY_PENDING_LIST,

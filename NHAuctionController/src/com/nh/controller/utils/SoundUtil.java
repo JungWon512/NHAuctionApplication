@@ -36,6 +36,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nh.controller.model.SettingSound;
 import com.nh.controller.setting.SettingApplication;
+import com.nh.share.utils.SentryUtil;
 
 import javazoom.jl.player.Player;
 import javazoom.jl.player.advanced.AdvancedPlayer;
@@ -92,6 +93,7 @@ public class SoundUtil {
 		} catch (Exception ex) {
 			mLogger.error("Init Error " + ex.getMessage());
 			ex.printStackTrace();
+			SentryUtil.getInstance().sendExceptionLog(ex);
 		}
 	}
 
@@ -131,7 +133,14 @@ public class SoundUtil {
 				throw new NullPointerException("인증에 필요한 키값이 없습니다.");
 			}
 
-			TextToSpeechClient client = TextToSpeechClient.create(TextToSpeechSettings.newBuilder().setCredentialsProvider(FixedCredentialsProvider.create(ServiceAccountCredentials.newBuilder().setClientId(json.get("client_id").getAsString()).setClientEmail(json.get("client_email").getAsString()).setPrivateKey(privateKeyFromPkcs8(json.get("private_key").getAsString())).setPrivateKeyId(json.get("private_key_id").getAsString()).setTokenServerUri(new URI(json.get("token_uri").getAsString())).setProjectId(json.get("project_id").getAsString()).build())).build());
+			TextToSpeechClient client = TextToSpeechClient.create(TextToSpeechSettings.newBuilder()
+							.setCredentialsProvider(FixedCredentialsProvider.create(ServiceAccountCredentials.newBuilder()
+							.setClientId(json.get("client_id").getAsString())
+							.setClientEmail(json.get("client_email").getAsString())
+							.setPrivateKey(privateKeyFromPkcs8(json.get("private_key").getAsString()))
+							.setPrivateKeyId(json.get("private_key_id").getAsString())
+							.setTokenServerUri(new URI(json.get("token_uri").getAsString()))
+							.setProjectId(json.get("project_id").getAsString()).build())).build());
 
 			mTTSNowRunnable.setClient(client);
 			mTTSDefineRunnable.setClient(client);
@@ -139,7 +148,9 @@ public class SoundUtil {
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, googleServiceJson);
 		} catch (Exception ex) {
 			mLogger.error("initCertification Error " + ex.getMessage());
+			SentryUtil.getInstance().sendExceptionLog(ex);
 		}
+		
 	}
 
 	public PrivateKey privateKeyFromPkcs8(String privateKeyPkcs8) throws IOException {
@@ -175,6 +186,16 @@ public class SoundUtil {
 	public void soundSettingDataChanged() {
 		mTTSDefineRunnable.notifyDataChanged();
 	}
+	
+	/**
+	 * 설정 -> 재생속도 변경시 처리 함수
+	 *
+	 * @author hmju
+	 */
+	public void soundSettingSpeedChanged() {
+		mTTSDefineRunnable.notifySoundSpeedChanged();
+	}
+	
 
 	/**
 	 * 고정 문구 메시지 재생 처리 함수
@@ -333,6 +354,17 @@ public class SoundUtil {
 			mThreadService.submit(this);
 		}
 
+
+		/**
+		 * 데이터 갱신 처리 함수
+		 */
+		public void notifySoundSpeedChanged() {
+			mSoundSettingMap.forEach((key, data) -> {
+				data.setChanged();
+			});
+			mThreadService.submit(this);
+		}
+		
 		/**
 		 * 저장된 Player 인덱스에 맞게 재생 처리 함수
 		 *
@@ -350,6 +382,7 @@ public class SoundUtil {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					mLogger.error("Play Error " + ex.getMessage());
+					SentryUtil.getInstance().sendExceptionLog(ex);
 				}
 			});
 		}
@@ -375,6 +408,7 @@ public class SoundUtil {
 					}
 				} catch (Exception ex) {
 					mLogger.error(ex.getMessage());
+					SentryUtil.getInstance().sendExceptionLog(ex);
 				}
 			});
 		}
@@ -398,6 +432,7 @@ public class SoundUtil {
 				mThreadService.shutdownNow();
 			} catch (Exception ex) {
 				ex.printStackTrace();
+				SentryUtil.getInstance().sendExceptionLog(ex);
 			}
 		}
 
@@ -472,6 +507,7 @@ public class SoundUtil {
 				mThreadService.submit(this);
 			} catch (Exception ex) {
 				ex.printStackTrace();
+				SentryUtil.getInstance().sendExceptionLog(ex);
 			}
 		}
 
@@ -483,6 +519,7 @@ public class SoundUtil {
 				mThreadService.submit(this);
 			} catch (Exception ex) {
 				mLogger.debug("TTS Play Message Exception : " + ex);
+				SentryUtil.getInstance().sendExceptionLog(ex);
 			}
 		}
 
@@ -499,6 +536,7 @@ public class SoundUtil {
 								mPlayer.play();
 							} catch (Exception ex) {
 								mLogger.error("NowPlayer Error " + ex.getMessage());
+								SentryUtil.getInstance().sendExceptionLog(ex);
 							}
 
 						});
@@ -509,6 +547,7 @@ public class SoundUtil {
 				if (mPlayBackListener != null) {
 					mPlayBackListener.playbackFinished(null);
 				}
+				SentryUtil.getInstance().sendExceptionLog(ex);
 			}
 		}
 
@@ -535,6 +574,7 @@ public class SoundUtil {
 				mThreadService.shutdownNow();
 			} catch (Exception ex) {
 				ex.printStackTrace();
+				SentryUtil.getInstance().sendExceptionLog(ex);
 			}
 		}
 

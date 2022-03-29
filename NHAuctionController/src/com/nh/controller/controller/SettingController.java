@@ -261,7 +261,7 @@ public class SettingController implements Initializable {
 	/**
 	 * TextFields Preference에 저장
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setTextFields() {
 		// 전광판 설정 IP, PORT
@@ -364,7 +364,7 @@ public class SettingController implements Initializable {
 	/**
 	 * TextFields Preference에서 가져오기
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void getTextFields() {
 		
@@ -426,17 +426,18 @@ public class SettingController implements Initializable {
 	/**
 	 * 음성재생속도, 비고 창 value setting
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setAnnounceNoteCheckboxPreference() {
 		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, (mUseSoundRateCheckBox.isSelected()));
 		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, (mUseNoteCheckBox.isSelected()));
+		SoundUtil.getInstance().soundSettingSpeedChanged();
 	}
 
 	/**
 	 * 음성재생속도, 비고 창 value 가져오기
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void getAnnounceNoteCheckboxPreference() {
 		boolean isSoundRate = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, false);
@@ -529,7 +530,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 카운트 설정 Preference에 저장
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setCountTextField() {
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, mCountTextField.getText().trim());
@@ -538,7 +539,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 카운트 설정 가져오기
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void getCountTextField() {
 		String second = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5");
@@ -548,7 +549,7 @@ public class SettingController implements Initializable {
 	/**
 	 * toggle group setting
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setToggleGroups() {
 
@@ -575,7 +576,7 @@ public class SettingController implements Initializable {
 	/**
 	 * toggle type Preference에 저장
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setToggleTypes() {
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, auctionToggleType);
@@ -584,7 +585,7 @@ public class SettingController implements Initializable {
 	/**
 	 * toggle type Preference에서 가져오기
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void getToggleTypes() {
 		
@@ -601,7 +602,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 모바일 노출설정 checkbox init
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setMobileCheckBoxLists() {
 		mobileCheckBoxList = new ArrayList<>(Arrays.asList(mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox, mMotherCheckBox, mPassageCheckBox, mMaTimeCheckBox, mKpnCheckBox, mRegionCheckBox, mNoteCheckBox, mLowPriceCheckBox, mDNACheckBox));
@@ -620,7 +621,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 모바일 노출설정 checkBox Setting
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void handleMobileCheckBox(CheckBox checkBox) {
 		if (checkBox.isSelected()) {
@@ -636,7 +637,7 @@ public class SettingController implements Initializable {
 	 * 모바일 노출설정 Preference에 저장
 	 *
 	 * @param mobileCheckBoxSelectedList 선택된 모바일 노출설정
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setMobileCheckboxPreference(ArrayList<CheckBox> mobileCheckBoxSelectedList) {
 		for (String key : SHARED_MOBILE_ARRAY) { // 모바일 노출설정 Preference 초기화
@@ -665,7 +666,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 모바일 노출설정 Preference에서 가져오기 + Default값 셋팅
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void getAllMobileCheckboxPreference() {
 		Map<String, String> tempMap = new HashMap<>();
@@ -704,7 +705,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 모바일 노출설정 Default값 셋팅 TODO: param 추가
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setMobileCheckBoxDefaultValue() {
 		mobileCheckBoxSelectedList = new ArrayList<>(Arrays.asList(mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox));
@@ -958,7 +959,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 설정 Preference에 저장
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void saveSettings() {
 		
@@ -1111,7 +1112,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 최종 검사
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private boolean isValid() {
 	

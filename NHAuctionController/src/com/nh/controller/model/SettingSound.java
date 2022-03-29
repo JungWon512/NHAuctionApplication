@@ -19,6 +19,10 @@ public class SettingSound {
         this.msg = msg;
     }
 
+    public void setChanged() {
+        isChanged = true;
+    }
+
     public String getMessage() {
         return this.msg;
     }

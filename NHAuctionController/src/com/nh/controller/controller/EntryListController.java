@@ -558,11 +558,11 @@ public class EntryListController implements Initializable {
 			if (!CommonUtils.getInstance().isListEmpty(entryInfoDataList)) {
 				
 				Gson gson = new Gson();
-				String jonDataList = gson.toJson(entryInfoDataList);
+				String jsonDataList = gson.toJson(entryInfoDataList);
 				
-				mLogger.debug("[가격변경]=> " + jonDataList);
+				mLogger.debug("[가격변경]=> " + jsonDataList);
 				
-				RequestUpdateLowsBidAmtBody body = new RequestUpdateLowsBidAmtBody(jonDataList);
+				RequestUpdateLowsBidAmtBody body = new RequestUpdateLowsBidAmtBody(jsonDataList);
 				
 				ApiUtils.getInstance().requestUpdateLowsBidAmt(body, new ActionResultListener<ResponseNumber>() {
 	
