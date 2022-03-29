@@ -431,6 +431,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			SentryUtil.getInstance().sendExceptionLog(e);
 			mLogger.debug("[onAuctionStatus Send Udp Server Exception] " + e);
 		}
 

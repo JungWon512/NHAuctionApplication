@@ -356,6 +356,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		} catch (Exception e) {
 			mLogger.debug("[UDP 전광판 Exception] : " + e);
+			SentryUtil.getInstance().sendExceptionLog(e);
 		}
 	}
 
@@ -1966,6 +1967,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		} catch (Exception e) {
 			mLogger.debug("[onAuctionStatus Send Udp Server Exception] " + e);
+			SentryUtil.getInstance().sendExceptionLog(e);
 		}
 
 	}
@@ -2233,6 +2235,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 			} catch (Exception e) {
 				mLogger.debug("[onBidding Exception] : " + e.toString());
+				SentryUtil.getInstance().sendExceptionLog(e);
 			}
 		});
 	}
@@ -2606,6 +2609,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					futurePrice.complete(isComplete);
 				} catch (Exception e) {
 					futurePrice.completeExceptionally(e);
+					SentryUtil.getInstance().sendExceptionLog(e);
 				}
 			}
 		};
@@ -2628,10 +2632,13 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		} catch (InterruptedException e) { // handle e
 			mLogger.debug("[onBidderConnectInfo] " + e);
+			SentryUtil.getInstance().sendExceptionLog(e);
 		} catch (ExecutionException e) { // handle e
 			mLogger.debug("[onBidderConnectInfo] " + e);
+			SentryUtil.getInstance().sendExceptionLog(e);
 		} catch (TimeoutException e) { // handle e }
 			mLogger.debug("[onBidderConnectInfo] " + e);
+			SentryUtil.getInstance().sendExceptionLog(e);
 		}
 	}
 
