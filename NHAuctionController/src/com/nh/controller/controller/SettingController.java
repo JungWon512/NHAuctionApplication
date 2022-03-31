@@ -31,6 +31,7 @@ import com.nh.controller.utils.SoundUtil;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -97,7 +98,7 @@ public class SettingController implements Initializable {
 	
 	// 경매종료멘트, 비고 창 설정
 	@FXML
-	private CheckBox mUseSoundRateCheckBox, mUseNoteCheckBox;
+	private CheckBox mUseNoteCheckBox;
 	// 카운트 (1-9초)
 	@FXML
 	private TextField mCountTextField;
@@ -122,6 +123,9 @@ public class SettingController implements Initializable {
 	
 	@FXML
 	private TextArea mSoundValTextArea;
+	
+	@FXML
+	private TextField mSoundRateTextField;
 
 	private final static String[] SHARED_MOBILE_ARRAY = new String[] { SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT,
 			SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, SharedPreference.PREFERENCE_SETTING_MOBILE_REGION,
@@ -224,7 +228,7 @@ public class SettingController implements Initializable {
 	private void setNumberFmt() {
 		
 
-		UnaryOperator<Change> integerFilter = change -> {
+		UnaryOperator<Change> integerFilterType_1 = change -> {
 		    String newText = change.getControlNewText();
 		    if (newText.matches("-?([1-9][0-9]*)?")) { 
 		        return change;
@@ -233,17 +237,24 @@ public class SettingController implements Initializable {
 		};
 		
 		
-		mReAuctionCountTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
-		mCountTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
-		mSoundAuctionWaitTime.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
-		mUpperLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
-		mUpperLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
-		mUpperLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
-		mLowerLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
-		mLowerLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
-		mLowerLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
-		mLowerLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
+		UnaryOperator<Change> integerFilterType_2 = change -> {
+		    String newText = change.getControlNewText();
+		    if (newText.matches("-?([0-9]*)?")) { 
+		        return change;
+		    }
+		    return null;
+		};
 		
+		mReAuctionCountTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mCountTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mSoundAuctionWaitTime.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mUpperLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mUpperLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mUpperLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mLowerLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mLowerLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mLowerLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mSoundRateTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_2));
 		
 	}
 
@@ -261,7 +272,7 @@ public class SettingController implements Initializable {
 	/**
 	 * TextFields Preference에 저장
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setTextFields() {
 		// 전광판 설정 IP, PORT
@@ -364,7 +375,7 @@ public class SettingController implements Initializable {
 	/**
 	 * TextFields Preference에서 가져오기
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void getTextFields() {
 		
@@ -417,31 +428,51 @@ public class SettingController implements Initializable {
 		mReAuctionCountTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, SettingApplication.getInstance().DEFAULT_SETTING_RE_AUCTION_COUNT));
 		// 대기시간
 		mSoundAuctionWaitTime.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME));
-
 		//음성 설정 파일
 		mSoundValTextArea.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_CONFIG));
+		//음성재생속도
+		mSoundRateTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE));
+
 	
 	}
 
 	/**
 	 * 음성재생속도, 비고 창 value setting
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setAnnounceNoteCheckboxPreference() {
-		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, (mUseSoundRateCheckBox.isSelected()));
+
+		// 기존 저장값
+		String savedSoundRate = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
+
+		if(CommonUtils.getInstance().isValidString(mSoundRateTextField.getText())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, mSoundRateTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, "0");
+		}
+
+		//현재 설정값
+		String currentSoundRate = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
+
+		//기존과 현재 설정값이 다르면 음성 설정 문구 재반영
+		if(!savedSoundRate.equals(currentSoundRate)) {
+			mLogger.debug("[재생 속도 값이 변경됐습니다.음성 설정 속도를 반영합니다.]");
+			SoundUtil.getInstance().soundSettingSpeedChanged();
+		}
+
+		//비고 사용 여부
 		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, (mUseNoteCheckBox.isSelected()));
+
 	}
 
 	/**
 	 * 음성재생속도, 비고 창 value 가져오기
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void getAnnounceNoteCheckboxPreference() {
-		boolean isSoundRate = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, false);
 		boolean isNote = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, true);
-		mUseSoundRateCheckBox.setSelected(isSoundRate);
 		mUseNoteCheckBox.setSelected(isNote);
 	}
 	
@@ -529,7 +560,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 카운트 설정 Preference에 저장
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setCountTextField() {
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, mCountTextField.getText().trim());
@@ -538,7 +569,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 카운트 설정 가져오기
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void getCountTextField() {
 		String second = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, "5");
@@ -548,7 +579,7 @@ public class SettingController implements Initializable {
 	/**
 	 * toggle group setting
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setToggleGroups() {
 
@@ -575,7 +606,7 @@ public class SettingController implements Initializable {
 	/**
 	 * toggle type Preference에 저장
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setToggleTypes() {
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, auctionToggleType);
@@ -584,7 +615,7 @@ public class SettingController implements Initializable {
 	/**
 	 * toggle type Preference에서 가져오기
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void getToggleTypes() {
 		
@@ -601,7 +632,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 모바일 노출설정 checkbox init
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setMobileCheckBoxLists() {
 		mobileCheckBoxList = new ArrayList<>(Arrays.asList(mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox, mMotherCheckBox, mPassageCheckBox, mMaTimeCheckBox, mKpnCheckBox, mRegionCheckBox, mNoteCheckBox, mLowPriceCheckBox, mDNACheckBox));
@@ -620,7 +651,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 모바일 노출설정 checkBox Setting
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void handleMobileCheckBox(CheckBox checkBox) {
 		if (checkBox.isSelected()) {
@@ -636,7 +667,7 @@ public class SettingController implements Initializable {
 	 * 모바일 노출설정 Preference에 저장
 	 *
 	 * @param mobileCheckBoxSelectedList 선택된 모바일 노출설정
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setMobileCheckboxPreference(ArrayList<CheckBox> mobileCheckBoxSelectedList) {
 		for (String key : SHARED_MOBILE_ARRAY) { // 모바일 노출설정 Preference 초기화
@@ -665,7 +696,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 모바일 노출설정 Preference에서 가져오기 + Default값 셋팅
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void getAllMobileCheckboxPreference() {
 		Map<String, String> tempMap = new HashMap<>();
@@ -704,7 +735,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 모바일 노출설정 Default값 셋팅 TODO: param 추가
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void setMobileCheckBoxDefaultValue() {
 		mobileCheckBoxSelectedList = new ArrayList<>(Arrays.asList(mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox));
@@ -775,34 +806,52 @@ public class SettingController implements Initializable {
 	 */
 	private void addTextFieldListener() {
 	
-		
+		//재경매 횟수
 		mReAuctionCountTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_RE_AUCTION_COUNT_MAX;
+			
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
-
-				if (mReAuctionCountTextField.getText().length() > 1) {
-
-					String str = mReAuctionCountTextField.getText().substring(0, 1);
-
-					if (Integer.parseInt(str) > 0) {
-						mReAuctionCountTextField.setText(str);
-					} else {
-						// default Value
-						mReAuctionCountTextField.setText("1");
+				
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+					
+					String tmpStr = "";
+					
+					if(newValue.length() == 2){
+						tmpStr = newValue.substring(1);
+					}else {
+						tmpStr = newValue;
 					}
-
+		
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else 	if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_RE_AUCTION_COUNT;
+					}
+						
+					mReAuctionCountTextField.setText(tmpStr);		
 				}
 			}
 		});
-		
+	
+		//경매 종료 카운트
 		mCountTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_COUNTDOWN_MAX;
+			
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
 
 				if (CommonUtils.getInstance().isValidString(newValue)) {
 				
-					String tmpStr = newValue;
-					String max = SettingApplication.getInstance().DEFAULT_SETTING_COUNTDOWN_MAX;
+					String tmpStr = "";
+					
+					if(newValue.length() == 2){
+						tmpStr = newValue.substring(1);
+					}else {
+						tmpStr = newValue;
+					}
 		
 					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
 						tmpStr  = max;
@@ -816,15 +865,17 @@ public class SettingController implements Initializable {
 			}
 		});
 
+		//경매 종료 타이머 대기시간
 		mSoundAuctionWaitTime.textProperty().addListener(new ChangeListener<String>() {
+			
+			final 	String max = SettingApplication.getInstance().DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME_MAX;
+			
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
 				
 				if (CommonUtils.getInstance().isValidString(newValue)) {
 					
 					String tmpStr = newValue;
-					String max = SettingApplication.getInstance().DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME_MAX;
-					
 					
 					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
 						tmpStr  = max;
@@ -836,15 +887,18 @@ public class SettingController implements Initializable {
 			}
 		});
 		
+		//송아지 응찰 상한가
 		mUpperLimitCalfTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX;
+			
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
 				
 				if (CommonUtils.getInstance().isValidString(newValue)) {
 					
 					String tmpStr = newValue;
-					String max = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX;
-
+					
 					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
 						tmpStr  = max;
 					}else if(Integer.parseInt(tmpStr) <= 0) {
@@ -854,15 +908,17 @@ public class SettingController implements Initializable {
 				}
 			}
 		});
-		
+		//비육우 응찰 상한가
 		mUpperLimitFatteningCattleTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX;
+			
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
 				
 				if (CommonUtils.getInstance().isValidString(newValue)) {
 					
 					String tmpStr = newValue;
-					String max = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX;
 
 					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
 						tmpStr  = max;
@@ -874,15 +930,18 @@ public class SettingController implements Initializable {
 			}
 		});
 		
+		//번식우 응찰 상한가
 		mUpperLimitBreedingCattleTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX;
+			
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
 				
 				if (CommonUtils.getInstance().isValidString(newValue)) {
 					
 					String tmpStr = newValue;
-					String max = SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CFB_MAX;
-
+					
 					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
 						tmpStr  = max;
 					}else if(Integer.parseInt(tmpStr) <= 0) {
@@ -893,16 +952,18 @@ public class SettingController implements Initializable {
 			}
 		});
 	
-		
+		//송아지 가격 낮춤가
 		mLowerLimitCalfTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
+			
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
 				
 				if (CommonUtils.getInstance().isValidString(newValue)) {
 					
 					String tmpStr = newValue;
-					String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
-
+					
 					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
 						tmpStr  = max;
 					}else if(Integer.parseInt(tmpStr) <= 0) {
@@ -913,14 +974,17 @@ public class SettingController implements Initializable {
 			}
 		});
 		
+		// 비육우 가격 낮춤가
 		mLowerLimitFatteningCattleTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final 	String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
+			
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
 				
 				if (CommonUtils.getInstance().isValidString(newValue)) {
 					
 					String tmpStr = newValue;
-					String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
 
 					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
 						tmpStr  = max;
@@ -932,14 +996,17 @@ public class SettingController implements Initializable {
 			}
 		});
 		
+		//번식우 가격 낮춤가
 		mLowerLimitBreedingCattleTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
+			
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
 				
 				if (CommonUtils.getInstance().isValidString(newValue)) {
 					
 					String tmpStr = newValue;
-					String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
 
 					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
 						tmpStr  = max;
@@ -951,14 +1018,42 @@ public class SettingController implements Initializable {
 			}
 		});
 		
+		//음성 재생 속도
+		mSoundRateTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE_MAX;
+			
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+
+					String tmpStr = "";
+					
+					if(newValue.length() == 2){
+						tmpStr = newValue.substring(1);
+					}else {
+						tmpStr = newValue;
+					}
+					
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else 	if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE;
+					}
+						
+					mSoundRateTextField.setText(tmpStr);		
+				}
+			}
+		});
 		
-		
+
 	}
 
 	/**
 	 * 설정 Preference에 저장
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private void saveSettings() {
 		
@@ -1111,7 +1206,7 @@ public class SettingController implements Initializable {
 	/**
 	 * 최종 검사
 	 *
-	 * @author dhKim
+	 * @author jhlee
 	 */
 	private boolean isValid() {
 	

@@ -2310,11 +2310,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				entryInfoList.add(entryInfo);
 	
 				Gson gson = new Gson();
-				String jonData = gson.toJson(entryInfoList);
+				String jsonData = gson.toJson(entryInfoList);
 				
-				mLogger.debug("[가격변경]=> " + jonData );
+				mLogger.debug("[가격변경]=> " + jsonData );
 	
-				RequestUpdateLowsBidAmtBody body = new RequestUpdateLowsBidAmtBody(jonData);
+				RequestUpdateLowsBidAmtBody body = new RequestUpdateLowsBidAmtBody(jsonData);
 	
 				ApiUtils.getInstance().requestUpdateLowsBidAmt(body, new ActionResultListener<ResponseNumber>() {
 	

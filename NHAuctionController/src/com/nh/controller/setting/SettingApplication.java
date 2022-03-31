@@ -97,6 +97,8 @@ public class SettingApplication {
 	public final String DEFAULT_SETTING_COUNTDOWN_MAX = "9";
 	// 동가 재경매 횟수
 	public final String DEFAULT_SETTING_RE_AUCTION_COUNT = "2";
+	// 동가 재경매 횟수
+	public final String DEFAULT_SETTING_RE_AUCTION_COUNT_MAX = "9";
 	// 동가 재경매 기본값
 	public final boolean DEFAULT_SETTING_RE_AUCTION_CHECK = true;
 	// 하나씩 진행 기본값
@@ -121,6 +123,11 @@ public class SettingApplication {
 	public final String DEFAULT_SETTING_MOBILE_PASSAGE= "Y";
 	public final String DEFAULT_SETTING_MOBILE_DNA="N";
 	public final String DEFAULT_SETTING_SOUND_CONFIG="";
+	
+	//음성 재생 속도
+	public final String DEFAULT_SETTING_SOUND_RATE = "0";
+	//음성 재생 속도 최대값
+	public final String DEFAULT_SETTING_SOUND_RATE_MAX = "5";
 
 	//경매 타입
 	public final String DEFAULT_SETTING_AUCTION_TOGGLE_TYPE =  AuctionToggle.SINGLE.toString();
@@ -308,6 +315,8 @@ public class SettingApplication {
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, DEFAULT_SETTING_SOUND_CONFIG);
 			//아이디
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_LOGIN_SAVE_ID, "");
+			//음성 재생 속도 기본값
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, DEFAULT_SETTING_SOUND_RATE);
 			
 		} else {
 			mLogger.debug("설치 후 첫 실행 아님.");
@@ -647,10 +656,9 @@ public class SettingApplication {
 	 * 음성 재생 속도
 	 * @return
 	 */
-	public boolean isSoundRate() {
-		boolean isSoundRate = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, false);
-		return isSoundRate;
+	public int getSoundRate() {
+		String savedSoundRate  = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, DEFAULT_SETTING_SOUND_RATE);
+		return Integer.parseInt(savedSoundRate);
 	}
-	
 	
 }

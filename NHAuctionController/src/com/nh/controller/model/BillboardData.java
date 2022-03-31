@@ -31,7 +31,7 @@ public class BillboardData implements NettySendable {
                     .filter(lineage -> (lineage.code.equals(code)))
                     .map(lineage -> lineage.description)
                     .findAny()
-                    .orElse(BASE.description);
+                    .orElse("");
         }
     }
 
