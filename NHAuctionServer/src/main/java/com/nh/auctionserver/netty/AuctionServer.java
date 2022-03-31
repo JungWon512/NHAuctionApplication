@@ -1276,13 +1276,15 @@ public class AuctionServer {
 			
 			@Override
 			public void run() {
+				String closeJoinMember = requestLogout.getUserJoinNum();
+				String closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + requestLogout.getUserJoinNum();
+				
 				if (requestLogout.getConnectType().equals(GlobalDefineCode.USE_CHANNEL_WEB)) {
 					UUID channelId = null;
-					String closeMember = requestLogout.getUserJoinNum();
 					
 					for (Object key : mConnectorInfoMap.keySet()) {
 						try {
-							if (mConnectorInfoMap.get(key).getAuctionJoinNum() != null && mConnectorInfoMap.get(key).getAuctionJoinNum().equals(closeMember)) {
+							if (mConnectorInfoMap.get(key).getUserMemNum() != null && (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember))) {
 								channelId = (UUID) key;
 								break;
 							}
@@ -1312,14 +1314,14 @@ public class AuctionServer {
 
 						mConnectorInfoMap.remove(channelId);
 
-						if (mConnectorChannelInfoMap.containsKey(closeMember)) {
-							mConnectorChannelInfoMap.remove(closeMember);
+						if (mConnectorChannelInfoMap.containsKey(closeMemberChannelKey)) {
+							mConnectorChannelInfoMap.remove(closeMemberChannelKey);
 						}
 
 						mSocketIOHandler.unRegisterConnectChannelGroup(channelId);
 						
 						if (!mConnectorInfoMap.containsKey(channelId)) {
-							mLogger.info("정상적으로 " + closeMember + "회원 정보가 Close 처리되었습니다.");
+							mLogger.info("정상적으로 " + closeJoinMember + "회원 정보가 Close 처리되었습니다.");
 						}
 
 						mLogger.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());
@@ -1334,39 +1336,38 @@ public class AuctionServer {
 					}
 				} else {
 					ChannelId channelId = null;
-					String closeMember = requestLogout.getUserJoinNum();
 					
-					if (isWeb) {
-						for (Object key : mConnectorInfoMap.keySet()) {
-							try {
-								if (mConnectorInfoMap.get(key).getAuctionJoinNum() != null && mConnectorInfoMap.get(key).getAuctionJoinNum().equals(closeMember)) {
-									closeMember = mConnectorInfoMap.get(key).getUserMemNum();
-									channelId = (ChannelId) key;
-									break;
-								}
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					}
+//					if (isWeb) {
+//						for (Object key : mConnectorInfoMap.keySet()) {
+//							try {
+//								if (mConnectorInfoMap.get(key).getUserMemNum() != null && (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember))) {
+//									closeJoinMember = mConnectorInfoMap.get(key).getUserMemNum();
+//									channelId = (ChannelId) key;
+//									break;
+//								}
+//							} catch (Exception e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//						}
+//					}
 					
 					for (Object key : mConnectorInfoMap.keySet()) {
 						try {
 							if(mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
-								if((mConnectorInfoMap.get(key).getAuctionHouseCode() + "_" + mConnectorInfoMap.get(key).getUserMemNum()).equals(closeMember)) {
+								if(mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember)) {
 									channelId = (ChannelId) key;
 									break;
 								}
 							} else {
 								if (GlobalDefineCode.FLAG_TEST_MODE) {
-									if (mConnectorInfoMap.get(key).getUserMemNum().equals(closeMember)) {
+									if (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && mConnectorInfoMap.get(key).getUserMemNum().equals(closeJoinMember)) {
 										channelId = (ChannelId) key;
 										break;
 									}
 								} else {
-									if (JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken())
-											.equals(closeMember)) {
+									if (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken())
+											.equals(closeJoinMember)) {
 										channelId = (ChannelId) key;
 										break;
 									}
@@ -1400,8 +1401,8 @@ public class AuctionServer {
 
 						mConnectorInfoMap.remove(channelId);
 
-						if (mConnectorChannelInfoMap.containsKey(closeMember)) {
-							mConnectorChannelInfoMap.remove(closeMember);
+						if (mConnectorChannelInfoMap.containsKey(closeMemberChannelKey)) {
+							mConnectorChannelInfoMap.remove(closeMemberChannelKey);
 						}
 
 						if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
@@ -1456,7 +1457,7 @@ public class AuctionServer {
 						}
 
 						if (!mConnectorInfoMap.containsKey(channelId)) {
-							mLogger.info("정상적으로 " + closeMember + "회원 정보가 Close 처리되었습니다.");
+							mLogger.info("정상적으로 " + closeJoinMember + "회원 정보가 Close 처리되었습니다.");
 						}
 
 						mLogger.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());

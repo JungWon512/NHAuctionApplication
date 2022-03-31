@@ -69,9 +69,9 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 		String userMemNum = null;
 
 		if(GlobalDefineCode.FLAG_TEST_MODE) {
-			userMemNum = connectionInfo.getUserMemNum();
+			userMemNum = connectionInfo.getAuctionHouseCode() + "_" + connectionInfo.getUserMemNum();
 		} else {
-			userMemNum = JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken());
+			userMemNum = connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken());
 		}
 		
 		
@@ -85,6 +85,10 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 		// 같은 접속채널로 동일 접속 정보 전달 시 중복 접속으로 간주
 		// 같은 회원번호로 접속 시도 시 중복 접속으로 간주
 		if (userMemNum != null) {
+			mLogger.info("mConnectionInfoMap.containsKey(ctx.channel().id()) : " + mConnectionInfoMap.containsKey(ctx.channel().id()));
+			mLogger.info("mConnectionInfoMap.containsValue(connectionInfo) : " + mConnectionInfoMap.containsValue(connectionInfo));
+			mLogger.info("mConnectionChannelInfoMap.containsKey(userMemNum) : " + mConnectionChannelInfoMap.containsKey(userMemNum));
+			
 			if (!mConnectionInfoMap.containsKey(ctx.channel().id()) && !mConnectionInfoMap.containsValue(connectionInfo)
 					&& !mConnectionChannelInfoMap.containsKey(userMemNum)) {
 				if (connectionInfo.getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
@@ -104,7 +108,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 										connectionInfo.getUserMemNum(), ctx);
 							} else {
 								mConnectionChannelInfoMap.put(
-										JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
+										connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
 										ctx);
 							}
 						}
@@ -157,7 +161,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 								// Connector Channel Map 등록
 								mConnectionChannelInfoMap.put(
-										JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
+										connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
 										ctx);
 							}
 
@@ -262,7 +266,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 //
 //									// Connector Channel Map 등록
 //									mConnectionChannelInfoMap.put(
-//											JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
+//											connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
 //											ctx);
 //								}
 //
@@ -363,7 +367,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 							mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
 
 							// Connector Channel Map 등록
-							mConnectionChannelInfoMap.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+							mConnectionChannelInfoMap.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
 						}
 
 						// 제어 프로그램 채널 등록 처리
@@ -447,7 +451,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 						// Connector Channel Map 등록
 						mConnectionChannelInfoMap
-								.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+								.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
 					}
 
 					// 경매 관전 채널 등록 처리
@@ -505,7 +509,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 						// Connector Channel Map 등록
 						mConnectionChannelInfoMap
-								.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+								.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
 					}
 
 					// 낙,유찰 모니터링 채널 등록 처리
@@ -529,7 +533,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 						// Connector Channel Map 등록
 						mConnectionChannelInfoMap
-								.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+								.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
 					}
 
 					// 접속자 모니터링 채널 등록 처리
@@ -574,7 +578,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 							// Connector Channel Map 등록
 							mConnectionChannelInfoMap
-									.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+									.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
 						}
 
 						// 경매 출하 안내 시스템 채널 등록 처리
@@ -668,7 +672,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 						// Connector Channel Map 등록
 						mConnectionChannelInfoMap
-								.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+								.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
 					}
 
 					// 경매 관전 채널 등록 처리
@@ -716,7 +720,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 						// Connector Channel Map 등록
 						mConnectionChannelInfoMap
-								.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+								.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
 					}
 
 					// 낙,유찰 모니터링 채널 등록 처리
@@ -740,7 +744,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 						// Connector Channel Map 등록
 						mConnectionChannelInfoMap
-								.put(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+								.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
 					}
 
 					// 접속자 모니터링 채널 등록 처리
@@ -795,7 +799,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 
 		if (mConnectionInfoMap.containsKey(ctx.channel().id())) {
 			if(mConnectionInfoMap.get(ctx.channel().id()).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
-				closeMember = mConnectionInfoMap.get(ctx.channel().id()).getAuctionHouseCode() + "_" + mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
+				closeMember = mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
 			} else {
 				if (GlobalDefineCode.FLAG_TEST_MODE) {
 					closeMember = mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();

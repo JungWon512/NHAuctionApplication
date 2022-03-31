@@ -190,12 +190,20 @@ public class IntroController implements Initializable {
 							
 						}else {
 							//api success false
-							CommonUtils.getInstance().showAlertPopupOneButton(mStage,result.getMessage(), mResMsg.getString("popup.btn.close"));	
+							Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupOneButton(mStage,result.getMessage(), mResMsg.getString("popup.btn.close"));
+							
+							if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+								CommonUtils.getInstance().applicationExit();
+							}
 						}
 						
 					}else {
 						//api object null 
-						CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.api.response.fail"), mResMsg.getString("popup.btn.close"));	
+						Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.api.response.fail"), mResMsg.getString("popup.btn.close"));
+						
+						if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+							CommonUtils.getInstance().applicationExit();
+						}
 					}
 
 					}catch (Exception e) {
@@ -209,7 +217,13 @@ public class IntroController implements Initializable {
 			@Override
 			public void onResponseError(String message) {
 				mLogger.debug("버전체크 api error msg " + message);
-				Platform.runLater(()-> CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.api.response.fail"), mResMsg.getString("popup.btn.close")));
+				Platform.runLater(()-> {
+					Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupOneButton(mStage, mResMsg.getString("str.api.response.fail"), mResMsg.getString("popup.btn.close"));
+					
+					if (btnResult.get().getButtonData() == ButtonData.LEFT) {
+						CommonUtils.getInstance().applicationExit();
+					}
+			    }); 
 			}
 		});
 	}

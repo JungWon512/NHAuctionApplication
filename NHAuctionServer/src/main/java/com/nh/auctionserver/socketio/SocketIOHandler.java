@@ -275,8 +275,8 @@ public class SocketIOHandler {
 						
 						try {
 							// 이미 접속한 사용자 있을 경우 먼저 로그인 된 사용자를 접속 해제 처리하고 후에 로그인 한 사용자를 등록 처리
-							if (mConnectorChannelInfoMap.containsKey(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()))) {
-								Object clientObject = mConnectorChannelInfoMap.get(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()));
+							if (mConnectorChannelInfoMap.containsKey(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()))) {
+								Object clientObject = mConnectorChannelInfoMap.get(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()));
 								if (clientObject instanceof SocketIOClient) {
 									SocketIOClient disconnectClient = (SocketIOClient) clientObject;
 									
@@ -290,7 +290,7 @@ public class SocketIOHandler {
 										}
 									}
 									
-									mConnectorChannelInfoMap.remove(JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()));
+									mConnectorChannelInfoMap.remove(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()));
 									
 									disconnectClient.disconnect();
 									
@@ -307,7 +307,7 @@ public class SocketIOHandler {
 
 											// Connector Channel Map 등록
 											try {
-												mConnectorChannelInfoMap.put(
+												mConnectorChannelInfoMap.put(connectionInfo.getAuctionHouseCode() + "_" + 
 														JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
 														client);
 											} catch (Exception e) {
@@ -359,7 +359,7 @@ public class SocketIOHandler {
 
 						// Connector Channel Map 등록
 						try {
-							mConnectorChannelInfoMap.put(
+							mConnectorChannelInfoMap.put(connectionInfo.getAuctionHouseCode() + "_" + 
 									JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()),
 									client);
 						} catch (Exception e) {
@@ -667,7 +667,7 @@ public class SocketIOHandler {
 
 		if (mConnectorInfoMap.containsKey(client.getSessionId())) {
 			try {
-				closeMember = JwtCertTokenUtils.getInstance()
+				closeMember = mConnectorInfoMap.get(client.getSessionId()).getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance()
 						.getUserMemNum(mConnectorInfoMap.get(client.getSessionId()).getAuthToken());
 
 				// 사용자 접속 해제 상테 전송
@@ -789,7 +789,7 @@ public class SocketIOHandler {
 
 		if (mConnectorInfoMap.containsKey(client)) {
 			try {
-				closeMember = JwtCertTokenUtils.getInstance()
+				closeMember = mConnectorInfoMap.get(client).getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance()
 						.getUserMemNum(mConnectorInfoMap.get(client).getAuthToken());
 
 				// 사용자 접속 해제 상테 전송
@@ -1811,7 +1811,7 @@ public class SocketIOHandler {
 				}
 			} else if (parseObject instanceof RequestBiddingInfo) {
 				if (mConnectorInfoMap.containsKey(client.getSessionId())
-						&& mConnectorChannelInfoMap.containsKey(((RequestBiddingInfo) parseObject).getUserNo())
+						&& mConnectorChannelInfoMap.containsKey(((RequestBiddingInfo) parseObject).getAuctionHouseCode() + "_" + ((RequestBiddingInfo) parseObject).getUserNo())
 						&& mBidderChannelClientMap.get(((RequestBiddingInfo) parseObject).getAuctionHouseCode())
 								.containsKey(client.getSessionId())) {
 					// 응찰 정보 조회 요청

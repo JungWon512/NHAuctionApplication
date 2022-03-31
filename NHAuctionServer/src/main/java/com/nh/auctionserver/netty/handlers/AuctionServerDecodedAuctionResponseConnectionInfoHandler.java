@@ -64,12 +64,12 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 	protected void channelRead0(ChannelHandlerContext ctx, ResponseConnectionInfo responseConnectionInfo)
 			throws Exception {
 		mLogger.info("AuctionServerDecodedAuctionResponseConnectionInfoHandler channelRead0 : " +  responseConnectionInfo.getEncodedMessage());
-		if (mConnectionChannelInfoMap.containsKey(responseConnectionInfo.getUserMemNum())) {
+		if (mConnectionChannelInfoMap.containsKey(responseConnectionInfo.getAuctionHouseCode() + "_" + responseConnectionInfo.getUserMemNum())) {
 			if (mConnectionChannelInfoMap
-					.get(responseConnectionInfo.getUserMemNum()) instanceof ChannelHandlerContext) {
+					.get(responseConnectionInfo.getAuctionHouseCode() + "_" + responseConnectionInfo.getUserMemNum()) instanceof ChannelHandlerContext) {
 				
 				ChannelHandlerContext clientChannelContext = (ChannelHandlerContext) mConnectionChannelInfoMap
-						.get(responseConnectionInfo.getUserMemNum());
+						.get(responseConnectionInfo.getAuctionHouseCode() + "_" + responseConnectionInfo.getUserMemNum());
 
 				if (responseConnectionInfo.getResult().equals(GlobalDefineCode.CONNECT_SUCCESS)) {
 					// 접속 처리 결과 응답 처리
@@ -162,10 +162,10 @@ public class AuctionServerDecodedAuctionResponseConnectionInfoHandler
 				}
 				
 			} else if (mConnectionChannelInfoMap
-					.get(responseConnectionInfo.getUserMemNum()) instanceof SocketIOClient) {
+					.get(responseConnectionInfo.getAuctionHouseCode() + "_" + responseConnectionInfo.getUserMemNum()) instanceof SocketIOClient) {
 				
 				SocketIOClient socketIOClient = (SocketIOClient) mConnectionChannelInfoMap
-						.get(responseConnectionInfo.getUserMemNum());
+						.get(responseConnectionInfo.getAuctionHouseCode() + "_" + responseConnectionInfo.getUserMemNum());
 
 				mAuctionServer.responseWebSocketConnection(socketIOClient, mConnectionInfoMap.get(socketIOClient.getSessionId()), responseConnectionInfo);
 			}
