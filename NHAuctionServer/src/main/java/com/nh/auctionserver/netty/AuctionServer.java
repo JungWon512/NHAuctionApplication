@@ -1348,7 +1348,7 @@ public class AuctionServer {
 							mLogger.info("JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken()) : " + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken()));
 							mLogger.info("closeJoinMember : " + closeJoinMember);
 
-							if(mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
+							if(!mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 								if(mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember)) {
 									closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
 									channelId = (ChannelId) key;

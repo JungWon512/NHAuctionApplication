@@ -798,7 +798,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 		super.channelInactive(ctx);
 
 		if (mConnectionInfoMap.containsKey(ctx.channel().id())) {
-			if(mConnectionInfoMap.get(ctx.channel().id()).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
+			if(!mConnectionInfoMap.get(ctx.channel().id()).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 				closeMember = mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
 			} else {
 				if (GlobalDefineCode.FLAG_TEST_MODE) {
