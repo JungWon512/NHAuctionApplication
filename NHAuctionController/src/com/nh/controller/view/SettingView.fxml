@@ -496,11 +496,6 @@
                         <Insets left="10.0" right="10.0" />
                     </GridPane.margin>
                 </CheckBox>
-                <CheckBox fx:id="mUseSoundRateCheckBox" mnemonicParsing="false" text="빠르게 재생" GridPane.columnIndex="3" GridPane.rowIndex="16">
-                    <GridPane.margin>
-                        <Insets left="10.0" right="10.0" />
-                    </GridPane.margin>
-                </CheckBox>
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="21" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="15" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="19" />
@@ -575,7 +570,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="5" GridPane.rowIndex="16">
                     <children>
                         <TextField fx:id="mCountTextField" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
-                        <Label alignment="CENTER" styleClass="font-s" text="1 ~ 9 (초)" />
+                        <Label alignment="CENTER" styleClass="description-label" text="1 ~ 9 (초)" />
                     </children>
                     <GridPane.margin>
                         <Insets />
@@ -591,7 +586,7 @@
             </Label>
             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="18">
                <children>
-                  <TextField fx:id="mReAuctionCountTextField" maxHeight="25.0" maxWidth="30.0" minHeight="25.0" minWidth="30.0" prefHeight="25.0" prefWidth="30.0">
+                  <TextField fx:id="mReAuctionCountTextField" maxHeight="25.0" minWidth="30.0" prefWidth="30.0">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="5.0" top="10.0" />
                      </HBox.margin>
@@ -650,7 +645,7 @@
                   <Insets left="10.0" />
                </GridPane.margin>
                <children>
-                  <TextField fx:id="mSoundAuctionWaitTime" maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" prefHeight="25.0" prefWidth="60.0" />
+                  <TextField fx:id="mSoundAuctionWaitTime" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
                   <Label styleClass="description-label" text="1~50 (초)" />
                </children>
             </HBox>
@@ -689,6 +684,15 @@
                   <Insets left="10.0" right="10.0" />
                </GridPane.margin>
             </Button>
+            <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="3" GridPane.rowIndex="16">
+               <children>
+                  <TextField fx:id="mSoundRateTextField" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
+                  <Label alignment="CENTER" styleClass="description-label" text="0 (보통) ~ 5 " />
+               </children>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
+            </HBox>
             </children>
             <opaqueInsets>
                 <Insets />

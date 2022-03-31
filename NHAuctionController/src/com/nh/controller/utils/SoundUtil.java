@@ -458,12 +458,8 @@ public class SoundUtil {
 
 			AudioConfig config = null;
 
-			Double rate = GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_1_0;
-
-			if (SettingApplication.getInstance().isSoundRate()) {
-				rate = GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_1_1;
-			}
-
+			Double rate = GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_1_0 + (SettingApplication.getInstance().getSoundRate() * 0.1);
+			
 			config = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).setSpeakingRate(rate).build();
 
 			return config;
@@ -600,12 +596,8 @@ public class SoundUtil {
 
 			AudioConfig config = null;
 
-			Double rate = GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_1_0;
-
-			if (SettingApplication.getInstance().isSoundRate()) {
-				rate = GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_1_1;
-			}
-
+			Double rate = GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_1_0 + (SettingApplication.getInstance().getSoundRate() * 0.1);
+			
 			config = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).setSpeakingRate(rate).build();
 
 			return config;

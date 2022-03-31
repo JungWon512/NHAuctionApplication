@@ -3420,18 +3420,18 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	}
 
 	
-//	public static final String STN_AUCTION_STATUS_READY = "11";		//대기
-//	public static final String STN_AUCTION_STATUS_PROGRESS = "21";	//경매시작
-//	public static final String STN_AUCTION_STATUS_FINISH = "22";	//종료
-//	public static final String STN_AUCTION_STATUS_PAUSE = "23";		//정지
+//	 STN_AUCTION_STATUS_READY = "11";		//대기
+//	 STN_AUCTION_STATUS_PROGRESS = "21";	//경매시작
+//	 STN_AUCTION_STATUS_FINISH = "22";	//종료
+//	 STN_AUCTION_STATUS_PAUSE = "23";		//정지
 	
-//	public static final String AUCTION_STATUS_NONE = "8001"; // 출품 자료 이관 전 상태
-//	public static final String AUCTION_STATUS_READY = "8002"; // 경매 준비 상태
-//	public static final String AUCTION_STATUS_START = "8003"; // 경매 시작 상태
-//	public static final String AUCTION_STATUS_PROGRESS = "8004"; // 경매 진행 상태
-//	public static final String AUCTION_STATUS_PASS = "8005"; // 경매 출품 건 강제 유찰
-//	public static final String AUCTION_STATUS_COMPLETED = "8006"; // 경매 완료 상태
-//	public static final String AUCTION_STATUS_FINISH = "8007"; // 경매 종료 상태
+//	 AUCTION_STATUS_NONE = "8001"; // 출품 자료 이관 전 상태
+//	 AUCTION_STATUS_READY = "8002"; // 경매 준비 상태
+//	 AUCTION_STATUS_START = "8003"; // 경매 시작 상태
+//	 AUCTION_STATUS_PROGRESS = "8004"; // 경매 진행 상태
+//	 AUCTION_STATUS_PASS = "8005"; // 경매 출품 건 강제 유찰
+//	 AUCTION_STATUS_COMPLETED = "8006"; // 경매 완료 상태
+//	 AUCTION_STATUS_FINISH = "8007"; // 경매 종료 상태
 //	
 	private void showLogAuctionInfo() {
 
