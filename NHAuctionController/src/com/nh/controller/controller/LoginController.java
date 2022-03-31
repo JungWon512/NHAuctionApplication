@@ -1,8 +1,6 @@
 package com.nh.controller.controller;
 
-import java.awt.Desktop;
 import java.lang.invoke.MethodHandles;
-import java.net.URI;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -11,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nh.controller.model.AdminData;
-import com.nh.controller.netty.AuctionDelegate;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.ApiUtils;
 import com.nh.controller.utils.CommonUtils;
@@ -23,20 +20,18 @@ import com.nh.share.api.NetworkDefine;
 import com.nh.share.api.request.body.RequestLoginBody;
 import com.nh.share.api.response.ResponseAuctionLogin;
 import com.nh.share.api.response.ResponseVersion;
-import com.nh.share.controller.models.FinishAuction;
 import com.nh.share.utils.SentryUtil;
 
-import io.sentry.Sentry;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -86,7 +81,7 @@ public class LoginController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		
 		// get ResMsg
 		if (resources != null) {
 			mResMsg = resources;

@@ -592,12 +592,18 @@ public class SoundUtil {
 		 * 
 		 * @return
 		 */
-		private AudioConfig getSoundRateConfig() {
+		public AudioConfig getSoundRateConfig() {
 
 			AudioConfig config = null;
-
-			Double rate = GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_1_0 + (SettingApplication.getInstance().getSoundRate() * 0.1);
 			
+			int savedRate = SettingApplication.getInstance().getSoundRate();
+			
+			Double rate = GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_1_0;
+			
+			if(savedRate > 0) {
+				rate += (savedRate * 0.1);
+			}
+
 			config = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).setSpeakingRate(rate).build();
 
 			return config;
