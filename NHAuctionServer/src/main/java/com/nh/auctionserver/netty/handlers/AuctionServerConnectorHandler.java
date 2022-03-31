@@ -802,16 +802,15 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				closeMember = mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
 			} else {
 				if (GlobalDefineCode.FLAG_TEST_MODE) {
-					closeMember = mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
+					closeMember = mConnectionInfoMap.get(ctx.channel().id()).getAuctionJoinNum();
 				} else {
-					closeMember = JwtCertTokenUtils.getInstance()
-							.getUserMemNum(mConnectionInfoMap.get(ctx.channel().id()).getAuthToken());
+					closeMember = mConnectionInfoMap.get(ctx.channel().id()).getAuctionJoinNum();
 				}
 			}
 
 			mAuctionServer
 					.logoutMember(new RequestLogout(mConnectionInfoMap.get(ctx.channel().id()).getAuctionHouseCode(),
-							closeMember, mConnectionInfoMap.get(ctx.channel().id()).getChannel(), mConnectionInfoMap.get(ctx.channel().id()).getOS()), false);
+							closeMember, mConnectionInfoMap.get(ctx.channel().id()).getChannel(), mConnectionInfoMap.get(ctx.channel().id()).getOS()));
 
 //			mConnectionInfoMap.remove(ctx.channel().id());
 //			mConnectionChannelInfoMap.remove(closeMember);

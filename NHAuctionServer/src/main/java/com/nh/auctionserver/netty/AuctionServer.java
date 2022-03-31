@@ -1271,20 +1271,23 @@ public class AuctionServer {
 		}
 	}
 
-	public void logoutMember(RequestLogout requestLogout, boolean isWeb) {
+	public void logoutMember(RequestLogout requestLogout) {
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
 				String closeJoinMember = requestLogout.getUserJoinNum();
-				String closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + requestLogout.getUserJoinNum();
+				String closeMemberChannelKey = null;
+
+				mLogger.info("Request Logout : " + requestLogout.getEncodedMessage());
 				
 				if (requestLogout.getConnectType().equals(GlobalDefineCode.USE_CHANNEL_WEB)) {
 					UUID channelId = null;
 					
 					for (Object key : mConnectorInfoMap.keySet()) {
 						try {
-							if (mConnectorInfoMap.get(key).getUserMemNum() != null && (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember))) {
+							if (mConnectorInfoMap.get(key).getAuctionJoinNum() != null && (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getAuctionJoinNum()).equals(closeJoinMember))) {
+								closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
 								channelId = (UUID) key;
 								break;
 							}
@@ -1294,7 +1297,7 @@ public class AuctionServer {
 						}
 					}
 					
-					if (mConnectorInfoMap.containsKey(channelId)) {
+					if (mConnectorInfoMap.containsKey(channelId) && closeJoinMember != null && closeMemberChannelKey != null) {
 						// 사용자 접속 해제 상테 전송
 						if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 							itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), mConnectorInfoMap.get(channelId).getAuctionJoinNum(),
@@ -1337,37 +1340,31 @@ public class AuctionServer {
 				} else {
 					ChannelId channelId = null;
 					
-//					if (isWeb) {
-//						for (Object key : mConnectorInfoMap.keySet()) {
-//							try {
-//								if (mConnectorInfoMap.get(key).getUserMemNum() != null && (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember))) {
-//									closeJoinMember = mConnectorInfoMap.get(key).getUserMemNum();
-//									channelId = (ChannelId) key;
-//									break;
-//								}
-//							} catch (Exception e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
-//						}
-//					}
+					mLogger.info("mConnectorInfoMap size : " + mConnectorInfoMap.size());
 					
 					for (Object key : mConnectorInfoMap.keySet()) {
 						try {
+							mLogger.info("mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) : " + mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()));
+							mLogger.info("JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken()) : " + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken()));
+							mLogger.info("closeJoinMember : " + closeJoinMember);
+
 							if(mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
 								if(mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember)) {
+									closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
 									channelId = (ChannelId) key;
 									break;
 								}
 							} else {
 								if (GlobalDefineCode.FLAG_TEST_MODE) {
-									if (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && mConnectorInfoMap.get(key).getUserMemNum().equals(closeJoinMember)) {
+									if (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && mConnectorInfoMap.get(key).getAuctionJoinNum().equals(closeJoinMember)) {
+										closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
 										channelId = (ChannelId) key;
 										break;
 									}
 								} else {
-									if (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken())
+									if (mConnectorInfoMap.get(key).getAuctionJoinNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && mConnectorInfoMap.get(key).getAuctionJoinNum()
 											.equals(closeJoinMember)) {
+										closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
 										channelId = (ChannelId) key;
 										break;
 									}
@@ -1379,7 +1376,7 @@ public class AuctionServer {
 						}
 					}
 
-					if (mConnectorInfoMap.containsKey(channelId)) {
+					if (mConnectorInfoMap.containsKey(channelId) && closeJoinMember != null && closeMemberChannelKey != null) {
 						// 사용자 접속 해제 상테 전송
 						if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
 							itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), mConnectorInfoMap.get(channelId).getAuctionJoinNum(),

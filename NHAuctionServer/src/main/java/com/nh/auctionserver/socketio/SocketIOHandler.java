@@ -1841,7 +1841,7 @@ public class SocketIOHandler {
 				if (mConnectorChannelClientMap.get(((RequestLogout) parseObject).getAuctionHouseCode())
 								.containsKey(client.getSessionId())) {
 					
-					mAuctionServer.logoutMember(((RequestLogout) parseObject), true);
+					mAuctionServer.logoutMember(((RequestLogout) parseObject));
 				} else {
 					log.info("=============================================");
 					log.info("유효하지 않은 채널에서 강제 로그아웃을 요청하였습니다. : " + client.getSessionId());
