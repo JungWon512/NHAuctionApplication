@@ -266,12 +266,12 @@
                                     </HBox>
                                     <HBox minWidth="230.0" prefWidth="230.0" spacing="6.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label fx:id="mAuctionStateReadyLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state" text="대기" HBox.hgrow="ALWAYS">
+                                          <Label fx:id="mAuctionStateReadyLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state-ready" text="대기" HBox.hgrow="ALWAYS">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="mAuctionStateProgressLabel" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state" text="진행" HBox.hgrow="ALWAYS">
+                                          <Label fx:id="mAuctionStateProgressLabel" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state-progress" text="진행" HBox.hgrow="ALWAYS">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>

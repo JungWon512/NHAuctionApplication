@@ -3606,6 +3606,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			auctionStateLabelToggle(spEntryInfo.getAuctionResult().getValue());
 
 			mWaitTableView.refresh();
+			setCurrentEntryInfo(false);
 			
 			AudioFilePlay.getInstance().setTargetPlay(this.getClass().getResource(AudioPlayTypes.which(AudioPlayTypes.FINISH)).toExternalForm(), new AudioPlayListener() {
 
@@ -3788,7 +3789,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			SpEntryInfo currentEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
 
-			if (CommonUtils.getInstance().isEmptyProperty(currentEntryInfo.getEntryNum())) {
+			if (currentEntryInfo == null || CommonUtils.getInstance().isEmptyProperty(currentEntryInfo.getEntryNum())) {
 				return;
 			}
 
