@@ -54,6 +54,42 @@
 	-fx-background-color: #cccccc;
 }
 
+.contents-auction-info-state-ready{
+	-fx-background-radius: 2px;
+	-fx-background-color : #008fff;
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 17px;
+	-fx-opacity: 1.0;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+.contents-auction-info-state-ready:disabled{
+	-fx-background-radius: 2px;
+	-fx-background-color : #cccccc;
+	-fx-text-fill: #111111;
+	-fx-font-size: 17px;
+	-fx-opacity: 1.0;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+.contents-auction-info-state-progress{
+	-fx-background-radius: 2px;
+	-fx-background-color : #04cf5c;
+	-fx-text-fill: #ffffff;
+	-fx-font-size: 17px;
+	-fx-opacity: 1.0;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+
+.contents-auction-info-state-progress:disabled{
+	-fx-background-radius: 2px;
+	-fx-background-color : #cccccc;
+	-fx-text-fill: #111111;
+	-fx-font-size: 17px;
+	-fx-opacity: 1.0;
+	-fx-font-family: "Noto Sans CJK KR Regular";
+}
+
 .contents-auction-info-state{
 	-fx-background-radius: 2px;
 	-fx-background-color : #ea0030;

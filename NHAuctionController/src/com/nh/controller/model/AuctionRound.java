@@ -7,16 +7,16 @@ import com.nh.share.api.models.StnData;
 /**
  * 경매 회차정보 DTO
  * 
- * @author dhKim
+ * @author jhlee
  *
  */
-public class AuctionRound extends SearchParamData implements Cloneable{
+public class AuctionRound implements Cloneable{
 
 	private String naBzplc; // 경제통합사업장코드
 	private int aucObjDsc; // 경매대상구분코드
 	private String aucDt; // 경매일자
 	private int qcn; // 차수
-	private int baseLmtAm; // 기초한도금액
+//	private int baseLmtAm; // 기초한도금액
 	private int cutAm; // 절사금액
 	private String sgnoPrcDsc; // 단수처리구분코드
 	private String ddlYn; // 마감여부
@@ -37,29 +37,6 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 	
 	public AuctionRound() {
 	}
-
-	public AuctionRound(String naBzplc, int aucObjDsc, String aucDt, int qcn, int baseLmtAm, int cutAm,
-			String sgnoPrcDsc, String ddlYn, String tmsYn, String delYn, int maleKg, int femaleKg, float ttScr,
-			LocalDateTime fsrgDtm, String fsgmnEno, LocalDateTime lschgDtm, String lsCmeno) {
-		super();
-		this.naBzplc = naBzplc;
-		this.aucObjDsc = aucObjDsc;
-		this.aucDt = aucDt;
-		this.qcn = qcn;
-		this.baseLmtAm = baseLmtAm;
-		this.cutAm = cutAm;
-		this.sgnoPrcDsc = sgnoPrcDsc;
-		this.ddlYn = ddlYn;
-		this.tmsYn = tmsYn;
-		this.delYn = delYn;
-		this.maleKg = maleKg;
-		this.femaleKg = femaleKg;
-		this.ttScr = ttScr;
-		this.fsrgDtm = fsrgDtm;
-		this.fsgmnEno = fsgmnEno;
-		this.lschgDtm = lschgDtm;
-		this.lsCmeno = lsCmeno;
-	}
 	
 	/**
 	 * 경매 타입 - 단일
@@ -71,7 +48,6 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 		this.aucObjDsc = Integer.parseInt(qcnData.getAUC_OBJ_DSC());
 		this.aucDt = qcnData.getAUC_DT();
 		this.qcn = qcnData.getQCN();
-		this.baseLmtAm = qcnData.getBASE_LMT_AM();
 		this.cutAm = qcnData.getCUT_AM();
 		this.sgnoPrcDsc = qcnData.getSGNO_PRC_DSC();
 		this.ddlYn = qcnData.getDDL_YN();
@@ -92,7 +68,6 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 	public AuctionRound(QcnData qcnData, StnData stnData ) {
 		
 		this.qcn = qcnData.getQCN();
-		this.baseLmtAm = qcnData.getBASE_LMT_AM();
 		this.cutAm = qcnData.getCUT_AM();
 		this.sgnoPrcDsc = qcnData.getSGNO_PRC_DSC();
 		this.ddlYn = qcnData.getDDL_YN();
@@ -142,14 +117,6 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 
 	public void setQcn(int qcn) {
 		this.qcn = qcn;
-	}
-
-	public int getBaseLmtAm() {
-		return baseLmtAm;
-	}
-
-	public void setBaseLmtAm(int baseLmtAm) {
-		this.baseLmtAm = baseLmtAm;
 	}
 
 	public int getCutAm() {
@@ -288,7 +255,7 @@ public class AuctionRound extends SearchParamData implements Cloneable{
 	@Override
 	public String toString() {
 		return "AuctionRound [naBzplc=" + naBzplc + ", aucObjDsc=" + aucObjDsc + ", aucDt=" + aucDt + ", qcn=" + qcn
-				+ ", baseLmtAm=" + baseLmtAm + ", cutAm=" + cutAm + ", sgnoPrcDsc=" + sgnoPrcDsc + ", ddlYn=" + ddlYn
+				+ ", cutAm=" + cutAm + ", sgnoPrcDsc=" + sgnoPrcDsc + ", ddlYn=" + ddlYn
 				+ ", tmsYn=" + tmsYn + ", delYn=" + delYn + ", maleKg=" + maleKg + ", femaleKg=" + femaleKg + ", ttScr="
 				+ ttScr + ", fsrgDtm=" + fsrgDtm + ", fsgmnEno=" + fsgmnEno + ", lschgDtm=" + lschgDtm + ", lsCmeno="
 				+ lsCmeno + ", rgSqNo=" + rgSqNo +"]";

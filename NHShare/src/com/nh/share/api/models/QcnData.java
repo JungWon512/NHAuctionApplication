@@ -15,7 +15,6 @@ public class QcnData {
 	private String TMS_YN;
 	private int CUT_AM;
 	private String DDL_YN;
-	private int BASE_LMT_AM;
 	private String AUC_OBJ_DSC;
 	private String LS_CMENO;
 	private int FEMALE_KG;
@@ -31,7 +30,7 @@ public class QcnData {
 	private String SGNO_PRC_DSC;
 	private String LSCHG_DTM;
 	private int QCN;
-
+//	private int BASE_LMT_AM; 경매 진행 설정값으로 변경됨. 해당값 사용 안 함.
 
 	public String getTT_SCR() {
 		return TT_SCR;
@@ -63,14 +62,6 @@ public class QcnData {
 
 	public void setDDL_YN(String dDL_YN) {
 		DDL_YN = dDL_YN;
-	}
-
-	public int getBASE_LMT_AM() {
-		return BASE_LMT_AM;
-	}
-
-	public void setBASE_LMT_AM(int bASE_LMT_AM) {
-		BASE_LMT_AM = bASE_LMT_AM;
 	}
 
 	public String getAUC_OBJ_DSC() {
