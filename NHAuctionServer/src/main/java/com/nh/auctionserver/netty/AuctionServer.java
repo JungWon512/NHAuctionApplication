@@ -1279,8 +1279,6 @@ public class AuctionServer {
 				String closeJoinMember = requestLogout.getUserJoinNum();
 				String closeMemberChannelKey = null;
 
-				closeJoinMember = null;
-				
 				mLogger.info("Request Logout : " + requestLogout.getEncodedMessage());
 				
 				if (requestLogout.getConnectType().equals(GlobalDefineCode.USE_CHANNEL_WEB)) {
@@ -1288,7 +1286,7 @@ public class AuctionServer {
 					
 					for (Object key : mConnectorInfoMap.keySet()) {
 						try {
-							if (mConnectorInfoMap.get(key).getAuctionJoinNum() != null && (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getAuctionJoinNum()).equals(closeJoinMember))) {
+							if (mConnectorInfoMap.get(key).getUserMemNum() != null && (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember))) {
 								closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
 								channelId = (UUID) key;
 								break;
@@ -1299,47 +1297,45 @@ public class AuctionServer {
 						}
 					}
 					
-					if (channelId != null) {
-						if (mConnectorInfoMap.containsKey(channelId) && closeJoinMember != null && closeMemberChannelKey != null) {
-							// 사용자 접속 해제 상테 전송
-							if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
-								itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), mConnectorInfoMap.get(channelId).getAuctionJoinNum(),
-										mConnectorInfoMap.get(channelId).getChannel(), mConnectorInfoMap.get(channelId).getOS(), "L", "0")
-												.getEncodedMessage());
-							}
-							
-							// 출하안내시스템 접속 상태 저장
-							if (mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()) != null) {
-								mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()).setIsStandConnect(false);
-
-								// 출하안내시스템 접속 해제 상테 전송
-								if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
-									itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), GlobalDefineCode.CONNECT_FAIL).getEncodedMessage());
-								}
-							}
-
-							mConnectorInfoMap.remove(channelId);
-
-							if (mConnectorChannelInfoMap.containsKey(closeMemberChannelKey)) {
-								mConnectorChannelInfoMap.remove(closeMemberChannelKey);
-							}
-
-							mSocketIOHandler.unRegisterConnectChannelGroup(channelId);
-							
-							if (!mConnectorInfoMap.containsKey(channelId)) {
-								mLogger.info("정상적으로 " + closeJoinMember + "회원 정보가 Close 처리되었습니다.");
-							}
-
-							mLogger.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());
-							
-//							Iterator<Object> iter = mConnectorInfoMap.keySet().iterator();
-	//
-//							while (iter.hasNext()) {
-//								Object key = iter.next();
-//								ConnectionInfo value = (ConnectionInfo) mConnectorInfoMap.get(key);
-//								System.out.println(key + " : " + value.getEncodedMessage());
-//							}
+					if (mConnectorInfoMap.containsKey(channelId) && closeJoinMember != null && closeMemberChannelKey != null) {
+						// 사용자 접속 해제 상테 전송
+						if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+							itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), mConnectorInfoMap.get(channelId).getAuctionJoinNum(),
+									mConnectorInfoMap.get(channelId).getChannel(), mConnectorInfoMap.get(channelId).getOS(), "L", "0")
+											.getEncodedMessage());
 						}
+						
+						// 출하안내시스템 접속 상태 저장
+						if (mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()) != null) {
+							mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()).setIsStandConnect(false);
+
+							// 출하안내시스템 접속 해제 상테 전송
+							if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+								itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), GlobalDefineCode.CONNECT_FAIL).getEncodedMessage());
+							}
+						}
+
+						mConnectorInfoMap.remove(channelId);
+
+						if (mConnectorChannelInfoMap.containsKey(closeMemberChannelKey)) {
+							mConnectorChannelInfoMap.remove(closeMemberChannelKey);
+						}
+
+						mSocketIOHandler.unRegisterConnectChannelGroup(channelId);
+						
+						if (!mConnectorInfoMap.containsKey(channelId)) {
+							mLogger.info("정상적으로 " + closeMemberChannelKey + "회원 정보가 Close 처리되었습니다.");
+						}
+
+						mLogger.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());
+						
+//						Iterator<Object> iter = mConnectorInfoMap.keySet().iterator();
+//
+//						while (iter.hasNext()) {
+//							Object key = iter.next();
+//							ConnectionInfo value = (ConnectionInfo) mConnectorInfoMap.get(key);
+//							System.out.println(key + " : " + value.getEncodedMessage());
+//						}
 					}
 				} else {
 					ChannelId channelId = null;
@@ -1353,10 +1349,18 @@ public class AuctionServer {
 							mLogger.info("closeJoinMember : " + closeJoinMember);
 
 							if(!mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
-								if(mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember)) {
-									closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
-									channelId = (ChannelId) key;
-									break;
+								if(!mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
+									if(mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember)) {
+										closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
+										channelId = (ChannelId) key;
+										break;
+									}
+								} else {
+									if(mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember)) {
+										closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken()) + "_" + closeJoinMember;
+										channelId = (ChannelId) key;
+										break;
+									}
 								}
 							} else {
 								if (GlobalDefineCode.FLAG_TEST_MODE) {
@@ -1366,7 +1370,7 @@ public class AuctionServer {
 										break;
 									}
 								} else {
-									if (mConnectorInfoMap.get(key).getAuctionJoinNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && mConnectorInfoMap.get(key).getAuctionJoinNum()
+									if (mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && mConnectorInfoMap.get(key).getUserMemNum()
 											.equals(closeJoinMember)) {
 										closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
 										channelId = (ChannelId) key;
@@ -1380,98 +1384,102 @@ public class AuctionServer {
 						}
 					}
 
-					if (channelId != null) {
-						if (mConnectorInfoMap.containsKey(channelId) && closeJoinMember != null && closeMemberChannelKey != null) {
-							// 사용자 접속 해제 상테 전송
-							if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
-								itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), mConnectorInfoMap.get(channelId).getAuctionJoinNum(),
-										mConnectorInfoMap.get(channelId).getChannel(), mConnectorInfoMap.get(channelId).getOS(), "L", "0")
-												.getEncodedMessage());
-							}
-							
-							if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
-								// 출하안내시스템 접속 상태 저장
-								if (mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()) != null) {
-									mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()).setIsStandConnect(true);
-
-									// 출하안내시스템 접속 해제 상테 전송
-									if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
-										itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), GlobalDefineCode.CONNECT_FAIL).getEncodedMessage());
-									}
-								}
-							}
-
-							mConnectorInfoMap.remove(channelId);
-
-							if (mConnectorChannelInfoMap.containsKey(closeMemberChannelKey)) {
-								mConnectorChannelInfoMap.remove(closeMemberChannelKey);
-							}
-
-							if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
-								if (mBidderChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
-									if (mBidderChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
-										mBidderChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
-									}
-								}
-							}
-
-							if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
-								if (mControllerChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
-									if (mControllerChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
-										mControllerChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
-									}
-								}
-							}
-
-							if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
-								if (mWatcherChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
-									if (mWatcherChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
-										mWatcherChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
-									}
-								}
-							}
-
-							if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_RESULT_MONITOR)) {
-								if (mAuctionResultMonitorChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
-									if (mAuctionResultMonitorChannelsMap.get(requestLogout.getAuctionHouseCode())
-											.find(channelId) != null) {
-										mAuctionResultMonitorChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId)
-												.close();
-									}
-								}
-							}
-
-							if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR)) {
-								if (mConnectionMonitorChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
-									if (mConnectionMonitorChannelsMap.get(requestLogout.getAuctionHouseCode())
-											.find(channelId) != null) {
-										mConnectionMonitorChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
-									}
-								}
-							}
-							
-							if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
-								if (mStandChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
-									if (mStandChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
-										mStandChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
-									}
-								}
-							}
-
-							if (!mConnectorInfoMap.containsKey(channelId)) {
-								mLogger.info("정상적으로 " + closeJoinMember + "회원 정보가 Close 처리되었습니다.");
-							}
-
-							mLogger.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());
-							
-//							Iterator<Object> iter = mConnectorInfoMap.keySet().iterator();
-	//
-//							while (iter.hasNext()) {
-//								Object key = iter.next();
-//								ConnectionInfo value = (ConnectionInfo) mConnectorInfoMap.get(key);
-//								System.out.println(key + " : " + value.getEncodedMessage());
-//							}
+					mLogger.info("channelId : " + channelId);
+					mLogger.info("closeJoinMember : " + closeJoinMember);
+					mLogger.info("closeMemberChannelKey : " + closeMemberChannelKey);
+					
+					if (mConnectorInfoMap.containsKey(channelId) && closeJoinMember != null && closeMemberChannelKey != null) {
+						// 사용자 접속 해제 상테 전송
+						if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+							itemAdded(new BidderConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), mConnectorInfoMap.get(channelId).getAuctionJoinNum(),
+									mConnectorInfoMap.get(channelId).getChannel(), mConnectorInfoMap.get(channelId).getOS(), "L", "0")
+											.getEncodedMessage());
 						}
+						
+						if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+							// 출하안내시스템 접속 상태 저장
+							if (mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()) != null) {
+								mAuctioneer.getAuctionState(mConnectorInfoMap.get(channelId).getAuctionHouseCode()).setIsStandConnect(true);
+
+								// 출하안내시스템 접속 해제 상테 전송
+								if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+									itemAdded(new StandConnectInfo(mConnectorInfoMap.get(channelId).getAuctionHouseCode(), GlobalDefineCode.CONNECT_FAIL).getEncodedMessage());
+								}
+							}
+						}
+
+						mConnectorInfoMap.remove(channelId);
+
+						if (mConnectorChannelInfoMap.containsKey(closeMemberChannelKey)) {
+							mConnectorChannelInfoMap.remove(closeMemberChannelKey);
+						}
+
+						if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
+							if (mBidderChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
+								if (mBidderChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
+									mBidderChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
+								}
+							}
+						}
+
+						if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_CONTROLLER)) {
+							if (mControllerChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
+								if (mControllerChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
+									mControllerChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
+								}
+							}
+						}
+
+						if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
+							if (mWatcherChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
+								if (mWatcherChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
+									mLogger.info("CONNECT_CHANNEL_WATCHER : " + requestLogout.getEncodedMessage());
+									mLogger.info("close socket channel id : " + channelId);
+									mWatcherChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
+								}
+							}
+						}
+
+						if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_RESULT_MONITOR)) {
+							if (mAuctionResultMonitorChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
+								if (mAuctionResultMonitorChannelsMap.get(requestLogout.getAuctionHouseCode())
+										.find(channelId) != null) {
+									mAuctionResultMonitorChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId)
+											.close();
+								}
+							}
+						}
+
+						if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_CONNECT_MONITOR)) {
+							if (mConnectionMonitorChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
+								if (mConnectionMonitorChannelsMap.get(requestLogout.getAuctionHouseCode())
+										.find(channelId) != null) {
+									mConnectionMonitorChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
+								}
+							}
+						}
+						
+						if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_AUCTION_STAND)) {
+							if (mStandChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
+								if (mStandChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
+									mStandChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
+								}
+							}
+						}
+
+						if (!mConnectorInfoMap.containsKey(channelId)) {
+							mLogger.info("정상적으로 " + closeMemberChannelKey + "회원 정보가 Close 처리되었습니다.");
+						}
+
+						mLogger.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());
+						
+//						Iterator<Object> iter = mConnectorInfoMap.keySet().iterator();
+//
+//						while (iter.hasNext()) {
+//							Object key = iter.next();
+//							ConnectionInfo value = (ConnectionInfo) mConnectorInfoMap.get(key);
+//							System.out.println(key + " : " + value.getEncodedMessage());
+//						}
 					}
 				}
 			}

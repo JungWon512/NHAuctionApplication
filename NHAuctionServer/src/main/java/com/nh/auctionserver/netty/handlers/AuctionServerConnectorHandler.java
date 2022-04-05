@@ -1,5 +1,6 @@
 package com.nh.auctionserver.netty.handlers;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -445,13 +446,23 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 							GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
+					String currentTime = String.valueOf(System.currentTimeMillis());
+					
+					connectionInfo.setUserMemNum(currentTime);
+					
 					// Controller 채널 아이디 등록 처리
 					if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
 						mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
 
+						// 지우기
+						mLogger.info("ctx.channel().id() : " + ctx.channel().id());
+						mLogger.info("mConnectionInfoMap Put : " + connectionInfo.getEncodedMessage());
+						// 지우기
+						mLogger.info("mConnectionChannelInfoMap Put : " + connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()) + "_" + currentTime);
+						
 						// Connector Channel Map 등록
 						mConnectionChannelInfoMap
-								.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+								.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()) + "_" + currentTime, ctx);
 					}
 
 					// 경매 관전 채널 등록 처리
@@ -463,7 +474,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					if (!mWatcherChannelsMap.get(connectionInfo.getAuctionHouseCode()).contains(ctx.channel())) {
 						mWatcherChannelsMap.get(connectionInfo.getAuctionHouseCode()).add(ctx.channel());
 					}
-
+					
 					// 현재 출품 정보 전송
 					if (mAuctionScheduler.getCurrentAuctionStatus(connectionInfo.getAuctionHouseCode())
 							.equals(GlobalDefineCode.AUCTION_STATUS_NONE)) {
@@ -666,13 +677,23 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					ctx.channel().writeAndFlush(new ResponseConnectionInfo(connectionInfo.getAuctionHouseCode(),
 							GlobalDefineCode.CONNECT_SUCCESS, GlobalDefineCode.EMPTY_DATA, GlobalDefineCode.EMPTY_DATA).getEncodedMessage() + "\r\n");
 
+					String currentTime = String.valueOf(System.currentTimeMillis());
+					
+					connectionInfo.setUserMemNum(currentTime);
+					
 					// Controller 채널 아이디 등록 처리
 					if (!mConnectionInfoMap.containsKey(ctx.channel().id())) {
 						mConnectionInfoMap.put(ctx.channel().id(), connectionInfo);
 
+						// 지우기
+						mLogger.info("ctx.channel().id() : " + ctx.channel().id());
+						mLogger.info("mConnectionInfoMap Put : " + connectionInfo.getEncodedMessage());
+						// 지우기
+						mLogger.info("mConnectionChannelInfoMap Put : " + connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()) + "_" + currentTime);
+						
 						// Connector Channel Map 등록
 						mConnectionChannelInfoMap
-								.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()), ctx);
+								.put(connectionInfo.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(connectionInfo.getAuthToken()) + "_" + currentTime, ctx);
 					}
 
 					// 경매 관전 채널 등록 처리
@@ -684,7 +705,7 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 					if (!mWatcherChannelsMap.get(connectionInfo.getAuctionHouseCode()).contains(ctx.channel())) {
 						mWatcherChannelsMap.get(connectionInfo.getAuctionHouseCode()).add(ctx.channel());
 					}
-
+					
 					if (mAuctionScheduler.getAuctionState(connectionInfo.getAuctionHouseCode()) != null) {
 						if (mAuctionScheduler.getAuctionEditSetting(connectionInfo.getAuctionHouseCode()).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
 							ctx.writeAndFlush(
@@ -802,12 +823,12 @@ public final class AuctionServerConnectorHandler extends SimpleChannelInboundHan
 				closeMember = mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
 			} else {
 				if (GlobalDefineCode.FLAG_TEST_MODE) {
-					closeMember = mConnectionInfoMap.get(ctx.channel().id()).getAuctionJoinNum();
+					closeMember = mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
 				} else {
-					closeMember = mConnectionInfoMap.get(ctx.channel().id()).getAuctionJoinNum();
+					closeMember = mConnectionInfoMap.get(ctx.channel().id()).getUserMemNum();
 				}
 			}
-
+			
 			mAuctionServer
 					.logoutMember(new RequestLogout(mConnectionInfoMap.get(ctx.channel().id()).getAuctionHouseCode(),
 							closeMember, mConnectionInfoMap.get(ctx.channel().id()).getChannel(), mConnectionInfoMap.get(ctx.channel().id()).getOS()));
