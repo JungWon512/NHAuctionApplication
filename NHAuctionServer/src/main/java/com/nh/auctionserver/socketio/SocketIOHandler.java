@@ -1840,7 +1840,6 @@ public class SocketIOHandler {
 			} else if (parseObject instanceof RequestLogout) {
 				if (mConnectorChannelClientMap.get(((RequestLogout) parseObject).getAuctionHouseCode())
 								.containsKey(client.getSessionId())) {
-					
 					mAuctionServer.logoutMember(((RequestLogout) parseObject));
 				} else {
 					log.info("=============================================");

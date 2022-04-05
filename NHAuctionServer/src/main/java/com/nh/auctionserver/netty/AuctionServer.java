@@ -1286,7 +1286,7 @@ public class AuctionServer {
 					
 					for (Object key : mConnectorInfoMap.keySet()) {
 						try {
-							if (mConnectorInfoMap.get(key).getAuctionJoinNum() != null && (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getAuctionJoinNum()).equals(closeJoinMember))) {
+							if (mConnectorInfoMap.get(key).getUserMemNum() != null && (mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember))) {
 								closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
 								channelId = (UUID) key;
 								break;
@@ -1324,7 +1324,7 @@ public class AuctionServer {
 						mSocketIOHandler.unRegisterConnectChannelGroup(channelId);
 						
 						if (!mConnectorInfoMap.containsKey(channelId)) {
-							mLogger.info("정상적으로 " + closeJoinMember + "회원 정보가 Close 처리되었습니다.");
+							mLogger.info("정상적으로 " + closeMemberChannelKey + "회원 정보가 Close 처리되었습니다.");
 						}
 
 						mLogger.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());
@@ -1349,10 +1349,18 @@ public class AuctionServer {
 							mLogger.info("closeJoinMember : " + closeJoinMember);
 
 							if(!mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
-								if(mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember)) {
-									closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
-									channelId = (ChannelId) key;
-									break;
+								if(!mConnectorInfoMap.get(key).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
+									if(mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember)) {
+										closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
+										channelId = (ChannelId) key;
+										break;
+									}
+								} else {
+									if(mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && (mConnectorInfoMap.get(key).getUserMemNum()).equals(closeJoinMember)) {
+										closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken()) + "_" + closeJoinMember;
+										channelId = (ChannelId) key;
+										break;
+									}
 								}
 							} else {
 								if (GlobalDefineCode.FLAG_TEST_MODE) {
@@ -1362,7 +1370,7 @@ public class AuctionServer {
 										break;
 									}
 								} else {
-									if (mConnectorInfoMap.get(key).getAuctionJoinNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && mConnectorInfoMap.get(key).getAuctionJoinNum()
+									if (mConnectorInfoMap.get(key).getUserMemNum() != null && mConnectorInfoMap.get(key).getAuctionHouseCode().equals(requestLogout.getAuctionHouseCode()) && mConnectorInfoMap.get(key).getUserMemNum()
 											.equals(closeJoinMember)) {
 										closeMemberChannelKey = requestLogout.getAuctionHouseCode() + "_" + JwtCertTokenUtils.getInstance().getUserMemNum(mConnectorInfoMap.get(key).getAuthToken());
 										channelId = (ChannelId) key;
@@ -1376,6 +1384,10 @@ public class AuctionServer {
 						}
 					}
 
+					mLogger.info("channelId : " + channelId);
+					mLogger.info("closeJoinMember : " + closeJoinMember);
+					mLogger.info("closeMemberChannelKey : " + closeMemberChannelKey);
+					
 					if (mConnectorInfoMap.containsKey(channelId) && closeJoinMember != null && closeMemberChannelKey != null) {
 						// 사용자 접속 해제 상테 전송
 						if (mConnectorInfoMap.get(channelId).getChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_BIDDER)) {
@@ -1421,6 +1433,8 @@ public class AuctionServer {
 						if (requestLogout.getConnectChannel().equals(GlobalDefineCode.CONNECT_CHANNEL_WATCHER)) {
 							if (mWatcherChannelsMap.containsKey(requestLogout.getAuctionHouseCode())) {
 								if (mWatcherChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId) != null) {
+									mLogger.info("CONNECT_CHANNEL_WATCHER : " + requestLogout.getEncodedMessage());
+									mLogger.info("close socket channel id : " + channelId);
 									mWatcherChannelsMap.get(requestLogout.getAuctionHouseCode()).find(channelId).close();
 								}
 							}
@@ -1454,7 +1468,7 @@ public class AuctionServer {
 						}
 
 						if (!mConnectorInfoMap.containsKey(channelId)) {
-							mLogger.info("정상적으로 " + closeJoinMember + "회원 정보가 Close 처리되었습니다.");
+							mLogger.info("정상적으로 " + closeMemberChannelKey + "회원 정보가 Close 처리되었습니다.");
 						}
 
 						mLogger.info("ConnectorInfoMap size : " + mConnectorInfoMap.size());
