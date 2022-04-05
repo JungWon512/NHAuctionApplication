@@ -615,7 +615,9 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		            			}else {
 		            				styleProperty().set("-fx-background-color: #ffffff");
 		            			}
-		            		} 
+		            		}else {
+	            				styleProperty().set("-fx-background-color: #eeeeee");
+	            			} 
 		            	}else {
             				styleProperty().set("-fx-background-color: #ffffff");
             			}
