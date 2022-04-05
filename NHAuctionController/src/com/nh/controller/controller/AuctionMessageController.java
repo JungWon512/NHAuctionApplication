@@ -136,7 +136,7 @@ public class AuctionMessageController implements Initializable {
 	}
 	
 	/**
-	 * test Message List
+	 * Message List
 	 * @return
 	 */
 	public List<String> getMessageList() {
