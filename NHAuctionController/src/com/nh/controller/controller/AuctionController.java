@@ -283,15 +283,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						onServerAndClose();
 						Platform.exit();
 						System.exit(0);
-					} else {
-						evt.consume();
-						
-						if (!SettingApplication.getInstance().isSingleAuction()) {
-							// 환경설정 -> 일괄경매 변경 -> 팝업 -> 취소시 다시 단일로 설정
-							SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, AuctionToggle.SINGLE.toString());
-							SettingApplication.getInstance().initSharedData();
-						}
 					}
+						evt.consume();
+					
 				}
 			});
 		}
