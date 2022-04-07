@@ -291,6 +291,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						Platform.exit();
 						System.exit(0);
 					}
+					
+					evt.consume();
 				}
 			});
 		}
