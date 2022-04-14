@@ -689,17 +689,17 @@
                   <Button fx:id="mBtnF2" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F2]보류보기" />
                   <Button fx:id="mBtnF5" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F5]새로고침" />
                   <Button fx:id="mBtnF8" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" styleClass="btn-bottom" text="[F8]환경설정" />
-                  <Button fx:id="mBtnStart" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="[ENTER]경매시작">
+                  <Button fx:id="mBtnStart" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매시작">
                      <styleClass>
                         <String fx:value="btn-bottom" />
                         <String fx:value="bg-color-04cf5c" />
                      </styleClass></Button>
-                  <Button fx:id="mBtnPause" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="[F9]경매정지">
+                  <Button fx:id="mBtnPause" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매정지">
                      <styleClass>
                         <String fx:value="btn-bottom" />
                         <String fx:value="bg-color-008fff" />
                      </styleClass></Button>
-                  <Button fx:id="mBtnFinish" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="[F10]경매종료">
+                  <Button fx:id="mBtnFinish" alignment="CENTER" contentDisplay="CENTER" disable="true" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" prefHeight="40.0" text="경매종료">
                      <styleClass>
                         <String fx:value="btn-bottom" />
                         <String fx:value="bg-color-ea0030" />
