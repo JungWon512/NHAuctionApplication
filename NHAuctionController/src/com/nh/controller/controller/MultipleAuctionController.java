@@ -2722,7 +2722,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			mConnectionUserDataList.stream().flatMap(a -> Arrays.stream(a.getUserNo())).filter(b -> b != null && b.getValue().equals(bidderConnectInfo.getUserJoinNum())).map(item -> {
 				item.setValue("");
 				return item;
-			});
+			}).collect(Collectors.toCollection(FXCollections::observableArrayList));
 
 			if (mConnectionUserMap.size() <= 0) {
 				sortConnectionUserDataList();
