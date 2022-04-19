@@ -1220,6 +1220,18 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
 		String rgSqNo = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo());
+		
+		String stAucNo = "";
+		String edAucNo =  "";
+		
+		if(GlobalDefine.AUCTION_INFO.auctionRoundData.getStAucNo() > -1) {
+			stAucNo = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getStAucNo());
+		}
+		
+		if(GlobalDefine.AUCTION_INFO.auctionRoundData.getEdAucNo() > -1) {
+			edAucNo = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getEdAucNo());
+		}
+		
 		String showYn = "";
 		
 		if(isShow) {
@@ -1228,7 +1240,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			showYn = "N"; //해제
 		}
 
-		RequestShowFailBidding requestShowFailBidding = new RequestShowFailBidding(naBzplc, aucDate, aucObjDsc, rgSqNo,showYn);
+		RequestShowFailBidding requestShowFailBidding = new RequestShowFailBidding(naBzplc, aucDate, aucObjDsc, rgSqNo,showYn,stAucNo,edAucNo);
 		AuctionDelegate.getInstance().sendMessage(requestShowFailBidding);
 	}
 
@@ -1626,6 +1638,9 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		// 시작 로그 msg
 		String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), entryNumber);
 
+		//시작 전 보냄
+		onSendPendingList(false);
+		
 		// 시작 서버로 Start 보냄.
 		mLogger.debug(msgStart + AuctionDelegate.getInstance().onStartAuction(entryNumber));
 			// 시작음

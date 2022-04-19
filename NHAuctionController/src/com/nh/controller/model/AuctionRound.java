@@ -34,6 +34,8 @@ public class AuctionRound implements Cloneable{
 	private int divisionPrice3; // 번식우 단위
 	private int rgSqNo; // 일괄경매 차수 정보
 	private String selStsDsc; // 일괄경매 상태 정보 (시작,정지,종료)
+	private int stAucNo;		//일괄 경매 구간 '시작' 정보
+	private int edAucNo;		//일괄 경매 구간 '종료' 정보
 	
 	public AuctionRound() {
 	}
@@ -84,6 +86,8 @@ public class AuctionRound implements Cloneable{
 		this.aucObjDsc = Integer.parseInt(stnData.getAUC_OBJ_DSC());
 		this.rgSqNo = stnData.getRG_SQNO();
 		this.selStsDsc = stnData.getSEL_STS_DSC();
+		this.stAucNo = stnData.getST_AUC_NO();
+		this.edAucNo = stnData.getED_AUC_NO();	
 	}
 
 
@@ -250,6 +254,23 @@ public class AuctionRound implements Cloneable{
 
 	public void setDivisionPrice3(int divisionPrice3) {
 		this.divisionPrice3 = divisionPrice3;
+	}
+
+	
+	public int getStAucNo() {
+		return stAucNo;
+	}
+
+	public void setStAucNo(int stAucNo) {
+		this.stAucNo = stAucNo;
+	}
+
+	public int getEdAucNo() {
+		return edAucNo;
+	}
+
+	public void setEdAucNo(int edAucNo) {
+		this.edAucNo = edAucNo;
 	}
 
 	@Override
