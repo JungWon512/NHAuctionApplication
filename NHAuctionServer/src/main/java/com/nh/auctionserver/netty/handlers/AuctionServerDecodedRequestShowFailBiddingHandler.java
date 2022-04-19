@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
+import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.controller.models.RequestShowFailBidding;
 
@@ -57,7 +58,21 @@ public final class AuctionServerDecodedRequestShowFailBiddingHandler
 
 		if (mControllerChannelsMap.get(requestShowFailBIdding.getAuctionHouseCode()).contains(ctx.channel()) == true) {
 			mLogger.info("정상 채널에서 유찰 예상 목록 표시를 요청하였습니다.");
-			mAuctionServer.itemAdded(requestShowFailBIdding.getEncodedMessage());
+			
+			// 미출장우 노출 여부에 따라 노출 요청 혹은 경매 상태 코드에 따른 전관판 노출 처리 요청
+			if (requestShowFailBIdding.getIsShow().equals("Y")) {
+				mAuctionServer.itemAdded(requestShowFailBIdding.getEncodedMessage());
+			} else {
+				// 출하안내 시스템에 현재 경매 상태 코드 전송
+				if (mStandChannelsMap != null) {
+					if (mStandChannelsMap.containsKey(requestShowFailBIdding.getAuctionHouseCode())) {
+						if (mStandChannelsMap.get(requestShowFailBIdding.getAuctionHouseCode()).size() > 0) {
+							mStandChannelsMap.get(requestShowFailBIdding.getAuctionHouseCode()).writeAndFlush(mAuctionScheduler.getAuctionState(requestShowFailBIdding.getAuctionHouseCode())
+									.getAuctionStatus().getEncodedMessage() + "\r\n");
+						}
+					}
+				}
+			}
 		} else {
 			mLogger.info("비정상 채널에서 유찰 예상 목록 표시를 요청하였으나, 요청이 거부되었습니다.");
 		}

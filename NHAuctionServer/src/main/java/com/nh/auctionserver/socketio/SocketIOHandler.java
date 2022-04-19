@@ -945,7 +945,7 @@ public class SocketIOHandler {
 						messages[7], messages[8], messages[9], messages[10], messages[11], messages[12]);
 				break;
 			case ShowFailBidding.TYPE: // 일괄경매 미응찰 노출 요청
-				result = new ShowFailBidding(messages[1], messages[2], messages[3], messages[4]);
+				result = new ShowFailBidding(messages[1], messages[2], messages[3], messages[4], messages[5]);
 				break;
 			default:
 				result = null;
