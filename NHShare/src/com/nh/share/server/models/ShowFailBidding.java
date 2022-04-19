@@ -38,6 +38,8 @@ public class ShowFailBidding implements FromAuctionServer {
 		mAucObjDsc = requestShowFailBidding.getAucObjDsc();
 		mRgSqNo = requestShowFailBidding.getRgSqNo();
 		mIsShow = requestShowFailBidding.getIsShow();
+		mStartIndex = requestShowFailBidding.getStartIndex();
+		mEndIndex = requestShowFailBidding.getEndIndex();
 	}
 
 	public String getAuctionHouseCode() {
