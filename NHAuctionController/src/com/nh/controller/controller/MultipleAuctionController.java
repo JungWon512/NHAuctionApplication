@@ -2722,7 +2722,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			mConnectionUserDataList.stream().flatMap(a -> Arrays.stream(a.getUserNo())).filter(b -> b != null && b.getValue().equals(bidderConnectInfo.getUserJoinNum())).map(item -> {
 				item.setValue("");
 				return item;
-			});
+			}).collect(Collectors.toCollection(FXCollections::observableArrayList));
 
 			if (mConnectionUserMap.size() <= 0) {
 				sortConnectionUserDataList();
@@ -2798,22 +2798,24 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					if (ke.getCode() == KeyCode.UP || ke.getCode() == KeyCode.DOWN) {
 						ke.consume();
 					}
-
-					// 경매 시작
-					if (ke.getCode() == KeyCode.ENTER) {
-						onRefreshStartAuction();
-						ke.consume();
-					}
-					// 경매정지
-					if (ke.getCode() == KeyCode.F9) {
-						onPause();
-						ke.consume();
-					}
-					// 경매종료
-					if (ke.getCode() == KeyCode.F10) {
-						onFinish();
-						ke.consume();
-					}
+					
+					/* 2022-04-14 일괄경매 단축키 제거
+						// 경매 시작
+						if (ke.getCode() == KeyCode.ENTER) {
+							onRefreshStartAuction();
+							ke.consume();
+						}
+						// 경매정지
+						if (ke.getCode() == KeyCode.F9) {
+							onPause();
+							ke.consume();
+						}
+						// 경매종료
+						if (ke.getCode() == KeyCode.F10) {
+							onFinish();
+							ke.consume();
+						}
+					 */
 					// 유찰대상목록표시
 					if (ke.getCode() == KeyCode.F12) {
 						onSendPendingList();
