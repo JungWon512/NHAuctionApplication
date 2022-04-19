@@ -194,7 +194,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private Button mHeaderBtnRefresh, mHeaderBtnStart, mHeaderBtnPause, mHeaderBtnFinish;
 
 	@FXML // 하단 버튼
-	private Button mBtnEsc, mBtnF1, mBtnF2,mBtnF5, mBtnF8, mBtnStart, mBtnPause, mBtnFinish, mBtnMessage, mBtnSendPending, mBtnQcnFinish;
+	private Button mBtnEsc, mBtnF1, mBtnF2,mBtnF5, mBtnF8, mBtnStart, mBtnPause, mBtnFinish, mBtnMessage, mBtnSendPending,mBtnSendPendingHide, mBtnQcnFinish;
 
 	@FXML // 하단 메세지 전송 상위 뷰
 	private StackPane mSTPMessage;
@@ -453,7 +453,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
 		});
 
-		mBtnSendPending.setOnMouseClicked(event -> onSendPendingList());
+		mBtnSendPending.setOnMouseClicked(event -> onSendPendingList(true));
+		mBtnSendPendingHide.setOnMouseClicked(event -> onSendPendingList(false));
 		mBtnQcnFinish.setOnMouseClicked(event -> onSendQcnFinish());
 
 		// 표시 숨김.
@@ -1211,16 +1212,23 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	}
 
 	/**
-	 * 전광판으로 유찰 대상 목록 표시 전송
+	 * 전광판으로 유찰 대상 목록 표시 or 해제 전송
 	 */
-	public void onSendPendingList() {
+	public void onSendPendingList(boolean isShow) {
 
 		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
 		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
 		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
 		String rgSqNo = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo());
+		String showYn = "";
+		
+		if(isShow) {
+			showYn = "Y"; //표시
+		}else {
+			showYn = "N"; //해제
+		}
 
-		RequestShowFailBidding requestShowFailBidding = new RequestShowFailBidding(naBzplc, aucDate, aucObjDsc, rgSqNo);
+		RequestShowFailBidding requestShowFailBidding = new RequestShowFailBidding(naBzplc, aucDate, aucObjDsc, rgSqNo,showYn);
 		AuctionDelegate.getInstance().sendMessage(requestShowFailBidding);
 	}
 
@@ -2817,8 +2825,14 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						}
 					 */
 					// 유찰대상목록표시
+					if (ke.getCode() == KeyCode.F11) {
+						onSendPendingList(true);
+						ke.consume();
+					}
+					
+					// 유찰대상목록해제
 					if (ke.getCode() == KeyCode.F12) {
-						onSendPendingList();
+						onSendPendingList(false);
 						ke.consume();
 					}
 					
