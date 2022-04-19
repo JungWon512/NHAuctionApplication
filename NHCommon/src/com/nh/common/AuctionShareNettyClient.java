@@ -20,6 +20,7 @@ import com.nh.common.handlers.AuctionClientDecodedResponseConnectionInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedStandConnectInfoHandler;
 import com.nh.common.handlers.AuctionClientDecodedToastMessageHandler;
 import com.nh.common.handlers.AuctionClientInboundDecoder;
+import com.nh.common.handlers.ReceiveDuplexHandler;
 import com.nh.common.interfaces.NettyClientShutDownListener;
 import com.nh.common.interfaces.NettyControllable;
 import com.nh.share.code.GlobalDefineCode;
@@ -43,6 +44,7 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -110,6 +112,10 @@ public class AuctionShareNettyClient {
 
 					// pipeline.addLast(new WriteTimeoutHandler(15));
 					// pipeline.addLast(new ReadTimeoutHandler(15));
+					
+					
+					pipeline.addLast(new IdleStateHandler(10, 0, 0));
+					pipeline.addLast(new ReceiveDuplexHandler());
 					pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
 					pipeline.addLast(new AuctionClientInboundDecoder(controller));
 					pipeline.addLast(new AuctionClientDecodedCurrentEntryInfoHandler(controller)); // 현재 출품 정보
@@ -132,6 +138,7 @@ public class AuctionShareNettyClient {
 				}
 			});
 			channel = b.connect(host, port).sync().channel();
+			
 		} catch (Exception e) {
 			controller.onConnectionException(port);
 			e.printStackTrace();

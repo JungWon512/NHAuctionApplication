@@ -146,7 +146,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 	
 	protected boolean isPlayReAuctionSound = false; // 재경매자 사운드
 	
-	
 	protected boolean isAutoPlay = false;
 
 	public BaseAuctionController() {
@@ -1173,6 +1172,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 							}catch (Exception e) {
 								e.printStackTrace();
 								SentryUtil.getInstance().sendExceptionLog(e);
+								onCancelOrClose();
 							}
 						
 						}

@@ -62,6 +62,7 @@ public class ActionRequestSelectCowInfo extends Action {
 
 		@Override
 		public void onFailure(Call<ResponseCowInfo> call, Throwable t) {
+			System.out.println("출장우 정보 API onFailure => " + t.toString());
 			if (t.toString().contains("Exception") || t.toString().contains("JsonSyntaxException") || t.toString().contains("MalformedJsonException") || t.toString().contains("NoRouteToHostException") || t.toString().contains("SocketTimeoutException")) {
 				ActionRuler.getInstance().finish();
 				actionDone(resultType.ACTION_RESULT_ERROR_NOT_RESPONSE);

@@ -802,6 +802,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							CommonUtils.getInstance().dismissLoadingDialog();
 						
 						});
+					}else {
+						Platform.runLater(() ->CommonUtils.getInstance().dismissLoadingDialog());
 					}
 				
 				
@@ -953,9 +955,28 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			@Override
 			public void onResponseError(String message) {
-				mLogger.debug("[onResponseError] 출장우 정보 " + message);
-				onCowInfoSendOrStartAuction(type);
-				// ChooseAuctionController 에서 처리
+//				mLogger.debug("[onResponseError] 출장우 정보 netty : " + AuctionDelegate.getInstance().isActive());
+//				mLogger.debug("[onResponseError] 출장우 정보 netty : " + AuctionDelegate.getInstance().mClient.getChannel().isOpen());
+//				mLogger.debug("[onResponseError] 출장우 정보 netty : " + AuctionDelegate.getInstance().mClient.getChannel().isWritable());
+//				mLogger.debug("[onResponseError] 출장우 정보 netty : " + AuctionDelegate.getInstance().mClient.getChannel().isRegistered());
+//				mLogger.debug("[onResponseError] 출장우 정보 netty : " + AuctionDelegate.getInstance().mClient.group.isShutdown());
+//				mLogger.debug("[onResponseError] 출장우 정보 netty : " + AuctionDelegate.getInstance().mClient.group.isTerminated());
+//				mLogger.debug("[onResponseError] 출장우 정보  : " + AuctionDelegate.getInstance().onSendCheckSession());
+				
+				Platform.runLater(() -> {
+					mLogger.debug("[onResponseError] 출장우 정보  : " + message);
+					if(mStage != null) {
+						
+						mLogger.debug("[mStage isShowing] => " + mStage.isShowing());
+						
+						if(mStage.isShowing()) {
+							mLogger.debug("[mStage isShowing]");
+							showAlertPopupOneButton(message);		
+						}
+					}else {
+						mLogger.debug("[mStage is null]");
+					}
+				});
 			}
 		});
 
@@ -2550,10 +2571,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@Override
 	public void onChannelInactive(int port) {
 		mLogger.debug("onChannelInactive : " + port);
+		
 		// ESC 눌러서 임의로 접속 종료시 접속 해제 팝업 노출 X
 		if (isApplicationClosePopup) {
 			return;
 		}
+		
 		Platform.runLater(() -> {
 
 			Optional<ButtonType> btnResult = showAlertPopupOneButton(mResMsg.getString("msg.disconnection"));
@@ -2562,9 +2585,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				onServerAndClose();
 			}
 
-		});
+		});	
 	}
-
+	
 	/**
 	 * 사운드경매(자동경매) 일정 대기시간 후 경매 카운트
 	 */
