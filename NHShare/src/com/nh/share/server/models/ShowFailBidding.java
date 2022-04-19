@@ -9,7 +9,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 출하안내시스템
  * 
- * SZ | 조합구분코드 | 경매일자(YYYYmmdd) | 경매구분(송아지 : 1 / 비육우 : 2 / 번식우 : 3) | 경매등록일련번호
+ * SZ | 조합구분코드 | 경매일자(YYYYmmdd) | 경매구분(송아지 : 1 / 비육우 : 2 / 번식우 : 3) | 경매등록일련번호 | 표시여부(Y/N)
  *
  */
 public class ShowFailBidding implements FromAuctionServer {
@@ -18,12 +18,14 @@ public class ShowFailBidding implements FromAuctionServer {
 	private String mAuctionDate; // 경매일자(YYYYmmdd)
 	private String mAucObjDsc; // 경매구분코드(송아지/비육우/번식우)
 	private String mRgSqNo; // 경매등록일련번호
+	private String mIsShow; // 전광판표시여부
 
-	public ShowFailBidding(String auctionHouseCode, String auctionDate, String aucObjDsc, String rgSqNo) {
+	public ShowFailBidding(String auctionHouseCode, String auctionDate, String aucObjDsc, String rgSqNo, String isShow) {
 		mAuctionHouseCode = auctionHouseCode;
 		mAuctionDate = auctionDate;
 		mAucObjDsc = aucObjDsc;
 		mRgSqNo = rgSqNo;
+		mIsShow = isShow;
 	}
 
 	public ShowFailBidding(RequestShowFailBidding requestShowFailBidding) {
@@ -31,6 +33,7 @@ public class ShowFailBidding implements FromAuctionServer {
 		mAuctionDate = requestShowFailBidding.getAuctionDate();
 		mAucObjDsc = requestShowFailBidding.getAucObjDsc();
 		mRgSqNo = requestShowFailBidding.getRgSqNo();
+		mIsShow = requestShowFailBidding.getIsShow();
 	}
 
 	public String getAuctionHouseCode() {
@@ -65,11 +68,19 @@ public class ShowFailBidding implements FromAuctionServer {
 		this.mRgSqNo = rgSqNo;
 	}
 
+	public String getIsShow() {
+		return mIsShow;
+	}
+
+	public void setIsShow(String isShow) {
+		this.mIsShow = isShow;
+	}
+
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode,
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode,
 				AuctionShareSetting.DELIMITER, mAuctionDate, AuctionShareSetting.DELIMITER, mAucObjDsc,
-				AuctionShareSetting.DELIMITER, mRgSqNo);
+				AuctionShareSetting.DELIMITER, mRgSqNo, AuctionShareSetting.DELIMITER, mIsShow);
 	}
 
 }

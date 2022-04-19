@@ -17,12 +17,14 @@ public class RequestShowFailBidding implements FromAuctionController {
 	private String mAuctionDate; // 경매일자(YYYYmmdd)
 	private String mAucObjDsc; // 경매구분코드(송아지/비육우/번식우)
 	private String mRgSqNo; // 경매등록일련번호
+	private String mIsShow; // 전광판표시여부
 
-	public RequestShowFailBidding(String auctionHouseCode, String auctionDate, String aucObjDsc, String rgSqNo) {
+	public RequestShowFailBidding(String auctionHouseCode, String auctionDate, String aucObjDsc, String rgSqNo, String isShow) {
 		mAuctionHouseCode = auctionHouseCode;
 		mAuctionDate = auctionDate;
 		mAucObjDsc = aucObjDsc;
 		mRgSqNo = rgSqNo;
+		mIsShow = isShow;
 	}
 
 	public String getAuctionHouseCode() {
@@ -57,11 +59,19 @@ public class RequestShowFailBidding implements FromAuctionController {
 		this.mRgSqNo = rgSqNo;
 	}
 
+	public String getIsShow() {
+		return mIsShow;
+	}
+
+	public void setIsShow(String isShow) {
+		this.mIsShow = isShow;
+	}
+
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode,
+		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode,
 				AuctionShareSetting.DELIMITER, mAuctionDate, AuctionShareSetting.DELIMITER, mAucObjDsc,
-				AuctionShareSetting.DELIMITER, mRgSqNo);
+				AuctionShareSetting.DELIMITER, mRgSqNo, AuctionShareSetting.DELIMITER, mIsShow);
 	}
 
 }
