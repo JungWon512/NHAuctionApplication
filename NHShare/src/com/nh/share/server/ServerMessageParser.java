@@ -39,7 +39,7 @@ public class ServerMessageParser {
 		case StandConnectInfo.TYPE: // 출하안내시스템 접속 상태 정보 전송
 			return new StandConnectInfo(messages[1], messages[2]);
 		case ShowFailBidding.TYPE: // 일괄경매 유찰 예상 목록 표시 요청(출하안내시스템)
-			return new ShowFailBidding(messages[1], messages[2], messages[3], messages[4], messages[5]);
+			return new ShowFailBidding(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6], messages[7]);
 		default:
 			return null;
 		}

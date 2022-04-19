@@ -48,7 +48,7 @@ public class ControllerMessageParser {
 		case SendAuctionResult.TYPE: // 낙유찰 결과 전송
 			return new SendAuctionResult(messages);
 		case RequestShowFailBidding.TYPE: // 유찰 대상 목록 표시 요청(일괄경매)
-			return new RequestShowFailBidding(messages[1], messages[2], messages[3], messages[4], messages[5]);
+			return new RequestShowFailBidding(messages[1], messages[2], messages[3], messages[4], messages[5], messages[6], messages[7]);
 		default:
 			throw null;
 		}
