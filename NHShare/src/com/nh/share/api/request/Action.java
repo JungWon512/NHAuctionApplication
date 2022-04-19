@@ -29,7 +29,7 @@ public abstract class Action implements Runnable {
 
 	private static final Logger mLogger = LoggerFactory.getLogger(Action.class);
 
-	private int DEFAULT_TIMEOUT = 5; // API 통신 기본 Time out
+	private int DEFAULT_TIMEOUT = 10; // API 통신 기본 Time out
 
 	public final String CONTENT_TYPE = "Content-Type";
 
