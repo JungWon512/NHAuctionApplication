@@ -63,6 +63,8 @@ public final class AuctionServerDecodedRequestShowFailBiddingHandler
 			if (requestShowFailBIdding.getIsShow().equals("Y")) {
 				mAuctionServer.itemAdded(requestShowFailBIdding.getEncodedMessage());
 			} else {
+				mAuctionServer.itemAdded(requestShowFailBIdding.getEncodedMessage());
+				
 				// 출하안내 시스템에 현재 경매 상태 코드 전송
 				if (mStandChannelsMap != null) {
 					if (mStandChannelsMap.containsKey(requestShowFailBIdding.getAuctionHouseCode())) {
