@@ -1936,7 +1936,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					billboardData.setbPasgQcn(String.valueOf(mCurrentSpEntryInfo.getPasgQcn().getValue()));
 					billboardData.setbMatime(String.valueOf(mCurrentSpEntryInfo.getMatime().getValue()));
 					billboardData.setbKpn(String.valueOf(mCurrentSpEntryInfo.getKpn().getValue()));
-					billboardData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getReRgnName().getValue()));
+					billboardData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getRgnName().getValue()));
 					billboardData.setbNote(String.valueOf(mCurrentSpEntryInfo.getNote().getValue()));
 					billboardData.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
 					billboardData.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));
@@ -1959,7 +1959,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					pdpData.setbPasgQcn(String.valueOf(mCurrentSpEntryInfo.getPasgQcn().getValue()));
 					pdpData.setbMatime(String.valueOf(mCurrentSpEntryInfo.getMatime().getValue()));
 					pdpData.setbKpn(String.valueOf(mCurrentSpEntryInfo.getKpn().getValue()));
-					pdpData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getReRgnName().getValue()));
+					pdpData.setbRegion(String.valueOf(mCurrentSpEntryInfo.getRgnName().getValue()));
 					pdpData.setbNote(String.valueOf(mCurrentSpEntryInfo.getNote().getValue()));
 					pdpData.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
 					pdpData.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));

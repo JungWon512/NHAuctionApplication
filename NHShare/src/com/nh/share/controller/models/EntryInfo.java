@@ -196,7 +196,7 @@ public class EntryInfo implements FromAuctionController {
 		mObjIdNum = cowInfoData.getINDV_ID_NO();
 		mObjRegNum = cowInfoData.getSRA_INDV_BRDSRA_RG_NO();
 		mObjRegTypeNum = cowInfoData.getRG_DSC();
-		mRgnName = cowInfoData.getSRA_PD_RGNNM();
+		mRgnName = cowInfoData.getSRA_PD_RGNNM_FMT();
 		mDnaYn = cowInfoData.getDNA_YN();
 		mIsNew = cowInfoData.getANW_YN();
 		mWeight = Integer.toString(cowInfoData.getCOW_SOG_WT());

@@ -139,7 +139,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 		this.mSraSbidUpPrice = new SimpleStringProperty(Integer.toString(entryInfo.getSraSbidUpPrice()));
 		this.mStandPosition = new SimpleStringProperty(entryInfo.getStandPosition());
 		this.mIsExcessCow = new SimpleStringProperty(entryInfo.getIsExcessCow());
-		this.mReRgnName = new SimpleStringProperty(entryInfo.getReRgnName());
+		this.mReRgnName = new SimpleStringProperty(entryInfo.getRgnName());
 		this.mMacoYn = new SimpleStringProperty(entryInfo.getMacoYn());
 		this.mTrpcsPyYn = new SimpleStringProperty(entryInfo.getTrpcsPyYn());
 		this.mPpgcowFeeDsc = new SimpleStringProperty(entryInfo.getPpgcowFeeDsc());
@@ -764,7 +764,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 				CommonUtils.getInstance().replaceDelimiter(getObjIdNum().getValue()), AuctionShareSetting.DELIMITER,		// 개체	 식별번호	INDV_ID_NO
 				CommonUtils.getInstance().replaceDelimiter(getObjRegNum().getValue()), AuctionShareSetting.DELIMITER,		// 축산개체종축등록번호	SRA_INDV_BRDSRA_RG_NO
 				CommonUtils.getInstance().replaceDelimiter(getObjRegTypeNum().getValue()),AuctionShareSetting.DELIMITER, 	// 등록구분코드 RG_DSC
-				CommonUtils.getInstance().replaceDelimiter(getReRgnName().getValue()), AuctionShareSetting.DELIMITER,	 	// 출하생산지역	 SRA_PD_RGNNM
+				CommonUtils.getInstance().replaceDelimiter(getRgnName().getValue()), AuctionShareSetting.DELIMITER,	 	// 출하생산지역	 SRA_PD_RGNNM_FMT
 				CommonUtils.getInstance().replaceDelimiter(getDnaYn().getValue()), AuctionShareSetting.DELIMITER,		 	// 친자검사결과여부	 DNA_YN
 				CommonUtils.getInstance().replaceDelimiter(getIsNew().getValue()), AuctionShareSetting.DELIMITER,
 				getWeight().getValue(), AuctionShareSetting.DELIMITER, 														// 중량, 보낼때만 KG 붙임.

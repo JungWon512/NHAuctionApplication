@@ -27,6 +27,7 @@ public class CowInfoData {
 	private String LSCHG_DTM;                   
 	private String MCOW_SRA_INDV_AMNNO;         
 	private String SRA_PD_RGNNM;           
+	private String SRA_PD_RGNNM_FMT;
 	private String RMK_CNTN;                          
 	private String INDV_SEX_C_NAME;        
 	private String BRANDNM;                
@@ -194,6 +195,12 @@ public class CowInfoData {
 	}
 	public void setSRA_PD_RGNNM(String sRA_PD_RGNNM) {
 		SRA_PD_RGNNM = sRA_PD_RGNNM;
+	}
+	public String getSRA_PD_RGNNM_FMT() {
+		return SRA_PD_RGNNM_FMT;
+	}
+	public void setSRA_PD_RGNNM_FMT(String sRA_PD_RGNNM_FMT) {
+		SRA_PD_RGNNM_FMT = sRA_PD_RGNNM_FMT;
 	}
 	public int getLED_SQNO() {
 		return LED_SQNO;
