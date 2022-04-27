@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1280.0" minHeight="1024.0" minWidth="1280.0" prefHeight="1024.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.MultipleAuctionController">
+<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1280.0" minHeight="1024.0" minWidth="1280.0" prefHeight="1024.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.MultipleAuctionController">
    <top>
       <GridPane maxHeight="71.0" minHeight="71.0" prefHeight="71.0" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -85,12 +85,12 @@
                <children>
                   <Button fx:id="mBtnSendPending" alignment="CENTER" contentDisplay="BOTTOM" maxHeight="61.0" maxWidth="1.7976931348623157E308" minHeight="61.0" mnemonicParsing="false" prefHeight="61.0" styleClass="btn-header" text="[F11]" HBox.hgrow="ALWAYS">
                      <graphic>
-                        <Label alignment="BOTTOM_CENTER" text="유찰 대상 목록 표시" />
+                        <Label alignment="BOTTOM_CENTER" text="미응찰 대상 표시" />
                      </graphic>
                   </Button>
                   <Button fx:id="mBtnSendPendingHide" alignment="CENTER" contentDisplay="BOTTOM" maxHeight="61.0" maxWidth="1.7976931348623157E308" minHeight="61.0" mnemonicParsing="false" prefHeight="61.0" styleClass="btn-header" text="[F12]" HBox.hgrow="ALWAYS">
                      <graphic>
-                        <Label alignment="BOTTOM_CENTER" text="유찰 대상 목록 해제" />
+                        <Label alignment="BOTTOM_CENTER" text="미응찰 대상 표시 해제" />
                      </graphic>
                   </Button>
                </children>
