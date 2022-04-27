@@ -392,6 +392,11 @@ public class EntryListController implements Initializable {
 	public void onDownPrice(MouseEvent event) {
 		
 		try {
+			
+			if (CommonUtils.getInstance().isListEmpty(mEntryDataList)) {
+				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("msg.entry.default"),mResMsg.getString("popup.btn.ok")));
+				return;
+			}
 		
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_0) {
 			

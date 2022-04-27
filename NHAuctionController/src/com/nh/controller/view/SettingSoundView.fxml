@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRoot" prefHeight="900.0" prefWidth="1280.0" styleClass="setting-sound" stylesheets="@../css/sound.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.SettingSoundController">
+<BorderPane fx:id="mRoot" prefHeight="900.0" prefWidth="1280.0" styleClass="setting-sound" stylesheets="@../css/sound.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.SettingSoundController">
    <top>
       <GridPane style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
          <columnConstraints>
@@ -272,7 +272,7 @@
                   </HBox>
                   <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="12">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비 1" textFill="WHITE" HBox.hgrow="ALWAYS" />
+                        <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비1" textFill="WHITE" HBox.hgrow="ALWAYS" />
                         <Button fx:id="mBtnPlaySound_7" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -298,7 +298,7 @@
                   </HBox>
                   <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="14">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비 2" textFill="WHITE" HBox.hgrow="ALWAYS" />
+                        <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비2" textFill="WHITE" HBox.hgrow="ALWAYS" />
                         <Button fx:id="mBtnPlaySound_8" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -324,7 +324,7 @@
                   </HBox>
                   <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="16">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비 3" textFill="WHITE" HBox.hgrow="ALWAYS" />
+                        <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비3" textFill="WHITE" HBox.hgrow="ALWAYS" />
                         <Button fx:id="mBtnPlaySound_9" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -376,7 +376,7 @@
                   </HBox>
                   <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="20">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비 5" textFill="WHITE" HBox.hgrow="ALWAYS" />
+                        <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비5" textFill="WHITE" HBox.hgrow="ALWAYS" />
                         <Button fx:id="mBtnPlaySound_11" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -402,7 +402,7 @@
                   </HBox>
                   <HBox alignment="CENTER" spacing="4.0" GridPane.rowIndex="22">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비 6" textFill="WHITE" HBox.hgrow="ALWAYS" />
+                        <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="48.0" minWidth="48.0" prefWidth="48.0" text="예비6" textFill="WHITE" HBox.hgrow="ALWAYS" />
                         <Button fx:id="mBtnPlaySound_12" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="btn-style-play" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">

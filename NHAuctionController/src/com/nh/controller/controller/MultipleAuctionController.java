@@ -977,7 +977,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 
 	/**
-	 * 새로고침 버튼
+	 * 일괄경매 시작 -> response 출장우 데이터로 갱신 
 	 */
 	private void onResponseCowInfoRefresh(List<CowInfoData> resDataList,String type) {
 		clearRefreshWaitEntryDataList(type,resDataList);
@@ -1215,6 +1215,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 * 전광판으로 유찰 대상 목록 표시 or 해제 전송
 	 */
 	public void onSendPendingList(boolean isShow) {
+		
+		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+			return;
+		}
 
 		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
 		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
@@ -1242,6 +1246,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		RequestShowFailBidding requestShowFailBidding = new RequestShowFailBidding(naBzplc, aucDate, aucObjDsc, rgSqNo,showYn,stAucNo,edAucNo);
 		AuctionDelegate.getInstance().sendMessage(requestShowFailBidding);
+		
+		mLogger.debug("[유찰대상목록 표시/해제]=> " + requestShowFailBidding.getEncodedMessage());
 	}
 
 	/**
@@ -1300,7 +1306,6 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		
 				mWaitTableView.refresh();
 				selectIndexWaitTable(0,false);
-				setCurrentEntryInfo();
 				setCowTotalCount(resDataList.size());
 				
 			});
@@ -1441,7 +1446,8 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						Platform.runLater(() -> {
 							mWaitTableView.refresh();
 							setCowTotalCount(result.getData().size());
-							setCurrentEntryInfo();
+							//2022-04-26 새로고침 후 0번째 선택 기본 적용
+							selectIndexWaitTable(0, false);
 						});
 	
 						PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
@@ -2853,6 +2859,11 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 					
 					// 새로고침
 					if (ke.getCode() == KeyCode.F5) {
+						
+						if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+							return;
+						}
+						
 						Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
 						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
 						ke.consume();
@@ -3208,9 +3219,15 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						selectIndex = index;
 					}
 
+					mLogger.debug("mRecordCount" + mRecordCount + " / "  + selectIndex);
+					
 					if (mRecordCount > selectIndex) {
 						mWaitTableView.getSelectionModel().select(selectIndex);
-						mWaitTableView.scrollTo(mWaitTableView.getSelectionModel().getSelectedIndex()+ 1);
+						
+						if(mRecordCount > 13) {
+							mWaitTableView.scrollTo(mWaitTableView.getSelectionModel().getSelectedIndex()+ 1);		
+						}
+
 					}
 				}
 
@@ -3230,7 +3247,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 			SpEntryInfo currentEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
 
-			if (CommonUtils.getInstance().isEmptyProperty(currentEntryInfo.getEntryNum())) {
+			if (currentEntryInfo == null || CommonUtils.getInstance().isEmptyProperty(currentEntryInfo.getEntryNum())) {
 				return;
 			}
 

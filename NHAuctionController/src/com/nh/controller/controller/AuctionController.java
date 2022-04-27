@@ -66,6 +66,7 @@ import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.FinishAuction;
 import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PauseAuction;
+import com.nh.share.language.LanguageDefine.Common;
 import com.nh.share.server.models.AuctionBidStatus;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
@@ -731,7 +732,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 								SpEntryInfo newSpEntryInfo = newItem;
 
 								if (CommonUtils.getInstance().isEmptyProperty(newSpEntryInfo.getEntryNum())) {
-									if (!CommonUtils.getInstance().isEmptyProperty(newSpEntryInfo.getEntryNum())) {
+									if (!CommonUtils.getInstance().isEmptyProperty(oldSpEntryInfo.getEntryNum())) {
 										mWaitTableView.getSelectionModel().clearSelection();
 										mWaitTableView.getSelectionModel().select(oldSpEntryInfo);
 									}
@@ -2246,7 +2247,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param event
 	 */
 	public void onUpPrice(MouseEvent event) {
-	
+		
+		if(mWaitTableView.getSelectionModel().getSelectedItem() == null) {
+			mLogger.debug("예정가 높이기 선택된 item 없음");
+			return;
+		}
+		
+		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+			return;
+		}
+		
 		long upPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue()));
 		
 		mLogger.debug("예정가 높이기 : "  + upPrice + " / 구분코드 :  " + mCurrentSpEntryInfo.getEntryType().getValue());
@@ -2260,7 +2270,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param event
 	 */
 	public void onDownPrice(MouseEvent event) {
+		
+		if(mWaitTableView.getSelectionModel().getSelectedItem() == null) {
+			mLogger.debug("예정가 낮추기 선택된 item 없음");
+			return;
+		}
+		
+		if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+			return;
+		}
 
+			
 		long lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue())) * -1;
 		
 		mLogger.debug("예정가 낮추기 : " + lowPrice + " / 구분코드 : " + mCurrentSpEntryInfo.getEntryType().getValue());
@@ -4088,12 +4108,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						
 						// 보류
 						if (ke.getCode() == KeyCode.F3) {
+							
+							if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+								return;
+							}
+
 							onPending();
 							ke.consume();
 						}
 
 						//새로고침
 						if (ke.getCode() == KeyCode.F5) {
+							
+							if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+								return;
+							}
+							
 							goRefresh(true);
 							ke.consume();
 						}
@@ -4107,6 +4137,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 						// 대기중인 목록 위로 이동
 						if (ke.getCode() == KeyCode.UP) {
+							
+							if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+								return;
+							}
 
 							if (mWaitTableView.isDisable() || isAutoPlay) {
 								return;
@@ -4124,6 +4158,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						}
 						// 대기중인 목록 아래로 이동
 						if (ke.getCode() == KeyCode.DOWN) {
+							
+							if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+								return;
+							}
 
 							if (mWaitTableView.isDisable() || isAutoPlay) {
 								return;
@@ -4138,6 +4176,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					// 경매 시작
 					if (ke.getCode() == KeyCode.ADD) {
+						
+						if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+							return;
+						}
 
 						mLogger.debug("[KeyCode.ADD]=> isStartedAuction : " + isStartedAuction);
 						mLogger.debug("[KeyCode.ADD]=> isPlusKeyStartAuction : " + isPlusKeyStartAuction);
@@ -4170,12 +4212,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					// 경매 시작
 					if (ke.getCode() == KeyCode.ENTER) {
+						
+						if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+							return;
+						}
+
 						mLogger.debug("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
 						normalEnterStartAuction();
 						ke.consume();
 					}
 					// 음성 경매 시작
 					if (ke.getCode() == KeyCode.SPACE) {
+						
+						if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
+							return;
+						}
+						
 						mLogger.debug("[KeyCode.SPACE]=> " + mAuctionStatus.getState());
 						normalSpaceStartAuction();
 						ke.consume();
