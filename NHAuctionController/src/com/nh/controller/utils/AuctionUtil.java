@@ -2,6 +2,8 @@ package com.nh.controller.utils;
 
 import java.util.Arrays;
 
+import com.nh.controller.setting.SettingApplication;
+
 import javafx.scene.text.Font;
 
 public class AuctionUtil {
@@ -142,6 +144,26 @@ public class AuctionUtil {
                     .orElse("");
         }
     }
+    
+    /**
+     * 음성 재생 속도
+     * @return
+     */
+    public Double getSoundRate() {
+    	
+    	int savedRate = SettingApplication.getInstance().getSoundRate();
+		
+		Double rate = GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_1_0;
+		
+		if(savedRate > 0) {
+			rate += (savedRate * 0.1);
+		}else {
+			rate =GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_0_0;
+		}
+		
+		return rate;
+    }
+    
     
     /**
      * 폰트 확인.
