@@ -1334,12 +1334,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				dismissShowingDialog();
 				
 				//경매 진행중인경우 갱신 안하도록 2021-12-14
-				if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
-					return;
-				}
-		
-				if (index < 0 || CommonUtils.getInstance().isListEmpty(dataList) || type.equals(EntryDialogType.ENTRY_FINISH_LIST) ) {
-					refreshWaitAllEntryDataList(mWaitTableView.getSelectionModel().getSelectedIndex());
+				if (type.equals(EntryDialogType.ENTRY_FINISH_LIST) 
+						|| mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START)
+						|| mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS) 
+						|| CommonUtils.getInstance().isListEmpty(dataList)) {
 					return;
 				}
 				

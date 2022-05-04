@@ -445,12 +445,14 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		mBtnF5.setOnMouseClicked(event -> {
 			Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
-			onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
+			int currentSelectedIndex = mWaitTableView.getSelectionModel().getSelectedIndex();
+			initWaitEntryDataList(mCurPageType,currentSelectedIndex);
 		});
 
 		mHeaderBtnRefresh.setOnMouseClicked(event -> {
 			Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
-			onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
+			int currentSelectedIndex = mWaitTableView.getSelectionModel().getSelectedIndex();
+			initWaitEntryDataList(mCurPageType,currentSelectedIndex);
 		});
 
 		mBtnSendPending.setOnMouseClicked(event -> onSendPendingList(true));
@@ -733,7 +735,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 *
 	 * @param dataList
 	 */
-	private void initWaitEntryDataList(ObservableList<SpEntryInfo> dataList) {
+	private void initWaitEntryTableView(ObservableList<SpEntryInfo> dataList) {
 	
 		showLogAuctionInfo();
 		
@@ -959,7 +961,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			Platform.runLater(() -> {
 					mWaitEntryInfoDataList.clear();
 					mWaitEntryInfoDataList = getParsingCowEntryDataList(mTmpCowDataList);
-					initWaitEntryDataList(mWaitEntryInfoDataList);
+					initWaitEntryTableView(mWaitEntryInfoDataList);
 					setCowTotalCount(mTmpCowDataList.size());
 					mTmpCowDataList = null;
 			});
@@ -1061,92 +1063,11 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 				mLogger.debug("Dialog callBack Value : " + type);
 				
 				// 낙찰 결과보기는 이동,갱신 안 함
-				if (type.equals(EntryDialogType.ENTRY_FINISH_LIST)) {
+				if (type.equals(EntryDialogType.ENTRY_FINISH_LIST) || CommonUtils.getInstance().isListEmpty(dataList)) {
 					return;
 				}
 				
-				ApiUtils.getInstance().requestSelectCowInfo(getCowInfoParamBody(), new ActionResultListener<ResponseCowInfo>() {
-					@Override
-					public void onResponseResult(final ResponseCowInfo result) {
-						
-						try {
-							
-							
-							if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
-								
-								mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
-	
-								List<CowInfoData> dataList = new ArrayList<CowInfoData>();
-										
-								dataList = result.getData();
-								
-								// 보류목록일경우
-								if (type.equals(EntryDialogType.ENTRY_LIST)) {
-									
-									dataList = result.getData();
-								
-								}else {
-									
-									dataList = result.getData().stream()
-								            .filter(c -> c.getSEL_STS_DSC().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING) || c.getSEL_STS_DSC().equals(GlobalDefineCode.AUCTION_RESULT_CODE_READY))
-								            .collect(Collectors.toList());
-								}
-								
-								ObservableList<SpEntryInfo> newEntryDataList = getParsingCowEntryDataList(dataList);
-								
-								mLogger.debug("[현재 타입 mCurPageType] => " + mCurPageType);
-						
-	
-								// 조회 데이터 없으면 리턴
-								if (CommonUtils.getInstance().isListEmpty(newEntryDataList)) {
-									mLogger.debug("조회 데이터 없음.");
-									return;
-								}
-								
-								Platform.runLater(() -> {
-									
-									mRecordCount = newEntryDataList.size();
-									mWaitEntryInfoDataList.clear();
-									mWaitEntryInfoDataList.addAll(newEntryDataList);
-									setCowTotalCount(result.getData().size());
-	
-									for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
-										mWaitEntryInfoDataList.add(new SpEntryInfo());
-									}
-									
-									mWaitTableView.refresh();
-									//초기화 전송
-									mLogger.debug("[CLEAR INIT SERVER] : " + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
-								
-									//출장우 정보 전송
-									onCowInfoSendOrStartAuction(REFRESH_ENTRY_LIST_TYPE_SEND);
-									
-									if (index > -1) {
-										selectIndexWaitTable(index, true);
-									}else {
-										selectIndexWaitTable(0, true);
-									}
-									
-									
-									CommonUtils.getInstance().dismissLoadingDialog();
-								});
-								
-								mCurPageType = type;
-							}
-						
-						}catch (Exception e) {
-							e.printStackTrace();
-							SentryUtil.getInstance().sendExceptionLog(e);
-						}
-
-					}
-					
-					@Override
-					public void onResponseError(String message) {
-						mLogger.debug("[onResponseError] 출장우 정보 " + message);
-						Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
-					}	
-				});
+				initWaitEntryDataList(type,index);
 				
 			}
 		});
@@ -1317,6 +1238,101 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		}
 	}
 
+	/**
+	 * 출장우 데이터 전체 목록 조회
+	 * 전체 목록 조회 or 유찰,대기 목록 조회 
+	 * 서버 초기화 요청 후 출장우 데이터 전송
+	 * @param type
+	 * @param index
+	 */
+	private void initWaitEntryDataList(EntryDialogType type, int index) {
+		
+		ApiUtils.getInstance().requestSelectCowInfo(getCowInfoParamBody(), new ActionResultListener<ResponseCowInfo>() {
+			@Override
+			public void onResponseResult(final ResponseCowInfo result) {
+				
+				try {
+					
+					
+					if (result != null && result.getSuccess() && !CommonUtils.getInstance().isListEmpty(result.getData())) {
+						
+						mLogger.debug("[출장우 정보 조회 데이터 수] " + result.getData().size());
+
+						List<CowInfoData> dataList = new ArrayList<CowInfoData>();
+								
+						dataList = result.getData();
+						
+						// 보류목록일경우
+						if (type.equals(EntryDialogType.ENTRY_LIST)) {
+							
+							dataList = result.getData();
+						
+						}else {
+							
+							dataList = result.getData().stream()
+						            .filter(c -> c.getSEL_STS_DSC().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING) || c.getSEL_STS_DSC().equals(GlobalDefineCode.AUCTION_RESULT_CODE_READY))
+						            .collect(Collectors.toList());
+						}
+						
+						ObservableList<SpEntryInfo> newEntryDataList = getParsingCowEntryDataList(dataList);
+						
+						mLogger.debug("[현재 타입 mCurPageType] => " + mCurPageType);
+				
+
+						// 조회 데이터 없으면 리턴
+						if (CommonUtils.getInstance().isListEmpty(newEntryDataList)) {
+							mLogger.debug("조회 데이터 없음.");
+							return;
+						}
+						
+						Platform.runLater(() -> {
+							
+							mRecordCount = newEntryDataList.size();
+							mWaitEntryInfoDataList.clear();
+							mWaitEntryInfoDataList.addAll(newEntryDataList);
+							setCowTotalCount(result.getData().size());
+
+							for (int i = 0; DUMMY_ROW_WAIT > i; i++) {
+								mWaitEntryInfoDataList.add(new SpEntryInfo());
+							}
+							
+							mWaitTableView.refresh();
+							//초기화 전송
+							mLogger.debug("[CLEAR INIT SERVER] : " + AuctionDelegate.getInstance().onInitEntryInfo(new InitEntryInfo(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc(), Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getQcn()))));
+						
+							//출장우 정보 전송
+							onCowInfoSendOrStartAuction(REFRESH_ENTRY_LIST_TYPE_SEND);
+							
+							if (index > -1) {
+								selectIndexWaitTable(index, true);
+							}else {
+								selectIndexWaitTable(0, true);
+							}
+							
+							
+							CommonUtils.getInstance().dismissLoadingDialog();
+						});
+						
+						mCurPageType = type;
+					}
+				
+				}catch (Exception e) {
+					e.printStackTrace();
+					SentryUtil.getInstance().sendExceptionLog(e);
+				}
+
+			}
+			
+			@Override
+			public void onResponseError(String message) {
+				mLogger.debug("[onResponseError] 출장우 정보 " + message);
+				Platform.runLater(() -> CommonUtils.getInstance().dismissLoadingDialog());
+			}	
+		});
+		
+	}
+	
+	
 	
 	/**
 	 * 대기중인 출품 목록 갱신 변경/추가된 데이터 서버 전달
@@ -2865,7 +2881,11 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 						}
 						
 						Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.searching.entry.list")));
-						onRefresh(REFRESH_ENTRY_LIST_TYPE_REFRESH);
+
+						int currentSelectedIndex = mWaitTableView.getSelectionModel().getSelectedIndex();
+						
+						initWaitEntryDataList(mCurPageType,currentSelectedIndex);
+						
 						ke.consume();
 					}
 					
