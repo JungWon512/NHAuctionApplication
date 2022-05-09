@@ -480,9 +480,21 @@ public class Auctioneer {
 			mAuctionEntryRepositoryMap.get(auctionHouseCode).pushEntry(entryInfo);
 		}
 
-		if (entryInfo.getIsLastEntry().equals("Y")) {
-			readyEntryInfo(auctionHouseCode);
+		if (getAuctionEditSetting(auctionHouseCode).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+			if (entryInfo.getIsLastEntry().equals("Y")) {
+				readyEntryInfo(auctionHouseCode);
+			}
+		} else {
+			if (!getCurrentAuctionStatus(auctionHouseCode)
+					.equals(GlobalDefineCode.AUCTION_STATUS_START) && !getCurrentAuctionStatus(auctionHouseCode)
+					.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+				if (entryInfo.getIsLastEntry().equals("Y")) {
+					readyEntryInfo(auctionHouseCode);
+				}
+			}
 		}
+		
+		System.out.println("현재 출장우 총두수 : " + mAuctionEntryRepositoryMap.get(auctionHouseCode).getEntryList().size() + "두");
 	}
 
 	/**

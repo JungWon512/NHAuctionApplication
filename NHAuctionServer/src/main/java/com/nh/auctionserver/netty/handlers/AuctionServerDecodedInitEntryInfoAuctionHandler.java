@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.AuctionServer;
+import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.controller.models.InitEntryInfo;
 import com.nh.share.controller.models.PauseAuction;
@@ -57,7 +58,16 @@ public final class AuctionServerDecodedInitEntryInfoAuctionHandler extends Simpl
 
 		if (mControllerChannelsMap.get(initEntryInfo.getAuctionHouseCode()).contains(ctx.channel()) == true) {
 			mLogger.info("정상 채널에서 경매 출품 데이터 초기화 요청을 하였습니다.");
-			mAuctionServer.itemAdded(initEntryInfo.getEncodedMessage());
+			
+			if (mAuctionScheduler.getAuctionEditSetting(initEntryInfo.getAuctionHouseCode()).getAuctionType().equals(GlobalDefineCode.AUCTION_TYPE_SINGLE)) {
+				mAuctionServer.itemAdded(initEntryInfo.getEncodedMessage());
+			} else {
+				if (!mAuctionScheduler.getCurrentAuctionStatus(initEntryInfo.getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_START) && !mAuctionScheduler.getCurrentAuctionStatus(initEntryInfo.getAuctionHouseCode())
+						.equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
+					mAuctionServer.itemAdded(initEntryInfo.getEncodedMessage());
+				}
+			}
 		} else {
 			mLogger.info("비정상 채널에서 경매 출품 데이터 초기화를 요청하였으나, 요청이 거부되었습니다.");
 		}
