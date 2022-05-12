@@ -165,7 +165,8 @@ public class ChooseAuctionController implements Initializable {
 		default:
 			mCalfToggleButton.setSelected(true);
 		}
-
+		
+		GlobalDefine.AUCTION_INFO.auctionRoundData = null;
 	}
 
 	/**
