@@ -1596,20 +1596,12 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 //					auctionStateLabelToggle(GlobalDefine.AUCTION_INFO.auctionRoundData.getSelStsDsc());
 
 				} else {
+					mLogger.debug("[일괄경매 시작 False]");
 
-					if (type.equals(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_START) && mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_READY)) {
-						mLogger.debug("[DB START+경매서버가 대기(8002)인 상황에서 경매시작 누른경우. 일괄경매 시작!! ]");
-						GlobalDefine.AUCTION_INFO.auctionRoundData.setSelStsDsc(GlobalDefineCode.STN_AUCTION_STATUS_PROGRESS);
-						onAuctionStatusStart(true);
-					} else {
-						mLogger.debug("[일괄경매 시작 False]");
-
-						Platform.runLater(() -> {
-							CommonUtils.getInstance().dismissLoadingDialog();
-							showAlertPopupOneButton(result.getMessage());
-						});
-					}
-
+					Platform.runLater(() -> {
+						CommonUtils.getInstance().dismissLoadingDialog();
+						showAlertPopupOneButton(result.getMessage());
+					});
 				}
 			}
 
