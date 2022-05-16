@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1280.0" minHeight="1024.0" minWidth="1280.0" prefHeight="1024.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.MultipleAuctionController">
+<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1280.0" minHeight="1024.0" minWidth="1280.0" prefHeight="1024.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.MultipleAuctionController">
    <top>
       <GridPane maxHeight="71.0" minHeight="71.0" prefHeight="71.0" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -66,7 +66,7 @@
                   </Button>
                   <Button fx:id="mBtnSendPendingHide" alignment="CENTER" contentDisplay="BOTTOM" maxHeight="61.0" maxWidth="123.0" minHeight="61.0" minWidth="123.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="123.0" styleClass="btn-header" text="[F12]">
                      <graphic>
-                        <Label alignment="BOTTOM_CENTER" maxWidth="123.0" text="경매 진행 표시" />
+                        <Label alignment="BOTTOM_CENTER" maxWidth="123.0" text="전체 목록 표시" />
                      </graphic>
                   </Button>
                </children>
