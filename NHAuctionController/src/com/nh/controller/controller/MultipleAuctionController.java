@@ -1640,7 +1640,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), entryNumber);
 
 		//시작 전 보냄
-		onSendPendingList(SHOW_TYPE_NORMAL);
+//		onSendPendingList(SHOW_TYPE_NORMAL);
 		
 		// 시작 서버로 Start 보냄.
 		mLogger.debug(msgStart + AuctionDelegate.getInstance().onStartAuction(entryNumber));

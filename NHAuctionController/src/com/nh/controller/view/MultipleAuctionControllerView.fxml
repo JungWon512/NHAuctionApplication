@@ -56,17 +56,17 @@
                   </Button>
                   <Button fx:id="mBtnSendAuctTarget" alignment="CENTER" contentDisplay="BOTTOM" maxHeight="61.0" maxWidth="123.0" minHeight="61.0" minWidth="123.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="123.0" styleClass="btn-header" text="[F10]" HBox.hgrow="ALWAYS">
                      <graphic>
-                        <Label alignment="BOTTOM_CENTER" maxWidth="123.0" text="경매 대상 표시" />
+                        <Label alignment="BOTTOM_CENTER" maxWidth="123.0" text="경매대상 표시" />
                      </graphic>
                   </Button>
                   <Button fx:id="mBtnSendPending" alignment="CENTER" contentDisplay="BOTTOM" maxHeight="61.0" maxWidth="123.0" minHeight="61.0" minWidth="123.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="123.0" styleClass="btn-header" text="[F11]">
                      <graphic>
-                        <Label alignment="BOTTOM_CENTER" maxWidth="123.0" text="미응찰 대상 표시" />
+                        <Label alignment="BOTTOM_CENTER" maxWidth="123.0" text="미응찰 표시" />
                      </graphic>
                   </Button>
                   <Button fx:id="mBtnSendPendingHide" alignment="CENTER" contentDisplay="BOTTOM" maxHeight="61.0" maxWidth="123.0" minHeight="61.0" minWidth="123.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="123.0" styleClass="btn-header" text="[F12]">
                      <graphic>
-                        <Label alignment="BOTTOM_CENTER" maxWidth="123.0" text="전체 목록 표시" />
+                        <Label alignment="BOTTOM_CENTER" maxWidth="123.0" text="경매결과 표시" />
                      </graphic>
                   </Button>
                </children>
