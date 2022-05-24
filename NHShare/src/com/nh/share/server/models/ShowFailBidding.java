@@ -9,7 +9,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * 
  * 경매서버 -> 출하안내시스템
  * 
- * SZ | 조합구분코드 | 경매일자(YYYYmmdd) | 경매구분(송아지 : 1 / 비육우 : 2 / 번식우 : 3) | 경매등록일련번호 | 표시여부(Y/N) | 경매대상시작번호 | 경매대상끝번호
+ * SZ | 조합구분코드 | 경매일자(YYYYmmdd) | 경매구분(송아지 : 1 / 비육우 : 2 / 번식우 : 3) | 경매등록일련번호 | 표시여부(Y:유찰대상표시 / N:경매진행화면표시 / P:경매진행대상표시 / A:기본영상표시 / H:일괄경매진행구간표시) | 경매대상시작번호 | 경매대상끝번호
  *
  */
 public class ShowFailBidding implements FromAuctionServer {

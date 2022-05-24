@@ -137,6 +137,7 @@ import javafx.util.Duration;
  * @author jhlee
  */
 public class MultipleAuctionController implements Initializable, NettyControllable {
+	private final String SHOW_TYPE_SCOPE = "H";
 	private final String SHOW_TYPE_NORMAL = "N";
 	private final String SHOW_TYPE_FAIL = "Y";
 	private final String SHOW_TYPE_PROGRESS = "P";
@@ -1640,7 +1641,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		String msgStart = String.format(mResMsg.getString("msg.auction.send.start"), entryNumber);
 
 		//시작 전 보냄
-//		onSendPendingList(SHOW_TYPE_NORMAL);
+		onSendPendingList(SHOW_TYPE_SCOPE);
 		
 		// 시작 서버로 Start 보냄.
 		mLogger.debug(msgStart + AuctionDelegate.getInstance().onStartAuction(entryNumber));
