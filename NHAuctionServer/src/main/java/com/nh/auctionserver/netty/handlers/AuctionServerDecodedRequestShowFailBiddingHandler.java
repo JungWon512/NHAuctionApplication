@@ -66,14 +66,14 @@ public final class AuctionServerDecodedRequestShowFailBiddingHandler
 				mAuctionServer.itemAdded(requestShowFailBIdding.getEncodedMessage());
 				
 				// 출하안내 시스템에 현재 경매 상태 코드 전송
-				if (mStandChannelsMap != null) {
-					if (mStandChannelsMap.containsKey(requestShowFailBIdding.getAuctionHouseCode())) {
-						if (mStandChannelsMap.get(requestShowFailBIdding.getAuctionHouseCode()).size() > 0) {
-							mStandChannelsMap.get(requestShowFailBIdding.getAuctionHouseCode()).writeAndFlush(mAuctionScheduler.getAuctionState(requestShowFailBIdding.getAuctionHouseCode())
-									.getAuctionStatus().getEncodedMessage() + "\r\n");
-						}
-					}
-				}
+//				if (mStandChannelsMap != null) {
+//					if (mStandChannelsMap.containsKey(requestShowFailBIdding.getAuctionHouseCode())) {
+//						if (mStandChannelsMap.get(requestShowFailBIdding.getAuctionHouseCode()).size() > 0) {
+//							mStandChannelsMap.get(requestShowFailBIdding.getAuctionHouseCode()).writeAndFlush(mAuctionScheduler.getAuctionState(requestShowFailBIdding.getAuctionHouseCode())
+//									.getAuctionStatus().getEncodedMessage() + "\r\n");
+//						}
+//					}
+//				}
 			}
 		} else {
 			mLogger.info("비정상 채널에서 유찰 예상 목록 표시를 요청하였으나, 요청이 거부되었습니다.");
