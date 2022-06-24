@@ -89,7 +89,7 @@ public class PdpDelegate {
 	 * @Description 경매 완료
 	 */
 	public void completePdp() {
-		mLogger.debug("completeBillboard");
+		mLogger.debug("completePdp");
 		 if(!isEmptyClient() && isActive()) {
 			 sendMessage(String.format("%c%c%c", GlobalDefine.PDP.STX, GlobalDefine.PDP.FINISH_CODE, GlobalDefine.PDP.ETX));
 		 }
@@ -101,11 +101,21 @@ public class PdpDelegate {
 	public void sendPdpData(NettySendable sendable) {
 		
 		if(!isEmptyClient() && isActive()) {
-			clearPdp();
 			sendMessage(sendable);
+			clearPdp();
 		}
 	}
 
+	/**
+	 * @Description 경매 정보 전송
+	 */
+	public void sendNotClearPdpData(NettySendable sendable) {
+		
+		if(!isEmptyClient() && isActive()) {
+			sendMessage(sendable);
+		}
+	}
+	
 	/**
 	 * @Description PDP 카운트다운
 	 */
@@ -126,7 +136,8 @@ public class PdpDelegate {
 	 * @Description PDP 초기화 작업: SharedPreference 값(자릿수) 전송
 	 */
 	public String initPdp() {
-		finishPdp();
+		// TEST
+		//finishPdp();
 		String[] arr = getPdpPref();
 		StringBuilder sb = new StringBuilder();
 		sb.append(GlobalDefine.PDP.STX);

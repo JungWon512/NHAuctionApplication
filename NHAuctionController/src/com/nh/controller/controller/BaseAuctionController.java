@@ -375,7 +375,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 					pdpData.setbLowPrice(String.valueOf(mCurrentSpEntryInfo.getLowPrice().getValue()));
 					pdpData.setbDnaYn(String.valueOf(mCurrentSpEntryInfo.getDnaYn().getValue()));
 
-					PdpDelegate.getInstance().sendPdpData(pdpData);
+					PdpDelegate.getInstance().sendNotClearPdpData(pdpData);
 					PdpDelegate.getInstance().startPdp();
 					addLogItem(mResMsg.getString("msg.pdp.send.current.entry.data") + pdpData.getEncodedMessage());
 				}
@@ -988,101 +988,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 						auctionResult.setSuccessBidPrice(Integer.toString(sraSbidAm));
 		
 						bidder.setSraSbidAm(new SimpleStringProperty(Integer.toString(sraSbidAm)));
-		
-						try {
-		
-							if (!BillboardDelegate1.getInstance().isEmptyClient() && BillboardDelegate1.getInstance().isActive()) {
-								// // 전광판 전송
-								BillboardData billboardData1 = new BillboardData();
-								billboardData1.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
-								billboardData1.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
-								billboardData1.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
-								billboardData1.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
-								billboardData1.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
-								billboardData1.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
-								billboardData1.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
-								billboardData1.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
-								billboardData1.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
-								billboardData1.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
-								billboardData1.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
-								billboardData1.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
-								billboardData1.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
-								billboardData1.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
-		
-								addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData1.getEncodedMessage());
-								BillboardDelegate1.getInstance().sendBillboardData(billboardData1);
-								
-								// 전광판1 비고 흐름 사용 여부
-								if (SettingApplication.getInstance().isBoardUseNote1()) {
-									BillboardDelegate1.getInstance().clearBillboardNote();
-									BillboardDelegate1.getInstance().sendBillboardNote(billboardData1.getbNote());
-								}
-							}
-							
-							if (!BillboardDelegate2.getInstance().isEmptyClient() && BillboardDelegate2.getInstance().isActive()) {
-								// // 전광판 전송
-								BillboardData billboardData2 = new BillboardData();
-								billboardData2.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
-								billboardData2.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
-								billboardData2.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
-								billboardData2.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
-								billboardData2.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
-								billboardData2.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
-								billboardData2.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
-								billboardData2.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
-								billboardData2.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
-								billboardData2.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
-								billboardData2.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
-								billboardData2.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
-								billboardData2.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
-								billboardData2.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
-		
-								addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData2.getEncodedMessage());
-								BillboardDelegate2.getInstance().sendBillboardData(billboardData2);
-								
-								// 전광판2 비고 흐름 사용 여부
-								if (SettingApplication.getInstance().isBoardUseNote2()) {
-									BillboardDelegate2.getInstance().clearBillboardNote();
-									BillboardDelegate2.getInstance().sendBillboardNote(billboardData2.getbNote());
-								}
-							}
-		
-						} catch (Exception e) {
-							e.printStackTrace();
-							mLogger.debug("BillboardDelegate error " + e);
-							SentryUtil.getInstance().sendExceptionLog(e);
-						}
-		
-						try {
-							if (!PdpDelegate.getInstance().isEmptyClient() && PdpDelegate.getInstance().isActive()) {
-								// // PDP 전송
-								PdpData pdpData = new PdpData();
-								pdpData.setbEntryType(String.valueOf(spEntryInfo.getEntryType().getValue()));
-								pdpData.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
-								pdpData.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
-								pdpData.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
-								pdpData.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
-								pdpData.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
-								pdpData.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
-								pdpData.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
-								pdpData.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
-								pdpData.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
-								pdpData.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
-								pdpData.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
-								pdpData.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
-								pdpData.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
-								pdpData.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
-		
-								addLogItem(mResMsg.getString("log.pdp.auction.result.success") + pdpData.getEncodedMessage());
-								PdpDelegate.getInstance().sendPdpData(pdpData);
-							}
-		
-						} catch (Exception e) {
-							e.printStackTrace();
-							mLogger.debug("BillboardDelegate error " + e);
-							SentryUtil.getInstance().sendExceptionLog(e);
-						}
-		
 					} else {
 						
 						addLogItem("[낙유찰 결과 유찰 전송]");
@@ -1095,6 +1000,111 @@ public abstract class BaseAuctionController implements NettyControllable {
 						auctionResult.setSuccessBidUpr("0");
 					}
 		
+					try {
+						
+						if (!BillboardDelegate1.getInstance().isEmptyClient() && BillboardDelegate1.getInstance().isActive()) {
+							// // 전광판 전송
+							BillboardData billboardData1 = new BillboardData();
+							billboardData1.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
+							billboardData1.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
+							billboardData1.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
+							billboardData1.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
+							billboardData1.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
+							billboardData1.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
+							billboardData1.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
+							billboardData1.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
+							billboardData1.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
+							billboardData1.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
+							billboardData1.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
+							billboardData1.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
+							billboardData1.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+							billboardData1.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
+	
+							addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData1.getEncodedMessage());
+							BillboardDelegate1.getInstance().sendBillboardData(billboardData1);
+							
+							// 전광판1 비고 흐름 사용 여부
+							if (SettingApplication.getInstance().isBoardUseNote1()) {
+								BillboardDelegate1.getInstance().clearBillboardNote();
+								BillboardDelegate1.getInstance().sendBillboardNote(billboardData1.getbNote());
+							}
+						}
+						
+						if (!BillboardDelegate2.getInstance().isEmptyClient() && BillboardDelegate2.getInstance().isActive()) {
+							// // 전광판 전송
+							BillboardData billboardData2 = new BillboardData();
+							billboardData2.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
+							billboardData2.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
+							billboardData2.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
+							billboardData2.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
+							billboardData2.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
+							billboardData2.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
+							billboardData2.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
+							billboardData2.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
+							billboardData2.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
+							billboardData2.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
+							billboardData2.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
+							billboardData2.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
+							billboardData2.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+							billboardData2.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
+	
+							addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData2.getEncodedMessage());
+							BillboardDelegate2.getInstance().sendBillboardData(billboardData2);
+							
+							// 전광판2 비고 흐름 사용 여부
+							if (SettingApplication.getInstance().isBoardUseNote2()) {
+								BillboardDelegate2.getInstance().clearBillboardNote();
+								BillboardDelegate2.getInstance().sendBillboardNote(billboardData2.getbNote());
+							}
+						}
+	
+					} catch (Exception e) {
+						e.printStackTrace();
+						mLogger.debug("BillboardDelegate error " + e);
+						SentryUtil.getInstance().sendExceptionLog(e);
+					}
+	
+					try {
+						if (!PdpDelegate.getInstance().isEmptyClient() && PdpDelegate.getInstance().isActive()) {
+							// // PDP 전송
+							PdpData pdpData = new PdpData();
+							pdpData.setbEntryType(String.valueOf(spEntryInfo.getEntryType().getValue()));
+							pdpData.setbEntryNum(String.valueOf(spEntryInfo.getEntryNum().getValue()));
+							pdpData.setbExhibitor(String.valueOf(spEntryInfo.getExhibitor().getValue()));
+							pdpData.setbWeight(String.valueOf(spEntryInfo.getWeight().getValue()));
+							pdpData.setbGender(String.valueOf(spEntryInfo.getGender().getValue()));
+							pdpData.setbMotherTypeCode(String.valueOf(spEntryInfo.getMotherTypeCode().getValue()));
+							pdpData.setbPasgQcn(String.valueOf(spEntryInfo.getPasgQcn().getValue()));
+							pdpData.setbMatime(String.valueOf(spEntryInfo.getMatime().getValue()));
+							pdpData.setbKpn(String.valueOf(spEntryInfo.getKpn().getValue()));
+							pdpData.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
+							pdpData.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
+							pdpData.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
+							
+							if (bidder != null) {
+								pdpData.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
+							} else {
+								pdpData.setbAuctionBidPrice(String.valueOf(""));
+							}
+							
+							if (bidder != null) {
+								pdpData.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+							} else {
+								pdpData.setbAuctionSucBidder(String.valueOf(""));
+							}
+							
+							pdpData.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
+	
+							addLogItem(mResMsg.getString("log.pdp.auction.result.success") + pdpData.getEncodedMessage());
+							PdpDelegate.getInstance().sendPdpData(pdpData);
+						}
+	
+					} catch (Exception e) {
+						e.printStackTrace();
+						mLogger.debug("BillboardDelegate error " + e);
+						SentryUtil.getInstance().sendExceptionLog(e);
+					}
+					
 					// 최저가
 					long resultLowPrice = 0;
 		
