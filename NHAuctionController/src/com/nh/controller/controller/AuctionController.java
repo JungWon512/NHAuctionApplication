@@ -200,7 +200,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	@FXML
 	private GridPane mAuctionStateGridPane;
-
+	
 	private int mRemainingTimeCount = 5; // 카운트다운 남은 시간. 정지 상황에서 남은 시간을 저장하기 위함.
 
 	private final SharedPreference preference = new SharedPreference();
@@ -249,6 +249,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	
 	private boolean isRefreshData = false;						//새로고침 상태 플래그
 	private boolean isProgressFinishRefreshData = false; 	//경매 진행중 -> 경매 종료 -> 시작 -> 준비 상태일때 새로고침 플래그
+	
+	private boolean isRateDownLowPrice = false; // 하한가 낮추기 정률 설정 상태
+	private long mCeilLowPrice = 0; // 정률로 최종 계산된 하한가 금액
+	private String mUpdatePrice = null; // 하한가 높이기/낮추기 최종 요청 금액
 	
 
 	/**
@@ -338,6 +342,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		initParsingSharedData();
 		initTableConfiguration();
+		initHandleLowPrice();
 
 		setCountDownLabelState(SettingApplication.getInstance().getAuctionCountdown(), true);
 
@@ -394,7 +399,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	}
 
-
+	private void initHandleLowPrice() {
+		isRateDownLowPrice = SettingApplication.getInstance().isUseLowPriceRate();
+	}
+	
 	private void initMsgToast() {
 
 		mAnimationFadeIn = new FadeTransition(Duration.millis(250));
@@ -624,15 +632,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		Platform.runLater(() -> {
 			
 			String priceText = "";
+
+			initHandleLowPrice();
 			
-			if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+			if (isRateDownLowPrice) {
+				mBtnUpPrice.setText(mResMsg.getString("str.rollback.lowprice"));
+				priceText = String.format(mResMsg.getString("fmt.money.unit.low.rate"), Integer.parseInt(downPrice));
+			} else {
+				mBtnUpPrice.setText(mResMsg.getString("str.up.lowprice"));
 				
-				priceText = String.format(mResMsg.getString("fmt.money.unit.won"), Integer.parseInt(downPrice));
-				
-			}else {
-				
-				priceText = String.format(mResMsg.getString("fmt.money.unit.tenthousand.won"), Integer.parseInt(downPrice));
-				
+				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+					
+					priceText = String.format(mResMsg.getString("fmt.money.unit.won"), Integer.parseInt(downPrice));
+					
+				}else {
+					
+					priceText = String.format(mResMsg.getString("fmt.money.unit.tenthousand.won"), Integer.parseInt(downPrice));
+					
+				}
 			}
 			
 			mDeprePriceLabel.setText(priceText);
@@ -1950,6 +1967,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 카운트 다운 중일 경우 실행 안 함
 			// 정지상태인경우 실행 안함
 			if (isCountDownRunning || mCountDownLabel.isVisible() || isPause) {
+				Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.success.fail.bidding.notice")));
 				return;
 			}
 
@@ -2292,7 +2310,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param price
 	 */
 	private void setLowPrice(long price, boolean isUp) {
-		
 		try {
 
 			Platform.runLater(() -> {
@@ -2314,8 +2331,42 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					lowPriceCnt += 1;
 				}
 	
-				String updatePrice = Long.toString(targetPrice + price);
-	
+				String calcPrice = null;
+				boolean isNagNum = false;
+				
+				if (price < 0) {
+					isNagNum = true;
+				}
+				
+				if (isRateDownLowPrice) {
+					mCeilLowPrice = (long)(Math.ceil(Math.abs((double)targetPrice * (double)(price * 0.01))));
+					
+					mLogger.debug("targetPrice : " + (double)targetPrice);
+					mLogger.debug("price * 0.01 : " + (double)(price * 0.01));
+					mLogger.debug("(targetPrice * (price * 0.01))) : " + ((double)targetPrice * (double)(price * 0.01)));
+					mLogger.debug("mCeilLowPrice : " + mCeilLowPrice);
+					mLogger.debug("final low price : " + (long)(targetPrice - mCeilLowPrice));
+					
+					if (isNagNum) {
+						calcPrice = Long.toString(targetPrice - mCeilLowPrice);
+					} else {
+						calcPrice = Long.toString(targetPrice + mCeilLowPrice);
+					}
+				} else {
+					calcPrice = Long.toString(targetPrice + price);
+				}
+				
+				if (isUp && isRateDownLowPrice) {
+					if (mCurrentSpEntryInfo != null && mCurrentSpEntryInfo.getInitPrice().getValue() != null) {
+						mUpdatePrice = mCurrentSpEntryInfo.getInitPrice().getValue();
+						mLogger.debug("최초 하한가 복구 : " + mUpdatePrice);
+					}
+				} else {
+					mUpdatePrice = calcPrice;
+				}
+				
+				String updatePrice = mUpdatePrice;
+
 				EntryInfo entryInfo = new EntryInfo();
 				entryInfo.setEntryNum(targetEntryNum);
 				entryInfo.setAuctionHouseCode(targetAuctionHouseCode);
@@ -2327,7 +2378,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				entryInfo.setLsCmeNo(GlobalDefine.ADMIN_INFO.adminData.getUserId());
 				entryInfo.setLwprChgNt(lowPriceCnt);
 	
-				if (updatePrice == null || updatePrice.isEmpty() || Integer.parseInt(updatePrice) < 0) {
+				if (updatePrice == null || updatePrice.isEmpty() || Integer.parseInt(updatePrice) < 0 || updatePrice.equals("0")) {
 					// 가격정보 null, 0보다 작으면 리턴
 					mLogger.debug("하한가 낮추기 => 0원 미만은 낮출 수 없습니다.");
 					return;
@@ -2371,17 +2422,31 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							spEntryInfo.getIsLastEntry().setValue(tmpIsLastEntry);
 	
 							if (!isUp) {
-								long soundPrice = price * -1;
-								
-								String wonMsg = "";
-								
-								if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
-									wonMsg = mResMsg.getString("str.sound.change.low.price");
-								}else {
-									wonMsg = mResMsg.getString("str.sound.change.low.price.10000");
+								if (isRateDownLowPrice) {
+									long soundPrice = mCeilLowPrice;
+									
+									String wonMsg = "";
+									
+									if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+										wonMsg = mResMsg.getString("str.sound.change.low.price");
+									}else {
+										wonMsg = mResMsg.getString("str.sound.change.low.price.10000");
+									}
+									
+									SoundUtil.getInstance().playSound(String.format(wonMsg, soundPrice), null);
+								} else {
+									long soundPrice = price * -1;
+									
+									String wonMsg = "";
+									
+									if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+										wonMsg = mResMsg.getString("str.sound.change.low.price");
+									}else {
+										wonMsg = mResMsg.getString("str.sound.change.low.price.10000");
+									}
+									
+									SoundUtil.getInstance().playSound(String.format(wonMsg, soundPrice), null);
 								}
-								
-								SoundUtil.getInstance().playSound(String.format(wonMsg, soundPrice), null);
 							}
 							
 							mWaitTableView.refresh();

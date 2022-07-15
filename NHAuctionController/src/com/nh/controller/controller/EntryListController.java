@@ -209,21 +209,27 @@ public class EntryListController implements Initializable {
 				}
 				
 				//최적 가격 낮추기 단위
-				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 10000) {
-					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
-				}else {
-					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
-				}
-				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 10000) {
-					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
-				}else {
-					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
-				}
-				
-				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 10000) {
-					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
-				}else {
-					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				if (SettingApplication.getInstance().isUseLowPriceRate()) {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 10000) {
+						mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					}else {
+						mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+					}
+					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 10000) {
+						mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					}else {
+						mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+					}
+					
+					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 10000) {
+						mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					}else {
+						mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+					}
 				}
 				
 				
@@ -404,7 +410,11 @@ public class EntryListController implements Initializable {
 						|| !CommonUtils.getInstance().isValidString(mDownPriceTextField2.getText())
 						|| !CommonUtils.getInstance().isValidString(mDownPriceTextField3.getText())) {
 					
-					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+					if (SettingApplication.getInstance().isUseLowPriceRate()) {
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.pric.rate"),mResMsg.getString("popup.btn.ok")));
+					} else {
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+					}
 					
 					return;
 				}
@@ -415,7 +425,11 @@ public class EntryListController implements Initializable {
 			
 				if (cowLowerLimitPrice <= 0 || cowLowerLimitPrice2 <= 0 || cowLowerLimitPrice3 <= 0) {
 					
-					Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+					if (SettingApplication.getInstance().isUseLowPriceRate()) {
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.pric.rate"),mResMsg.getString("popup.btn.ok")));
+					} else {
+						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+					}
 					
 					return;
 				}
@@ -426,14 +440,22 @@ public class EntryListController implements Initializable {
 				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1) {
 			
 					if (!CommonUtils.getInstance().isValidString(mDownPriceTextField.getText())) {
-						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						if (SettingApplication.getInstance().isUseLowPriceRate()) {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.pric.rate"),mResMsg.getString("popup.btn.ok")));
+						} else {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						}
 						return;
 					}
 	
 					int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText());
 				
 					if (cowLowerLimitPrice <= 0 ) {
-						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						if (SettingApplication.getInstance().isUseLowPriceRate()) {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.pric.rate"),mResMsg.getString("popup.btn.ok")));
+						} else {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						}
 						return;
 					}
 					
@@ -441,14 +463,22 @@ public class EntryListController implements Initializable {
 				}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2) {
 					
 					if (!CommonUtils.getInstance().isValidString(mDownPriceTextField2.getText())) {
-						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						if (SettingApplication.getInstance().isUseLowPriceRate()) {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.pric.rate"),mResMsg.getString("popup.btn.ok")));
+						} else {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						}
 						return;
 					}
 	
 					int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField2.getText());
 				
 					if (cowLowerLimitPrice <= 0 ) {
-						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						if (SettingApplication.getInstance().isUseLowPriceRate()) {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.pric.rate"),mResMsg.getString("popup.btn.ok")));
+						} else {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						}
 						return;
 					}
 					
@@ -457,14 +487,22 @@ public class EntryListController implements Initializable {
 					
 					
 					if (!CommonUtils.getInstance().isValidString(mDownPriceTextField3.getText())) {
-						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						if (SettingApplication.getInstance().isUseLowPriceRate()) {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.pric.rate"),mResMsg.getString("popup.btn.ok")));
+						} else {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						}
 						return;
 					}
 	
 					int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField3.getText());
 				
 					if (cowLowerLimitPrice <= 0 ) {
-						Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						if (SettingApplication.getInstance().isUseLowPriceRate()) {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.pric.rate"),mResMsg.getString("popup.btn.ok")));
+						} else {
+							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.need.low.price"),mResMsg.getString("popup.btn.ok")));
+						}
 						return;
 					}
 					
@@ -472,23 +510,49 @@ public class EntryListController implements Initializable {
 				
 			}
 			
-			int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText()); //송아지
-			int cowLowerLimitPrice2 = Integer.parseInt(mDownPriceTextField2.getText()); //비육우
-			int cowLowerLimitPrice3 = Integer.parseInt(mDownPriceTextField3.getText()); //번식우
-			
-	
 			List<EntryInfo> entryInfoDataList = new ArrayList<EntryInfo>();
 	
 			if (!CommonUtils.getInstance().isListEmpty(mEntryDataList)) {
 	
 				for (SpEntryInfo spEntryInfo : mEntryDataList) {
-					
+
+					int cowLowerLimitPrice = Integer.parseInt(mDownPriceTextField.getText()); //송아지
+					int cowLowerLimitPrice2 = Integer.parseInt(mDownPriceTextField2.getText()); //비육우
+					int cowLowerLimitPrice3 = Integer.parseInt(mDownPriceTextField3.getText()); //번식우
+
 					if(spEntryInfo.getLowPriceInt() <= 0) {
 						continue;
 					}
 	
 					int targetPrice = spEntryInfo.getLowPriceInt();
-					
+
+					if (SettingApplication.getInstance().isUseLowPriceRate()) {
+						int lowRate = 0;
+						
+						if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+							lowRate = cowLowerLimitPrice;
+						} else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+							lowRate = cowLowerLimitPrice2;
+						} else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
+							lowRate = cowLowerLimitPrice3;
+						}
+						
+						int ceilLowPrice = (int)(Math.ceil(Math.abs((double)targetPrice * (double)(lowRate * 0.01))));
+						
+						mLogger.debug("targetPrice : " + (double)targetPrice);
+						mLogger.debug("lowRate * 0.01 : " + (double)(lowRate * 0.01));
+						mLogger.debug("(targetPrice * (lowRate * 0.01))) : " + ((double)targetPrice * (double)(lowRate * 0.01)));
+						mLogger.debug("ceilLowPrice : " + ceilLowPrice);
+						mLogger.debug("final low price : " + (int)(targetPrice - ceilLowPrice));
+						
+						if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+							cowLowerLimitPrice = ceilLowPrice;
+						} else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+							cowLowerLimitPrice2 = ceilLowPrice;
+						} else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
+							cowLowerLimitPrice3 = ceilLowPrice;
+						}
+					}
 					
 					if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
 					
@@ -500,13 +564,13 @@ public class EntryListController implements Initializable {
 						
 					}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
 						if (targetPrice < cowLowerLimitPrice2) {
-							mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+							mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice2);
 							continue;
 						}
 						
 					}else if(spEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
 						if (targetPrice < cowLowerLimitPrice3) {
-							mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice);
+							mLogger.debug("경매번호 : " + spEntryInfo.getEntryNum().getValue() + " / 최저가 :  " + spEntryInfo.getLowPriceInt() + "/ 감가 : " + cowLowerLimitPrice3);
 							continue;
 						}
 					}

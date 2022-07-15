@@ -50,6 +50,8 @@ public class SharedPreference {
 	public static final String PREFERENCE_SETTING_COUNTDOWN = "PREFERENCE_SETTING_COUNTDOWN"; // 카운트다운 설정
 	public static final String PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE = "PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE"; // 경매타입 toggle button
 	
+	public static final String PREFERENCE_SETTING_USE_LOW_PRICE_RATE = "PREFERENCE_SETTING_USE_LOW_PRICE_RATE"; // 하한가 정률 적용 여부
+	
 	// --- 전광판 설정 IP, PORT ---
 	public static final String PREFERENCE_SETTING_IP_BOARD_TEXT1 = "PREFERENCE_SETTING_IP_BOARD_TEXT1";
 	public static final String PREFERENCE_SETTING_PORT_BOARD_TEXT1 = "PREFERENCE_SETTING_PORT_BOARD_TEXT1";

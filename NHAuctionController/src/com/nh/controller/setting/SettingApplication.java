@@ -135,6 +135,9 @@ public class SettingApplication {
 	//계류대번호
 	public final String DEFAULT_SETTING_STAND_POSITION ="150";
 	
+	// 하한가 낮추기 정률 사용 여부 기본값
+	public final boolean DEFAULT_SETTING_USE_LOW_PRICE_RATE = false;
+	
 	private static SettingApplication instance = null;
 
 	private String upperLimitCalf = null; // 응찰 상한가 - 송아지
@@ -157,6 +160,7 @@ public class SettingApplication {
 	private boolean isBoardUseNote1 = false; // 전광판 비고 흐름 야부
 	private boolean isBoardUseNote2 = false; // 전광판2 비고 흐름 야부
 	
+	private boolean isUseLowPriceRate = false; // 하한가 낮추기 정률 사용여부
 
 	private int aucObjDsc = 0; // 경매 구분
 
@@ -272,6 +276,9 @@ public class SettingApplication {
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_MATIME, DEFAULT_PDP_MATIME);
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_PDP_DNA, DEFAULT_PDP_DNA);
 			
+			// 하한가 낮추기 정률 사용 여부 기본값
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_SETTING_USE_LOW_PRICE_RATE, DEFAULT_SETTING_USE_LOW_PRICE_RATE);
+			
 			// 경매종료 멘트 설정 - 멘트 사용 기본값
 			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_SETTING_ANNOUNCEMENT, DEFAULT_SETTING_ANNOUNCEMENT);
 			// 비고 사용 기본값
@@ -354,6 +361,8 @@ public class SettingApplication {
 		standPosition = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_STAND_POSITION, DEFAULT_SETTING_STAND_POSITION);
 	
 		isNote = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, DEFAULT_SETTING_NOTE);
+		
+		isUseLowPriceRate = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_LOW_PRICE_RATE,  DEFAULT_SETTING_USE_LOW_PRICE_RATE);
 		
 		//전광판 비고
 		isBoardUseNote1 = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_BOARD_USE_NOTE_1, false);
@@ -565,6 +574,14 @@ public class SettingApplication {
 
 	public boolean isNote() {
 		return isNote;
+	}
+	
+	/**
+	 * 하한가 낮추기 정률 사용여부
+	 * @return
+	 */
+	public boolean isUseLowPriceRate() {
+		return isUseLowPriceRate;
 	}
 	
 	/**

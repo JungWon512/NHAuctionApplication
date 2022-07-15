@@ -121,6 +121,9 @@ public class SettingController implements Initializable {
 	@FXML // 경매 타입 (단일 ,일괄)
 	private ToggleButton mAuctionTypeSingleToggleButton, mAuctionTypeMultiToggleButton;
 	
+	@FXML // 하한가 정률 적용 여부 체크박스
+	private CheckBox mLowPriceRateCheckBox;
+
 	@FXML
 	private TextArea mSoundValTextArea;
 	
@@ -220,9 +223,12 @@ public class SettingController implements Initializable {
 		getTextFields();
 		initKeyConfig();
 		addTextFieldListener();
+		updateUseLowPriceRateCheckBox();
 		setMoneyUnit();
 		mBtnSave.setOnMouseClicked(event -> saveSettings());
 		mBtnInitServer.setOnMouseClicked(event -> initServer());
+		
+		mLowPriceRateCheckBox.setOnAction(event -> setMoneyUnit());
 	}
 	
 	private void setNumberFmt() {
@@ -268,7 +274,7 @@ public class SettingController implements Initializable {
 			}
 		}));
 	}
-
+	
 	/**
 	 * TextFields Preference에 저장
 	 *
@@ -664,6 +670,24 @@ public class SettingController implements Initializable {
 	}
 
 	/**
+	 * 하한가 낮추기 정률 사용 여부 설정 값 저장
+	 * 
+	 * @author PJS
+	 */
+	private void setUseLowPriceRateCheckBox() {
+		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_USE_LOW_PRICE_RATE, mLowPriceRateCheckBox.isSelected());
+	}
+	
+	/**
+	 * 하한가 낮추기 정률 사용 여부에 따른 CheckBox 상태 업데이트
+	 * 
+	 * @author PJS
+	 */
+	private void updateUseLowPriceRateCheckBox() {
+		mLowPriceRateCheckBox.setSelected(sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_USE_LOW_PRICE_RATE, SettingApplication.getInstance().DEFAULT_SETTING_USE_LOW_PRICE_RATE));
+	}
+	
+	/**
 	 * 모바일 노출설정 Preference에 저장
 	 *
 	 * @param mobileCheckBoxSelectedList 선택된 모바일 노출설정
@@ -756,25 +780,56 @@ public class SettingController implements Initializable {
 			
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 10000) {
 				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
-				mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}
 			}else {
 				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
-				mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				}
 			}
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 10000) {
 				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
-				mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}
 			}else {
 				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
-				mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				}
+				
 			}
 			
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 10000) {
 				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
-				mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}
 			}else {
 				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
-				mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				}
 			}
 			
 		}else {
@@ -788,15 +843,25 @@ public class SettingController implements Initializable {
 			mLowerLimitFatteningCattleTextField.setDisable(true);
 			mLowerLimitBreedingCattleTextField.setDisable(true);
 			
-			mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
-			mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
-			
-			mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
-			mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
-			
-			mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
-			mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
-		
+			if (mLowPriceRateCheckBox.isSelected()) {
+				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				
+				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				
+				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+			} else {
+				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				
+				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				
+				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+			}
 		}
 		
 	}
@@ -1072,6 +1137,7 @@ public class SettingController implements Initializable {
 			setCountTextField();
 			setMobileCheckboxPreference(mobileCheckBoxSelectedList);
 			setToggleTypes();
+			setUseLowPriceRateCheckBox();
 		
 			
 			mLogger.debug("auctionToggleType : " + auctionToggleType);
