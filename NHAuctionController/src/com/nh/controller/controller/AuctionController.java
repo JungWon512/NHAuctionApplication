@@ -3340,7 +3340,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 
 			stringBuffer.append(mResMsg.getString("str.sound.user.sam.price"));
-			stringBuffer.append(stringBuffer.toString());
+			stringBuffer.append("," + stringBuffer.toString());
 			stringBuffer.append(mResMsg.getString("str.sound.user.re.auction"));
 
 			addLogItem("[재경매 중 타이머 초기화]");
