@@ -173,14 +173,16 @@ public class BillboardData implements NettySendable {
     }
 
     public void setbRegion(String bRegion) {
-    	String[] region = bRegion.trim().split(" ");
+//    	String[] region = bRegion.trim().split(" ");
     	
-    	// 주소 체계에서 Split 후 3번째 정보만으로 가공 처리
-    	if(region.length > 2) {
-    		this.bRegion = region[2];
-    	} else {
-    		this.bRegion = "";
-    	}
+    	// 최초 개발당시는 전체 주소의 일부를 가공해야 했으나, 현재는 가공되어 데이터 수신되므로 관련 데이터 Trim 처리만 진행
+    	this.bRegion = bRegion.trim();
+//    	// 주소 체계에서 Split 후 3번째 정보만으로 가공 처리
+//    	if(region.length > 2) {
+//    		this.bRegion = region[2];
+//    	} else {
+//    		this.bRegion = "";
+//    	}
     }
 
     public String getbNote() {
