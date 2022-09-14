@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1480.0" minHeight="1024.0" minWidth="1480.0" prefHeight="1024.0" prefWidth="1480.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
+<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1480.0" minHeight="1024.0" minWidth="1480.0" prefHeight="1024.0" prefWidth="1480.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.AuctionController">
    <top>
       <GridPane maxHeight="71.0" minHeight="71.0" prefHeight="71.0" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -38,9 +38,9 @@
          <children>
             <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                <children>
-                  <Button fx:id="mBtnMessage" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="128.0" minHeight="40.0" minWidth="128.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="128.0" styleClass="btn-header" text="메시지 전송" />
-                  <Button fx:id="mBtnUpPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="128.0" minHeight="40.0" minWidth="128.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="128.0" styleClass="btn-header" text="예정가 높이기" />
-                  <Button fx:id="mBtnDownPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="128.0" minHeight="40.0" minWidth="128.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="128.0" styleClass="btn-header" text="예정가 낮추기" />
+                  <Button fx:id="mBtnMessage" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="메시지 전송" />
+                  <Button fx:id="mBtnUpPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="[F9]예정가 높이기" />
+                  <Button fx:id="mBtnDownPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="[F10]예정가 낮추기" />
                   <HBox minWidth="188.0" style="-fx-background-color: #ffffff;" styleClass="border-all">
                      <children>
                         <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="감가액" HBox.hgrow="ALWAYS">
@@ -324,6 +324,7 @@
                                         <TableColumn fx:id="mFinishedExhibitorColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="출하주" />
                                           <TableColumn fx:id="mFinishedGenderColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="성별" />
                                           <TableColumn fx:id="mFinishedMotherColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="어미" />
+                                          <TableColumn fx:id="mFinishedGapMonthColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="월령" />
                                           <TableColumn fx:id="mFinishedMatimeColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="산차" />
                                           <TableColumn fx:id="mFinishedPasgQcnColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="계대" />
                                           <TableColumn fx:id="mFinishedWeightColumn" maxWidth="80.0" minWidth="80.0" text="중량(kg)" />
@@ -390,6 +391,11 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
+                        <Label fx:id="mCurGapMonthLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="current-auction-row">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
                               <Label fx:id="mCurMatimeLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="current-auction-row" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="18.0" />
@@ -456,6 +462,7 @@
                                     <TableColumn fx:id="mWaitExhibitorColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="출하주" />
                                     <TableColumn fx:id="mWaitGenderColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="성별" />
                                     <TableColumn fx:id="mWaitMotherColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="혈통" />
+                                    <TableColumn fx:id="mWaitGapMonthColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="월령" />
                                     <TableColumn fx:id="mWaitMatimeColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="산차" />
                                     <TableColumn fx:id="mWaitPasgQcnColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="계대" />
                                     <TableColumn fx:id="mWaitWeightColumn" maxWidth="80.0" minWidth="80.0" text="중량(kg)" />
@@ -625,6 +632,11 @@
             </AnchorPane>
             <VBox maxHeight="1.7976931348623157E308" spacing="6.0" styleClass="connection-user" VBox.vgrow="ALWAYS">
                <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="29.0" prefWidth="258.0" style="-fx-background-color: #cae8ff;" styleClass="btn-header" text="[F11]시작 / [F12]일시정지">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Label>
                   <HBox styleClass="bg-color-0a1931">
                      <children>
                         <Button fx:id="mBtnReStart" disable="true" maxHeight="1.7976931348623157E308" maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" prefWidth="40.0">

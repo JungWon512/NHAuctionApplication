@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1280.0" minHeight="1024.0" minWidth="1280.0" prefHeight="1024.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.MultipleAuctionController">
+<BorderPane fx:id="mRootAuction" maxHeight="1024.0" maxWidth="1280.0" minHeight="1024.0" minWidth="1280.0" prefHeight="1024.0" prefWidth="1280.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/controller.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nh.controller.controller.MultipleAuctionController">
    <top>
       <GridPane maxHeight="71.0" minHeight="71.0" prefHeight="71.0" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -318,6 +318,11 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="column-auction-row" text="월령">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
                         <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="column-auction-row" text="산차" HBox.hgrow="ALWAYS">
                            <font>
                               <Font size="18.0" />
@@ -393,6 +398,11 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
+                        <Label fx:id="mCurGapMonthLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="current-auction-row">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
                               <Label fx:id="mCurMatimeLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" styleClass="current-auction-row" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="18.0" />
@@ -459,6 +469,7 @@
                                     <TableColumn fx:id="mWaitExhibitorColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="출하주" />
                                     <TableColumn fx:id="mWaitGenderColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="성별" />
                                     <TableColumn fx:id="mWaitMotherColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="혈통" />
+                                    <TableColumn fx:id="mWaitGapMonthColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="월령" />
                                     <TableColumn fx:id="mWaitMatimeColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="산차" />
                                     <TableColumn fx:id="mWaitPasgQcnColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="계대" />
                                     <TableColumn fx:id="mWaitWeightColumn" maxWidth="80.0" minWidth="80.0" text="중량(kg)" />

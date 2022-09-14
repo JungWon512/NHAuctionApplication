@@ -151,6 +151,7 @@ public class AudioFilePlay {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
+					mLogger.info("[setTargetPlay] mMediaPlayer.setOnEndOfMedia");
 					mMediaPlayer.stop();
 					mMediaPlayer.seek(mMediaPlayer.getStartTime());
 				}
@@ -161,7 +162,8 @@ public class AudioFilePlay {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-
+					mLogger.info("[setTargetPlay] mMediaPlayer.setOnReady");
+					
 					if (mIsPossiblePlay) {
 						mIsPossiblePlay = false;
 						mPlayDuration = (int) mMediaPlayer.getMedia().getDuration().toMillis();
@@ -175,6 +177,7 @@ public class AudioFilePlay {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
+					mLogger.info("[setTargetPlay] mMediaPlayer.setOnPlaying");
 				}
 			});
 
@@ -183,6 +186,7 @@ public class AudioFilePlay {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
+					mLogger.info("[setTargetPlay] mMediaPlayer.setOnPaused");
 				}
 			});
 
@@ -191,6 +195,7 @@ public class AudioFilePlay {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
+					mLogger.info("[setTargetPlay] mMediaPlayer.setOnStopped");
 				}
 			});
 
@@ -199,6 +204,7 @@ public class AudioFilePlay {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
+					mLogger.info("[setTargetPlay] mMediaPlayer.setOnError");
 				}
 			});
 		} catch (Exception ex) {

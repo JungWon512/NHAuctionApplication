@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.corundumstudio.socketio.SocketIOClient;
+import com.nh.auctionserver.core.AuctionState;
 import com.nh.auctionserver.core.Auctioneer;
 import com.nh.auctionserver.netty.handlers.AuctionServerConnectorHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedAuctionBidStatusHandler;
@@ -456,8 +457,22 @@ public class AuctionServer {
 			if (controllerParsedMessage instanceof ReadyEntryInfo) {
 				mLogger.info("경매 준비 요청 거점코드 : " + ((ReadyEntryInfo) controllerParsedMessage).getAuctionHouseCode());
 				mLogger.info("경매 준비 요청 출품 번호 : " + ((ReadyEntryInfo) controllerParsedMessage).getEntryNum());
-				mAuctioneer.readyEntryInfo(((ReadyEntryInfo) controllerParsedMessage).getAuctionHouseCode(),
-						((ReadyEntryInfo) controllerParsedMessage).getEntryNum());
+				
+				// 종합안내 전광판 표시를 위한 상태값 전송
+				AuctionState auctionState = mAuctioneer.getAuctionState(((ReadyEntryInfo) controllerParsedMessage).getAuctionHouseCode());
+				auctionState.setEntryNum(((ReadyEntryInfo) controllerParsedMessage).getEntryNum());
+				auctionState.onStart();
+				
+				if (mStandChannelsMap != null) {
+					if (mStandChannelsMap.containsKey(auctionState.getAuctionStatus().getAuctionHouseCode())) {
+						if (mStandChannelsMap.get(auctionState.getAuctionStatus().getAuctionHouseCode()).size() > 0) {
+							mStandChannelsMap.get(auctionState.getAuctionStatus().getAuctionHouseCode()).writeAndFlush(auctionState.getAuctionStatus().getEncodedMessage() + "\r\n");
+						}
+					}
+				}
+
+//				mAuctioneer.readyEntryInfo(((ReadyEntryInfo) controllerParsedMessage).getAuctionHouseCode(),
+//						((ReadyEntryInfo) controllerParsedMessage).getEntryNum());
 			}
 
 			if (controllerParsedMessage instanceof PassAuction) {

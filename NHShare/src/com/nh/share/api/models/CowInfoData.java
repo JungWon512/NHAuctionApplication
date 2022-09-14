@@ -23,7 +23,7 @@ public class CowInfoData {
 	private String IS_EXCESS_COW;          
 	private String SRA_INDV_AMNNO;         
 	private String NA_BZPLC;               
-	private String BIRTH;                  
+	private String BIRTH;
 	private String LSCHG_DTM;                   
 	private String MCOW_SRA_INDV_AMNNO;         
 	private String SRA_PD_RGNNM;           
@@ -62,6 +62,9 @@ public class CowInfoData {
 	private int EXP_ATDR_AM;
 	private int EXP_LVST_AUC_PTC_MN_NO;
 	private String AUC_YN;
+	
+	// 월령 추가(2022.09.07)
+	private String GAP_MONTH;
 
 	
 	public String getSRA_SRS_DSC() {
@@ -376,5 +379,11 @@ public class CowInfoData {
 	}
 	public void setAUC_YN(String aUC_YN) {
 		AUC_YN = aUC_YN;
+	}
+	public String getGAP_MONTH() {
+		return GAP_MONTH;
+	}
+	public void setGAP_MONTH(String gAP_MONTH) {
+		GAP_MONTH = gAP_MONTH;
 	}    
 }

@@ -958,7 +958,6 @@ public abstract class BaseAuctionController implements NettyControllable {
 
 	protected void saveAuctionResult(boolean isSuccess, SpEntryInfo spEntryInfo, SpBidding bidder, String code) {
 
-	
 				SendAuctionResult auctionResult = new SendAuctionResult();
 		
 				auctionResult.setAuctionHouseCode(spEntryInfo.getAuctionHouseCode().getValue());
@@ -1016,8 +1015,19 @@ public abstract class BaseAuctionController implements NettyControllable {
 							billboardData1.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
 							billboardData1.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
 							billboardData1.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
-							billboardData1.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
-							billboardData1.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+							
+							if (bidder != null) {
+								billboardData1.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
+							} else {
+								billboardData1.setbAuctionBidPrice(String.valueOf(""));
+							}
+							
+							if (bidder != null) {
+								billboardData1.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+							} else {
+								billboardData1.setbAuctionSucBidder(String.valueOf(""));
+							}
+							
 							billboardData1.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
 	
 							addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData1.getEncodedMessage());
@@ -1044,8 +1054,19 @@ public abstract class BaseAuctionController implements NettyControllable {
 							billboardData2.setbRegion(String.valueOf(spEntryInfo.getRgnName().getValue()));
 							billboardData2.setbNote(String.valueOf(spEntryInfo.getNote().getValue()));
 							billboardData2.setbLowPrice(String.valueOf(spEntryInfo.getLowPrice().getValue()));
-							billboardData2.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
-							billboardData2.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+							
+							if (bidder != null) {
+								billboardData2.setbAuctionBidPrice(String.valueOf(bidder.getPrice().getValue()));
+							} else {
+								billboardData2.setbAuctionBidPrice(String.valueOf(""));
+							}
+							
+							if (bidder != null) {
+								billboardData2.setbAuctionSucBidder(String.valueOf(bidder.getAuctionJoinNum().getValue()));
+							} else {
+								billboardData2.setbAuctionSucBidder(String.valueOf(""));
+							}
+							
 							billboardData2.setbDnaYn(String.valueOf(spEntryInfo.getDnaYn().getValue()));
 	
 							addLogItem(mResMsg.getString("log.billboard.auction.result.success") + billboardData2.getEncodedMessage());

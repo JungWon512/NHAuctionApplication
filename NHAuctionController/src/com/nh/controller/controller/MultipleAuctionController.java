@@ -169,10 +169,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private ImageView mDisplay_1_ImageView, mDisplay_2_ImageView, mDisplay_3_ImageView;
 
 	@FXML // 대기중인 출품
-	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn, mWaitMotherColumn, mWaitMatimeColumn, mWaitPasgQcnColumn, mWaitWeightColumn, mWaitLowPriceColumn, mWaitExSuccessPriceColumn, mWaitExSuccessfulBidderColumn, mWaitSuccessPriceColumn, mWaitSuccessfulBidderColumn, mWaitResultColumn, mWaitNoteColumn;
+	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn, mWaitGapMonthColumn, mWaitMotherColumn, mWaitMatimeColumn, mWaitPasgQcnColumn, mWaitWeightColumn, mWaitLowPriceColumn, mWaitExSuccessPriceColumn, mWaitExSuccessfulBidderColumn, mWaitSuccessPriceColumn, mWaitSuccessfulBidderColumn, mWaitResultColumn, mWaitNoteColumn;
 
 	@FXML // 현재 경매
-	private Label mCurEntryNumLabel, mCurExhibitorLabel, mCurGenterLabel, mCurMotherLabel, mCurMatimeLabel, mCurPasgQcnLabel, mCurWeightLabel, mCurLowPriceLabel, mCurSuccessPriceLabel, mCurSuccessfulBidderLabel, mCurResultLabel, mCurNoteLabel;
+	private Label mCurEntryNumLabel, mCurExhibitorLabel, mCurGenterLabel, mCurGapMonthLabel, mCurMotherLabel, mCurMatimeLabel, mCurPasgQcnLabel, mCurWeightLabel, mCurLowPriceLabel, mCurSuccessPriceLabel, mCurSuccessfulBidderLabel, mCurResultLabel, mCurNoteLabel;
 
 	@FXML // 응찰자 정보
 	private TableColumn<SpBidding, String> mBiddingPriceColumn, mBiddingUserColumn;
@@ -523,6 +523,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		CommonUtils.getInstance().setAlignCenterCol(mWaitEntryNumColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitExhibitorColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitGenderColumn);
+		CommonUtils.getInstance().setAlignCenterCol(mWaitGapMonthColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitMotherColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitMatimeColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitPasgQcnColumn);
@@ -562,6 +563,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mWaitExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
 		mWaitGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGenderName());
 		mWaitMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherCowName());
+		mWaitGapMonthColumn.setCellValueFactory(cellData -> cellData.getValue().getGapMonth());
 		mWaitMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
 		mWaitPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
 		mWaitWeightColumn.setCellValueFactory(cellData -> cellData.getValue().getWeight());
@@ -3254,6 +3256,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			mCurExhibitorLabel.setText(mCurrentSpEntryInfo.getExhibitor().getValue());
 			mCurGenterLabel.setText(mCurrentSpEntryInfo.getGenderName().getValue());
 			mCurMotherLabel.setText(mCurrentSpEntryInfo.getMotherCowName().getValue());
+			mCurGapMonthLabel.setText(mCurrentSpEntryInfo.getGapMonth().getValue());
 			mCurMatimeLabel.setText(mCurrentSpEntryInfo.getMatime().getValue());
 			mCurPasgQcnLabel.setText(mCurrentSpEntryInfo.getPasgQcn().getValue());
 

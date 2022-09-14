@@ -136,13 +136,13 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private TableView<SpBidding> mBiddingInfoTableView;
 
 	@FXML // 완료된 출품
-	private TableColumn<SpEntryInfo, String> mFinishedEntryNumColumn, mFinishedExhibitorColumn, mFinishedGenderColumn, mFinishedMotherColumn, mFinishedMatimeColumn, mFinishedPasgQcnColumn, mFinishedWeightColumn, mFinishedLowPriceColumn, mFinishedSuccessPriceColumn, mFinishedSuccessfulBidderColumn, mFinishedResultColumn, mFinishedNoteColumn;
+	private TableColumn<SpEntryInfo, String> mFinishedEntryNumColumn, mFinishedExhibitorColumn, mFinishedGenderColumn, mFinishedGapMonthColumn, mFinishedMotherColumn, mFinishedMatimeColumn, mFinishedPasgQcnColumn, mFinishedWeightColumn, mFinishedLowPriceColumn, mFinishedSuccessPriceColumn, mFinishedSuccessfulBidderColumn, mFinishedResultColumn, mFinishedNoteColumn;
 
 	@FXML // 대기중인 출품
-	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn, mWaitMotherColumn, mWaitMatimeColumn, mWaitPasgQcnColumn, mWaitWeightColumn, mWaitLowPriceColumn, mWaitSuccessPriceColumn, mWaitSuccessfulBidderColumn, mWaitResultColumn, mWaitNoteColumn;
+	private TableColumn<SpEntryInfo, String> mWaitEntryNumColumn, mWaitExhibitorColumn, mWaitGenderColumn, mWaitGapMonthColumn, mWaitMotherColumn, mWaitMatimeColumn, mWaitPasgQcnColumn, mWaitWeightColumn, mWaitLowPriceColumn, mWaitSuccessPriceColumn, mWaitSuccessfulBidderColumn, mWaitResultColumn, mWaitNoteColumn;
 
 	@FXML // 현재 경매
-	private Label mCurEntryNumLabel, mCurExhibitorLabel, mCurGenterLabel, mCurMotherLabel, mCurMatimeLabel, mCurPasgQcnLabel, mCurWeightLabel, mCurLowPriceLabel, mCurSuccessPriceLabel, mCurSuccessfulBidderLabel, mCurResultLabel, mCurNoteLabel;
+	private Label mCurEntryNumLabel, mCurExhibitorLabel, mCurGenterLabel, mCurGapMonthLabel, mCurMotherLabel, mCurMatimeLabel, mCurPasgQcnLabel, mCurWeightLabel, mCurLowPriceLabel, mCurSuccessPriceLabel, mCurSuccessfulBidderLabel, mCurResultLabel, mCurNoteLabel;
 
 	@FXML // 사용자 접속 현황
 	private TableColumn<SpBidderConnectInfo, String> mConnectionUserColumn_1, mConnectionUserColumn_2, mConnectionUserColumn_3, mConnectionUserColumn_4, mConnectionUserColumn_5;
@@ -254,6 +254,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private long mCeilLowPrice = 0; // 정률로 최종 계산된 하한가 금액
 	private String mUpdatePrice = null; // 하한가 높이기/낮추기 최종 요청 금액
 	
+	private boolean mRestartKeyActive = true;
 
 	/**
 	 * setStage
@@ -456,6 +457,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		CommonUtils.getInstance().setAlignCenterCol(mFinishedEntryNumColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mFinishedExhibitorColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mFinishedGenderColumn);
+		CommonUtils.getInstance().setAlignCenterCol(mFinishedGapMonthColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mFinishedMotherColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mFinishedMatimeColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mFinishedPasgQcnColumn);
@@ -469,6 +471,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		CommonUtils.getInstance().setAlignCenterCol(mWaitEntryNumColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitExhibitorColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitGenderColumn);
+		CommonUtils.getInstance().setAlignCenterCol(mWaitGapMonthColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitMotherColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitMatimeColumn);
 		CommonUtils.getInstance().setAlignCenterCol(mWaitPasgQcnColumn);
@@ -504,6 +507,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mFinishedEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
 		mFinishedExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
 		mFinishedGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGenderName());
+		mFinishedGapMonthColumn.setCellValueFactory(cellData -> cellData.getValue().getGapMonth());
 		mFinishedMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherCowName());
 		mFinishedMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
 		mFinishedPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
@@ -518,6 +522,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mWaitEntryNumColumn.setCellValueFactory(cellData -> cellData.getValue().getEntryNum());
 		mWaitExhibitorColumn.setCellValueFactory(cellData -> cellData.getValue().getExhibitor());
 		mWaitGenderColumn.setCellValueFactory(cellData -> cellData.getValue().getGenderName());
+		mWaitGapMonthColumn.setCellValueFactory(cellData -> cellData.getValue().getGapMonth());
 		mWaitMotherColumn.setCellValueFactory(cellData -> cellData.getValue().getMotherCowName());
 		mWaitMatimeColumn.setCellValueFactory(cellData -> cellData.getValue().getMatime());
 		mWaitPasgQcnColumn.setCellValueFactory(cellData -> cellData.getValue().getPasgQcn());
@@ -1111,7 +1116,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		Platform.runLater(() -> {
 
 			mConnectionUserDataList.clear();
-
+			
 			if (mConnectionUserMap.size() > 0) {
 
 				List<BidderConnectInfo> connectionUserList = new ArrayList<BidderConnectInfo>();
@@ -2237,7 +2242,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						initFinishedEntryDataList();
 						initWaitEntryDataList(mWaitEntryInfoDataList);
 						setCowTotalCount(mTmpCowDataList.size());
-						mTmpCowDataList = null;
+						mTmpCowDataList = null; 
 
 				   } catch (Exception e) {
 					   e.printStackTrace();
@@ -2418,6 +2423,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							spEntryInfo.getIsLastEntry().setValue(GlobalDefine.ETC_INFO.AUCTION_DATA_MODIFY_M);
 	
 							addLogItem("[가격 변경 정보 보냄]=> " + AuctionDelegate.getInstance().onSendEntryData(spEntryInfo));
+							AuctionDelegate.getInstance().onNextEntryReady(spEntryInfo.getEntryNum().getValue());
 	
 							spEntryInfo.getIsLastEntry().setValue(tmpIsLastEntry);
 	
@@ -3897,6 +3903,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mCurEntryNumLabel.setText(mCurrentSpEntryInfo.getEntryNum().getValue());
 			mCurExhibitorLabel.setText(mCurrentSpEntryInfo.getExhibitor().getValue());
 			mCurGenterLabel.setText(mCurrentSpEntryInfo.getGenderName().getValue());
+			mCurGapMonthLabel.setText(mCurrentSpEntryInfo.getGapMonth().getValue());
 			mCurMotherLabel.setText(mCurrentSpEntryInfo.getMotherCowName().getValue());
 			mCurMatimeLabel.setText(mCurrentSpEntryInfo.getMatime().getValue());
 			mCurPasgQcnLabel.setText(mCurrentSpEntryInfo.getPasgQcn().getValue());
@@ -4110,7 +4117,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					switch (mAuctionStatus.getState()) {
 					case GlobalDefineCode.AUCTION_STATUS_START:
 					case GlobalDefineCode.AUCTION_STATUS_PROGRESS: // 경매 진행중에 눌림
-
 						// 강제낙찰
 						if (ke.getCode() == KeyCode.F6) {
 							onSuccessAuction();
@@ -4156,6 +4162,32 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							ke.consume();
 						}
 
+						// 재시작 버튼
+						if (ke.getCode() == KeyCode.F11 && mRestartKeyActive) {
+							onReStart();
+							ke.consume();
+						}
+						
+						// 일시정비 버튼
+						if (ke.getCode() == KeyCode.F12) {
+							checkAndOnPause();
+							
+							mRestartKeyActive = false;
+							
+							Timer timer = new Timer();
+							TimerTask timerTask = new TimerTask() {
+								
+								@Override
+								public void run() {
+									mRestartKeyActive = true;
+								}
+							};
+							
+							timer.schedule(timerTask, 500);
+							
+							ke.consume();
+						}
+						
 						break;
 					default: // 경매 진행중에 눌리지 않음.
 						// 전체보기
@@ -4197,7 +4229,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							openSettingDialog();
 							ke.consume();
 						}
+						
+						// 가격 높이기
+						if (ke.getCode() == KeyCode.F9) {
+							onUpPrice(null);
+							ke.consume();
+						}
 
+						// 가격 낮추기
+						if (ke.getCode() == KeyCode.F10) {
+							onDownPrice(null);
+							ke.consume();
+						}
+						
 						// 대기중인 목록 위로 이동
 						if (ke.getCode() == KeyCode.UP) {
 							

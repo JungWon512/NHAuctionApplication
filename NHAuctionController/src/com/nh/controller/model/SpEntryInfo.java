@@ -88,6 +88,8 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 	private StringProperty aucYn; // 출장우 경매 여부
 	private StringProperty rgSqno; //일괄 - 경매 구간 정보
 	private StringProperty auctionTypeCode;	//경매 회차 유형 코드 (0:일괄,1:송아지,2:비육우.3:번식우)
+	
+	private StringProperty mGapMonth; // 월령(개월수) (2022.09.07)
 
 	public SpEntryInfo() {
 	}
@@ -148,6 +150,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 		this.aucYn = new SimpleStringProperty(entryInfo.getAucYn());
 		this.rgSqno = new SimpleStringProperty(entryInfo.getExpAuctionIntNum());
 		this.auctionTypeCode = new SimpleStringProperty(entryInfo.getAuctionTypeCode());
+		this.mGapMonth = new SimpleStringProperty(entryInfo.getGapMonth());
 	}
 
 	public StringProperty getAuctionHouseCode() {
@@ -601,6 +604,14 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 
 	public void setAuctionTypeCode(StringProperty auctionTypeCode) {
 		this.auctionTypeCode = auctionTypeCode;
+	}
+	
+	public StringProperty getGapMonth() {
+		return mGapMonth;
+	}
+
+	public void setGapMonth(StringProperty gapMonth) {
+		this.mGapMonth = gapMonth;
 	}
 
 	public String getConvertBirthDay() {

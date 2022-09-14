@@ -81,6 +81,8 @@ public class EntryInfo implements FromAuctionController {
 	
 	private String mAuctionTypeCode;	//경매 회차 유형 코드 (0:일괄,1:송아지,2:비육우.3:번식우)
 	
+	private String mGapMonth; // 월령(개월수) (2022.09.07)
+	
 	public EntryInfo() {
 	}
 
@@ -223,6 +225,7 @@ public class EntryInfo implements FromAuctionController {
 		mExpAuctionBidPrice = Integer.toString(cowInfoData.getEXP_ATDR_AM()); 
 		mExpAuctionSucBidder = Integer.toString(cowInfoData.getEXP_LVST_AUC_PTC_MN_NO());
 		aucYn = cowInfoData.getAUC_YN();
+		mGapMonth = cowInfoData.getGAP_MONTH();
 	}
 	
 	
@@ -658,6 +661,14 @@ public class EntryInfo implements FromAuctionController {
 
 	public void setAuctionTypeCode(String mAuctionTypeCode) {
 		this.mAuctionTypeCode = mAuctionTypeCode;
+	}
+	
+	public String getGapMonth() {
+		return mGapMonth;
+	}
+	
+	public void setGapMonth(String gapMonth) {
+		this.mGapMonth = gapMonth;
 	}
 
 	@Override
