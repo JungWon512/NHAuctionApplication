@@ -239,7 +239,6 @@ public class SoundUtil {
 			if (mTTSNowRunnable.isClient()) {
 				stopSound();
 				mTTSNowRunnable.play(mCurrentEntryMessage, playbackListener);
-
 			} else {
 				if (playbackListener != null) {
 					playbackListener.playbackFinished(null);

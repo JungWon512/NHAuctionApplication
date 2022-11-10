@@ -890,7 +890,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	
 						// 현재 최종 수정시간 < 조회된 최종 수정시간 -> 데이터 갱신&서버 전달
 						for (int i = 0; mRecordCount > i; i++) {
-	
 							String curEntryNum = mWaitEntryInfoDataList.get(i).getEntryNum().getValue();
 	
 							
@@ -926,7 +925,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 									}
 									break;
 								}
-							}
+							}  
 						}
 						
 						if (isRefresh) {
@@ -950,9 +949,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 								addLogItem("추기된 데이터 없음.");
 							}
 		
-							mWaitTableView.setItems(mWaitEntryInfoDataList);
-							mWaitTableView.refresh();
-						
+							// Refresh table view UI 메인쓰레드 적용 - 2022-11-04
+							Platform.runLater(() -> {
+								mLogger.debug("Run refresh table view UI");
+								mWaitTableView.setItems(mWaitEntryInfoDataList);
+								mWaitTableView.refresh();
+							});
 						}
 						
 						Platform.runLater(() -> {
@@ -969,11 +971,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						});
 						pauseTransition.play();
 					}
-				
 				} catch (Exception e) {
 					e.printStackTrace();
 					   SentryUtil.getInstance().sendExceptionLog(e);
-				   }
+				}
 			}
 
 			@Override
@@ -1752,7 +1753,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * 사운드 경매 시작
 	 */
 	public void onStartSoundAuction() {
-
 		// 출품 이관 체크
 		if (!isSendEnterInfo()) {
 			showAlertPopupOneButton(mResMsg.getString("msg.auction.send.need.entry.data"));
@@ -1841,8 +1841,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					// 결장 사운드 시작
 					SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
 						@Override
-						public void playbackFinished(PlaybackEvent evt) {
+						public void playbackStarted(PlaybackEvent evt) {
+							mLogger.debug("결장 음성 멘트 playbackStarted");
+							super.playbackStarted(evt);
+						}
 
+						@Override
+						public void playbackFinished(PlaybackEvent evt) {
+							mLogger.debug("결장 음성 멘트 playbackFinished");
 							isStartSoundPlaying = false;
 
 							setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
@@ -1911,9 +1917,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// 출품 정보 읽음.
 		SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
 			@Override
-			public void playbackFinished(PlaybackEvent evt) {
+			public void playbackStarted(PlaybackEvent evt) {
+				// TODO Auto-generated method stub
+				mLogger.debug("출장우정보 음성 멘트 playbackStarted");
+				super.playbackStarted(evt);
+			}
 
-				mLogger.debug("[출품정보 음성 읽음.]");
+			@Override
+			public void playbackFinished(PlaybackEvent evt) {
+				mLogger.debug("출장우정보 음성 멘트 playbackFinished");
 				isStartSoundPlaying = false;
 
 				if (isCancel) {
@@ -2168,7 +2180,15 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		}else {
 			SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), mRemainingTimeCount), new PlaybackListener() {
 				@Override
+				public void playbackStarted(PlaybackEvent evt) {
+					mLogger.debug("stopAuctionFromReStart playbackStarted");
+					super.playbackStarted(evt);
+				}
+
+				@Override
 				public void playbackFinished(PlaybackEvent evt) {
+					mLogger.debug("stopAuctionFromReStart playbackFinished");
+					
 					if(!isPause) {
 						onStopAuction(mRemainingTimeCount);
 					}
@@ -2738,7 +2758,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 //		
 		SoundUtil.getInstance().playSound(String.format(mResMsg.getString("str.sound.auction.countdown"), countDown), new PlaybackListener() {
 			@Override
+			public void playbackStarted(PlaybackEvent evt) {
+				mLogger.debug("카운트다운 음성 멘트 playbackStarted");
+				super.playbackStarted(evt);
+			}
+
+			@Override
 			public void playbackFinished(PlaybackEvent evt) {
+				mLogger.debug("카운트다운 음성 멘트 playbackFinished");
 				super.playbackFinished(evt);
 				
 				
@@ -3357,7 +3384,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			SoundUtil.getInstance().playSound(stringBuffer.toString(), new PlaybackListener() {
 				@Override
+				public void playbackStarted(PlaybackEvent evt) {
+					mLogger.debug("재경매 음성 멘트 playbackStarted");
+					super.playbackStarted(evt);
+				}
+
+				@Override
 				public void playbackFinished(PlaybackEvent evt) {
+					mLogger.debug("재경매 음성 멘트 playbackFinished");
 					
 					isPlayReAuctionSound = false;
 				
@@ -3731,7 +3765,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						// 낙유찰 사운드 메세지 사운드 시작
 						SoundUtil.getInstance().playSound(resultStringBuffer.toString(), new PlaybackListener() {
 							@Override
+							public void playbackStarted(PlaybackEvent evt) {
+								mLogger.debug("낙유찰 결과 음성 멘트 playbackStarted");
+								super.playbackStarted(evt);
+							}
+
+							@Override
 							public void playbackFinished(PlaybackEvent evt) {
+								mLogger.debug("낙유찰 결과 음성 멘트 playbackFinished");
 								nextEntryInfo(spEntryInfo);
 							}
 						});
@@ -4650,7 +4691,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		// 사운드 시작
 		SoundUtil.getInstance().playSound(overPriceSoundMessage, new PlaybackListener() {
 			@Override
+			public void playbackStarted(PlaybackEvent evt) {
+				mLogger.debug("응찰금액 확인 음성 멘트 playbackStarted");
+				super.playbackStarted(evt);
+			}
+
+			@Override
 			public void playbackFinished(PlaybackEvent evt) {
+				mLogger.debug("응찰금액 확인 음성 멘트 playbackFinished");
 				isOverPricePlaySound = false;
 				checkBiddingUserPlaySound();
 			}

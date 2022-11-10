@@ -1,27 +1,21 @@
 package com.nh.share.api.request;
 
 import java.io.IOException;
-import java.net.NoRouteToHostException;
-import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.NetworkDefine;
 import com.nh.share.api.response.BaseResponse;
-import com.nh.share.code.GlobalDefineCode;
-import com.nh.share.utils.SentryUtil;
 
+import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
-import okhttp3.logging.HttpLoggingInterceptor.Level;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -50,14 +44,15 @@ public abstract class Action implements Runnable {
 	
 	protected ActionResultListener mResultListenerBase;
 
-	protected Retrofit mRetrofit;
+	protected static Retrofit mRetrofit;
+	
+	protected static OkHttpClient.Builder mClientBuilder;
 
 	Action() {
-
 		if (mRetrofit == null) {
+			mLogger.debug("Retrofit 객체 초기화");
 			mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
 		}
-
 	}
 
 	public enum resultType {
@@ -111,17 +106,25 @@ public abstract class Action implements Runnable {
 		
 //		// 디버깅용
 		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+		//ConnectionPool connectionPool = new ConnectionPool(5, 5, TimeUnit.MINUTES);
+
 		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 		
-		OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-		clientBuilder.interceptors().add(interceptor);
-		clientBuilder.retryOnConnectionFailure(true);
-		clientBuilder.readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-		clientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-		clientBuilder.addInterceptor(new ApplicationInterceptor());
-		clientBuilder.addNetworkInterceptor(new NetWorkInterceptor());
+		if (mClientBuilder == null) {
+			mLogger.debug("DefaultHttpClient 객체 생성");
+			mClientBuilder = new OkHttpClient.Builder();
+			//mClientBuilder.connectionPool(connectionPool);
+			mClientBuilder.interceptors().add(interceptor);
+			mClientBuilder.retryOnConnectionFailure(true);
+			mClientBuilder.readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+			mClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+			mClientBuilder.addInterceptor(new ApplicationInterceptor());
+			mClientBuilder.addNetworkInterceptor(new NetWorkInterceptor());
+		} else {
+			mLogger.debug("DefaultHttpClient 기존 객체 재사용");
+		}
 		
-		return clientBuilder.build();
+		return mClientBuilder.build();
 	}
 
 	OkHttpClient getDownloadHttpClient() {

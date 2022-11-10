@@ -1,5 +1,8 @@
 package com.nh.share.api.request;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.ActionRuler;
 import com.nh.share.api.NetworkDefine;
@@ -18,6 +21,7 @@ import retrofit2.http.Query;
  * 경매 진행 프로그램 버전 체크
  */
 public class ActionRequestApplicationVersion extends Action {
+	private static final Logger mLogger = LoggerFactory.getLogger(ActionRequestApplicationVersion.class);
 	
 	/**
 	 * @param osType
@@ -83,7 +87,13 @@ public class ActionRequestApplicationVersion extends Action {
 
 	@Override
 	public void run() {
-		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		if (mRetrofit == null) {
+			mLogger.debug("Retrofit 신규 객체 생성");
+			mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		} else {
+			mLogger.debug("Retrofit 기존 객체 사용");
+		}
+		
 		RetrofitAPIService mRetrofitAPIService = mRetrofit.create(RetrofitAPIService.class);
 		mRetrofitAPIService.requestApplicationVersion(NetworkDefine.PARAM_OS_TYPE).enqueue(mCallBack);
 	}

@@ -254,7 +254,12 @@ public class ActionFileDownload extends Action {
 
         // 다운받을 URL의 임의 지정(http://로 시작)이므로 baseUrl은 없지만 입력하지 않으면 retrofit2 라이브러리가
         // 에러를내뱉는다. 아무거나 지정 가능. 실제 통신엔 무시된다.
-        mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		if (mRetrofit == null) {
+			mLogger.debug("Retrofit 신규 객체 생성");
+			mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		} else {
+			mLogger.debug("Retrofit 기존 객체 사용");
+		}
 
         RetrofitAPIService mRetrofitAPIService = mRetrofit.create(RetrofitAPIService.class);
         mRetrofitAPIService.downloadFileWithUrl(mUrl).enqueue(mCallBack);

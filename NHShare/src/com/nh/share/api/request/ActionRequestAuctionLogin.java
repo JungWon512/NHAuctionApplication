@@ -2,13 +2,15 @@ package com.nh.share.api.request;
 
 import java.util.HashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.ActionRuler;
 import com.nh.share.api.NetworkDefine;
 import com.nh.share.api.request.body.RequestLoginBody;
 import com.nh.share.api.response.ResponseAuctionLogin;
 import com.nh.share.utils.CommonUtils;
-import com.nh.share.utils.SentryUtil;
 
 import okhttp3.Headers;
 import retrofit2.Call;
@@ -26,7 +28,7 @@ import retrofit2.http.Path;
  *
  */
 public class ActionRequestAuctionLogin extends Action {
-	
+	private static final Logger mLogger = LoggerFactory.getLogger(ActionRequestAuctionLogin.class);
 	private RequestLoginBody loginBody = null;
 
 	/**
@@ -138,7 +140,13 @@ public class ActionRequestAuctionLogin extends Action {
 
 	@Override
 	public void run() {
-		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		if (mRetrofit == null) {
+			mLogger.debug("Retrofit 신규 객체 생성");
+			mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		} else {
+			mLogger.debug("Retrofit 기존 객체 사용");
+		}
+		
 		RetrofitAPIService mRetrofitAPIService = mRetrofit.create(RetrofitAPIService.class);
 		mRetrofitAPIService.requestAuctionLogin(NetworkDefine.API_VERSION,loginBody).enqueue(mCallBack);
 	}

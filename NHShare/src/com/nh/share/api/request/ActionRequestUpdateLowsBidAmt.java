@@ -1,5 +1,8 @@
 package com.nh.share.api.request;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.ActionRuler;
 import com.nh.share.api.NetworkDefine;
@@ -23,7 +26,7 @@ import retrofit2.http.Path;
  * @author jhlee
  */
 public class ActionRequestUpdateLowsBidAmt extends Action {
-	
+	private static final Logger mLogger = LoggerFactory.getLogger(ActionRequestUpdateLowsBidAmt.class);
 	private RequestUpdateLowsBidAmtBody mBody = null;
 	
 	public ActionRequestUpdateLowsBidAmt(RequestUpdateLowsBidAmtBody body, ActionResultListener<ResponseNumber> resultListener) {
@@ -122,7 +125,13 @@ public class ActionRequestUpdateLowsBidAmt extends Action {
 
 	@Override
 	public void run() {
-		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		if (mRetrofit == null) {
+			mLogger.debug("Retrofit 신규 객체 생성");
+			mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		} else {
+			mLogger.debug("Retrofit 기존 객체 사용");
+		}
+		
 		RetrofitAPIService mRetrofitAPIService = mRetrofit.create(RetrofitAPIService.class);
 		mRetrofitAPIService.requestUpdateLowsBidAmt(NetworkDefine.API_VERSION,mBody.get("list").toString()).enqueue(mCallBack);
 	}

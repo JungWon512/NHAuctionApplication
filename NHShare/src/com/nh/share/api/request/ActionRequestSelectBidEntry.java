@@ -2,6 +2,9 @@ package com.nh.share.api.request;
 
 import java.util.HashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.ActionRuler;
 import com.nh.share.api.NetworkDefine;
@@ -25,7 +28,7 @@ import retrofit2.http.Path;
  * @author jhlee
  */
 public class ActionRequestSelectBidEntry extends Action {
-	
+	private static final Logger mLogger = LoggerFactory.getLogger(ActionRequestSelectBidEntry.class);
 	private RequestBidEntryBody mBody = null;
 	
 	public ActionRequestSelectBidEntry(RequestBidEntryBody body, ActionResultListener<ResponseBidEntry> resultListener) {
@@ -119,13 +122,19 @@ public class ActionRequestSelectBidEntry extends Action {
 
 	@Override
 	void actionDone(resultType type) {
-		String errMsg = "네트워크 상태가 원활하지 않습니다.\n잠시 후 다시 시도해주세요.";
+		String errMsg = "네트워크 상태가 원활하지 않습니다.\n잠시 후 다시 시도해주세요.[5004]";
 		actionDone(errMsg, type, "");
 	}
 
 	@Override
 	public void run() {
-		mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		if (mRetrofit == null) {
+			mLogger.debug("Retrofit 신규 객체 생성");
+			mRetrofit = new Retrofit.Builder().baseUrl(NetworkDefine.getInstance().getBaseDomain()).addConverterFactory(GsonConverterFactory.create()).client(getDefaultHttpClient()).build();
+		} else {
+			mLogger.debug("Retrofit 기존 객체 사용");
+		}
+
 		RetrofitAPIService mRetrofitAPIService = mRetrofit.create(RetrofitAPIService.class);
 		mRetrofitAPIService.requestMultipleAuctionStatus(NetworkDefine.API_VERSION,mBody).enqueue(mCallBack);
 	}
