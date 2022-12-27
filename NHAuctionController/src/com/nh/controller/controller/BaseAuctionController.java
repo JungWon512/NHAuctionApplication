@@ -1159,13 +1159,26 @@ public abstract class BaseAuctionController implements NettyControllable {
 		
 					mLogger.debug("[경매결과 param] : " + jsonResult.toString());
 					
+					// 낙,유찰 결과 전송 결과와 무관하게 경매 진행 될 수 있도록 로직 분리 처리 2022.11.28 [START]
+					// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
+					if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+						auctionResult.setSuccessBidder("");
+						auctionResult.setSuccessAuctionJoinNum("");
+					}
+					
+					// 낙유찰 결과 전송
+					addLogItem(mResMsg.getString("msg.auction.send.result") + AuctionDelegate.getInstance().onSendAuctionResult(auctionResult));
+					
+					// 낙유찰 결과 UI 업데이트
+					updateAuctionStateInfo(isSuccess, bidder);
+					// 낙,유찰 결과 전송 결과와 무관하게 경매 진행 될 수 있도록 로직 분리 처리 2022.11.28 [END]
+					
 					// 경매 결과 API 전송
 					ApiUtils.getInstance().requestAuctionResult(jsonResult, new ActionResultListener<ResponseAuctionResult>() {
 						@Override
 						public void onResponseResult(ResponseAuctionResult result) {
 							
 							try {
-							
 								if (result != null && result.getSuccess()) {
 									
 									//Fail list 있으면 저장 실패
@@ -1173,6 +1186,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 										
 										mLogger.debug("[경매 결과 저장 성공] 결과코드 : " + auctionResult.getResultCode() + " / 낙찰가 : " + auctionResult.getSuccessBidUpr() + " / 낙찰자 : " + auctionResult.getSuccessAuctionJoinNum());
 										
+										// 낙,유찰 결과 전송 결과와 무관하게 경매 진행 될 수 있도록 로직 분리 처리 2022.11.28 [START]
+										/*
 										// 유찰 처리 시 DB 저장 후 낙찰자 및 참가번호를 빈값으로 변경(upadte query error 방지)
 										if (auctionResult.getResultCode().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
 											auctionResult.setSuccessBidder("");
@@ -1184,12 +1199,14 @@ public abstract class BaseAuctionController implements NettyControllable {
 										
 										// 낙유찰 결과 UI 업데이트
 										updateAuctionStateInfo(isSuccess, bidder);
-										
-									}else {
+										*/
+										// 낙,유찰 결과 전송 결과와 무관하게 경매 진행 될 수 있도록 로직 분리 처리 2022.11.28 [END]
+									} else {
 										Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.auction.result.fail")));
 										mLogger.debug("[경매 결과 업데이트 실패. 취소처리]");
 										isResultCompleteFlag = false;
-										onCancelOrClose();
+										// 낙,유찰 결과 전송 결과와 무관하게 경매 진행 될 수 있도록 로직 변경 2022.11.28
+										//onCancelOrClose();
 									}
 									
 									
@@ -1197,13 +1214,15 @@ public abstract class BaseAuctionController implements NettyControllable {
 									Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.auction.result.fail")));
 									mLogger.debug("[경매 결과 업데이트 실패. 취소처리]");
 									isResultCompleteFlag = false;
-									onCancelOrClose();
+									// 낙,유찰 결과 전송 결과와 무관하게 경매 진행 될 수 있도록 로직 변경 2022.11.28
+									//onCancelOrClose();
 								}
 							
-							}catch (Exception e) {
+							} catch (Exception e) {
 								e.printStackTrace();
 								SentryUtil.getInstance().sendExceptionLog(e);
-								onCancelOrClose();
+								// 낙,유찰 결과 전송 결과와 무관하게 경매 진행 될 수 있도록 로직 변경 2022.11.28
+								//onCancelOrClose();
 							}
 						
 						}
@@ -1213,7 +1232,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.auction.result.fail")));
 							mLogger.debug("[경매 결과 업데이트 실패. 취소처리]");
 							isResultCompleteFlag = false;
-							onCancelOrClose();
+							// 낙,유찰 결과 전송 결과와 무관하게 경매 진행 될 수 있도록 로직 변경 2022.11.28
+							//onCancelOrClose();
 						}
 					});
 				

@@ -213,12 +213,17 @@
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-column-style-1" text="경매" HBox.hgrow="ALWAYS">
+                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-column-style-1" text="총출장두수" HBox.hgrow="ALWAYS">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="148.0" prefWidth="148.0" styleClass="contents-auction-info-column-style-1" text="낙찰대기시간" HBox.hgrow="ALWAYS">
+                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-column-style-1" text="낙찰">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-column-style-1" text="유찰">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
@@ -252,18 +257,16 @@
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <HBox minWidth="148.0" prefWidth="148.0" spacing="6.0" styleClass="contents-auction-info-count-down" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <Label fx:id="cnt_5" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
-                                          <Label fx:id="cnt_4" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
-                                          <Label fx:id="cnt_3" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
-                                          <Label fx:id="cnt_2" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
-                                          <Label fx:id="cnt_1" prefHeight="200.0" prefWidth="200.0" styleClass="contents-auction-info-count-down-bar" />
-                                       </children>
-                                       <padding>
-                                          <Insets bottom="5.0" left="7.0" right="7.0" top="5.0" />
-                                       </padding>
-                                    </HBox>
+                                    <Label fx:id="mAuctionInfoSuccessCountLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-val" text="0두">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="mAuctionInfoFailCountLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="96.0" styleClass="contents-auction-info-val" text="0두">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
                                     <HBox minWidth="230.0" prefWidth="230.0" spacing="6.0" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label fx:id="mAuctionStateReadyLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contents-auction-info-state-ready" text="대기" HBox.hgrow="ALWAYS">
