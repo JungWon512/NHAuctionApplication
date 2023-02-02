@@ -41,9 +41,9 @@
                   <Button fx:id="mBtnMessage" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="메시지 전송" />
                   <Button fx:id="mBtnUpPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="[F9]예정가 높이기" />
                   <Button fx:id="mBtnDownPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="[F10]예정가 낮추기" />
-                  <HBox minWidth="188.0" style="-fx-background-color: #ffffff;" styleClass="border-all">
+                  <HBox minWidth="200.0" style="-fx-background-color: #ffffff;" styleClass="border-all">
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="감가액" HBox.hgrow="ALWAYS">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="기준감가액" HBox.hgrow="ALWAYS">
                            <font>
                               <Font name="Noto Sans CJK KR Regular" size="16.0" />
                            </font>
@@ -78,6 +78,11 @@
                   </HBox>
                </children>
             </HBox>
+            <Button fx:id="mBtnDoubleDownPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="예정가 낮추기(2배)" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </Button>
          </children>
       </GridPane>
    </top>

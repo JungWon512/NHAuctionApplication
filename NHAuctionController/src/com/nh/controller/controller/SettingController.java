@@ -31,7 +31,6 @@ import com.nh.controller.utils.SoundUtil;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -104,7 +103,7 @@ public class SettingController implements Initializable {
 	private TextField mCountTextField;
 	// 모바일노출설정 ( 최대 8개 )
 	@FXML
-	private CheckBox mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox, mMotherCheckBox, mPassageCheckBox, mMaTimeCheckBox, mKpnCheckBox, mRegionCheckBox, mNoteCheckBox, mLowPriceCheckBox, mDNACheckBox;
+	private CheckBox mEntryNumCheckBox, mExhibitorCheckBox, mGenderCheckBox, mWeightCheckBox, mMotherCheckBox, mPassageCheckBox, mMaTimeCheckBox, mKpnCheckBox, mRegionCheckBox, mNoteCheckBox, mLowPriceCheckBox, mDNACheckBox, mTtsTypeCheckBox;
 
 	@FXML // 동가 재경매 횟수
 	private TextField mReAuctionCountTextField;
@@ -189,6 +188,7 @@ public class SettingController implements Initializable {
 		}else {
 			mAuctionTypeSingleToggleButton.setDisable(true);
 			mAuctionTypeMultiToggleButton.setDisable(true);
+			mTtsTypeCheckBox.setDisable(true);
 		}
 	}
 
@@ -217,6 +217,7 @@ public class SettingController implements Initializable {
 		getReAuctionCheckboxPreference();
 		getUseOneAuctionCheckboxPreference();
 		getSoundAuctionCheckboxPreference();
+		getTtsTypeCheckboxPreference();
 		getBoardUseNoteCheckboxPreference();
 		setToggleGroups();
 		getCountTextField();
@@ -375,7 +376,9 @@ public class SettingController implements Initializable {
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, soundAuctionWaitTime);
 
 		// TTS 인증 처리
-		SoundUtil.getInstance().initCertification(mSoundValTextArea.getText());
+		if (!SettingApplication.getInstance().isTtsType()) {
+			SoundUtil.getInstance().initCertification(mSoundValTextArea.getText());
+		}
 	}
 
 	/**
@@ -464,7 +467,9 @@ public class SettingController implements Initializable {
 		//기존과 현재 설정값이 다르면 음성 설정 문구 재반영
 		if(!savedSoundRate.equals(currentSoundRate)) {
 			mLogger.debug("[재생 속도 값이 변경됐습니다.음성 설정 속도를 반영합니다.]");
-			SoundUtil.getInstance().soundSettingSpeedChanged();
+			if (!SettingApplication.getInstance().isTtsType()) {
+				SoundUtil.getInstance().soundSettingSpeedChanged();
+			}
 		}
 
 		//비고 사용 여부
@@ -562,7 +567,26 @@ public class SettingController implements Initializable {
 	private void setSoundAuctionCheckboxPreference() {
 		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, (mUseSoundAuction.isSelected()));
 	}
+	
+	/**
+	 * 내부TTS엔진 사용여부 value 가져오기
+	 *
+	 * @author jspark
+	 */
+	private void getTtsTypeCheckboxPreference() {
+		boolean isTtsType = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_USE_TTS_TYPE, false);
+		mTtsTypeCheckBox.setSelected(isTtsType);
+	}
 
+	/**
+	 * 내부TTS엔진 사용여부 저장
+	 *
+	 * @author jspark
+	 */
+	private void setTtsTypeCheckboxPreference() {
+		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_USE_TTS_TYPE, (mTtsTypeCheckBox.isSelected()));
+	}
+	
 	/**
 	 * 카운트 설정 Preference에 저장
 	 *
@@ -1133,6 +1157,7 @@ public class SettingController implements Initializable {
 			setReAuctionCheckboxPreference();
 			setUseOneAuctionCheckboxPreference();
 			setSoundAuctionCheckboxPreference();
+			setTtsTypeCheckboxPreference();
 			setBoardUseNoteCheckboxPreference();
 			setCountTextField();
 			setMobileCheckboxPreference(mobileCheckBoxSelectedList);

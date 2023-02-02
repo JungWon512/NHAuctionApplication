@@ -60,6 +60,7 @@ import com.nh.share.common.models.Bidding;
 import com.nh.share.common.models.CancelBidding;
 import com.nh.share.common.models.ConnectionInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
+import com.nh.share.common.models.SmartEntryInfo;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.SendAuctionResult;
 import com.nh.share.server.models.AuctionCheckSession;
@@ -93,7 +94,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected int DUMMY_ROW_WAIT = 8;
 	protected int DUMMY_ROW_FINISHED = 4;
 	protected int mRecordCount = 0; // cow total data count
-
+	
 	protected ResourceBundle mResMsg = null; // 메세지 처리
 
 	protected Stage mStage = null; // 현재 Stage
@@ -147,7 +148,7 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected boolean isPlayReAuctionSound = false; // 재경매자 사운드
 	
 	protected boolean isAutoPlay = false;
-
+	
 	public BaseAuctionController() {
 		init();
 	}

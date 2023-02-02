@@ -673,6 +673,18 @@
                </children>
             </HBox>
             <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="경매 타입" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="24" />
+            <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="내부 TTS" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="24">
+               <graphic>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="사용여부" textAlignment="CENTER" textFill="WHITE" />
+               </graphic></Label>
+            <CheckBox fx:id="mTtsTypeCheckBox" mnemonicParsing="false" text="(체크 시 내부엔진 사용)" userData="7" GridPane.columnIndex="3" GridPane.rowIndex="24">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </CheckBox>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="4" GridPane.columnSpan="2147483647" GridPane.rowIndex="21" GridPane.rowSpan="2147483647">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" styleClass="label-background" text="음성설정" textAlignment="CENTER" textFill="WHITE" />

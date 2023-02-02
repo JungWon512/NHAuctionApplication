@@ -1,10 +1,22 @@
 package com.nh.controller.controller;
 
+import java.lang.invoke.MethodHandles;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nh.controller.interfaces.BooleanListener;
+import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.controller.utils.SoundUtil;
+import com.nh.controller.utils.SoundUtils;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -13,14 +25,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * 제어 메인 -> 음성설정
@@ -88,37 +92,75 @@ public class SettingSoundController implements Initializable {
     private void initUI() {
         initKeyConfig();
 
-        mBtnPlaySound_1.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
-        mBtnPlaySound_2.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER));
-        mBtnPlaySound_3.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE));
-        mBtnPlaySound_4.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE));
-        mBtnPlaySound_5.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER));
-        mBtnPlaySound_6.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_USE));
-        mBtnPlaySound_7.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1));
-        mBtnPlaySound_8.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2));
-        mBtnPlaySound_9.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3));
-        mBtnPlaySound_10.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4));
-        mBtnPlaySound_11.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5));
-        mBtnPlaySound_12.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6));
+        if (SettingApplication.getInstance().isTtsType()) {
+        	mBtnPlaySound_1.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
+            mBtnPlaySound_2.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER));
+            mBtnPlaySound_3.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE));
+            mBtnPlaySound_4.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE));
+            mBtnPlaySound_5.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER));
+            mBtnPlaySound_6.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_USE));
+            mBtnPlaySound_7.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1));
+            mBtnPlaySound_8.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2));
+            mBtnPlaySound_9.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3));
+            mBtnPlaySound_10.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4));
+            mBtnPlaySound_11.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5));
+            mBtnPlaySound_12.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6));
 
-        mBtnStopSound_1.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_2.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_3.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_4.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_5.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_6.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_7.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_8.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_9.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_10.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_11.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
-        mBtnStopSound_12.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_1.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_2.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_3.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_4.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_5.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_6.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_7.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_8.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_9.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_10.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_11.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+            mBtnStopSound_12.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
 
-        mBtnRePlaySound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SoundUtil.getInstance().getDefinePrevKey()));
-        mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnRePlaySound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SoundUtils.getInstance().getDefinePrevKey()));
+            mBtnStopSound.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+        } else {
+        	mBtnPlaySound_1.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
+            mBtnPlaySound_2.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER));
+            mBtnPlaySound_3.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE));
+            mBtnPlaySound_4.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_PRACTICE));
+            mBtnPlaySound_5.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GENDER));
+            mBtnPlaySound_6.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_USE));
+            mBtnPlaySound_7.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1));
+            mBtnPlaySound_8.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2));
+            mBtnPlaySound_9.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3));
+            mBtnPlaySound_10.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4));
+            mBtnPlaySound_11.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5));
+            mBtnPlaySound_12.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6));
+
+            mBtnStopSound_1.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_2.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_3.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_4.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_5.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_6.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_7.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_8.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_9.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_10.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_11.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+            mBtnStopSound_12.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+
+            mBtnRePlaySound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SoundUtil.getInstance().getDefinePrevKey()));
+            mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+        }
+        
         mBtnSave.setOnMouseClicked(event -> saveMsg());
         mBtnClose.setOnMouseClicked(event -> close());
 
+        if (SettingApplication.getInstance().isTtsType()) {
+        	SoundUtils.getInstance().initSoundSetting();        	
+        } else {
+        	SoundUtil.getInstance().initSoundSetting();
+        }
+        
         List<String> soundDataList = initParsingSoundDataList();
 
         mMsgTextArea_1.setText(soundDataList.get(0));
@@ -198,7 +240,11 @@ public class SettingSoundController implements Initializable {
 
         showAlertPopup(mResMsg.getString("str.setting.sound.save"), mResMsg.getString("popup.btn.ok"));
 
-        SoundUtil.getInstance().soundSettingDataChanged();
+        if (SettingApplication.getInstance().isTtsType()) {
+        	SoundUtils.getInstance().soundSettingDataChanged();
+        } else {
+        	SoundUtil.getInstance().soundSettingDataChanged();
+        }
     }
 
     /**

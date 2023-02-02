@@ -113,6 +113,9 @@ public class SharedPreference {
 	public static final String PREFERENCE_SETTING_USE_SOUND_AUCTION = "PREFERENCE_SETTING_SOUND_AUCTION";
 	public static final String PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME = "PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME";
 	// 연속 ,음성 경매  [END]
+	
+	// --- 내부 TTS 사용 여부 ---
+	public static final String PREFERENCE_SETTING_USE_TTS_TYPE = "PREFERENCE_SETTING_USE_TTS_TYPE";
 
 	// --- 메인 -> 음성설정 -> 텍스트 ---
 	public static final String PREFERENCE_SETTING_SOUND_MSG_INTRO = "PREFERENCE_SETTING_SOUND_MSG_INTRO";

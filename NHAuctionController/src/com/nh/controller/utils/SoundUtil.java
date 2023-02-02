@@ -35,7 +35,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nh.controller.model.SettingSound;
-import com.nh.controller.setting.SettingApplication;
 import com.nh.share.utils.SentryUtil;
 
 import javazoom.jl.player.Player;

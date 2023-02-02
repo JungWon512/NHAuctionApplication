@@ -90,12 +90,14 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 	private StringProperty auctionTypeCode;	//경매 회차 유형 코드 (0:일괄,1:송아지,2:비육우.3:번식우)
 	
 	private StringProperty mGapMonth; // 월령(개월수) (2022.09.07)
+	
+	private EntryInfo TEST;
 
 	public SpEntryInfo() {
 	}
 
 	public SpEntryInfo(EntryInfo entryInfo) {
-
+		TEST = entryInfo;
 		this.mAuctionHouseCode = new SimpleStringProperty(entryInfo.getAuctionHouseCode());
 		this.mEntryNum = new SimpleStringProperty(entryInfo.getEntryNum());
 		this.mAuctionQcn = new SimpleStringProperty(entryInfo.getAuctionQcn());
@@ -151,6 +153,10 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 		this.rgSqno = new SimpleStringProperty(entryInfo.getExpAuctionIntNum());
 		this.auctionTypeCode = new SimpleStringProperty(entryInfo.getAuctionTypeCode());
 		this.mGapMonth = new SimpleStringProperty(entryInfo.getGapMonth());
+	}
+	
+	public EntryInfo getEntryInfo() {
+		return TEST;
 	}
 
 	public StringProperty getAuctionHouseCode() {

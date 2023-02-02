@@ -58,6 +58,7 @@ import com.nh.controller.utils.MoveStageUtil;
 import com.nh.controller.utils.MoveStageUtil.EntryDialogType;
 import com.nh.controller.utils.SharedPreference;
 import com.nh.controller.utils.SoundUtil;
+import com.nh.controller.utils.SoundUtils;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.models.CowInfoData;
 import com.nh.share.api.request.body.RequestBidEntryBody;
@@ -408,8 +409,10 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		// 뷰 초기화
 		initViewConfiguration();
+		
 		// 사운드 초기화
 		SoundUtil.getInstance();
+		SoundUtils.getInstance();
 	}
 
 	/**
@@ -439,7 +442,13 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		
 		
 		mBtnSettingSound.setOnMouseClicked(event -> openSettingSoundDialog(event));
-		mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+		
+		if (SettingApplication.getInstance().isTtsType()) {
+			mBtnStopSound.setOnMouseClicked(event -> SoundUtils.getInstance().stopSound());
+		} else {
+			mBtnStopSound.setOnMouseClicked(event -> SoundUtil.getInstance().stopSound());
+		}
+		
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
 
 		mBtnF5.setOnMouseClicked(event -> {
@@ -456,15 +465,27 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mBtnQcnFinish.setOnMouseClicked(event -> onSendQcnFinish());
 
 		// 표시 숨김.
-		mBtnIntroSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
-		mBtnBuyerSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER));
-		mBtnGuideSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE));
-		mBtnEtc_1_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1));
-		mBtnEtc_2_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2));
-		mBtnEtc_3_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3));
-		mBtnEtc_4_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4));
-		mBtnEtc_5_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5));
-		mBtnEtc_6_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6));
+		if (SettingApplication.getInstance().isTtsType()) {
+			mBtnIntroSound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
+			mBtnBuyerSound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER));
+			mBtnGuideSound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE));
+			mBtnEtc_1_Sound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1));
+			mBtnEtc_2_Sound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2));
+			mBtnEtc_3_Sound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3));
+			mBtnEtc_4_Sound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4));
+			mBtnEtc_5_Sound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5));
+			mBtnEtc_6_Sound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6));
+		} else {
+			mBtnIntroSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
+			mBtnBuyerSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER));
+			mBtnGuideSound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE));
+			mBtnEtc_1_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_1));
+			mBtnEtc_2_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_2));
+			mBtnEtc_3_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_3));
+			mBtnEtc_4_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_4));
+			mBtnEtc_5_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5));
+			mBtnEtc_6_Sound.setOnMouseClicked(event -> SoundUtil.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6));
+		}
 
 		// 메세지 전송 애니메이션 초기화
 		initMsgToast();
@@ -2945,8 +2966,13 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		AudioFilePlay.getInstance().stopSound();
 		if (SettingApplication.getInstance().isUseSoundAuction()) {
 			// 사운드 중지
-			SoundUtil.getInstance().setCurrentEntryInfoMessage(null);
-			SoundUtil.getInstance().stopSound();
+			if (SettingApplication.getInstance().isTtsType()) {
+				SoundUtils.getInstance().setCurrentEntryInfoMessage(null);
+				SoundUtils.getInstance().stopSound();
+			} else {
+				SoundUtil.getInstance().setCurrentEntryInfoMessage(null);
+				SoundUtil.getInstance().stopSound();
+			}
 		}
 	}
 

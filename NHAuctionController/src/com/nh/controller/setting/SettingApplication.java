@@ -105,6 +105,8 @@ public class SettingApplication {
 	public final boolean DEFAULT_SETTING_USE_ONE_AUCTION = false;
 	// 음성경부여부 (음성경매) 기본값
 	public final boolean DEFAULT_SETTING_USE_SOUND_AUCTION = false;
+	// 내부 TTS 엔진 사용여부 기본값
+	public final boolean DEFAULT_SETTING_USE_LOCAL_TTS_ENGIN = false;
 	// 대기시간 기본값
 	public final String DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME_MAX = "50";
 	public final String DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME = "5";
@@ -154,6 +156,7 @@ public class SettingApplication {
 	private boolean useReAuction = false; // 동가 재경매 여부
 	private boolean useOneAuction = false; // 연속경매 - 하나씩 진행 여부
 	private boolean useSoundAuction = false; // 음성경매 - 음성경부 여부
+	private boolean isLocalTtsType = true; // 내부 TTS 엔진 사용여부
 	private boolean isSingleAuction = true;	//경매 타입
 	private boolean isNote = false; //비고
 	
@@ -295,6 +298,9 @@ public class SettingApplication {
 			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_SETTING_USE_ONE_AUCTION, DEFAULT_SETTING_USE_ONE_AUCTION);
 			// 음성경부여부 (음성경매) 기본값
 			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, DEFAULT_SETTING_USE_SOUND_AUCTION);
+			// 내부 TTS 엔진 사용여부 기본값
+			SharedPreference.getInstance().setBoolean(SharedPreference.PREFERENCE_SETTING_USE_TTS_TYPE, DEFAULT_SETTING_USE_LOCAL_TTS_ENGIN);
+			
 			// 대기시간 기본값
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME,DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME);
 			
@@ -350,6 +356,7 @@ public class SettingApplication {
 		useOneAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_ONE_AUCTION, DEFAULT_SETTING_USE_ONE_AUCTION);
 		useSoundAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, DEFAULT_SETTING_USE_SOUND_AUCTION);
 		soundAuctionWaitTime = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME);
+		isLocalTtsType = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_TTS_TYPE, DEFAULT_SETTING_USE_LOCAL_TTS_ENGIN);
 		String aucType = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, DEFAULT_SETTING_AUCTION_TOGGLE_TYPE).toUpperCase();
 		
 		if(aucType.equals(AuctionToggle.SINGLE.toString())) {
@@ -546,6 +553,10 @@ public class SettingApplication {
 		return useSoundAuction;
 	}
 
+	public boolean isTtsType() {
+		return isLocalTtsType;
+	}
+	
 	public boolean isSingleAuction() {
 		return isSingleAuction;
 	}

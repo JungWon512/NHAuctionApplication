@@ -35,6 +35,7 @@ import com.nh.share.common.models.RequestLogout;
 import com.nh.share.common.models.ResponseBiddingInfo;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
+import com.nh.share.common.models.SmartEntryInfo;
 import com.nh.share.server.models.AuctionBidStatus;
 import com.nh.share.server.models.AuctionCountDown;
 import com.nh.share.server.models.BidderConnectInfo;
@@ -1523,6 +1524,9 @@ public class SocketIOHandler {
 			case RequestLogout.TYPE:
 				parseObject = new RequestLogout(messages[1], messages[2], messages[3], messages[4]);
 				break;
+			case SmartEntryInfo.TYPE:
+				parseObject = new SmartEntryInfo(messages);
+				break;
 			default:
 				parseObject = null;
 				break;
@@ -1851,6 +1855,9 @@ public class SocketIOHandler {
 									GlobalDefineCode.RESPONSE_REQUEST_FAIL).getEncodedMessage());
 				}
 				
+			} else if (parseObject instanceof SmartEntryInfo) {
+				log.info("Message ADD : " + ((SmartEntryInfo) parseObject).getEncodedMessage());
+				mAuctionServer.itemAdded(((SmartEntryInfo) parseObject).getEncodedMessage());
 			}
 		}
 	};

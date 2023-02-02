@@ -34,6 +34,7 @@ import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRequestEntryInfoH
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRequestLogoutHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRequestShowFailBiddingHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedRetryTargetInfoHandler;
+import com.nh.auctionserver.netty.handlers.AuctionServerDecodedSmartEntryInfoHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedStartAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedStopAuctionHandler;
 import com.nh.auctionserver.netty.handlers.AuctionServerDecodedToastMessageRequestHandler;
@@ -54,6 +55,7 @@ import com.nh.share.common.models.RefreshConnector;
 import com.nh.share.common.models.RequestLogout;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
+import com.nh.share.common.models.SmartEntryInfo;
 import com.nh.share.controller.ControllerMessageParser;
 import com.nh.share.controller.interfaces.FromAuctionController;
 import com.nh.share.controller.models.EditSetting;
@@ -298,6 +300,9 @@ public class AuctionServer {
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 						pipeline.addLast(new AuctionServerDecodedRequestShowFailBiddingHandler(AuctionServer.this, mAuctioneer,
+								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
+								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
+						pipeline.addLast(new AuctionServerDecodedSmartEntryInfoHandler(AuctionServer.this, mAuctioneer,
 								mConnectorInfoMap, mConnectorChannelInfoMap, mControllerChannelsMap, mBidderChannelsMap,
 								mWatcherChannelsMap, mAuctionResultMonitorChannelsMap, mConnectionMonitorChannelsMap, mStandChannelsMap));
 					}
@@ -606,7 +611,7 @@ public class AuctionServer {
 			break;
 		case FromAuctionCommon.ORIGIN:
 			FromAuctionCommon commonParsedMessage = CommonMessageParser.parse(event);
-
+			
 			if (commonParsedMessage instanceof AuctionStatus) {
 				mAuctioneer.setAuctionStatus(((AuctionStatus) commonParsedMessage).getAuctionHouseCode(),
 						(AuctionStatus) commonParsedMessage);
@@ -697,6 +702,10 @@ public class AuctionServer {
 			if (commonParsedMessage instanceof AuctionBidStatus) {
 				mAuctioneer.getAuctionState(((AuctionBidStatus) commonParsedMessage).getAuctionHouseCode()).setAuctionBidStatus((AuctionBidStatus) commonParsedMessage);
 				channelItemWriteAndFlush((AuctionBidStatus) commonParsedMessage);
+			}
+			
+			if (commonParsedMessage instanceof SmartEntryInfo) {
+				channelItemWriteAndFlush((SmartEntryInfo) commonParsedMessage);
 			}
 			break;
 		default:
@@ -1251,6 +1260,16 @@ public class AuctionServer {
 					if (mWatcherChannelsMap.containsKey(((AuctionBidStatus) event).getAuctionHouseCode())) {
 						if (mWatcherChannelsMap.get(((AuctionBidStatus) event).getAuctionHouseCode()).size() > 0) {
 							mWatcherChannelsMap.get(((AuctionBidStatus) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
+						}
+					}
+				}
+				break;
+				case SmartEntryInfo.TYPE:
+				// Netty Broadcast
+				if (mStandChannelsMap != null) {
+					if (mStandChannelsMap.containsKey(((SmartEntryInfo) event).getAuctionHouseCode())) {
+						if (mStandChannelsMap.get(((SmartEntryInfo) event).getAuctionHouseCode()).size() > 0) {
+							mStandChannelsMap.get(((SmartEntryInfo) event).getAuctionHouseCode()).writeAndFlush(message + "\r\n");
 						}
 					}
 				}
