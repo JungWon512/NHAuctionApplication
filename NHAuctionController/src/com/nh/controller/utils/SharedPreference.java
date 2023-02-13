@@ -52,6 +52,8 @@ public class SharedPreference {
 	
 	public static final String PREFERENCE_SETTING_USE_LOW_PRICE_RATE = "PREFERENCE_SETTING_USE_LOW_PRICE_RATE"; // 하한가 정률 적용 여부
 	
+	public static final String PREFERENCE_SETTING_AUCTION_LOW_PRICE_TIMES = "PREFERENCE_SETTING_AUCTION_LOW_PRICE_TIMES"; // 예정가 낮추기 임의의 배수 설정
+	
 	// --- 전광판 설정 IP, PORT ---
 	public static final String PREFERENCE_SETTING_IP_BOARD_TEXT1 = "PREFERENCE_SETTING_IP_BOARD_TEXT1";
 	public static final String PREFERENCE_SETTING_PORT_BOARD_TEXT1 = "PREFERENCE_SETTING_PORT_BOARD_TEXT1";

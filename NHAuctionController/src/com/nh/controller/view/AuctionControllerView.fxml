@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -78,11 +79,27 @@
                   </HBox>
                </children>
             </HBox>
-            <Button fx:id="mBtnDoubleDownPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="예정가 낮추기(2배)" GridPane.columnIndex="2" GridPane.rowIndex="1">
-               <GridPane.margin>
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <children>
+                  <Button fx:id="mBtnDoubleDownPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="예정가 낮추기" />
+                  <TextField fx:id="mLowPriceTimesTextField" alignment="CENTER" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="70.0" prefHeight="40.0" prefWidth="70.0" style="-fx-border-color: b4b4b4; -fx-background-color: ffffff;" styleClass="contents-auction-info-val" text="1.0">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </TextField>
+                  <Label fx:id="mLowPriceUnitLabel" contentDisplay="CENTER" maxHeight="40.0" minHeight="40.0" prefHeight="40.0" style="-fx-background-color: eeeeee;" styleClass="btn-header" text="배" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
                   <Insets left="10.0" />
-               </GridPane.margin>
-            </Button>
+               </padding>
+            </HBox>
          </children>
       </GridPane>
    </top>

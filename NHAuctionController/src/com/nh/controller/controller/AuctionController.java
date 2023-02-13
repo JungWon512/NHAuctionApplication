@@ -19,6 +19,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.UnaryOperator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
@@ -61,7 +64,6 @@ import com.nh.share.code.GlobalDefineCode;
 import com.nh.share.common.models.AuctionStatus;
 import com.nh.share.common.models.ResponseConnectionInfo;
 import com.nh.share.common.models.RetryTargetInfo;
-import com.nh.share.common.models.SmartEntryInfo;
 import com.nh.share.controller.models.EntryInfo;
 import com.nh.share.controller.models.FinishAuction;
 import com.nh.share.controller.models.InitEntryInfo;
@@ -79,6 +81,8 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -99,6 +103,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ContextMenuEvent;
@@ -114,6 +121,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import javafx.util.converter.IntegerStringConverter;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 
@@ -196,6 +204,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	@FXML
 	private GridPane mAuctionStateGridPane;
 	
+	@FXML
+	private TextField mLowPriceTimesTextField;
+	
+	@FXML
+	private Label mLowPriceUnitLabel;
+	
 	private int mRemainingTimeCount = 5; // 카운트다운 남은 시간. 정지 상황에서 남은 시간을 저장하기 위함.
 
 	private final SharedPreference preference = new SharedPreference();
@@ -230,6 +244,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private String REFRESH_ENTRY_LIST_TYPE_NONE = "NONE"; // 출장우 정보 갱신 - 기본
 	private String REFRESH_ENTRY_LIST_TYPE_SEND = "SEND"; // 출장우 정보 갱신 후 정보 보냄
 	private String REFRESH_ENTRY_LIST_TYPE_START = "START"; // 출장우 정보 갱신 후 시작
+	private String REFRESH_ENTRY_LIST_TYPE_RUN_START = "RUN_START"; // 버튼눌러시작
 
 	private boolean isSendEntryData = false; // 출장우 데이터 전송 여부
 	
@@ -382,6 +397,49 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnEntrySuccessList.setOnMouseClicked(event -> openFinishedEntryListPopUp());
 		mBtnQcnFinish.setOnMouseClicked(event -> onSendQcnFinish());
 
+		mLowPriceTimesTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue,
+					final String newValue) {
+
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+
+					String tmpStr = "";
+
+					if (newValue.length() == 4) {
+						tmpStr = newValue.substring(4);
+					} else {
+						tmpStr = newValue;
+					}
+
+					mLowPriceTimesTextField.setText(tmpStr);
+				}
+
+			}
+		});
+		
+		// 예정가 낮추기 임의의 배수 설정값 초기화 2023.02.02
+		mLowPriceTimesTextField.setText(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_AUCTION_LOW_PRICE_TIMES, "1.0"));
+		mLowPriceTimesTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
+				if (arg2) {
+					mLogger.debug("focusGained : " + mLowPriceTimesTextField.getText());
+				} else {
+					mLogger.debug("focusLost : " + mLowPriceTimesTextField.getText());
+					if (!getLowPriceTimesPattern(mLowPriceTimesTextField.getText().trim())) {
+						mLogger.debug("예정가 낮추기 배수 정규식 확인 결과 : Fail");
+						SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_AUCTION_LOW_PRICE_TIMES, SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_AUCTION_LOW_PRICE_TIMES, "1.0"));
+					} else {
+						mLogger.debug("예정가 낮추기 배수 정규식 확인 결과 : Success");
+						SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_AUCTION_LOW_PRICE_TIMES, mLowPriceTimesTextField.getText().trim());
+					}
+					
+					mLowPriceTimesTextField.setText(SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_AUCTION_LOW_PRICE_TIMES, "1.0"));
+				}
+			}
+		});
+		
 		// 표시 숨김.
 		if (SettingApplication.getInstance().isTtsType()) {
 			mBtnIntroSound.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
@@ -413,6 +471,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	}
 
+	private boolean getLowPriceTimesPattern(String values) {
+		Pattern pattern = Pattern.compile("[0-9]{0,1}.[0-9]{0,1}");
+        Matcher matcher = pattern.matcher(values);
+        boolean result = matcher.matches();
+        
+        return result;
+	}
+	
 	private void initHandleLowPrice() {
 		isRateDownLowPrice = SettingApplication.getInstance().isUseLowPriceRate();
 	}
@@ -1073,7 +1139,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 		} else if (type.equals(REFRESH_ENTRY_LIST_TYPE_START)) {
 			// 경매시
-			onStartAuction();
+			onStartAuction(false);
+		} else if (type.equals(REFRESH_ENTRY_LIST_TYPE_RUN_START)) {
+			onStartAuction(true);
 		} else {
 			Platform.runLater(() -> {
 				CommonUtils.getInstance().dismissLoadingDialog();
@@ -1733,7 +1801,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_READY: // 준비,경매완료,유찰 상황에서 시작 가능.
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 		case GlobalDefineCode.AUCTION_STATUS_PASS:
-			refreshAndStart();
+			refreshAndStart(false);
 			break;
 		case GlobalDefineCode.AUCTION_STATUS_START: // 경매 진행 상황에서 낙찰 예정자가 있으면 경매 완료, 없으면 카운트다운 보냄.
 		case GlobalDefineCode.AUCTION_STATUS_PROGRESS:
@@ -1752,7 +1820,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 갱신 + 경매 시작
 	 */
-	private void refreshAndStart() {
+	private void refreshAndStart(boolean isAutoStart) {
 
 		if (isStartedAuction) {
 			return;
@@ -1766,7 +1834,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			@Override
 			public void run() {
 				// 갱신 후 변경점 있으면 서버 전달.
-				refreshWaitEntryDataList(true,REFRESH_ENTRY_LIST_TYPE_START);
+				if (isAutoStart) {
+					refreshWaitEntryDataList(true,REFRESH_ENTRY_LIST_TYPE_START);
+				} else {
+					refreshWaitEntryDataList(true,REFRESH_ENTRY_LIST_TYPE_RUN_START);
+				}
 			}
 		};
 
@@ -1776,7 +1848,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 사운드 경매 시작
 	 */
-	public void onStartSoundAuction() {
+	public void onStartSoundAuction(boolean isAutoStart) {
 		// 출품 이관 체크
 		if (!isSendEnterInfo()) {
 			showAlertPopupOneButton(mResMsg.getString("msg.auction.send.need.entry.data"));
@@ -1803,7 +1875,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
 		case GlobalDefineCode.AUCTION_STATUS_PASS:
 
-			refreshAndStart();
+			refreshAndStart(isAutoStart);
 
 			break;
 		}
@@ -1841,8 +1913,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	/**
 	 * 1.준비 2.시작
 	 */
-	public void onStartAuction() {
-
+	public void onStartAuction(boolean isPressSpaceKey) {
+		boolean isStopTarget = false;
+		
 		switch (mAuctionStatus.getState()) {
 		case GlobalDefineCode.AUCTION_STATUS_READY:
 		case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
@@ -1855,66 +1928,132 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			isStartedAuction = true;
 			// 낙찰 후 경매 자동 시작 플래그
 			isAutoPlay = false;
+			
+			if ((!CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getAuctionResult()) && mCurrentSpEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_SUCCESS))) {
+				isStopTarget = true;
+			}
 
 			setCurrentEntrySoundData();
 
-			// 결장 응찰가 없음.
-			if (CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getLowPrice()) || mCurrentSpEntryInfo.getLowPriceInt() <= 0) {
+			if (isPressSpaceKey) {
+				// 결장 응찰가 없음.
+				if (CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getLowPrice()) || mCurrentSpEntryInfo.getLowPriceInt() <= 0) {
 
-				if (SettingApplication.getInstance().isUseSoundAuction()) {
-					// 결장 사운드 시작
-					if (SettingApplication.getInstance().isTtsType()) {
-						SoundUtils.getInstance().playCurrentEntryMessage(new PlaybackListener() {
-							@Override
-							public void playbackStarted(PlaybackEvent evt) {
-								mLogger.debug("결장 음성 멘트 playbackStarted");
-								super.playbackStarted(evt);
-							}
+					if (SettingApplication.getInstance().isUseSoundAuction()) {
+						// 결장 사운드 시작
+						if (SettingApplication.getInstance().isTtsType()) {
+							SoundUtils.getInstance().playCurrentEntryMessage(new PlaybackListener() {
+								@Override
+								public void playbackStarted(PlaybackEvent evt) {
+									mLogger.debug("결장 음성 멘트 playbackStarted");
+									super.playbackStarted(evt);
+								}
 
-							@Override
-							public void playbackFinished(PlaybackEvent evt) {
-								mLogger.debug("결장 음성 멘트 playbackFinished");
-								isStartSoundPlaying = false;
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									mLogger.debug("결장 음성 멘트 playbackFinished");
+									isStartSoundPlaying = false;
 
-								setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
-								// 다음 번호 이동
-								selectIndexWaitTable(1, false);
+									setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+									// 다음 번호 이동
+									selectIndexWaitTable(1, false);
 
-							}
-						});
+								}
+							});
+						} else {
+							SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
+								@Override
+								public void playbackStarted(PlaybackEvent evt) {
+									mLogger.debug("결장 음성 멘트 playbackStarted");
+									super.playbackStarted(evt);
+								}
+
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									mLogger.debug("결장 음성 멘트 playbackFinished");
+									isStartSoundPlaying = false;
+
+									setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+									// 다음 번호 이동
+									selectIndexWaitTable(1, false);
+
+								}
+							});
+						}
 					} else {
-						SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
-							@Override
-							public void playbackStarted(PlaybackEvent evt) {
-								mLogger.debug("결장 음성 멘트 playbackStarted");
-								super.playbackStarted(evt);
-							}
-
-							@Override
-							public void playbackFinished(PlaybackEvent evt) {
-								mLogger.debug("결장 음성 멘트 playbackFinished");
-								isStartSoundPlaying = false;
-
-								setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
-								// 다음 번호 이동
-								selectIndexWaitTable(1, false);
-
-							}
-						});
+						// 음성경매에서 + 눌러 단일경매로 시작한 경우
+						if (isPlusKeyStartAuction) {
+							toggleAuctionType();
+							isPlusKeyStartAuction = false;
+						}
+						isStartSoundPlaying = false;
+						setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+						// 다음 번호 이동
+						selectIndexWaitTable(1, false);
 					}
-				} else {
-					// 음성경매에서 + 눌러 단일경매로 시작한 경우
-					if (isPlusKeyStartAuction) {
-						toggleAuctionType();
-						isPlusKeyStartAuction = false;
-					}
-					isStartSoundPlaying = false;
-					setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
-					// 다음 번호 이동
-					selectIndexWaitTable(1, false);
+
+					return;
 				}
+			} else {
+				// 결장 응찰가 없음.
+				if (CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getLowPrice()) || mCurrentSpEntryInfo.getLowPriceInt() <= 0
+						|| isStopTarget) {
 
-				return;
+					if (SettingApplication.getInstance().isUseSoundAuction() && !isStopTarget) {
+						// 결장 사운드 시작
+						if (SettingApplication.getInstance().isTtsType()) {
+							SoundUtils.getInstance().playCurrentEntryMessage(new PlaybackListener() {
+								@Override
+								public void playbackStarted(PlaybackEvent evt) {
+									mLogger.debug("결장 음성 멘트 playbackStarted");
+									super.playbackStarted(evt);
+								}
+
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									mLogger.debug("결장 음성 멘트 playbackFinished");
+									isStartSoundPlaying = false;
+
+									setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+									// 다음 번호 이동
+									selectIndexWaitTable(1, false);
+
+								}
+							});
+						} else {
+							SoundUtil.getInstance().playCurrentEntryMessage(new PlaybackListener() {
+								@Override
+								public void playbackStarted(PlaybackEvent evt) {
+									mLogger.debug("결장 음성 멘트 playbackStarted");
+									super.playbackStarted(evt);
+								}
+
+								@Override
+								public void playbackFinished(PlaybackEvent evt) {
+									mLogger.debug("결장 음성 멘트 playbackFinished");
+									isStartSoundPlaying = false;
+
+									setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+									// 다음 번호 이동
+									selectIndexWaitTable(1, false);
+
+								}
+							});
+						}
+					} else {
+						// 음성경매에서 + 눌러 단일경매로 시작한 경우
+						if (isPlusKeyStartAuction) {
+							toggleAuctionType();
+							isPlusKeyStartAuction = false;
+						}
+						isStartSoundPlaying = false;
+						setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
+						// 다음 번호 이동
+						selectIndexWaitTable(1, false);
+					}
+
+					return;
+				}
 			}
 
 			// 시작 로그 msg
@@ -2294,9 +2433,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param event
 	 */
 	public void openSendMessage(MouseEvent event) {
-
 		Node node = (Node) event.getSource();
 		Stage stage = (Stage) node.getScene().getWindow();
+		
+		// 예정가 배수 설정 필드 Focus out 처리
+		mLowPriceUnitLabel.requestFocus();
+		
 		mBtnMessage.setDisable(true);
 		mMessageStage = MoveStageUtil.getInstance().loadMessageFXMLLoader(stage, new MessageStringListener() {
 			@Override
@@ -2397,6 +2539,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param event
 	 */
 	public void onUpPrice(MouseEvent event) {
+		// 예정가 배수 설정 필드 Focus out 처리
+		mLowPriceUnitLabel.requestFocus();
 		
 		if(mWaitTableView.getSelectionModel().getSelectedItem() == null) {
 			mLogger.debug("예정가 높이기 선택된 item 없음");
@@ -2420,6 +2564,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param event
 	 */
 	public void onDownPrice(MouseEvent event) {
+		// 예정가 배수 설정 필드 Focus out 처리
+		mLowPriceUnitLabel.requestFocus();
 		
 		if(mWaitTableView.getSelectionModel().getSelectedItem() == null) {
 			mLogger.debug("예정가 낮추기 선택된 item 없음");
@@ -2444,6 +2590,10 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 * @param event
 	 */
 	public void onDoubleDownPrice(MouseEvent event) {
+		long lowPrice = 0;
+		
+		// 예정가 배수 설정 필드 Focus out 처리
+		mLowPriceUnitLabel.requestFocus();
 		
 		if(mWaitTableView.getSelectionModel().getSelectedItem() == null) {
 			mLogger.debug("예정가 2배 낮추기 선택된 item 없음");
@@ -2454,10 +2604,14 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			return;
 		}
 
-			
-		long lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue())) * -2;
+		// 예정가 낮추기 기준금액 * 임의의배수 계산하여 낮추기 기능 적용 2023.02.02
+		if (!mLowPriceTimesTextField.getText().isEmpty()) {
+			lowPrice = (long) (SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue())) * -(Double.parseDouble(mLowPriceTimesTextField.getText())));
+		} else {
+			lowPrice = SettingApplication.getInstance().getCowLowerLimitPrice(Integer.parseInt(mCurrentSpEntryInfo.getEntryType().getValue())) * -1;
+		}
 		
-		mLogger.debug("예정가 2배 낮추기 : " + lowPrice + " / 구분코드 : " + mCurrentSpEntryInfo.getEntryType().getValue());
+		mLogger.debug("예정가 비율 낮추기 : " + lowPrice + " / 구분코드 : " + mCurrentSpEntryInfo.getEntryType().getValue());
 		
 		setLowPrice(lowPrice, false);
 	}
@@ -3461,6 +3615,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						mLogger.debug("재경매 음성 멘트 playbackFinished");
 						
 						isPlayReAuctionSound = false;
+						
+						// 재경매 안내 멘트 종료 후 경매 바로 진행 2023.02.02
+						isReAuctionNewBidding = true;
 					
 						// 1순위 회원
 						SpBidding rank_1_user = mBiddingUserInfoDataList.get(0);
@@ -3495,6 +3652,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						mLogger.debug("재경매 음성 멘트 playbackFinished");
 						
 						isPlayReAuctionSound = false;
+						
+						// 재경매 안내 멘트 종료 후 경매 바로 진행 2023.02.02
+						isReAuctionNewBidding = true;
 					
 						// 1순위 회원
 						SpBidding rank_1_user = mBiddingUserInfoDataList.get(0);
@@ -4006,7 +4166,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 								setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
 								// 다음 번호 이동
 								selectIndexWaitTable(1, false);
-								onStartSoundAuction();
+								onStartSoundAuction(true);
 								
 							}
 						});
@@ -4568,18 +4728,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	}
 
 	private void normalEnterStartAuction() {
+		// 예정가 배수 설정 필드 Focus out 처리
+		mLowPriceUnitLabel.requestFocus();
+		
 		onStartAndStopAuction(0);
 	}
 
 	private void normalSpaceStartAuction() {
-
+		// 예정가 배수 설정 필드 Focus out 처리
+		mLowPriceUnitLabel.requestFocus();
+		
 		if (SettingApplication.getInstance().isUseSoundAuction()) {
 			if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_START) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PROGRESS)) {
 				//
 //				onCancelOrClose();
 			} else {
 				isPlusKeyStartAuction = false;
-				onStartSoundAuction();
+				onStartSoundAuction(false);
 			}
 		} else {
 
