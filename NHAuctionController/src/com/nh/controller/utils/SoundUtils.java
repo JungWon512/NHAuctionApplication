@@ -268,7 +268,7 @@ public class SoundUtils {
 						};
 						
 						mCurrentPlayer = new TtsPlayer(mTtsPlayerListener);
-						AudioInputStream audioInputStream = getTtsStreamData(mMessage);
+						AudioInputStream audioInputStream = getNormalTtsStreamData(mMessage);
 						
 						if (audioInputStream != null) {
 							mCurrentPlayer.play(audioInputStream);
@@ -422,6 +422,41 @@ public class SoundUtils {
 		}
 	}
 
+	public synchronized AudioInputStream getNormalTtsStreamData(String msg) {
+		int result = -1;
+		libttsapi ttsapi = new libttsapi();
+		AudioInputStream inputStreamResult = null;
+
+		try {
+			if (getTtsServerStatus(ttsapi) == ttsapi.TTS_SERVICE_ON) {
+				result = ttsapi.ttsRequestBufferEx(TTS_SERVER_HOST, TTS_SERVER_API_PORT, msg, TTS_SERVER_VOICE_TYPE, libttsapi.FORMAT_WAV,
+						libttsapi.TEXT_NORMAL, 100, getNormalSoundSpeed(), TTS_SERVER_PITCH_VALUE, 0, libttsapi.TRUE, libttsapi.TRUE);
+				
+				mLogger.debug("TTS API Result :  " + result);
+			}
+		} catch (IOException e) {
+			result = -9;
+			mLogger.debug("TTS API Result :  " + result);
+		}
+
+		if (result == libttsapi.TTS_RESULT_SUCCESS) {
+			mLogger.debug("RequestBuffer Success (length=" + ttsapi.nVoiceLength + ")!!!");
+
+			try {
+				ByteArrayInputStream stream = new ByteArrayInputStream(ttsapi.szVoiceData);
+				inputStreamResult = AudioSystem.getAudioInputStream(stream);
+			} catch (UnsupportedAudioFileException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return inputStreamResult;
+	}
+	
 	public synchronized AudioInputStream getTtsStreamData(String msg) {
 		int result = -1;
 		libttsapi ttsapi = new libttsapi();
@@ -485,6 +520,18 @@ public class SoundUtils {
 		SharedPreference sharedPreference = SharedPreference.getInstance();
 		
 		tmpValue = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
+		
+		result = (Integer.valueOf(tmpValue) * 10) + TTS_DEFAULT_VOICE_SPEED;
+		
+		return result;
+	}
+	
+	public static int getNormalSoundSpeed() {
+		int result = 0;
+		String tmpValue = null;
+		SharedPreference sharedPreference = SharedPreference.getInstance();
+		
+		tmpValue = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
 		
 		result = (Integer.valueOf(tmpValue) * 10) + TTS_DEFAULT_VOICE_SPEED;
 		

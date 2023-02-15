@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,14 +18,20 @@ import com.nh.controller.utils.SharedPreference;
 import com.nh.controller.utils.SoundUtil;
 import com.nh.controller.utils.SoundUtils;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 
 /**
  * 제어 메인 -> 음성설정
@@ -52,7 +59,12 @@ public class SettingSoundController implements Initializable {
     @FXML // 메세지
     private TextArea mMsgTextArea_1, mMsgTextArea_2, mMsgTextArea_3, mMsgTextArea_4, mMsgTextArea_5, mMsgTextArea_6, mMsgTextArea_7, mMsgTextArea_8, mMsgTextArea_9, mMsgTextArea_10, mMsgTextArea_11, mMsgTextArea_12;
 
+    @FXML
+    private TextField mSoundRateTextField;
+    
     private BooleanListener mBooleanListener = null;
+    
+    private final SharedPreference sharedPreference = SharedPreference.getInstance();
 
     /**
      * setStage
@@ -92,6 +104,48 @@ public class SettingSoundController implements Initializable {
     private void initUI() {
         initKeyConfig();
 
+		UnaryOperator<Change> integerFilterType_1 = change -> {
+		    String newText = change.getControlNewText();
+		    if (newText.matches("-?([0-5]*)?")) { 
+		        return change;
+		    }
+		    return null;
+		};
+		
+		mSoundRateTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mSoundRateTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE,
+				SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE));
+
+		mSoundRateTextField.textProperty().addListener(new ChangeListener<String>() {
+
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE_MAX;
+
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue,
+					final String newValue) {
+
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+
+					String tmpStr = "";
+
+					if (newValue.length() > 1) {
+						int length = newValue.length();
+						tmpStr = newValue.substring((length - 1), length);
+					} else {
+						tmpStr = newValue;
+					}
+
+					if (Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr = max;
+					} else if (Integer.parseInt(tmpStr) < 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE;
+					}
+
+					mSoundRateTextField.setText(tmpStr);
+				}
+			}
+		});
+		
         if (SettingApplication.getInstance().isTtsType()) {
         	mBtnPlaySound_1.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
             mBtnPlaySound_2.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER));
@@ -224,7 +278,6 @@ public class SettingSoundController implements Initializable {
      * 메세지 저장
      */
     private void setSaveSharedMessage() {
-
         SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO, mMsgTextArea_1.getText());
         SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_BUYER, mMsgTextArea_2.getText());
         SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_GUIDE, mMsgTextArea_3.getText());
@@ -238,6 +291,20 @@ public class SettingSoundController implements Initializable {
         SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, mMsgTextArea_11.getText());
         SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, mMsgTextArea_12.getText());
 
+        if (CommonUtils.getInstance().isValidString(mSoundRateTextField.getText())) {
+        	if (!sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE).equals(mSoundRateTextField.getText().trim())) {
+        		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, mSoundRateTextField.getText().trim());
+        		
+                if (SettingApplication.getInstance().isTtsType()) {
+                	SoundUtils.getInstance().initSoundSetting();        	
+                } else {
+                	SoundUtil.getInstance().initSoundSetting();
+                }
+        	}
+        } else {
+        	sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
+        }
+        
         showAlertPopup(mResMsg.getString("str.setting.sound.save"), mResMsg.getString("popup.btn.ok"));
 
         if (SettingApplication.getInstance().isTtsType()) {
@@ -251,7 +318,7 @@ public class SettingSoundController implements Initializable {
      * 메세지 내부 저장
      */
     private void saveMsg() {
-        setSaveSharedMessage();
+    	setSaveSharedMessage();
     }
 
     /**

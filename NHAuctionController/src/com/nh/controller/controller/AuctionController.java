@@ -4286,7 +4286,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		boolean isSkipCowSound = false;
 
 		if (mCurrentSpEntryInfo.getAuctionResult() != null && CommonUtils.getInstance().isValidString(mCurrentSpEntryInfo.getAuctionResult().getValue())) {
-			if (mCurrentSpEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)) {
+			if (mCurrentSpEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)
+					&& !SettingApplication.getInstance().isUsePendingCowSoundAuction()) {
 				isSkipCowSound = true;
 				
 				if (SettingApplication.getInstance().isTtsType()) {
@@ -4298,7 +4299,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mLogger.debug("[보류. 사운드 재생 안 함]");
 			}
 		}
-
+		
 		if (isSkipCowSound) {
 			return;
 		}

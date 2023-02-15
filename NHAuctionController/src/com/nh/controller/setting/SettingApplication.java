@@ -140,6 +140,9 @@ public class SettingApplication {
 	// 하한가 낮추기 정률 사용 여부 기본값
 	public final boolean DEFAULT_SETTING_USE_LOW_PRICE_RATE = false;
 	
+	// 유찰우 출장우 정보 음성 멘트 사용 여부 기본값
+	public final boolean DEFAULT_SETTING_USE_PENDING_COW_SOUND_AUCTION = false;
+	
 	private static SettingApplication instance = null;
 
 	private String upperLimitCalf = null; // 응찰 상한가 - 송아지
@@ -165,6 +168,8 @@ public class SettingApplication {
 	
 	private boolean isUseLowPriceRate = false; // 하한가 낮추기 정률 사용여부
 
+	private boolean isUsePendingCowSoundAuction = false; // 유찰우 출장우 정보 안내 멘트 사용 여부
+	
 	private int aucObjDsc = 0; // 경매 구분
 
 	public static synchronized SettingApplication getInstance() {
@@ -370,6 +375,8 @@ public class SettingApplication {
 		isNote = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_NOTE, DEFAULT_SETTING_NOTE);
 		
 		isUseLowPriceRate = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_LOW_PRICE_RATE,  DEFAULT_SETTING_USE_LOW_PRICE_RATE);
+		
+		isUsePendingCowSoundAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_PENDING_COW_SOUND_AUCTION,  DEFAULT_SETTING_USE_PENDING_COW_SOUND_AUCTION);
 		
 		//전광판 비고
 		isBoardUseNote1 = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_BOARD_USE_NOTE_1, false);
@@ -596,6 +603,13 @@ public class SettingApplication {
 	}
 	
 	/**
+	 * 유찰우 출장우 안내 멘트 사용 여부
+	 */
+	public boolean isUsePendingCowSoundAuction() {
+		return isUsePendingCowSoundAuction;
+	}
+	
+	/**
 	 * 전광판1 비고 흐름 사용여부
 	 * @return
 	 */
@@ -681,11 +695,20 @@ public class SettingApplication {
 	
 	
 	/**
-	 * 음성 재생 속도
+	 * 음성 재생 속도(경매진행)
 	 * @return
 	 */
 	public int getSoundRate() {
 		String savedSoundRate  = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, DEFAULT_SETTING_SOUND_RATE);
+		return Integer.parseInt(savedSoundRate);
+	}
+	
+	/**
+	 * 음성 재생 속도(안내멘트)
+	 * @return
+	 */
+	public int getNormalSoundRate() {
+		String savedSoundRate  = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, DEFAULT_SETTING_SOUND_RATE);
 		return Integer.parseInt(savedSoundRate);
 	}
 	

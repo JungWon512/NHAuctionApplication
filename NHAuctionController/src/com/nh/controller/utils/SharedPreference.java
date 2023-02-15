@@ -45,7 +45,8 @@ public class SharedPreference {
 	public static final String PREFERENCE_SETTING_MOBILE_DNA = "PREFERENCE_SETTING_MOBILE_DNA"; // 친자노출여부
 
 	public static final String PREFERENCE_SETTING_ANNOUNCEMENT = "PREFERENCE_SETTING_ANNOUNCEMENT"; // 경매종료 멘트 설정
-	public static final String PREFERENCE_SETTING_SOUND_RATE = "PREFERENCE_SETTING_SOUND_RATE"; // 음성 재생 속도
+	public static final String PREFERENCE_SETTING_SOUND_RATE = "PREFERENCE_SETTING_SOUND_RATE"; // 음성 재생 속도(경매진행)
+	public static final String PREFERENCE_SETTING_NORMAL_SOUND_RATE = "PREFERENCE_SETTING_NORMAL_SOUND_RATE"; // 음성 재생 속도(안내멘트)
 	public static final String PREFERENCE_SETTING_NOTE = "PREFERENCE_SETTING_NOTE"; // 비고창 설정
 	public static final String PREFERENCE_SETTING_COUNTDOWN = "PREFERENCE_SETTING_COUNTDOWN"; // 카운트다운 설정
 	public static final String PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE = "PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE"; // 경매타입 toggle button
@@ -110,10 +111,11 @@ public class SharedPreference {
 	public static final String PREFERENCE_SETTING_RE_AUCTION_CHECK = "PREFERENCE_SETTING_RE_AUCTION_CHECK";
 	// 동가 재경매 횟수  [END]
 	
-	// --- 연속 ,음성 경매,음성경매 대기 시간  ---
+	// --- 연속 ,음성 경매,음성경매, 유찰우출장우안내멘트 대기 시간  ---
 	public static final String PREFERENCE_SETTING_USE_ONE_AUCTION = "PREFERENCE_SETTING_USE_ONE_AUCTION";
 	public static final String PREFERENCE_SETTING_USE_SOUND_AUCTION = "PREFERENCE_SETTING_SOUND_AUCTION";
 	public static final String PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME = "PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME";
+	public static final String PREFERENCE_SETTING_USE_PENDING_COW_SOUND_AUCTION = "PREFERENCE_SETTING_PENDING_COW_SOUND_AUCTION";
 	// 연속 ,음성 경매  [END]
 	
 	// --- 내부 TTS 사용 여부 ---

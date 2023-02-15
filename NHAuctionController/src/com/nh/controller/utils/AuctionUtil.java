@@ -146,7 +146,7 @@ public class AuctionUtil {
     }
     
     /**
-     * 음성 재생 속도
+     * 음성 재생 속도(경매진행)
      * @return
      */
     public Double getSoundRate() {
@@ -164,6 +164,24 @@ public class AuctionUtil {
 		return rate;
     }
     
+    /**
+     * 음성 재생 속도(안내멘트)
+     * @return
+     */
+    public Double getNormalSoundRate() {
+    	
+    	int savedRate = SettingApplication.getInstance().getNormalSoundRate();
+		
+		Double rate = GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_1_0;
+		
+		if(savedRate > 0) {
+			rate += (savedRate * 0.1);
+		}else {
+			rate =GlobalDefine.AUCTION_INFO.PLAY_SOUND_SPEED_0_0;
+		}
+		
+		return rate;
+    }
     
     /**
      * 폰트 확인.

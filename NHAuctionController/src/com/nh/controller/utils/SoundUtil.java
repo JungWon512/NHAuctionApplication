@@ -454,7 +454,7 @@ public class SoundUtil {
 		 */
 		public AudioConfig getSoundRateConfig() {
 
-			AudioConfig config = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).setSpeakingRate(AuctionUtil.getInstance().getSoundRate()).build();
+			AudioConfig config = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).setSpeakingRate(AuctionUtil.getInstance().getNormalSoundRate()).build();
 
 			return config;
 		}

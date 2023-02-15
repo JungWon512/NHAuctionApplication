@@ -111,8 +111,8 @@ public class SettingController implements Initializable {
 	@FXML // 음성 경매 대기 시간
 	private TextField mSoundAuctionWaitTime;
 
-	@FXML // 동가 재경매,연속경매,음성경부여부
-	private CheckBox mUseReAuction, mUseOneAuction, mUseSoundAuction;
+	@FXML // 동가 재경매,연속경매,음성경부여부,유찰우음성안내여부
+	private CheckBox mUseReAuction, mUseOneAuction, mUseSoundAuction, mUseSoundPendingAuction;
 
 	@FXML // 경매 타입
 	private ToggleGroup auctionTypeToggleGroup;
@@ -217,6 +217,7 @@ public class SettingController implements Initializable {
 		getReAuctionCheckboxPreference();
 		getUseOneAuctionCheckboxPreference();
 		getSoundAuctionCheckboxPreference();
+		getPendingCowSoundAuctionCheckboxPreference();
 		getTtsTypeCheckboxPreference();
 		getBoardUseNoteCheckboxPreference();
 		setToggleGroups();
@@ -566,6 +567,22 @@ public class SettingController implements Initializable {
 	 */
 	private void setSoundAuctionCheckboxPreference() {
 		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, (mUseSoundAuction.isSelected()));
+	}
+	
+	/**
+	 * 유찰우 음성 안내 사용 여부 저장
+	 */
+	private void setPendingCowSoundAuctionCheckboxPreference() {
+		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_USE_PENDING_COW_SOUND_AUCTION, (mUseSoundPendingAuction.isSelected()));
+	}
+	
+	/**
+	 * 유찰우 음성 안내 사용 여부 value 가져오기
+	 *
+	 */
+	private void getPendingCowSoundAuctionCheckboxPreference() {
+		boolean isSoundAuction = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_USE_PENDING_COW_SOUND_AUCTION, false);
+		mUseSoundPendingAuction.setSelected(isSoundAuction);
 	}
 	
 	/**
@@ -1157,6 +1174,7 @@ public class SettingController implements Initializable {
 			setReAuctionCheckboxPreference();
 			setUseOneAuctionCheckboxPreference();
 			setSoundAuctionCheckboxPreference();
+			setPendingCowSoundAuctionCheckboxPreference();
 			setTtsTypeCheckboxPreference();
 			setBoardUseNoteCheckboxPreference();
 			setCountTextField();

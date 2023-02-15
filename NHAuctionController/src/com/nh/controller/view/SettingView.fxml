@@ -53,6 +53,7 @@
             <RowConstraints minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
             <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.0" minHeight="1.0" prefHeight="1.0" vgrow="NEVER" />
                 <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="95.0" vgrow="ALWAYS" />
@@ -476,7 +477,7 @@
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="11" />
-                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="25" />
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="26" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnIndex="8" GridPane.rowIndex="1" GridPane.rowSpan="2147483647" />
                 <Label contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="경매진행 설정" textFill="WHITE" GridPane.columnSpan="7" GridPane.rowIndex="14">
                     <font>
@@ -495,16 +496,16 @@
                         <Font size="12.0" />
                     </font>
                 </Label>
-                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="음성 재생 속도" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="16" />
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="경매음성속도" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="16" />
                 <CheckBox fx:id="mUseNoteCheckBox" mnemonicParsing="false" text="비고 사용" GridPane.columnIndex="1" GridPane.rowIndex="16">
                     <GridPane.margin>
                         <Insets left="10.0" right="10.0" />
                     </GridPane.margin>
                 </CheckBox>
-                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="21" />
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="22" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="15" />
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="19" />
-                <Label contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="모바일노출 설정" textFill="WHITE" GridPane.columnSpan="2147483647" GridPane.rowIndex="20">
+                <Label contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="모바일노출 설정" textFill="WHITE" GridPane.columnSpan="2147483647" GridPane.rowIndex="21">
                     <font>
                         <Font name="System Bold" size="18.0" />
                     </font>
@@ -515,8 +516,8 @@
                         <Insets />
                     </GridPane.margin>
                 </Label>
-                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="모바일 표출" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="22" />
-                <VBox GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="22">
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="모바일 표출" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="23" />
+                <VBox GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="23">
                     <children>
                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                             <children>
@@ -630,7 +631,7 @@
                </children>
             </HBox>
             <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="2147483647" GridPane.rowIndex="17" />
-            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="음성경부여부" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.rowIndex="18">
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="음성경매여부" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.rowIndex="18">
                <font>
                   <Font size="12.0" />
                </font>
@@ -654,8 +655,8 @@
                   <Label styleClass="description-label" text="1~50 (초)" />
                </children>
             </HBox>
-            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="4" GridPane.rowIndex="23" />
-            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="24">
+            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="underline" GridPane.columnSpan="4" GridPane.rowIndex="24" />
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="25">
                <children>
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="12.0" HBox.hgrow="ALWAYS">
                      <children>
@@ -672,12 +673,12 @@
                   </HBox>
                </children>
             </HBox>
-            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="경매 타입" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="24" />
-            <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="내부 TTS" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="24">
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="경매 타입" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="25" />
+            <Label alignment="CENTER" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="내부 TTS" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="25">
                <graphic>
                   <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="사용여부" textAlignment="CENTER" textFill="WHITE" />
                </graphic></Label>
-            <CheckBox fx:id="mTtsTypeCheckBox" mnemonicParsing="false" text="(체크 시 내부엔진 사용)" userData="7" GridPane.columnIndex="3" GridPane.rowIndex="24">
+            <CheckBox fx:id="mTtsTypeCheckBox" mnemonicParsing="false" text="(체크 시 내부엔진 사용)" userData="7" GridPane.columnIndex="3" GridPane.rowIndex="25">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -685,18 +686,18 @@
                   <Insets left="20.0" />
                </padding>
             </CheckBox>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="4" GridPane.columnSpan="2147483647" GridPane.rowIndex="21" GridPane.rowSpan="2147483647">
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="4" GridPane.columnSpan="2147483647" GridPane.rowIndex="22" GridPane.rowSpan="2147483647">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" styleClass="label-background" text="음성설정" textAlignment="CENTER" textFill="WHITE" />
                   <TextArea fx:id="mSoundValTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="text-area" />
                </children>
             </HBox>
-            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="서버초기화" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="6" GridPane.rowIndex="18">
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="서버초기화" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="20">
                <font>
                   <Font size="12.0" />
                </font>
             </Label>
-            <Button fx:id="mBtnInitServer" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-init-submit" text="초기화" GridPane.columnIndex="7" GridPane.rowIndex="18">
+            <Button fx:id="mBtnInitServer" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-init-submit" text="초기화" GridPane.columnIndex="1" GridPane.rowIndex="20">
                <GridPane.margin>
                   <Insets left="10.0" right="10.0" />
                </GridPane.margin>
@@ -710,6 +711,25 @@
                   <Insets left="10.0" right="10.0" />
                </padding>
             </HBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="6" GridPane.rowIndex="18">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="유찰우" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="음성안내" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <CheckBox fx:id="mUseSoundPendingAuction" contentDisplay="RIGHT" mnemonicParsing="false" text="안내사용" GridPane.columnIndex="7" GridPane.rowIndex="18">
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </CheckBox>
             </children>
             <opaqueInsets>
                 <Insets />
