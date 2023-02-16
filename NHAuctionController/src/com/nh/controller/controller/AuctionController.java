@@ -2048,8 +2048,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						}
 						isStartSoundPlaying = false;
 						setAuctionVariableState(GlobalDefineCode.AUCTION_STATUS_READY);
-						// 다음 번호 이동
-						selectIndexWaitTable(1, false);
+						
+						if (!isStopTarget) {
+							// 다음 번호 이동
+							selectIndexWaitTable(1, false);
+						}
 					}
 
 					return;
