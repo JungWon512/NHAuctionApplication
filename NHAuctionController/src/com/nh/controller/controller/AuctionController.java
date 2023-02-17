@@ -2744,9 +2744,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 									String wonMsg = "";
 									
 									if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
-										wonMsg = mResMsg.getString("str.sound.change.low.price");
+										if (SettingApplication.getInstance().isUsePendingCowSoundAuction()) {
+											wonMsg = mResMsg.getString("str.sound.change.low.price.short");
+										} else {
+											wonMsg = mResMsg.getString("str.sound.change.low.price");
+										}
 									}else {
-										wonMsg = mResMsg.getString("str.sound.change.low.price.10000");
+										if (SettingApplication.getInstance().isUsePendingCowSoundAuction()) {
+											wonMsg = mResMsg.getString("str.sound.change.low.price.10000.short");
+										} else {
+											wonMsg = mResMsg.getString("str.sound.change.low.price.10000");
+										}
 									}
 									
 									if (SettingApplication.getInstance().isTtsType()) {
@@ -2760,9 +2768,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 									String wonMsg = "";
 									
 									if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
-										wonMsg = mResMsg.getString("str.sound.change.low.price");
+										if (SettingApplication.getInstance().isUsePendingCowSoundAuction()) {
+											wonMsg = mResMsg.getString("str.sound.change.low.price.short");
+										} else {
+											wonMsg = mResMsg.getString("str.sound.change.low.price");
+										}
 									}else {
-										wonMsg = mResMsg.getString("str.sound.change.low.price.10000");
+										if (SettingApplication.getInstance().isUsePendingCowSoundAuction()) {
+											wonMsg = mResMsg.getString("str.sound.change.low.price.10000.short");
+										} else {
+											wonMsg = mResMsg.getString("str.sound.change.low.price.10000");
+										}
 									}
 									
 									if (SettingApplication.getInstance().isTtsType()) {
