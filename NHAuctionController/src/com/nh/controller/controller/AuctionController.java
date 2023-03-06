@@ -184,7 +184,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	private Button mBtnReStart, mBtnPause;
 
 	@FXML // 재경매중 라벨,카운트다운
-	private Label mReAuctionLabel, mReAuctionCountLabel, mCountDownLabel;
+	private Label mReAuctionLabel, mReAuctionCountLabel, mCountDownLabel, mPauseShowLabel;
 
 	@FXML // 접속자 정보 수
 	private Label mConnectionUserCntLabel;
@@ -274,6 +274,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	public void setStage(Stage stage) {
 		
 		mStage = stage;
+		
+		// 일시중지 추가: 2023.02.24 by kih
+		mPauseShowLabel.setVisible(false);		
 		
 		// 경매 데이터
 		Thread thread = new Thread("cowInfo") {
@@ -2253,6 +2256,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				isPause = true;
 				mBtnReStart.setDisable(false);
 				mBtnPause.setDisable(true);
+				mPauseShowLabel.setVisible(true);  // 추가: 2023.02.24 by kih
 
 				// 자동경매 카운트다운중인경우 스케줄러 멈춤.
 				if (SettingApplication.getInstance().isUseSoundAuction()) {
@@ -2308,6 +2312,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			mBtnReStart.setDisable(true);
 			mBtnPause.setDisable(false);
+			mPauseShowLabel.setVisible(false);	// 추가: 2023.02.24 by kih
+			
 			isPause = false;
 			mLogger.debug("isStartSoundPlaying : " + isStartSoundPlaying);
 			
@@ -3860,6 +3866,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			// 정지,다시시작 버튼
 			mBtnReStart.setDisable(true);
 			mBtnPause.setDisable(false);
+			mPauseShowLabel.setVisible(false);	// 추가: 2023.02.24 by kih
 			// 최고가 이상 사운드 플래그
 			isOverPricePlaySound = false;
 			// 재경매 사운드 플래그
@@ -4569,8 +4576,32 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							ke.consume();
 						}
 						
+						//------------------------------------------------------------------------
+						//(S)[SPACE] 시작/재시작 :  2023.02.24 by kih
+						if (ke.getCode() == KeyCode.SPACE) {								
+							if(isPause && mRestartKeyActive) {								
+								onReStart();								
+							} else if(!isPause && mRestartKeyActive) {							
+								checkAndOnPause();
+								mRestartKeyActive = false;								
+								Timer timer = new Timer();
+								TimerTask timerTask = new TimerTask() {									
+									@Override
+									public void run() {
+										mRestartKeyActive = true;
+									}
+								};								
+								timer.schedule(timerTask, 500);
+							}
+							ke.consume();
+							return;
+						}						
+						//(E)				
+						//------------------------------------------------------------------------
+						
 						break;
-					default: // 경매 진행중에 눌리지 않음.
+						
+					default: // 경매 진행중에 눌리지 않음.						
 						// 전체보기
 						if (ke.getCode() == KeyCode.F1) {
 							mLogger.debug("[KeyCode.F1]=> " + mAuctionStatus.getState());
@@ -4621,8 +4652,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							ke.consume();
 						}
 
-						// 가격 낮추기
-						if (ke.getCode() == KeyCode.F10) {
+						// 가격 낮추기,  2023.02.26 [-]추가 by kih
+						if (ke.getCode() == KeyCode.F10 || ke.getCode() == KeyCode.MINUS || ke.getCode() == KeyCode.SUBTRACT) {
 							mLogger.debug("[KeyCode.F10]=> " + mAuctionStatus.getState());
 							onDownPrice(null);
 							ke.consume();
@@ -4665,55 +4696,53 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						}
 
 						break;
-					}
-
-					// 경매 시작
-					if (ke.getCode() == KeyCode.ADD) {
-						if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
-							return;
-						}
-
-						mLogger.debug("[KeyCode.ADD]=> isStartedAuction : " + isStartedAuction);
-						mLogger.debug("[KeyCode.ADD]=> isPlusKeyStartAuction : " + isPlusKeyStartAuction);
-						mLogger.debug("[KeyCode.ADD]=> isStartSoundPlaying : " + isStartSoundPlaying);
-						mLogger.debug("[KeyCode.ADD]=> mAuctionStatus.getState() : " + mAuctionStatus.getState());
-
-						if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_READY) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED) || mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PASS)) {
-							// 출장우 정보 TTS 송출 여부 초기화
-							isStartSoundPlaying = false;
-						}
-
-						if (isStartedAuction || isPlusKeyStartAuction || isStartSoundPlaying) {
-							return;
-						}
-
-						switch (mAuctionStatus.getState()) {
-						case GlobalDefineCode.AUCTION_STATUS_READY: // 준비,경매완료,유찰 상황에서 시작 가능.
-						case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
-						case GlobalDefineCode.AUCTION_STATUS_PASS:
-
-							if (SettingApplication.getInstance().isUseSoundAuction()) {
-								toggleAuctionType();
-								isPlusKeyStartAuction = true;
-								onStartAndStopAuction(0);
-							}
-							break;
-						}
-						ke.consume();
-					}
-
-					// 경매 시작
-					if (ke.getCode() == KeyCode.ENTER) {
+					}					
+				
+					// 수동 경매시작					
+					if (ke.getCode() == KeyCode.ENTER) {		
 						
 						if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
 							return;
 						}
+						
+						// 자동경매 [ADD] -> [ENTER] 변경 by kih
+						if (SettingApplication.getInstance().isUseSoundAuction()) { // 자동경매 모드  		
+							
+							mLogger.debug("[KeyCode.ADD]=> mAuctionStatus.getState() : " + mAuctionStatus.getState());
+							
+							if (mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_READY) 
+									|| mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_COMPLETED) 
+									|| mAuctionStatus.getState().equals(GlobalDefineCode.AUCTION_STATUS_PASS)) {
+								// 출장우 정보 TTS 송출 여부 초기화
+								isStartSoundPlaying = false;
+							}
 
-						mLogger.debug("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
-						normalEnterStartAuction();
-						ke.consume();
-					}
-					// 음성 경매 시작
+							if (isStartedAuction || isPlusKeyStartAuction || isStartSoundPlaying) {
+								return;
+							}
+
+							switch (mAuctionStatus.getState()) {
+							case GlobalDefineCode.AUCTION_STATUS_READY: // 준비,경매완료,유찰 상황에서 시작 가능.
+							case GlobalDefineCode.AUCTION_STATUS_COMPLETED:
+							case GlobalDefineCode.AUCTION_STATUS_PASS:
+
+								if (SettingApplication.getInstance().isUseSoundAuction()) {
+									toggleAuctionType();
+									isPlusKeyStartAuction = true;
+									normalEnterStartAuction();
+								}
+								break;
+							}
+							ke.consume();
+							
+						} else {
+							mLogger.debug("[KeyCode.ENTER]=> " + mAuctionStatus.getState());
+							normalEnterStartAuction();
+							ke.consume();
+						}
+					}	
+					
+					// 음성경매 시작
 					if (ke.getCode() == KeyCode.SPACE) {
 						
 						if (MoveStageUtil.getInstance().getDialog() != null && MoveStageUtil.getInstance().getDialog().isShowing()) {
@@ -4723,8 +4752,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						mLogger.debug("[KeyCode.SPACE]=> " + mAuctionStatus.getState());
 						normalSpaceStartAuction();
 						ke.consume();
-					}
-				}
+					}					
+				}				
 			});
 		});
 	}
