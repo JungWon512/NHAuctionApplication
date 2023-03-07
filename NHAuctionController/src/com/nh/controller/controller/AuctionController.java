@@ -4335,7 +4335,18 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		String EMPTY_SPACE = " ";
 
 		boolean isOnlyEntryNumber = false;
-
+		
+		// (S)by kih - 유찰시 안내멘트 추가 
+		// 8808990811635 : 인제축협 
+		if (mCurrentSpEntryInfo.getAuctionResult() != null 
+				&& CommonUtils.getInstance().isValidString(mCurrentSpEntryInfo.getAuctionResult().getValue())
+				&& mCurrentSpEntryInfo.getAuctionResult().getValue().equals(GlobalDefineCode.AUCTION_RESULT_CODE_PENDING)
+				&& !"8808990811635".equals(GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc())) {				
+				entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.number"), mCurEntryNumLabel.getText()));
+				isOnlyEntryNumber = true;			
+		} 
+		// (E)
+		else 
 		if (!CommonUtils.getInstance().isEmptyProperty(mCurrentSpEntryInfo.getLowPrice()) && mCurrentSpEntryInfo.getLowPriceInt() > 0) {
 
 			if (mEntryNumCheckBox.isSelected() && CommonUtils.getInstance().isValidString(mCurEntryNumLabel.getText())) {

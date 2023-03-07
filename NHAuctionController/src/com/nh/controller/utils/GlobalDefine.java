@@ -107,6 +107,7 @@ public class GlobalDefine {
 		public static final int AUCTION_OBJ_DSC_2 = 2; // 경매 구분 - 비육우
 		public static final int AUCTION_OBJ_DSC_3 = 3; // 경매 구분 - 번육우
 		public static final int AUCTION_OBJ_DSC_0 = 0; // 경매 구분 - 일괄
+		public static final int AUCTION_OBJ_DSC_4 = 4; // 경매 구분 - 큰소  by kih, 2023.03.06
 		
 		public static final String AUCTION_DNA_1 = "1"; // 친자 - 일치
 		public static final String AUCTION_DNA_2 = "2"; // 친자 - 불일치
