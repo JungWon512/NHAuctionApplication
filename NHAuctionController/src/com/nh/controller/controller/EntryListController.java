@@ -332,6 +332,7 @@ public class EntryListController implements Initializable {
 
 		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
 		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		String aucObjDscStn = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDscStn()); // by kih
 		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
 		String selStsDsc = aucResultCode;
 		String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
@@ -341,8 +342,8 @@ public class EntryListController implements Initializable {
 			rgSqno = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo());
 		}
 		
-		// 출장우 데이터 조회
-		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn,rgSqno);
+		// 출장우 데이터 조회 : aucObjDscStn 추가 by kih
+		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucObjDscStn, aucDate, selStsDsc, stnYn,rgSqno);
 		
 		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
 			@Override

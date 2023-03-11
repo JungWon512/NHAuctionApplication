@@ -159,6 +159,7 @@ public class SettingApplication {
 	private boolean useReAuction = false; // 동가 재경매 여부
 	private boolean useOneAuction = false; // 연속경매 - 하나씩 진행 여부
 	private boolean useSoundAuction = false; // 음성경매 - 음성경부 여부
+	private boolean usePendingAutoStart1 = false; // 음성경매 - 유찰시 1회 자동시작 여부 
 	private boolean isLocalTtsType = true; // 내부 TTS 엔진 사용여부
 	private boolean isSingleAuction = true;	//경매 타입
 	private boolean isNote = false; //비고
@@ -360,6 +361,7 @@ public class SettingApplication {
 		useReAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_CHECK, DEFAULT_SETTING_RE_AUCTION_CHECK);
 		useOneAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_ONE_AUCTION, DEFAULT_SETTING_USE_ONE_AUCTION);
 		useSoundAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_SOUND_AUCTION, DEFAULT_SETTING_USE_SOUND_AUCTION);
+		usePendingAutoStart1 = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_PENDING_AUTO_START1, DEFAULT_SETTING_USE_SOUND_AUCTION);
 		soundAuctionWaitTime = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, DEFAULT_SETTING_SOUND_AUCTION_WAIT_TIME);
 		isLocalTtsType = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_USE_TTS_TYPE, DEFAULT_SETTING_USE_LOCAL_TTS_ENGIN);
 		String aucType = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_AUCTION_TOGGLE_TYPE, DEFAULT_SETTING_AUCTION_TOGGLE_TYPE).toUpperCase();
@@ -559,6 +561,10 @@ public class SettingApplication {
 	public boolean isUseSoundAuction() {
 		return useSoundAuction;
 	}
+	
+	public boolean isUsePendingAutoStart1() {
+		return usePendingAutoStart1;
+	}
 
 	public boolean isTtsType() {
 		return isLocalTtsType;
@@ -699,8 +705,13 @@ public class SettingApplication {
 	 * @return
 	 */
 	public int getSoundRate() {
-		String savedSoundRate  = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, DEFAULT_SETTING_SOUND_RATE);
+		/*
+		String savedSoundRate  = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, DEFAULT_SETTING_SOUND_RATE);		
 		return Integer.parseInt(savedSoundRate);
+		*/
+		String savedSoundRate  = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, DEFAULT_SETTING_SOUND_RATE);		
+		Double d = Double.parseDouble(savedSoundRate);
+		return d.intValue();		
 	}
 	
 	/**
@@ -708,8 +719,13 @@ public class SettingApplication {
 	 * @return
 	 */
 	public int getNormalSoundRate() {
+		/*
 		String savedSoundRate  = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, DEFAULT_SETTING_SOUND_RATE);
 		return Integer.parseInt(savedSoundRate);
+		*/
+		String savedSoundRate  = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, DEFAULT_SETTING_SOUND_RATE);
+		Double d = Double.parseDouble(savedSoundRate);
+		return d.intValue();
 	}
 	
 }

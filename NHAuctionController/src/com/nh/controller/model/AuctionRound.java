@@ -13,7 +13,8 @@ import com.nh.share.api.models.StnData;
 public class AuctionRound implements Cloneable{
 
 	private String naBzplc; // 경제통합사업장코드
-	private int aucObjDsc; // 경매대상구분코드
+	private int aucObjDsc; // 경매대상구분코드(QCN)
+	private int aucObjDscStn; // 경매대상 구간정보 (STN) by kih, add:2023.03.08
 	private String aucDt; // 경매일자
 	private int qcn; // 차수
 //	private int baseLmtAm; // 기초한도금액
@@ -48,6 +49,7 @@ public class AuctionRound implements Cloneable{
 		
 		this.naBzplc = qcnData.getNA_BZPLC();
 		this.aucObjDsc = Integer.parseInt(qcnData.getAUC_OBJ_DSC());
+		this.aucObjDscStn = Integer.parseInt(qcnData.getAUC_OBJ_DSC());		// by kih (default)
 		this.aucDt = qcnData.getAUC_DT();
 		this.qcn = qcnData.getQCN();
 		this.cutAm = qcnData.getCUT_AM();
@@ -83,7 +85,9 @@ public class AuctionRound implements Cloneable{
 		
 		this.naBzplc = stnData.getNA_BZPLC();
 		this.aucDt = stnData.getAUC_DT();
-		this.aucObjDsc = Integer.parseInt(stnData.getAUC_OBJ_DSC());
+		//this.aucObjDsc = Integer.parseInt(stnData.getAUC_OBJ_DSC());		// by kih : 기존 Logic 주석처리 2023.03.08
+		this.aucObjDsc = Integer.parseInt(qcnData.getAUC_OBJ_DSC());		// by kih : QcnData 의 경매대상구분코드 유지하도록 수정
+		this.aucObjDscStn = Integer.parseInt(stnData.getAUC_OBJ_DSC());		// by kih : 구간설정 구분코드 값 추가로 저장 
 		this.rgSqNo = stnData.getRG_SQNO();
 		this.selStsDsc = stnData.getSEL_STS_DSC();
 		this.stAucNo = stnData.getST_AUC_NO();
@@ -105,6 +109,15 @@ public class AuctionRound implements Cloneable{
 
 	public void setAucObjDsc(int aucObjDsc) {
 		this.aucObjDsc = aucObjDsc;
+	}
+	
+	// by kih
+	public int getAucObjDscStn() {
+		return aucObjDscStn;
+	}
+	
+	public void setAucObjDscStn(int aucObjDscStn) {
+		this.aucObjDscStn = aucObjDscStn;
 	}
 
 	public String getAucDt() {
@@ -275,7 +288,7 @@ public class AuctionRound implements Cloneable{
 
 	@Override
 	public String toString() {
-		return "AuctionRound [naBzplc=" + naBzplc + ", aucObjDsc=" + aucObjDsc + ", aucDt=" + aucDt + ", qcn=" + qcn
+		return "AuctionRound [naBzplc=" + naBzplc + ", aucObjDsc=" + aucObjDsc + ", aucObjDscStn=" + aucObjDscStn + ", aucDt=" + aucDt + ", qcn=" + qcn
 				+ ", cutAm=" + cutAm + ", sgnoPrcDsc=" + sgnoPrcDsc + ", ddlYn=" + ddlYn
 				+ ", tmsYn=" + tmsYn + ", delYn=" + delYn + ", maleKg=" + maleKg + ", femaleKg=" + femaleKg + ", ttScr="
 				+ ttScr + ", fsrgDtm=" + fsrgDtm + ", fsgmnEno=" + fsgmnEno + ", lschgDtm=" + lschgDtm + ", lsCmeno="

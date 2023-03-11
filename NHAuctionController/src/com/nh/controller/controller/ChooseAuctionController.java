@@ -410,7 +410,11 @@ public class ChooseAuctionController implements Initializable {
 
 			mLogger.debug("[경매 회차 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
 			// 출장우 카운트
-			requestCowInfo(naBzplc, aucObjDsc, aucDate,"");
+			requestCowInfo(naBzplc
+					, aucObjDsc
+					, Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDscStn())	// STN : by kih
+					, aucDate
+					,"");		
 		} else {
 			// 경매 회차 존재 하지 않음.
 			showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
@@ -434,7 +438,11 @@ public class ChooseAuctionController implements Initializable {
 			mLogger.debug("[경매 회차 정보 조회 결과]=> " + GlobalDefine.AUCTION_INFO.auctionRoundData.toString());
 //			Platform.runLater(()->CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("msg.connection")));
 			// 출장우 카운트
-			requestCowInfo(naBzplc, Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc()), aucDate,Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo()));
+			requestCowInfo(naBzplc
+					, Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc())		// QCN : by kih
+					, Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDscStn())	// STN : by kih
+					, aucDate
+					,Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo()));
 		} else {
 			// 경매 회차 존재 하지 않음.
 			showAlertPopupOneButton(mResMsg.getString("dialog.auction.no.data"));
@@ -449,8 +457,11 @@ public class ChooseAuctionController implements Initializable {
 	 * @param aucObjDsc
 	 * @param aucDate
 	 * @param rgSqno
+	 * 
+	 * 2023.03.08 by kih
+	 * @aucObjDscStn 일괄구간 대상구분 추가 
 	 */
-	private void requestCowInfo(final String naBzplc, final String aucObjDsc, final String aucDate,String rgSqno) {
+	private void requestCowInfo(final String naBzplc, final String aucObjDsc, final String aucObjDscStn, final String aucDate,String rgSqno) {
 		
 		// 단일or일괄 플래그 기본 단일 N
 		String stnYn = "N";
@@ -459,7 +470,7 @@ public class ChooseAuctionController implements Initializable {
 			stnYn = "Y"; // 일괄이면 Y
 		}
 		// 출장우 수
-		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, "", stnYn,rgSqno);
+		RequestCowInfoBody cowInfoBody = new RequestCowInfoBody(naBzplc, aucObjDsc, aucObjDscStn, aucDate, "", stnYn, rgSqno);
 
 		ApiUtils.getInstance().requestSelectCowInfo(cowInfoBody, new ActionResultListener<ResponseCowInfo>() {
 

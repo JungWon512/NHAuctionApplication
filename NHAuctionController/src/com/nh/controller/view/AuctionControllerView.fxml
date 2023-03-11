@@ -33,7 +33,7 @@
         <columnConstraints>
           <ColumnConstraints hgrow="ALWAYS" />
           <ColumnConstraints halignment="RIGHT" hgrow="NEVER" percentWidth="55.0" />
-            <ColumnConstraints maxWidth="280.0" minWidth="280.0" prefWidth="280.0" />
+          <ColumnConstraints maxWidth="280.0" minWidth="280.0" prefWidth="280.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="26.0" minHeight="26.0" prefHeight="26.0" vgrow="SOMETIMES" />
@@ -44,11 +44,16 @@
             <Insets left="20.0" right="20.0" />
          </padding>
          <children>
+         	<HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+         		<children>
+                    <Button fx:id="mBtnBoardPlay" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="전광판(영상)전환" />                   
+                    <Button fx:id="mBtnBoardAuction" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="전광판(경매)전환" />
+         		</children>
+         	</HBox>         	
             <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                <children>
-                  <Button fx:id="mBtnMessage" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="메시지 전송" />
                   <Button fx:id="mBtnUpPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="[F9]예정가 높이기" />
-                  <Button fx:id="mBtnDownPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="[F10]예정가 낮추기" />
+                  <Button fx:id="mBtnDownPrice" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="[ - ]예정가 낮추기" />
                   <HBox minWidth="200.0" style="-fx-background-color: #ffffff;" styleClass="border-all">
                      <children>
                         <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ffffff;" text="기준감가액" HBox.hgrow="ALWAYS">
@@ -106,7 +111,7 @@
                <padding>
                   <Insets left="10.0" />
                </padding>
-            </HBox>
+            </HBox>             
          </children>
       </GridPane>
    </top>
@@ -525,7 +530,7 @@
          <children>
             <VBox maxHeight="140.0" minHeight="140.0" prefHeight="140.0" spacing="4.0">
                <children>
-                  <HBox alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" spacing="2.0">
+                  <HBox alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" spacing="2.0">        
                      <children>
                         <HBox alignment="CENTER" spacing="4.0" HBox.hgrow="ALWAYS">
                            <children>
@@ -536,7 +541,7 @@
                                           <Image url="@../resource/images/ic_con_off.png" />
                                        </image>
                                     </ImageView>
-                                    <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="종합안내">
+                                    <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="전광판">
                                        <font>
                                           <Font name="Noto Sans CJK KR Regular" size="15.0" />
                                        </font>
@@ -557,7 +562,7 @@
                                           <Insets />
                                        </VBox.margin>
                                     </ImageView>
-                                    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="TV">
+                                    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="관전영상">
                                        <font>
                                           <Font name="Noto Sans CJK KR Regular" size="15.0" />
                                        </font>
@@ -624,12 +629,17 @@
                   </TableView>
                   <VBox layoutY="433.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <children>
-                        <Label fx:id="mPauseShowLabel" alignment="CENTER" prefHeight="60.0" prefWidth="263.0" style="-fx-background-color: #FF0000;" text="일시중지" textAlignment="CENTER" textFill="WHITE">
+                        <Label fx:id="mPendingCowAutoStartLabel" alignment="CENTER" prefHeight="60.0" prefWidth="263.0" style="-fx-background-color: #1DDB16;" text="자동시작" textAlignment="CENTER" textFill="WHITE" visible="false">
                            <font>
                               <Font name="Noto Sans CJK KR Bold" size="30.0" />
                            </font>
                         </Label>
-                        <Label fx:id="mCountDownLabel" alignment="CENTER" maxHeight="100.0" maxWidth="1.7976931348623157E308" minHeight="100.0" prefHeight="100.0" style="-fx-background-color: #0082e5;" text="3" textFill="WHITE" visible="false">
+                        <Label fx:id="mPauseShowLabel" alignment="CENTER" prefHeight="60.0" prefWidth="263.0" style="-fx-background-color: #FF0000;" text="일시중지" textAlignment="CENTER" textFill="WHITE" visible="false">
+                           <font>
+                              <Font name="Noto Sans CJK KR Bold" size="30.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mCountDownLabel" alignment="CENTER" maxHeight="100.0" maxWidth="1.7976931348623157E308" minHeight="100.0" prefHeight="100.0" style="-fx-background-color: #0082e5; -fx-background-radius: 5px;" text="3" textFill="WHITE" visible="false">
                            <VBox.margin>
                               <Insets left="50.0" right="50.0" />
                            </VBox.margin>

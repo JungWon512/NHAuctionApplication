@@ -38,6 +38,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -111,8 +112,8 @@ public class SettingController implements Initializable {
 	@FXML // 음성 경매 대기 시간
 	private TextField mSoundAuctionWaitTime;
 
-	@FXML // 동가 재경매,연속경매,음성경부여부,유찰우음성안내여부
-	private CheckBox mUseReAuction, mUseOneAuction, mUseSoundAuction, mUseSoundPendingAuction;
+	@FXML // 동가 재경매,연속경매,음성경부여부,유찰우음성안내여부,유찰시 1회 자동시작
+	private CheckBox mUseReAuction, mUseOneAuction, mUseSoundAuction, mUseSoundPendingAuction, mUsePendingAutoStart1;
 
 	@FXML // 경매 타입
 	private ToggleGroup auctionTypeToggleGroup;
@@ -126,8 +127,12 @@ public class SettingController implements Initializable {
 	@FXML
 	private TextArea mSoundValTextArea;
 	
+	/*
 	@FXML
 	private TextField mSoundRateTextField;
+	*/
+	@FXML
+	private Slider mSoundSpeedSlider;	// by kih
 
 	private final static String[] SHARED_MOBILE_ARRAY = new String[] { SharedPreference.PREFERENCE_SETTING_MOBILE_ENTRYNUM, SharedPreference.PREFERENCE_SETTING_MOBILE_EXHIBITOR, SharedPreference.PREFERENCE_SETTING_MOBILE_GENDER, SharedPreference.PREFERENCE_SETTING_MOBILE_WEIGHT,
 			SharedPreference.PREFERENCE_SETTING_MOBILE_MOTHER, SharedPreference.PREFERENCE_SETTING_MOBILE_PASSAGE, SharedPreference.PREFERENCE_SETTING_MOBILE_MATIME, SharedPreference.PREFERENCE_SETTING_MOBILE_KPN, SharedPreference.PREFERENCE_SETTING_MOBILE_REGION,
@@ -182,7 +187,7 @@ public class SettingController implements Initializable {
 		this.mUdpBillBoardStatusListener2 = udpStatusListener2;
 		this.mUdpPdpBoardStatusListener = udpPdpBoardStatusListener;
 		this.isDisplayBordConnection = isDisplayBordConnection;
-
+		
 		if(!isDisplayBordConnection) {
 			mBtnInitServer.setDisable(true);
 		}else {
@@ -217,8 +222,9 @@ public class SettingController implements Initializable {
 		getReAuctionCheckboxPreference();
 		getUseOneAuctionCheckboxPreference();
 		getSoundAuctionCheckboxPreference();
-		getPendingCowSoundAuctionCheckboxPreference();
-		getTtsTypeCheckboxPreference();
+		getPendingCowSoundAuctionCheckboxPreference();	// 유찰우 안내멘트 사용 
+		getPendingCowAutoStart1CheckboxPreference();	// 유찰시 1회 자동시작 by kih 2023.03.10
+		getTtsTypeCheckboxPreference();	
 		getBoardUseNoteCheckboxPreference();
 		setToggleGroups();
 		getCountTextField();
@@ -228,8 +234,7 @@ public class SettingController implements Initializable {
 		updateUseLowPriceRateCheckBox();
 		setMoneyUnit();
 		mBtnSave.setOnMouseClicked(event -> saveSettings());
-		mBtnInitServer.setOnMouseClicked(event -> initServer());
-		
+		mBtnInitServer.setOnMouseClicked(event -> initServer());		
 		mLowPriceRateCheckBox.setOnAction(event -> setMoneyUnit());
 	}
 	
@@ -262,7 +267,7 @@ public class SettingController implements Initializable {
 		mLowerLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mLowerLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mLowerLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
-		mSoundRateTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_2));
+		//mSoundRateTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_2));
 		
 	}
 
@@ -441,9 +446,15 @@ public class SettingController implements Initializable {
 		//음성 설정 파일
 		mSoundValTextArea.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_CONFIG, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_CONFIG));
 		//음성재생속도
-		mSoundRateTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE));
-
-	
+		//mSoundRateTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE));
+		try {	// by kih
+			String sndSpdVal = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
+			Double d = Double.parseDouble(sndSpdVal);
+			mSoundSpeedSlider.setValue(d);
+		}
+		catch(Exception e) {
+			mSoundSpeedSlider.setValue(0);
+		}
 	}
 
 	/**
@@ -456,11 +467,16 @@ public class SettingController implements Initializable {
 		// 기존 저장값
 		String savedSoundRate = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
 
+		/*
 		if(CommonUtils.getInstance().isValidString(mSoundRateTextField.getText())) {
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, mSoundRateTextField.getText().trim());
 		}else {
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, "0");
 		}
+		*/
+		// by kih
+		Double d = mSoundSpeedSlider.getValue();
+		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, d.toString());
 
 		//현재 설정값
 		String currentSoundRate = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
@@ -583,6 +599,23 @@ public class SettingController implements Initializable {
 	private void getPendingCowSoundAuctionCheckboxPreference() {
 		boolean isSoundAuction = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_USE_PENDING_COW_SOUND_AUCTION, false);
 		mUseSoundPendingAuction.setSelected(isSoundAuction);
+	}
+	
+	/**
+	 * 유찰시 1회 자동시작 여부 저장
+	 */
+	private void setPendingCowAutoStart1CheckboxPreference() {
+		sharedPreference.setBoolean(SharedPreference.PREFERENCE_SETTING_USE_PENDING_AUTO_START1, (mUsePendingAutoStart1.isSelected()));
+	}	
+	
+	/**
+	 * 유찰시 1회 자동시작 여부 value 가져오기
+	 *
+	 */
+	private void getPendingCowAutoStart1CheckboxPreference() {
+		boolean isPendingCowAutoStart1 = sharedPreference.getBoolean(SharedPreference.PREFERENCE_SETTING_USE_PENDING_AUTO_START1, false);
+		mUsePendingAutoStart1.setSelected(isPendingCowAutoStart1);
+		
 	}
 	
 	/**
@@ -1124,6 +1157,7 @@ public class SettingController implements Initializable {
 			}
 		});
 		
+		/*
 		//음성 재생 속도
 		mSoundRateTextField.textProperty().addListener(new ChangeListener<String>() {
 			
@@ -1152,8 +1186,7 @@ public class SettingController implements Initializable {
 				}
 			}
 		});
-		
-
+		*/
 	}
 
 	/**
@@ -1174,14 +1207,14 @@ public class SettingController implements Initializable {
 			setReAuctionCheckboxPreference();
 			setUseOneAuctionCheckboxPreference();
 			setSoundAuctionCheckboxPreference();
-			setPendingCowSoundAuctionCheckboxPreference();
+			setPendingCowSoundAuctionCheckboxPreference();	// 유찰우 음성안내 사용 
+			setPendingCowAutoStart1CheckboxPreference();	// 유찰시 1회 자동시작 by kih 2023.03.10
 			setTtsTypeCheckboxPreference();
 			setBoardUseNoteCheckboxPreference();
 			setCountTextField();
 			setMobileCheckboxPreference(mobileCheckBoxSelectedList);
 			setToggleTypes();
-			setUseLowPriceRateCheckBox();
-		
+			setUseLowPriceRateCheckBox();		
 			
 			mLogger.debug("auctionToggleType : " + auctionToggleType);
 	

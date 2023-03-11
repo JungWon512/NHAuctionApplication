@@ -23,6 +23,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -46,7 +47,9 @@ public class SettingSoundController implements Initializable {
 
     @FXML
     private BorderPane mRoot;
-
+	// 음성속도	
+	@FXML
+	private Slider mSoundSpeedSlider;	// by kih
     @FXML // 음성 시작
     private Button mBtnPlaySound_1, mBtnPlaySound_2, mBtnPlaySound_3, mBtnPlaySound_4, mBtnPlaySound_5, mBtnPlaySound_6, mBtnPlaySound_7, mBtnPlaySound_8, mBtnPlaySound_9, mBtnPlaySound_10, mBtnPlaySound_11, mBtnPlaySound_12;
 
@@ -59,8 +62,8 @@ public class SettingSoundController implements Initializable {
     @FXML // 메세지
     private TextArea mMsgTextArea_1, mMsgTextArea_2, mMsgTextArea_3, mMsgTextArea_4, mMsgTextArea_5, mMsgTextArea_6, mMsgTextArea_7, mMsgTextArea_8, mMsgTextArea_9, mMsgTextArea_10, mMsgTextArea_11, mMsgTextArea_12;
 
-    @FXML
-    private TextField mSoundRateTextField;
+    //@FXML
+    //private TextField mSoundRateTextField;
     
     private BooleanListener mBooleanListener = null;
     
@@ -112,6 +115,7 @@ public class SettingSoundController implements Initializable {
 		    return null;
 		};
 		
+		/*
 		mSoundRateTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mSoundRateTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE,
 				SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE));
@@ -144,7 +148,15 @@ public class SettingSoundController implements Initializable {
 					mSoundRateTextField.setText(tmpStr);
 				}
 			}
-		});
+		});	
+		*/		
+		try {	// by kih
+			String sndSpdVal = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
+			mSoundSpeedSlider.setValue(Double.parseDouble(sndSpdVal));
+		}
+		catch(Exception e) {
+			mSoundSpeedSlider.setValue(0);
+		}
 		
         if (SettingApplication.getInstance().isTtsType()) {
         	mBtnPlaySound_1.setOnMouseClicked(event -> SoundUtils.getInstance().playDefineSound(SharedPreference.PREFERENCE_SETTING_SOUND_MSG_INTRO));
@@ -291,6 +303,7 @@ public class SettingSoundController implements Initializable {
         SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_5, mMsgTextArea_11.getText());
         SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_SOUND_ETC_6, mMsgTextArea_12.getText());
 
+        /*
         if (CommonUtils.getInstance().isValidString(mSoundRateTextField.getText())) {
         	if (!sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE).equals(mSoundRateTextField.getText().trim())) {
         		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, mSoundRateTextField.getText().trim());
@@ -304,6 +317,11 @@ public class SettingSoundController implements Initializable {
         } else {
         	sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
         }
+        */
+        // by kih
+        Double d = mSoundSpeedSlider.getValue();
+        sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, d.toString());       
+        
         
         showAlertPopup(mResMsg.getString("str.setting.sound.save"), mResMsg.getString("popup.btn.ok"));
 

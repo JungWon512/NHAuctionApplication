@@ -515,6 +515,7 @@ public class SoundUtils {
 	}
 	
 	public static int getSoundSpeed() {
+		/*
 		int result = 0;
 		String tmpValue = null;
 		SharedPreference sharedPreference = SharedPreference.getInstance();
@@ -524,9 +525,18 @@ public class SoundUtils {
 		result = (Integer.valueOf(tmpValue) * 10) + TTS_DEFAULT_VOICE_SPEED;
 		
 		return result;
+		*/
+		int result = 0;
+		String tmpValue = null;
+		SharedPreference sharedPreference = SharedPreference.getInstance();		
+		tmpValue = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);		
+		Double d = Double.parseDouble(tmpValue) * 10;		
+		result = d.intValue() + TTS_DEFAULT_VOICE_SPEED;
+		return result;
 	}
 	
 	public static int getNormalSoundSpeed() {
+		/*
 		int result = 0;
 		String tmpValue = null;
 		SharedPreference sharedPreference = SharedPreference.getInstance();
@@ -535,6 +545,14 @@ public class SoundUtils {
 		
 		result = (Integer.valueOf(tmpValue) * 10) + TTS_DEFAULT_VOICE_SPEED;
 		
+		return result;
+		*/
+		int result = 0;
+		String tmpValue = null;
+		SharedPreference sharedPreference = SharedPreference.getInstance();		
+		tmpValue = sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_NORMAL_SOUND_RATE, SettingApplication.getInstance().DEFAULT_SETTING_SOUND_RATE);
+		Double d = Double.parseDouble(tmpValue) * 10;		
+		result = d.intValue() + TTS_DEFAULT_VOICE_SPEED;		
 		return result;
 	}
 }

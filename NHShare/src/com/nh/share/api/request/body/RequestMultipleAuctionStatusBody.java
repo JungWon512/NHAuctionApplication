@@ -9,10 +9,11 @@ package com.nh.share.api.request.body;
  */
 public class RequestMultipleAuctionStatusBody extends RequestBaseBody {
 
-	public RequestMultipleAuctionStatusBody(String auctionHouseCode, String entryType, String auctionDate, String status,String rgSqNo) {
+	public RequestMultipleAuctionStatusBody(String auctionHouseCode, String entryType, String aucObjDscStn, String auctionDate, String status,String rgSqNo) {
 		super(auctionHouseCode, entryType, auctionDate);
 		this.put("naBzPlc", auctionHouseCode);		// 조합구분코드
 		this.put("status", status);
 		this.put("rgSqno", rgSqNo);
+		this.put("aucObjDscStn", aucObjDscStn);		// 일괄경매 by kih
 	}
 }

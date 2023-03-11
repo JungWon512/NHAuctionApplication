@@ -62,7 +62,18 @@ public class ChooseAuctionNumberRangeController implements Initializable {
 		        if (empty || item == null) {
 		            setText(null);
 		        } else {
-		        	setText(String.format(mResMsg.getString("str.auction.number.range"),item.getST_AUC_NO(),item.getED_AUC_NO()));
+		        	//setText(String.format(mResMsg.getString("str.auction.number.range"),item.getST_AUC_NO(),item.getED_AUC_NO()));
+		        	
+		        	// by kih, 2023.03.07
+		        	String sAucObjDscNm = "";		        	
+	        		if("1".equals(item.getAUC_OBJ_DSC())) sAucObjDscNm = "송아지";
+	        		else if("2".equals(item.getAUC_OBJ_DSC())) sAucObjDscNm = "비육우";
+	        		else if("3".equals(item.getAUC_OBJ_DSC())) sAucObjDscNm = "번식우";
+	        		else if("4".equals(item.getAUC_OBJ_DSC())) sAucObjDscNm = "일괄(큰소)";
+	        		else if("0".equals(item.getAUC_OBJ_DSC())) sAucObjDscNm = "일괄(전체)";
+	        		else sAucObjDscNm = "[미설정]";
+		        	
+		        	setText(String.format("%s :  %d ~ %d ",sAucObjDscNm, item.getST_AUC_NO(),item.getED_AUC_NO()));
 		        }
 		    }
 		});

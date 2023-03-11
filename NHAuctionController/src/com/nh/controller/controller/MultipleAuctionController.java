@@ -658,13 +658,14 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private RequestCowInfoBody getCowInfoParamBody() {
 		final String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
 		final String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		final String aucObjDscStn = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDscStn());
 		final String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
 		final String stnYn = SettingApplication.getInstance().getSettingAuctionTypeYn();
 		final String rgSqno = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo());
 		final String selStsDsc = "";
 		
 		// 출장우 데이터 조회
-		return new RequestCowInfoBody(naBzplc, aucObjDsc, aucDate, selStsDsc, stnYn,rgSqno);
+		return new RequestCowInfoBody(naBzplc, aucObjDsc, aucObjDscStn, aucDate, selStsDsc, stnYn,rgSqno);
 	}
 
 	/**
@@ -1161,7 +1162,9 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		}
 
 		String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
-		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		//String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());		
+		// 1:송아지, 2:비육우, 3:번식우, 4:일괄(큰소), 0:일괄(전체) by kih
+		String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDscStn()); // getAucObjDsc() -> getAucObjDscStn() 값으로 변경하여 전달 	
 		String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
 		String rgSqNo = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo());
 		
@@ -1531,7 +1534,13 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 			Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("msg.auction.send.need.entry.data")));
 			return;
 		}
-
+		
+		//by kih
+		Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, "경매를 시작 하시겠습니까?", mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.exit"));
+		if (btnResult.get().getButtonData() == ButtonData.RIGHT) {			
+			return;
+		} 
+		
 		Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.multi.auction.start")));
 		
 		// 경매시
@@ -1547,13 +1556,14 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		// 출품 이관 체크
 		final String naBzplc = GlobalDefine.AUCTION_INFO.auctionRoundData.getNaBzplc();
 		final String aucObjDsc = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc());
+		final String aucObjDscStn = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDscStn());		// Stn 추가, by kih
 		final String aucDate = GlobalDefine.AUCTION_INFO.auctionRoundData.getAucDt();
 		final String rgSqNo = Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getRgSqNo());
 
 		// 시작 서버로 Start 보냄.
 		mLogger.debug("경매 Status 전송 : " + type);
 
-		RequestMultipleAuctionStatusBody body = new RequestMultipleAuctionStatusBody(naBzplc, aucObjDsc, aucDate, type, rgSqNo);
+		RequestMultipleAuctionStatusBody body = new RequestMultipleAuctionStatusBody(naBzplc, aucObjDsc, aucObjDscStn, aucDate, type, rgSqNo);
 		ApiUtils.getInstance().requestMultipleAuctionStatus(body, new ActionResultListener<ResponseChangeCowInfo>() {
 
 			@Override
@@ -1633,6 +1643,13 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	}
 
 	private void onFinish() {
+		
+		//by kih
+		Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, "경매를 종료 하시겠습니까?", mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.exit"));
+		if (btnResult.get().getButtonData() == ButtonData.RIGHT) {			
+			return;
+		} 
+		
 		Platform.runLater(() -> CommonUtils.getInstance().showLoadingDialog(mStage, mResMsg.getString("dialog.multi.auction.finish")));
 		onStartAuction(GlobalDefine.AUCTION_INFO.MULTIPLE_AUCTION_STATUS_FINISH);
 	}
@@ -3394,7 +3411,18 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	 */
 	private void requestInsertBiddingHistory(final AucEntrData aucEntrData, final String type) {
 
-		RequestBidLogBody insertBody = new RequestBidLogBody(aucEntrData.getNaBzplc(), Integer.toString(aucEntrData.getAucObjDsc()), aucEntrData.getAucDt(), aucEntrData.getOslpNo(), aucEntrData.getRgSqno(), aucEntrData.getTrmnAmnno(), aucEntrData.getLvstAucPtcMnNo(), aucEntrData.getAtdrAm(), aucEntrData.getRmkCntn(), aucEntrData.getAtdrDtm(), aucEntrData.getAucPrgSq());
+		RequestBidLogBody insertBody = new RequestBidLogBody(aucEntrData.getNaBzplc()
+				, Integer.toString(aucEntrData.getAucObjDsc())
+				, aucEntrData.getAucDt()
+				, aucEntrData.getOslpNo()
+				, aucEntrData.getRgSqno()
+				, aucEntrData.getTrmnAmnno()
+				, aucEntrData.getLvstAucPtcMnNo()
+				, aucEntrData.getAtdrAm()
+				, aucEntrData.getRmkCntn()
+				, aucEntrData.getAtdrDtm()
+				, aucEntrData.getAucPrgSq());
+		
 		mLogger.debug("[응찰 로그 insertBody] : " + insertBody.toString());
 		ApiUtils.getInstance().requestInsertBidLog(insertBody, new ActionResultListener<ResponseNumber>() {
 
