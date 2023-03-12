@@ -1536,7 +1536,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		}
 		
 		//by kih
-		Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, "경매를 시작 하시겠습니까?", mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.exit"));
+		Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, "경매를 시작 하시겠습니까?", mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.cancel"));
 		if (btnResult.get().getButtonData() == ButtonData.RIGHT) {			
 			return;
 		} 
@@ -1645,7 +1645,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private void onFinish() {
 		
 		//by kih
-		Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, "경매를 종료 하시겠습니까?", mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.exit"));
+		Optional<ButtonType> btnResult = CommonUtils.getInstance().showAlertPopupTwoButton(mStage, "경매를 종료 하시겠습니까?", mResMsg.getString("popup.btn.ok"), mResMsg.getString("popup.btn.cancel"));
 		if (btnResult.get().getButtonData() == ButtonData.RIGHT) {			
 			return;
 		} 

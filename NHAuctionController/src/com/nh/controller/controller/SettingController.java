@@ -195,6 +195,9 @@ public class SettingController implements Initializable {
 			mAuctionTypeMultiToggleButton.setDisable(true);
 			mTtsTypeCheckBox.setDisable(true);
 		}
+		
+		// by kih	
+		Platform.runLater(() -> mBtnSave.requestFocus());
 	}
 
 	/**
