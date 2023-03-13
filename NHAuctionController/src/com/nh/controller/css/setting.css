@@ -198,3 +198,7 @@
       -fx-background-insets: 0;
 }
 
+.slider .axis {
+    -fx-tick-label-font-size: 12px;
+    -fx-tick-label-font-family: "Noto Sans CJK KR Regular";
+}

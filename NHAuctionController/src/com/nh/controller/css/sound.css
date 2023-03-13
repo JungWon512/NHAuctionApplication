@@ -94,3 +94,8 @@
 	-fx-border-color: #cccccc;
 	-fx-font-family: "Noto Sans CJK KR Regular";
 }
+
+.slider .axis {
+    -fx-tick-label-font-size: 14px;
+    -fx-tick-label-font-family: "Noto Sans CJK KR Regular";
+}
