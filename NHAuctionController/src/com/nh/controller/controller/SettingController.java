@@ -204,7 +204,8 @@ public class SettingController implements Initializable {
 	 * 구성 설정
 	 */
 	public void initConfiguration() {
-		CommonUtils.getInstance().canMoveStage(mStage, null);
+		// 2023.03.13 설정 창 종료 후, 경매화면이 마우스 드래그 되어 주석ㅊ리 함.  by kih
+		//CommonUtils.getInstance().canMoveStage(mStage, null);
 	}
 
 	@Override
