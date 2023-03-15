@@ -61,11 +61,16 @@ public class CowInfoData {
 	private String BIRTH_FMT;
 	private int EXP_ATDR_AM;
 	private int EXP_LVST_AUC_PTC_MN_NO;
-	private String AUC_YN;
+	private String AUC_YN;	
 	
-	// 월령 추가(2022.09.07)
-	private String GAP_MONTH;
-
+	private String GAP_MONTH;	// 월령 추가(2022.09.07 by pjs
+	private String RG_DSC_NM;	// 송아지혈통명(2023.03.15 by kih)
+	private String SRA_MWMNNM;	// 낙찰자명(2023.03.15 by kih)
+	
+	public CowInfoData() {
+		RG_DSC_NM = "";		// 초기화 - 'null' 방지
+		SRA_MWMNNM = "";	// 초기화 - 'null' 방지
+	}
 	
 	public String getSRA_SRS_DSC() {
 		return SRA_SRS_DSC;
@@ -386,4 +391,16 @@ public class CowInfoData {
 	public void setGAP_MONTH(String gAP_MONTH) {
 		GAP_MONTH = gAP_MONTH;
 	}    
+	public String getRG_DSC_NM() {
+		return RG_DSC_NM;
+	}
+	public void setRG_DSC_NM(String rG_DSC_NM) {
+		RG_DSC_NM = rG_DSC_NM;
+	}
+	public String getSRA_MWMNNM() {
+		return SRA_MWMNNM;
+	}
+	public void setSRA_MWMNNM(String sRA_MWMNNM) {
+		SRA_MWMNNM = sRA_MWMNNM;
+	}
 }

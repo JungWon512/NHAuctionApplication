@@ -83,6 +83,9 @@ public class EntryInfo implements FromAuctionController {
 	
 	private String mGapMonth; // 월령(개월수) (2022.09.07)
 	
+	private String mRgDscName;	// 송아지혈통정보(2023.03.15 by kih)
+	private String mSraMwmnName; // 낙찰자명(2023.03.15)
+	
 	public EntryInfo() {
 	}
 
@@ -131,7 +134,7 @@ public class EntryInfo implements FromAuctionController {
 		mExpAuctionIntNum = expAuctionIntNum;
 		mAuctionTypeCode = auctionTypeCode;
 	}
-
+	
 	public EntryInfo(String[] messages) {
 		mAuctionHouseCode = messages[1];
 		mEntryNum = messages[2];
@@ -170,6 +173,12 @@ public class EntryInfo implements FromAuctionController {
 		mIsExcessCow = messages[35];
 		mExpAuctionIntNum = messages[36];
 		mAuctionTypeCode = messages[37];
+		
+		if(messages.length > 40) { 
+			mGapMonth = messages[38];		// 2023.03.15 월령 추가 
+			mRgDscName = messages[39];		// 2023.03.15 송아지혈통명 추가 by kih 
+			mSraMwmnName = messages[40];	// 2023.03.15 낙찰자명 추가 by kih 
+		}
 	}
 
 	
@@ -225,7 +234,10 @@ public class EntryInfo implements FromAuctionController {
 		mExpAuctionBidPrice = Integer.toString(cowInfoData.getEXP_ATDR_AM()); 
 		mExpAuctionSucBidder = Integer.toString(cowInfoData.getEXP_LVST_AUC_PTC_MN_NO());
 		aucYn = cowInfoData.getAUC_YN();
+		
 		mGapMonth = cowInfoData.getGAP_MONTH();
+		mRgDscName = cowInfoData.getRG_DSC_NM();	// 2023.03.15 송아지혈통명 추가 by kih 
+		mSraMwmnName = cowInfoData.getSRA_MWMNNM();	// 2023.03.15 낙찰자명 추가 by kih 
 	}
 	
 	
@@ -670,11 +682,25 @@ public class EntryInfo implements FromAuctionController {
 	public void setGapMonth(String gapMonth) {
 		this.mGapMonth = gapMonth;
 	}
+	public String getRgDscName() {
+		return mRgDscName;
+	}
+	public void setRgDscName(String rgDscName) {
+		mRgDscName = rgDscName;
+	}
+	public String getSraMwmnName() {
+		return mSraMwmnName;
+	}
+	public void setSraMwmnName(String sraMwmnName) {
+		mSraMwmnName = sraMwmnName;
+	}
 
 	@Override
 	public String getEncodedMessage() {
+		// 2023.03.15 mRgDscName 송아지혈통정보추가 
 		return String.format(
-				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+			  //"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s"
+				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
 				mEntryNum, AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mEntryType,
 				AuctionShareSetting.DELIMITER, mIndNum, AuctionShareSetting.DELIMITER, mIndMngCd,
@@ -692,7 +718,10 @@ public class EntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mAuctionResult, AuctionShareSetting.DELIMITER, mAuctionSucBidder,
 				AuctionShareSetting.DELIMITER, mAuctionBidPrice, AuctionShareSetting.DELIMITER, mAuctionBidDateTime,
 				AuctionShareSetting.DELIMITER, mIsLastEntry, AuctionShareSetting.DELIMITER, mStandPosition,
-				AuctionShareSetting.DELIMITER, mIsExcessCow, AuctionShareSetting.DELIMITER, mExpAuctionIntNum, AuctionShareSetting.DELIMITER, mAuctionTypeCode);
+				AuctionShareSetting.DELIMITER, mIsExcessCow, AuctionShareSetting.DELIMITER, mExpAuctionIntNum, AuctionShareSetting.DELIMITER, mAuctionTypeCode,
+				AuctionShareSetting.DELIMITER, mGapMonth,			// 월령
+				AuctionShareSetting.DELIMITER, mRgDscName,			// 송아지혈통명 
+				AuctionShareSetting.DELIMITER, mSraMwmnName);		// 낙찰자명 
 	}
 
 }

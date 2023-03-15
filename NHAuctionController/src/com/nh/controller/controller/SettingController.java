@@ -1381,14 +1381,20 @@ public class SettingController implements Initializable {
 		}
 		
 		// 음성경매 체크
-		if (mUseSoundAuction.isSelected() && !CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())) {
-			showAlert(mResMsg.getString("dialog.sound.empty.value"));
-			return false;
-		}else {
+		if(mUseSoundAuction.isSelected() && mTtsTypeCheckBox.isSelected())
+		{
+			// 로컬 TTS 설정시, Google private-key 확인 안 함.
 			
-			if(CommonUtils.getInstance().isValidString(mSoundValTextArea.getText()) && !mSoundValTextArea.getText().contains("private_key")) {
-				showAlert(mResMsg.getString("dialog.sound.no.value"));
+		} else {
+			if (mUseSoundAuction.isSelected() && !CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())) {
+				showAlert(mResMsg.getString("dialog.sound.empty.value"));
 				return false;
+			}else {
+				
+				if(CommonUtils.getInstance().isValidString(mSoundValTextArea.getText()) && !mSoundValTextArea.getText().contains("private_key")) {
+					showAlert(mResMsg.getString("dialog.sound.no.value"));
+					return false;
+				}
 			}
 		}
 		

@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.google.api.client.util.StringUtils;
 import com.nh.controller.setting.SettingApplication;
 import com.nh.controller.utils.CommonUtils;
 import com.nh.controller.utils.GlobalDefine;
@@ -23,7 +24,7 @@ import javafx.beans.property.StringProperty;
  * SC | 조합구분코드 | 출품번호 | 경매회차| 경매대상구분코드 | 축산개체관리번호 | 축산축종구분코드 | 농가식별번호 | 농장관리번호 |
  * 농가명 | 브랜드명 | 생년월일 | KPN번호 | 개체성별코드 | 어미소구분코드 | 어미소축산개체관리번호 | 산차 | 임신개월수 | 계대
  * | 계체식별번호 | 축산개체종축등록번호 | 등록구분번호 | 신규여부 | 우출하중량 | 최초최저낙찰한도금액 | 최저낙찰한도금액 | 비고내용
- * | 마지막출품여부
+ * | 마지막출품여부 | 
  */
 public class SpEntryInfo implements FromAuctionController, Cloneable {
 
@@ -90,11 +91,13 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 	private StringProperty auctionTypeCode;	//경매 회차 유형 코드 (0:일괄,1:송아지,2:비육우.3:번식우)
 	
 	private StringProperty mGapMonth; // 월령(개월수) (2022.09.07)
+	private StringProperty mRgDscName; // 송아지혈통명 (2023.03.15) 
+	private StringProperty mSraMwmName; // 낙찰자명 (2023.03.15)
 	
 	private EntryInfo TEST;
 
 	public SpEntryInfo() {
-	}
+	}	
 
 	public SpEntryInfo(EntryInfo entryInfo) {
 		TEST = entryInfo;
@@ -153,6 +156,8 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 		this.rgSqno = new SimpleStringProperty(entryInfo.getExpAuctionIntNum());
 		this.auctionTypeCode = new SimpleStringProperty(entryInfo.getAuctionTypeCode());
 		this.mGapMonth = new SimpleStringProperty(entryInfo.getGapMonth());
+		this.mRgDscName = new SimpleStringProperty(entryInfo.getRgDscName());
+		this.mSraMwmName = new SimpleStringProperty(entryInfo.getSraMwmnName());
 	}
 	
 	public EntryInfo getEntryInfo() {
@@ -619,6 +624,22 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 	public void setGapMonth(StringProperty gapMonth) {
 		this.mGapMonth = gapMonth;
 	}
+	
+	public StringProperty getRgDscName() {
+		return mRgDscName;
+	}
+
+	public void setRgDscName(StringProperty rgDscName) {
+		this.mRgDscName = rgDscName;
+	}
+	
+	public StringProperty getSraMwmnName() {
+		return mSraMwmName;
+	}
+
+	public void setSraMwmnName(StringProperty sraMwmName) {
+		this.mSraMwmName = sraMwmName;
+	}
 
 	public String getConvertBirthDay() {
 
@@ -758,6 +779,9 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 						+ "%s%c"
 						+ "%s%c"
 						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
+						+ "%s%c"
 						+ "%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getAuctionHouseCode().getValue()),AuctionShareSetting.DELIMITER, 
@@ -787,7 +811,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 				getWeight().getValue(), AuctionShareSetting.DELIMITER, 														// 중량, 보낼때만 KG 붙임.
 				getInitPrice().getValue(), AuctionShareSetting.DELIMITER, 
 				getLowPrice().getValue(),AuctionShareSetting.DELIMITER,
-				CommonUtils.getInstance().replaceDelimiter(getNote().getValue()),AuctionShareSetting.DELIMITER,
+				CommonUtils.getInstance().replaceDelimiter(getNote().getValue()),AuctionShareSetting.DELIMITER,				// 비고 
 				CommonUtils.getInstance().replaceDelimiter(getAuctionResult().getValue()),AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getAuctionSucBidder().getValue()),AuctionShareSetting.DELIMITER,
 				getSraSbidUpPrice().getValue(), AuctionShareSetting.DELIMITER,
@@ -795,8 +819,11 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 				CommonUtils.getInstance().replaceDelimiter(getIsLastEntry().getValue()),AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getStandPosition().getValue()),AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getIsExcessCow().getValue()),AuctionShareSetting.DELIMITER,
-				getRgSqno().getValue(),AuctionShareSetting.DELIMITER, 				
-				getAuctionTypeCode().getValue()
+				getRgSqno().getValue(), AuctionShareSetting.DELIMITER, 				
+				getAuctionTypeCode().getValue(), AuctionShareSetting.DELIMITER, 
+				getGapMonth().getValue(), AuctionShareSetting.DELIMITER, 					// 월령 (2023.03.15)
+				getRgDscName().getValue(), AuctionShareSetting.DELIMITER, 					// 송아지혈통명 (2023.03.15) : 고등,혈통,미등록우
+				CommonUtils.getInstance().replaceDelimiter(getSraMwmnName().getValue())		// 낙찰자명 (2023.03.15) : 홍길동 
 				);
 	}
 
