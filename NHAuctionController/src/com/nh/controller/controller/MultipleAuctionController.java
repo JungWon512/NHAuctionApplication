@@ -197,7 +197,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 	private GridPane mAuctionStateGridPane;
 
 	@FXML // 하단 버튼
-	private Button mBtnEsc, mBtnF1, mBtnF2,mBtnF5, mBtnF8, mBtnStart, mBtnPause, mBtnFinish, mBtnMessage, mBtnSendPending,mBtnSendPendingHide, mBtnSendAuctTarget, mBtnSendVideo, mBtnQcnFinish;
+	private Button mBtnEsc, mBtnF1, mBtnF2,mBtnF5, mBtnF8, mBtnStart, mBtnPause, mBtnFinish, mBtnSendPending,mBtnSendPendingHide, mBtnSendAuctTarget, mBtnSendVideo, mBtnQcnFinish;
 
 	@FXML // 하단 메세지 전송 상위 뷰
 	private StackPane mSTPMessage;
@@ -429,7 +429,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 		mBtnStart.setOnMouseClicked(event -> onRefreshStartAuction());
 		mBtnPause.setOnMouseClicked(event -> onPause());
 		mBtnFinish.setOnMouseClicked(event -> onFinish());
-		mBtnMessage.setOnMouseClicked(event -> openSendMessage(event));
+		//mBtnMessage.setOnMouseClicked(event -> openSendMessage(event));
 		
 		mWaitTableView.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -1103,7 +1103,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 		Node node = (Node) event.getSource();
 		Stage stage = (Stage) node.getScene().getWindow();
-		mBtnMessage.setDisable(true);
+		//mBtnMessage.setDisable(true);
 		mMessageStage = MoveStageUtil.getInstance().loadMessageFXMLLoader(stage, new MessageStringListener() {
 			@Override
 			public void callBack(String str) {
@@ -1118,7 +1118,7 @@ public class MultipleAuctionController implements Initializable, NettyControllab
 
 			@Override
 			public void onClose() {
-				mBtnMessage.setDisable(false);
+				//mBtnMessage.setDisable(false);
 				mMessageStage = null;
 			}
 		});
