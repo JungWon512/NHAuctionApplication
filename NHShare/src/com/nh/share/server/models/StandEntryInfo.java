@@ -518,9 +518,10 @@ public class StandEntryInfo implements FromAuctionServer {
 				AuctionShareSetting.DELIMITER, mAuctionBidPrice, AuctionShareSetting.DELIMITER, mAuctionBidDateTime,
 				AuctionShareSetting.DELIMITER, mIsLastEntry, AuctionShareSetting.DELIMITER, mStandPosition,
 				AuctionShareSetting.DELIMITER, mIsExcessCow,
+				AuctionShareSetting.DELIMITER, mSraMwmnName,		// 낙찰자명 
 				AuctionShareSetting.DELIMITER, mGapMonth,			// 월령
-				AuctionShareSetting.DELIMITER, mRgDscName,			// 송아지혈통명 
-				AuctionShareSetting.DELIMITER, mSraMwmnName);		// 낙찰자명 
+				AuctionShareSetting.DELIMITER, mRgDscName			// 송아지혈통명 				
+				);		
 				
 	}
 

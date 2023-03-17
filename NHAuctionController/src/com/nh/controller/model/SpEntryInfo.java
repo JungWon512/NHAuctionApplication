@@ -821,9 +821,10 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 				CommonUtils.getInstance().replaceDelimiter(getIsExcessCow().getValue()),AuctionShareSetting.DELIMITER,
 				getRgSqno().getValue(), AuctionShareSetting.DELIMITER, 				
 				getAuctionTypeCode().getValue(), AuctionShareSetting.DELIMITER, 
-				getGapMonth().getValue(), AuctionShareSetting.DELIMITER, 					// 월령 (2023.03.15)
-				getRgDscName().getValue(), AuctionShareSetting.DELIMITER, 					// 송아지혈통명 (2023.03.15) : 고등,혈통,미등록우
-				CommonUtils.getInstance().replaceDelimiter(getSraMwmnName().getValue())		// 낙찰자명 (2023.03.15) : 홍길동 
+				CommonUtils.getInstance().replaceDelimiter(getSraMwmnName().getValue()),	// 낙찰자명 (2023.03.15) : 홍길동 
+				AuctionShareSetting.DELIMITER, getGapMonth().getValue(), 					// 월령 (2023.03.15)
+				AuctionShareSetting.DELIMITER, getRgDscName().getValue()					// 송아지혈통명 (2023.03.15) : 고등,혈통,미등록우
+				
 				);
 	}
 

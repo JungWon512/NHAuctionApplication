@@ -175,7 +175,7 @@ public class EntryInfo implements FromAuctionController {
 		mAuctionTypeCode = messages[37];
 		
 		if(messages.length > 40) { 
-			mGapMonth = messages[38];		// 2023.03.15 월령 추가 
+			mGapMonth = messages[38];		// 2023.03.15 월령 추가
 			mRgDscName = messages[39];		// 2023.03.15 송아지혈통명 추가 by kih 
 			mSraMwmnName = messages[40];	// 2023.03.15 낙찰자명 추가 by kih 
 		}
@@ -718,10 +718,12 @@ public class EntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mAuctionResult, AuctionShareSetting.DELIMITER, mAuctionSucBidder,
 				AuctionShareSetting.DELIMITER, mAuctionBidPrice, AuctionShareSetting.DELIMITER, mAuctionBidDateTime,
 				AuctionShareSetting.DELIMITER, mIsLastEntry, AuctionShareSetting.DELIMITER, mStandPosition,
-				AuctionShareSetting.DELIMITER, mIsExcessCow, AuctionShareSetting.DELIMITER, mExpAuctionIntNum, AuctionShareSetting.DELIMITER, mAuctionTypeCode,
+				AuctionShareSetting.DELIMITER, mIsExcessCow, AuctionShareSetting.DELIMITER, mExpAuctionIntNum, 
+				AuctionShareSetting.DELIMITER, mAuctionTypeCode,
+				AuctionShareSetting.DELIMITER, mSraMwmnName,		// 낙찰자명 
 				AuctionShareSetting.DELIMITER, mGapMonth,			// 월령
-				AuctionShareSetting.DELIMITER, mRgDscName,			// 송아지혈통명 
-				AuctionShareSetting.DELIMITER, mSraMwmnName);		// 낙찰자명 
+				AuctionShareSetting.DELIMITER, mRgDscName			// 송아지혈통명 				
+				);
 	}
 
 }
