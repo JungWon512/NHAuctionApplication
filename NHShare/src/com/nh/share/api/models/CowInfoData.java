@@ -68,8 +68,10 @@ public class CowInfoData {
 	private String SRA_MWMNNM;	// 낙찰자명(2023.03.15 by kih)
 	
 	public CowInfoData() {
+		/* 2023.03.17 주석처리  -> EntryInfo에서 처리 
 		RG_DSC_NM = "";		// 초기화 - 'null' 방지
 		SRA_MWMNNM = "";	// 초기화 - 'null' 방지
+		*/
 	}
 	
 	public String getSRA_SRS_DSC() {

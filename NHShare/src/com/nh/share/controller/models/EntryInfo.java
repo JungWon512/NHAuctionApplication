@@ -236,8 +236,8 @@ public class EntryInfo implements FromAuctionController {
 		aucYn = cowInfoData.getAUC_YN();
 		
 		mGapMonth = cowInfoData.getGAP_MONTH();
-		mRgDscName = cowInfoData.getRG_DSC_NM();	// 2023.03.15 송아지혈통명 추가 by kih 
-		mSraMwmnName = cowInfoData.getSRA_MWMNNM();	// 2023.03.15 낙찰자명 추가 by kih 
+		mRgDscName = cowInfoData.getRG_DSC_NM() == null ? "" : cowInfoData.getRG_DSC_NM();		// 2023.03.17 송아지혈통명 null 방지 by kih 
+		mSraMwmnName = cowInfoData.getSRA_MWMNNM() == null ? "" : cowInfoData.getSRA_MWMNNM(); 	// 2023.03.175 낙찰자명 null 방지 by kih 
 	}
 	
 	
