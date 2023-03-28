@@ -54,6 +54,9 @@ public class StandEntryInfo implements FromAuctionServer {
 	private String mStandPosition; // 계류대 번호
 	private String mIsExcessCow; // 초과출장우여부
 	
+	private String mExpAuctionIntNum; // 일괄 경매 구간 번호	
+	private String mAuctionTypeCode;	//경매 회차 유형 코드 (0:일괄,1:송아지,2:비육우.3:번식우)
+	
 	// 2023.03.15 by kih
 	private String mGapMonth; // 월령(개월수) 
 	private String mRgDscName;	// 송아지등록구분명 
@@ -138,6 +141,15 @@ public class StandEntryInfo implements FromAuctionServer {
 		mIsLastEntry = messages[33];
 		mStandPosition = messages[34];
 		mIsExcessCow = messages[35];
+		
+		if(messages.length > 40) { 
+			// 2023.03.28 추가 
+			mExpAuctionIntNum = messages[36];
+			mAuctionTypeCode = messages[37];			
+			mSraMwmnName = messages[38];	// 2023.03.15 낙찰자명 추가 by kih 
+			mGapMonth = messages[39];		// 2023.03.15 월령 추가
+			mRgDscName = messages[40];		// 2023.03.15 송아지혈통명 추가 by kih 			
+		}
 	}
 
 	public StandEntryInfo(EntryInfo entryInfo) {
@@ -469,6 +481,22 @@ public class StandEntryInfo implements FromAuctionServer {
 
 	public void setIsExcessCow(String isExcessCow) {
 		this.mIsExcessCow = isExcessCow;
+	}
+	
+	public String getExpAuctionIntNum() {
+		return mExpAuctionIntNum;
+	}
+
+	public void setExpAuctionIntNum(String expAuctionIntNum) {
+		this.mExpAuctionIntNum = expAuctionIntNum;
+	}
+	
+	public String getAuctionTypeCode() {
+		return mAuctionTypeCode;
+	}
+
+	public void setAuctionTypeCode(String mAuctionTypeCode) {
+		this.mAuctionTypeCode = mAuctionTypeCode;
 	}
 	
 	public String getGapMonth() {

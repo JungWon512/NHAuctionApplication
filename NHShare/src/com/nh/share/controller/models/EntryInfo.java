@@ -175,9 +175,10 @@ public class EntryInfo implements FromAuctionController {
 		mAuctionTypeCode = messages[37];
 		
 		if(messages.length > 40) { 
-			mGapMonth = messages[38];		// 2023.03.15 월령 추가
-			mRgDscName = messages[39];		// 2023.03.15 송아지혈통명 추가 by kih 
-			mSraMwmnName = messages[40];	// 2023.03.15 낙찰자명 추가 by kih 
+			// 2023.03.28 순서변경 
+			mSraMwmnName = messages[38];	// 2023.03.15 낙찰자명 추가 by kih 
+			mGapMonth = messages[39];		// 2023.03.15 월령 추가
+			mRgDscName = messages[40];		// 2023.03.15 송아지혈통명 추가 by kih 			
 		}
 	}
 
