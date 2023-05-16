@@ -44,10 +44,12 @@
             <Insets left="20.0" right="20.0" />
          </padding>
          <children>
-         	<HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+         	<HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="260.0" spacing="10.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
          		<children>
-                    <Button fx:id="mBtnBoardPlay" alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="전광판(영상)전환" />                   
-                    <Button fx:id="mBtnBoardAuction" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="160.0" minHeight="40.0" minWidth="160.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="btn-header" text="전광판(경매)전환" />
+         		  <Button fx:id="mBtnBoardAuction" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="100.0" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" styleClass="btn-header" text="전광판전환" />
+                  <Button fx:id="mBtnEntryType1" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="80.0" minHeight="40.0" minWidth="80.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" styleClass="btn-header" text="송아지" />
+                  <Button fx:id="mBtnEntryType2" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="80.0" minHeight="40.0" minWidth="80.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" styleClass="btn-header" text="비육우" />
+                  <Button fx:id="mBtnEntryType3" alignment="CENTER" contentDisplay="CENTER" maxHeight="40.0" maxWidth="80.0" minHeight="40.0" minWidth="80.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" styleClass="btn-header" text="번식우" />
          		</children>
          	</HBox>         	
             <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">

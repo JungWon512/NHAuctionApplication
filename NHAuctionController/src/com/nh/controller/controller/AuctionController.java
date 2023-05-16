@@ -179,6 +179,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 	@FXML // 음성설정 ,저장 ,음성중지 ,낙찰결과
 	private Button mBtnSettingSound, mBtnStopSound, mBtnEntrySuccessList, mBtnBoardAuction;
+	
+	@FXML // 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우) 이동
+	private Button mBtnEntryType1, mBtnEntryType2, mBtnEntryType3;
 
 	@FXML // 일시정지 재시작 ,일시정지
 	private Button mBtnReStart, mBtnPause;
@@ -470,6 +473,17 @@ public class AuctionController extends BaseAuctionController implements Initiali
 		mBtnReStart.setOnMouseClicked(event -> onReStart());
 		mBtnPause.setOnMouseClicked(event -> checkAndOnPause());
 		mBtnBoardAuction.setOnMouseClicked(event -> onBtnBoardAuction());
+		
+		//경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
+		if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == 0 ) {
+			mBtnEntryType1.setOnMouseClicked(event -> onBtnGoEntryTypeLocation("1"));
+			mBtnEntryType2.setOnMouseClicked(event -> onBtnGoEntryTypeLocation("2"));
+			mBtnEntryType3.setOnMouseClicked(event -> onBtnGoEntryTypeLocation("3"));
+		} else {
+			mBtnEntryType1.setVisible(false);
+			mBtnEntryType2.setVisible(false);
+			mBtnEntryType3.setVisible(false);
+		}
 
 		// 메세지 전송 애니메이션 초기화
 		initMsgToast();
@@ -3882,7 +3896,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mBtnReStart.setDisable(true);
 			mBtnPause.setDisable(false);
 			mPauseShowLabel.setVisible(false);	// 추가: 2023.02.24 by kih
-			mPendingCowAutoStartLabel.setVisible(false);
+			mPendingCowAutoStartLabel.setVisible(false);			
 			// 최고가 이상 사운드 플래그
 			isOverPricePlaySound = false;
 			// 재경매 사운드 플래그
@@ -5203,6 +5217,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				//새로고침
 				mBtnF5.setDisable(true);
 				
+				// 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
+				mBtnEntryType1.setDisable(true);
+				mBtnEntryType2.setDisable(true);
+				mBtnEntryType3.setDisable(true);
+				
 				break;
 			default:
 
@@ -5230,6 +5249,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				mBtnDoubleDownPrice.setDisable(false);
 				//새로고침
 				mBtnF5.setDisable(false);
+				
+				// 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우)
+				mBtnEntryType1.setDisable(false);
+				mBtnEntryType2.setDisable(false);
+				mBtnEntryType3.setDisable(false);
 				break;
 			}
 		});
@@ -5610,5 +5634,37 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			}
 		});
 		start.play();
+	}
+	
+	/**
+	 * 경매대상구분코드(1 : 송아지 / 2 : 비육우 / 3 : 번식우) 이동
+	 * @return
+	 */
+	private void onBtnGoEntryTypeLocation(String entryType) {
+		
+		try {
+			ObservableList<SpEntryInfo> datalist = mWaitTableView.getItems();
+			
+			if(datalist == null || datalist.size() <= 1)
+				return;
+			
+			if(entryType == null || entryType.isEmpty())
+				return;		
+			
+			int i = 0;
+			for (SpEntryInfo entryInfo : datalist) {			
+				if(entryType.equals(entryInfo.getEntryType().get())) {		
+					mWaitTableView.getSelectionModel().select(i);
+					mWaitTableView.scrollTo(i);
+					setCurrentEntryInfo(true);
+					return;
+				}
+				
+				++ i;  // Next
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
