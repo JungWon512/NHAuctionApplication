@@ -5655,7 +5655,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			for (SpEntryInfo entryInfo : datalist) {			
 				if(entryType.equals(entryInfo.getEntryType().get())) {		
 					mWaitTableView.getSelectionModel().select(i);
-					mWaitTableView.scrollTo(i);
+					mWaitTableView.scrollTo(i+1);
 					setCurrentEntryInfo(true);
 					return;
 				}
