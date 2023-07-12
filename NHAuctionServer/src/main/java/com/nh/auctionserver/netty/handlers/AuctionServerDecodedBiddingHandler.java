@@ -102,17 +102,19 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 									
 									return;
 								}
-							} else if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1000)) {
-								if ((bidding.getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1000))) != 0) {
-									mLogger.debug("=============================================");
-									mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
-									mLogger.debug("=============================================");
-									ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
-											GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage() + "\r\n");
-									
-									return;
-								}
-							} /*
+							}
+//							else if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1000)) {
+//								if ((bidding.getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1000))) != 0) {
+//									mLogger.debug("=============================================");
+//									mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+//									mLogger.debug("=============================================");
+//									ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+//											GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage() + "\r\n");
+//									
+//									return;
+//								}
+//							} 
+							/*
 								 * else if
 								 * (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).
 								 * getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_10000)) { if
@@ -188,17 +190,19 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 										
 										return;
 									}
-								} else if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1000)) {
-									if ((bidding.getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1000))) != 0) {
-										mLogger.debug("=============================================");
-										mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
-										mLogger.debug("=============================================");
-										ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
-												GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage() + "\r\n");
-										
-										return;
-									}
-								} /*
+								} 
+//								else if (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_1000)) {
+//									if ((bidding.getPriceInt() % (Integer.valueOf(GlobalDefineCode.BIDDING_CUT_UNIT_1000))) != 0) {
+//										mLogger.debug("=============================================");
+//										mLogger.debug("잘못 된 가격 응찰 시도 : " + bidding.getEncodedMessage());
+//										mLogger.debug("=============================================");
+//										ctx.writeAndFlush(new ResponseCode(bidding.getAuctionHouseCode(),
+//												GlobalDefineCode.RESPONSE_REQUEST_BIDDING_INVALID_PRICE).getEncodedMessage() + "\r\n");
+//										
+//										return;
+//									}
+//								} 
+								/*
 									 * else if
 									 * (mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).
 									 * getmCutAm().equals(GlobalDefineCode.BIDDING_CUT_UNIT_10000)) { if
