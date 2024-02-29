@@ -385,10 +385,8 @@ public class SettingController implements Initializable {
 		// 음성경매 대기 시간
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, soundAuctionWaitTime);
 
-		// TTS 인증 처리
-		if (!SettingApplication.getInstance().isTtsType()) {
-			SoundUtil.getInstance().initCertification(mSoundValTextArea.getText());
-		}
+		// TTS 인증 처리 - Google API 
+		SoundUtil.getInstance().initCertification(mSoundValTextArea.getText());		
 	}
 
 	/**
@@ -488,7 +486,7 @@ public class SettingController implements Initializable {
 		//기존과 현재 설정값이 다르면 음성 설정 문구 재반영
 		if(!savedSoundRate.equals(currentSoundRate)) {
 			mLogger.debug("[재생 속도 값이 변경됐습니다.음성 설정 속도를 반영합니다.]");
-			if (!SettingApplication.getInstance().isTtsType()) {
+			if (!mTtsTypeCheckBox.isSelected()) {
 				SoundUtil.getInstance().soundSettingSpeedChanged();
 			}
 		}
@@ -1385,16 +1383,13 @@ public class SettingController implements Initializable {
 		{
 			// 로컬 TTS 설정시, Google private-key 확인 안 함.
 			
-		} else {
-			if (mUseSoundAuction.isSelected() && !CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())) {
-				showAlert(mResMsg.getString("dialog.sound.empty.value"));
-				return false;
-			}else {
-				
-				if(CommonUtils.getInstance().isValidString(mSoundValTextArea.getText()) && !mSoundValTextArea.getText().contains("private_key")) {
+		} else { 
+			
+			if(CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())) { // check null,empty?						
+				if(!mSoundValTextArea.getText().contains("private_key")) {
 					showAlert(mResMsg.getString("dialog.sound.no.value"));
 					return false;
-				}
+				}				
 			}
 		}
 		
