@@ -129,7 +129,7 @@ public class SettingApplication {
 	//음성 재생 속도
 	public final String DEFAULT_SETTING_SOUND_RATE = "0";
 	//음성 재생 속도 최대값
-	public final String DEFAULT_SETTING_SOUND_RATE_MAX = "5";
+	public final String DEFAULT_SETTING_SOUND_RATE_MAX = "4";
 
 	//경매 타입
 	public final String DEFAULT_SETTING_AUCTION_TOGGLE_TYPE =  AuctionToggle.SINGLE.toString();
