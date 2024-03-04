@@ -386,7 +386,7 @@ public class SettingController implements Initializable {
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, soundAuctionWaitTime);
 
 		// TTS 인증 처리 - Google API 
-		SoundUtil.getInstance().initCertification(mSoundValTextArea.getText());		
+		SoundUtil.getInstance().initCertification(mSoundValTextArea.getText());				
 	}
 
 	/**
@@ -1378,7 +1378,10 @@ public class SettingController implements Initializable {
 			return false;
 		}
 		
+	
+		
 		// 음성경매 체크
+		/* by kih - 2024.03.04 : 원본 주석처리 
 		if(mUseSoundAuction.isSelected() && mTtsTypeCheckBox.isSelected())
 		{
 			// 로컬 TTS 설정시, Google private-key 확인 안 함.
@@ -1391,6 +1394,23 @@ public class SettingController implements Initializable {
 					return false;
 				}				
 			}
+		}
+		*/		
+		if(mUseSoundAuction.isSelected()) {
+			if(mTtsTypeCheckBox.isSelected()) {
+				
+				// 로컬 TTS 설정시, Google private-key 확인 안 함.
+				
+			} else {
+				
+				// check null,empty?		
+				if(!CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())
+					|| !mSoundValTextArea.getText().contains("private_key")) { 				
+					
+					showAlert(mResMsg.getString("dialog.sound.no.value"));
+					return false;									
+				}
+			}				
 		}
 		
 		return true;
