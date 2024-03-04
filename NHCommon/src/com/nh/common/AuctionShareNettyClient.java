@@ -1,6 +1,8 @@
 package com.nh.common;
 
 import java.lang.invoke.MethodHandles;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,7 +139,9 @@ public class AuctionShareNettyClient {
 					pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
 				}
 			});
-			channel = b.connect(host, port).sync().channel();
+			
+			InetAddress address = InetAddress.getByName(host);	// by kih 2024.03.04
+			channel = b.connect(address.getHostAddress(), port).sync().channel();
 			
 		} catch (Exception e) {
 			controller.onConnectionException(port);

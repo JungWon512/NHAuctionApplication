@@ -143,6 +143,14 @@ public class ChooseAuctionController implements Initializable {
 		}
 		
 		String ip = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SERVER_IP, host);
+		
+		// by kih 2024.03.04 :  ip -> domain 으로 변경하여 저장 함. 
+		int n = (int) ip.chars().filter(i -> String.valueOf((char) i).equals(".")).count(); // 3
+		if(n == 3) {		
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SERVER_IP, host);
+			ip = host;		// ip -> domain 으로 변경
+		}
+		
 		int port = SharedPreference.getInstance().getInt(SharedPreference.PREFERENCE_SERVER_PORT, GlobalDefine.AUCTION_INFO.AUCTION_PORT);
 		int obj = SharedPreference.getInstance().getInt(SharedPreference.PREFERENCE_SELECTED_OBJ, GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1);
 

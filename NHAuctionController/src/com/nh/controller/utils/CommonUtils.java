@@ -1301,11 +1301,13 @@ public class CommonUtils {
 		}
 		
 		
+		/* by kih 2024.03.04 주석처리 
 		String ipRegex = "(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])";
 		
 		if(!str.matches(ipRegex)) {
 			return false;
 		}
+		*/
 		
 		return true;
 	}
