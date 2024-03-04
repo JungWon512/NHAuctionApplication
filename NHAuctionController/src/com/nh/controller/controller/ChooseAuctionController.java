@@ -146,7 +146,7 @@ public class ChooseAuctionController implements Initializable {
 		
 		// by kih 2024.03.04 :  ip -> domain 으로 변경하여 저장 함. 
 		int n = (int) ip.chars().filter(i -> String.valueOf((char) i).equals(".")).count(); // 3
-		if(n == 3) {		
+		if(GlobalDefineCode.FLAG_PRD && n == 3) { // 운영모드 
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SERVER_IP, host);
 			ip = host;		// ip -> domain 으로 변경
 		}
