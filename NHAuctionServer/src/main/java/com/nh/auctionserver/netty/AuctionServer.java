@@ -206,14 +206,15 @@ public class AuctionServer {
 		/* 스레드 그룹 초기화, (부모,자식) */
 		b.group(mBossGroup, mWorkerGroup)
 				/* 채널초기화, 부모 쓰레드가 사용할 네트워크 입출력 모드 설정 */
-				.channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, 100)
+				.channel(NioServerSocketChannel.class)
 				/* 서버 소켓 채널에서 발생한 이벤트 로그 출력 */
-				.handler(new LoggingHandler(LogLevel.INFO)).childHandler(new ChannelInitializer<SocketChannel>() {
+				.option(ChannelOption.SO_BACKLOG, 100).handler(new LoggingHandler(LogLevel.INFO))
+				.childHandler(new ChannelInitializer<SocketChannel>() {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
 						ChannelPipeline pipeline = ch.pipeline();
 
-						pipeline.addLast(new LoggingHandler(LogLevel.INFO));
+						//pipeline.addLast(new LoggingHandler(LogLevel.ERROR));
 
 						if (GlobalDefineCode.FLAG_SSL) {
 							pipeline.addLast(mSSLContext.newHandler(ch.alloc()));
