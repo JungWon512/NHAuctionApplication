@@ -107,6 +107,8 @@ public class GlobalDefineCode {
 	public static final String AUCTION_OBJ_TYPE_2 = "2"; // 경매 구분 - 비육우
 	public static final String AUCTION_OBJ_TYPE_3 = "3"; // 경매 구분 - 번육우
 	public static final String AUCTION_OBJ_TYPE_0 = "0"; // 경매 구분 - 일괄
+	public static final String AUCTION_OBJ_TYPE_5 = "5"; // 경매 구분 - 염소
+	public static final String AUCTION_OBJ_TYPE_6 = "6"; // 경매 구분 - 말
 	
 	// 경매 유형 코드
 	public static final String AUCTION_TYPE_SINGLE = "20";		// 단일

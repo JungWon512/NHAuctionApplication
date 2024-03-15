@@ -33,6 +33,9 @@ public class AuctionRound implements Cloneable{
 	private int divisionPrice1; // 송아지 단위
 	private int divisionPrice2; // 비육우 단위
 	private int divisionPrice3; // 번식우 단위
+
+	private int divisionPrice5; // 염소 단위
+	private int divisionPrice6; // 말 단위
 	private int rgSqNo; // 일괄경매 차수 정보
 	private String selStsDsc; // 일괄경매 상태 정보 (시작,정지,종료)
 	private int stAucNo;		//일괄 경매 구간 '시작' 정보
@@ -62,6 +65,8 @@ public class AuctionRound implements Cloneable{
 		this.divisionPrice1 = qcnData.getDIVISION_PRICE1();
 		this.divisionPrice2 = qcnData.getDIVISION_PRICE2();
 		this.divisionPrice3 = qcnData.getDIVISION_PRICE3();
+		this.divisionPrice5 = qcnData.getDIVISION_PRICE5();
+		this.divisionPrice6 = qcnData.getDIVISION_PRICE6();
 	}
 	
 	/**
@@ -82,6 +87,8 @@ public class AuctionRound implements Cloneable{
 		this.divisionPrice1 = qcnData.getDIVISION_PRICE1();
 		this.divisionPrice2 = qcnData.getDIVISION_PRICE2();
 		this.divisionPrice3 = qcnData.getDIVISION_PRICE3();
+		this.divisionPrice5 = qcnData.getDIVISION_PRICE5();
+		this.divisionPrice6 = qcnData.getDIVISION_PRICE6();
 		
 		this.naBzplc = stnData.getNA_BZPLC();
 		this.aucDt = stnData.getAUC_DT();
@@ -304,4 +311,22 @@ public class AuctionRound implements Cloneable{
 		}
 		return vo;		
 	}
+
+	public int getDivisionPrice5() {
+		return divisionPrice5;
+	}
+
+	public void setDivisionPrice5(int divisionPrice5) {
+		this.divisionPrice5 = divisionPrice5;
+	}
+
+	public int getDivisionPrice6() {
+		return divisionPrice6;
+	}
+
+	public void setDivisionPrice6(int divisionPrice6) {
+		this.divisionPrice6 = divisionPrice6;
+	}
+	
+	
 }

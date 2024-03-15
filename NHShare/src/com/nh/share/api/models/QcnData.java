@@ -21,6 +21,8 @@ public class QcnData {
 	private int DIVISION_PRICE1; //송아지
 	private int DIVISION_PRICE2; //비육우
 	private int DIVISION_PRICE3; //번식우
+	private int DIVISION_PRICE5; //염소
+	private int DIVISION_PRICE6; //말
 	private String DEL_YN;
 	private int MALE_KG;
 	private String FSRGMN_ENO;
@@ -182,5 +184,21 @@ public class QcnData {
 
 	public void setDIVISION_PRICE3(int dIVISION_PRICE3) {
 		DIVISION_PRICE3 = dIVISION_PRICE3;
+	}
+
+	public int getDIVISION_PRICE5() {
+		return DIVISION_PRICE5;
+	}
+
+	public void setDIVISION_PRICE5(int dIVISION_PRICE5) {
+		DIVISION_PRICE5 = dIVISION_PRICE5;
+	}
+
+	public int getDIVISION_PRICE6() {
+		return DIVISION_PRICE6;
+	}
+
+	public void setDIVISION_PRICE6(int dIVISION_PRICE6) {
+		DIVISION_PRICE6 = dIVISION_PRICE6;
 	}
 }

@@ -65,7 +65,7 @@ public class ChooseAuctionController implements Initializable {
 	private ToggleGroup cowTypeToggleGroup;
 
 	@FXML // 소 타입 , 송아지,비육우,번식우
-	private ToggleButton mCalfToggleButton, mFatteningCattleToggleButton, mBreedingCattleToggleButton, mAllCowToggleButton;
+	private ToggleButton mCalfToggleButton, mFatteningCattleToggleButton, mBreedingCattleToggleButton, mAllCowToggleButton, mGoatToggleButton, mHorseToggleButton;
 
 	@FXML // 접속 , 종료 , 환경설정
 	private Button mBtnConnect, mBtnClose, mBtnSetting;
@@ -140,6 +140,7 @@ public class ChooseAuctionController implements Initializable {
 			host = GlobalDefine.AUCTION_INFO.AUCTION_HOST;
 		}else {
 			host = GlobalDefine.AUCTION_INFO.DEV_AUCTION_HOST;
+//			host = GlobalDefine.AUCTION_INFO.LOCAL_HOST;
 		}
 		
 		String ip = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SERVER_IP, host);
@@ -169,6 +170,12 @@ public class ChooseAuctionController implements Initializable {
 			break;
 		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_0:
 			mAllCowToggleButton.setSelected(true);
+			break;
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_5:
+			mGoatToggleButton.setSelected(true);
+			break;
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_6:
+			mHorseToggleButton.setSelected(true);
 			break;
 		default:
 			mCalfToggleButton.setSelected(true);

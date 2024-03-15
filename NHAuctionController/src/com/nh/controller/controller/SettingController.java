@@ -89,12 +89,14 @@ public class SettingController implements Initializable {
 	// 상한가/하한가
 	@FXML
 	private TextField mUpperLimitCalfTextField, mUpperLimitFatteningCattleTextField, mUpperLimitBreedingCattleTextField, mLowerLimitCalfTextField, mLowerLimitFatteningCattleTextField, mLowerLimitBreedingCattleTextField;
+	@FXML
+	private TextField mUpperLimitGoatTextField,mUpperLimitHorseTextField,mLowerLimitGoatTextField,mLowerLimitHorseTextField;
 	
 	@FXML //상한가 단위
-	private Label mUpCalfMoneyUnitLabel,mUpFCattleMoneyUnitLabel,mUpBCattleMoneyUnitLabel;
+	private Label mUpCalfMoneyUnitLabel,mUpFCattleMoneyUnitLabel,mUpBCattleMoneyUnitLabel,mUpGoatMoneyUnitLabel,mUpHorseMoneyUnitLabel;
 	
 	@FXML //가격 낮추기 단위
-	private Label mLowerCalfMoneyUnitLabel,mLowerFCattleMoneyUnitLabel,mLowerBCattleMoneyUnitLabel;
+	private Label mLowerCalfMoneyUnitLabel,mLowerFCattleMoneyUnitLabel,mLowerBCattleMoneyUnitLabel,mLowerGoatMoneyUnitLabel,mLowerHorseMoneyUnitLabel;
 	
 	// 경매종료멘트, 비고 창 설정
 	@FXML
@@ -268,9 +270,16 @@ public class SettingController implements Initializable {
 		mUpperLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mUpperLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mUpperLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		
+		mUpperLimitGoatTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1)); 
+		mUpperLimitHorseTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		
 		mLowerLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mLowerLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mLowerLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+
+		mLowerLimitGoatTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mLowerLimitHorseTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		//mSoundRateTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_2));
 		
 	}
@@ -350,6 +359,17 @@ public class SettingController implements Initializable {
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_BREEDING_TEXT);
 		}
 		
+		if(CommonUtils.getInstance().isValidString(mUpperLimitGoatTextField.getText().trim())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_GOAT_TEXT, mUpperLimitGoatTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_GOAT_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_GOAT_TEXT);
+		}
+		if(CommonUtils.getInstance().isValidString(mUpperLimitHorseTextField.getText().trim())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_HORSE_TEXT, mUpperLimitHorseTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_HORSE_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_HORSE_TEXT);
+		}
+		
 		if(CommonUtils.getInstance().isValidString(mLowerLimitCalfTextField.getText().trim())) {
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, mLowerLimitCalfTextField.getText().trim());
 		}else {
@@ -366,6 +386,16 @@ public class SettingController implements Initializable {
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, mLowerLimitBreedingCattleTextField.getText().trim());
 		}else {
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_BREEDING_TEXT);
+		}
+		if(CommonUtils.getInstance().isValidString(mLowerLimitGoatTextField.getText().trim())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_GOAT_TEXT, mLowerLimitGoatTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_GOAT_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_GOAT_TEXT);
+		}
+		if(CommonUtils.getInstance().isValidString(mLowerLimitHorseTextField.getText().trim())) {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_HORSE_TEXT, mLowerLimitHorseTextField.getText().trim());
+		}else {
+			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_HORSE_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_HORSE_TEXT);
 		}
 		
 		// 동가재경매 횟수
@@ -437,10 +467,15 @@ public class SettingController implements Initializable {
 		// 상한가/하한가
 		mUpperLimitCalfTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_CALF_TEXT));
 		mUpperLimitFatteningCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_FATTENING_TEXT));
-		mUpperLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_BREEDING_TEXT));
+		mUpperLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_BREEDING_TEXT));		
 		mLowerLimitCalfTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT));
 		mLowerLimitFatteningCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_FATTENING_TEXT));
 		mLowerLimitBreedingCattleTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_BREEDING_TEXT));
+
+		mUpperLimitGoatTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_GOAT_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_GOAT_TEXT));
+		mUpperLimitHorseTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_UPPER_HORSE_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_HORSE_TEXT));
+		mLowerLimitGoatTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_GOAT_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_GOAT_TEXT));
+		mLowerLimitHorseTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_LOWER_HORSE_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_HORSE_TEXT));
 		// 동가재경매 횟수
 		mReAuctionCountTextField.setText(sharedPreference.getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, SettingApplication.getInstance().DEFAULT_SETTING_RE_AUCTION_COUNT));
 		// 대기시간
@@ -853,6 +888,11 @@ public class SettingController implements Initializable {
 			mLowerLimitCalfTextField.setDisable(false);
 			mLowerLimitFatteningCattleTextField.setDisable(false);
 			mLowerLimitBreedingCattleTextField.setDisable(false);
+
+			mUpperLimitGoatTextField.setDisable(false);
+			mUpperLimitHorseTextField.setDisable(false);
+			mLowerLimitGoatTextField.setDisable(false);
+			mLowerLimitHorseTextField.setDisable(false);
 			
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 10000) {
 				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
@@ -907,6 +947,43 @@ public class SettingController implements Initializable {
 					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				}
 			}
+
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() != 10000) {
+				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				}
+			}else {
+				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}
+			}
+
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() != 10000) {
+				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				}
+			}else {
+				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}
+			}
 			
 		}else {
 			
@@ -918,6 +995,8 @@ public class SettingController implements Initializable {
 			mLowerLimitCalfTextField.setDisable(true);
 			mLowerLimitFatteningCattleTextField.setDisable(true);
 			mLowerLimitBreedingCattleTextField.setDisable(true);
+			mLowerLimitGoatTextField.setDisable(true);
+			mLowerLimitHorseTextField.setDisable(true);
 			
 			if (mLowPriceRateCheckBox.isSelected()) {
 				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
@@ -928,6 +1007,11 @@ public class SettingController implements Initializable {
 				
 				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+
+				mUpGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				mUpHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
 			} else {
 				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
@@ -937,6 +1021,11 @@ public class SettingController implements Initializable {
 				
 				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+
+				mUpGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mUpHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 			}
 		}
 		
@@ -1158,7 +1247,51 @@ public class SettingController implements Initializable {
 				}
 			}
 		});
+
 		
+		//염소 가격 낮춤가
+		mLowerLimitGoatTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
+			
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+					
+					String tmpStr = newValue;
+
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_GOAT_TEXT;
+					}
+					mLowerLimitGoatTextField.setText(tmpStr);	
+				}
+			}
+		});
+		
+		//말 가격 낮춤가
+		mLowerLimitHorseTextField.textProperty().addListener(new ChangeListener<String>() {
+			
+			final String max = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_CALF_TEXT_MAX;
+			
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				
+				if (CommonUtils.getInstance().isValidString(newValue)) {
+					
+					String tmpStr = newValue;
+
+					if(Integer.parseInt(tmpStr) > Integer.parseInt(max)) {
+						tmpStr  = max;
+					}else if(Integer.parseInt(tmpStr) <= 0) {
+						tmpStr = SettingApplication.getInstance().DEFAULT_SETTING_LOWER_HORSE_TEXT;
+					}
+					mLowerLimitHorseTextField.setText(tmpStr);	
+				}
+			}
+		});
 		/*
 		//음성 재생 속도
 		mSoundRateTextField.textProperty().addListener(new ChangeListener<String>() {

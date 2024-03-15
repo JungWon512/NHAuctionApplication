@@ -11,6 +11,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * CE | 조합구분코드 | 경매번호노출여부 | 출하주노출여부 | 성별노출여부 | 중량노출여부 | 어미노출여부 | 계대노출여부 | 산차노출여부
  * | KPN노출여부 | 지여명노출여부 | 비고노출여부 | 최저가노출여부 | 친자노출여부 | 카운트다운초설정값(1 ~ 9) |
  * 경매유형코드(10:일괄 / 20:단일) | 경매상한가(송아지) | 경매상한가(비육우) | 경매상한가(번식우) | 비육우응찰단위(1 : 원 / 1000 : 천원 / 10000 : 만원)
+ * | 경매상한가(염소) | 경매상한가(말)
  */
 public class EditSetting implements FromAuctionController {
 	public static final char TYPE = 'E';
@@ -32,7 +33,10 @@ public class EditSetting implements FromAuctionController {
 	private String mAuctionLimitPrice1; // 경매상한가(송아지 일괄경매사용)
 	private String mAuctionLimitPrice2; // 경매상한가(비육우 일괄경매사용)
 	private String mAuctionLimitPrice3; // 경매상한가(번식우 일괄경매사용)
+
 	private String mCutAm; // 비육우 응찰 단위
+	private String mAuctionLimitPrice5; // 경매상한가(염소 일괄경매사용)
+	private String mAuctionLimitPrice6; // 경매상한가(말 일괄경매사용)
 	
 	public EditSetting(String[] messages) {
 		this.mAuctionHouseCode = messages[1];
@@ -55,21 +59,30 @@ public class EditSetting implements FromAuctionController {
 		this.mAuctionLimitPrice3 = messages[18];
 		
 		System.out.println("message size : " + messages.length);
+		System.out.println("EditSetting message : " + messages);
 		if (messages.length > 19) {
 			if (messages[19] != null) {
 				this.mCutAm = messages[19];
+				this.mAuctionLimitPrice5 = messages[20];
+				this.mAuctionLimitPrice6 = messages[21];
 			} else {
 				this.mCutAm = "";
+				this.mAuctionLimitPrice5 = "";
+				this.mAuctionLimitPrice6 = "";
 			}
 		} else {
 			this.mCutAm = "";
+			this.mAuctionLimitPrice5 = "";
+			this.mAuctionLimitPrice6 = "";
 		}
 	}
 
 	public EditSetting(String mAuctionHouseCode, String mIsShowEntryNum, String mIsShowExhUser, String mIsShowGender,
 			String mIsShowWeight, String mIsShowMother, String mIsShowPasg, String mIsShowCaving, String mIsShowKpn,
 			String mIsShowLocation, String mIsShowNote, String mIsShowLowPrice, String mIsShowDna, String mCountDown,
-			String mAuctionType, String mAuctionLimitPrice1, String mAuctionLimitPrice2, String mAuctionLimitPrice3,String cutAm) {
+			String mAuctionType, String mAuctionLimitPrice1, String mAuctionLimitPrice2, String mAuctionLimitPrice3,String cutAm
+			, String mAuctionLimitPrice5, String mAuctionLimitPrice6
+		) {
 		this.mAuctionHouseCode = mAuctionHouseCode;
 		this.mIsShowEntryNum = mIsShowEntryNum;
 		this.mIsShowExhUser = mIsShowExhUser;
@@ -89,6 +102,8 @@ public class EditSetting implements FromAuctionController {
 		this.mAuctionLimitPrice2 = mAuctionLimitPrice2;
 		this.mAuctionLimitPrice3 = mAuctionLimitPrice3;
 		this.mCutAm = cutAm;
+		this.mAuctionLimitPrice5 = mAuctionLimitPrice5;
+		this.mAuctionLimitPrice6 = mAuctionLimitPrice6;
 	}
 
 	public String getAuctionHouseCode() {
@@ -245,7 +260,7 @@ public class EditSetting implements FromAuctionController {
 
 	@Override
 	public String getEncodedMessage() {
-		return String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
+		String result = String.format("%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s", ORIGIN, TYPE,
 				AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER, mIsShowEntryNum,
 				AuctionShareSetting.DELIMITER, mIsShowExhUser, AuctionShareSetting.DELIMITER, mIsShowGender,
 				AuctionShareSetting.DELIMITER, mIsShowWeight, AuctionShareSetting.DELIMITER, mIsShowMother,
@@ -255,6 +270,26 @@ public class EditSetting implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mIsShowDna, AuctionShareSetting.DELIMITER, mCountDown,
 				AuctionShareSetting.DELIMITER, mAuctionType, AuctionShareSetting.DELIMITER, mAuctionLimitPrice1,
 				AuctionShareSetting.DELIMITER, mAuctionLimitPrice2, AuctionShareSetting.DELIMITER, mAuctionLimitPrice3,
-				AuctionShareSetting.DELIMITER,mCutAm);
+				AuctionShareSetting.DELIMITER,mCutAm,
+				AuctionShareSetting.DELIMITER, mAuctionLimitPrice5, AuctionShareSetting.DELIMITER, mAuctionLimitPrice6);
+		return result;
 	}
+
+	public String getmAuctionLimitPrice5() {
+		return mAuctionLimitPrice5;
+	}
+
+	public void setmAuctionLimitPrice5(String mAuctionLimitPrice5) {
+		this.mAuctionLimitPrice5 = mAuctionLimitPrice5;
+	}
+
+	public String getmAuctionLimitPrice6() {
+		return mAuctionLimitPrice6;
+	}
+
+	public void setmAuctionLimitPrice6(String mAuctionLimitPrice6) {
+		this.mAuctionLimitPrice6 = mAuctionLimitPrice6;
+	}
+	
+	
 }

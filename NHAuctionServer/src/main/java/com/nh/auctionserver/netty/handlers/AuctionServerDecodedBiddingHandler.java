@@ -167,6 +167,12 @@ public final class AuctionServerDecodedBiddingHandler extends SimpleChannelInbou
 						} else if (mAuctionScheduler
 								.getEntryInfo(bidding.getAuctionHouseCode(), bidding.getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_3)) {
 							objLimitPrice = Integer.valueOf(mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmAuctionLimitPrice3());
+						} else if (mAuctionScheduler
+								.getEntryInfo(bidding.getAuctionHouseCode(), bidding.getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_5)) {
+							objLimitPrice = Integer.valueOf(mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmAuctionLimitPrice5());
+						} else if (mAuctionScheduler
+								.getEntryInfo(bidding.getAuctionHouseCode(), bidding.getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_6)) {
+							objLimitPrice = Integer.valueOf(mAuctionScheduler.getAuctionEditSetting(bidding.getAuctionHouseCode()).getmAuctionLimitPrice6());
 						}
 						
 						// 유효한 최저가 이상 금액으로 응찰되었는지 확인

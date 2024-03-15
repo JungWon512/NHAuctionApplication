@@ -80,13 +80,19 @@ public class SettingApplication {
 	public final String DEFAULT_SETTING_UPPER_CFB_MAX = "99999";
 	public final String DEFAULT_SETTING_UPPER_CALF_TEXT = "100"; //송아지
 	public final String DEFAULT_SETTING_UPPER_FATTENING_TEXT = "100"; //비육우
-	public final String DEFAULT_SETTING_UPPER_BREEDING_TEXT = "100"; //번식우
+	public final String DEFAULT_SETTING_UPPER_BREEDING_TEXT = "100"; //번식우	
+
+	public final String DEFAULT_SETTING_UPPER_GOAT_TEXT = "100";
+	public final String DEFAULT_SETTING_UPPER_HORSE_TEXT = "100";
 
 	// 하한가 낮추기 기본값
 	public final String DEFAULT_SETTING_LOWER_CALF_TEXT_MAX = "99999";
 	public final String DEFAULT_SETTING_LOWER_CALF_TEXT = "100";
 	public final String DEFAULT_SETTING_LOWER_FATTENING_TEXT = "100";
 	public final String DEFAULT_SETTING_LOWER_BREEDING_TEXT = "100";
+
+	public final String DEFAULT_SETTING_LOWER_GOAT_TEXT = "100";
+	public final String DEFAULT_SETTING_LOWER_HORSE_TEXT = "100";
 
 	// 경매종료 멘트 설정 - 멘트 사용 기본값
 	public final boolean DEFAULT_SETTING_ANNOUNCEMENT = true;
@@ -148,9 +154,14 @@ public class SettingApplication {
 	private String upperLimitCalf = null; // 응찰 상한가 - 송아지
 	private String upperLimitFatteningCattle = null; // 응찰 상한가 - 비육우
 	private String upperLimitBreedingCattle = null; // 응찰 상한가 - 번식우
+	private String upperLimitGoat = null; // 응찰 상한가 - 번식우
+	private String upperLimitHorse = null; // 응찰 상한가 - 번식우
 	private String lowerLimitCalf = null; // 하한가 낮추기- 송아지
 	private String lowerLimitFatteningCattle = null; // 하한가 낮추기- 비육우
 	private String lowerLimitBreedingCattle = null; // 하한가 낮추기- 번식우
+	private String lowerLimitGoat = null; // 하한가 낮추기- 염소
+	private String lowerLimitHorse = null; // 하한가 낮추기- 말
+	
 	private String reAuctionCount = null; // 동가 재경매 횟수
 	private String auctionCountdown = null; // 경매 종료 카운트 다운 초
 	private String soundAuctionWaitTime = null; // 음성 경매 대기 시간
@@ -172,6 +183,7 @@ public class SettingApplication {
 	private boolean isUsePendingCowSoundAuction = false; // 유찰우 출장우 정보 안내 멘트 사용 여부
 	
 	private int aucObjDsc = 0; // 경매 구분
+
 
 	public static synchronized SettingApplication getInstance() {
 
@@ -252,7 +264,9 @@ public class SettingApplication {
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, DEFAULT_SETTING_LOWER_CALF_TEXT);
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, DEFAULT_SETTING_LOWER_FATTENING_TEXT);
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, DEFAULT_SETTING_LOWER_BREEDING_TEXT);
-
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_LOWER_GOAT_TEXT, DEFAULT_SETTING_LOWER_GOAT_TEXT);
+			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_LOWER_HORSE_TEXT, DEFAULT_SETTING_LOWER_HORSE_TEXT);
+			
 			// 전광판 표출 설정
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_ENTRYNUM, DEFAULT_BORAD_ENTRYNUM);
 			SharedPreference.getInstance().setString(SharedPreference.PREFERENCE_SETTING_BOARD_KPN, DEFAULT_BORAD_KPN);
@@ -353,9 +367,13 @@ public class SettingApplication {
 		upperLimitCalf = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, DEFAULT_SETTING_UPPER_CALF_TEXT);
 		upperLimitFatteningCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, DEFAULT_SETTING_UPPER_FATTENING_TEXT);
 		upperLimitBreedingCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, DEFAULT_SETTING_UPPER_BREEDING_TEXT);
+		upperLimitGoat = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_GOAT_TEXT, DEFAULT_SETTING_UPPER_GOAT_TEXT);
+		upperLimitHorse = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_HORSE_TEXT, DEFAULT_SETTING_UPPER_HORSE_TEXT);
 		lowerLimitCalf = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, DEFAULT_SETTING_LOWER_CALF_TEXT);
 		lowerLimitFatteningCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_FATTENING_TEXT, DEFAULT_SETTING_LOWER_FATTENING_TEXT);
 		lowerLimitBreedingCattle = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, DEFAULT_SETTING_LOWER_BREEDING_TEXT);
+		lowerLimitGoat = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_GOAT_TEXT, DEFAULT_SETTING_LOWER_GOAT_TEXT);
+		lowerLimitHorse = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_LOWER_HORSE_TEXT, DEFAULT_SETTING_LOWER_HORSE_TEXT);
 		auctionCountdown = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_COUNTDOWN, DEFAULT_SETTING_COUNTDOWN);
 		reAuctionCount = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_COUNT, DEFAULT_SETTING_RE_AUCTION_COUNT);
 		useReAuction = SharedPreference.getInstance().getBoolean(SharedPreference.PREFERENCE_SETTING_RE_AUCTION_CHECK, DEFAULT_SETTING_RE_AUCTION_CHECK);
@@ -450,6 +468,12 @@ public class SettingApplication {
 		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:
 			baseUnit = getUpperLimitBreedingCattle();
 			break;
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_5:
+			baseUnit = getUpperLimitGoat();
+			break;
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_6:
+			baseUnit = getUpperLimitHorse();
+			break;
 		}
 
 		return baseUnit;
@@ -474,7 +498,13 @@ public class SettingApplication {
 		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:
 			lowerLimitPrice = getLowerLimitBreedingCattle();
 			break;
-			default:
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_5:
+			lowerLimitPrice = getLowerLimitGoat();
+			break;
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_6:
+			lowerLimitPrice = getLowerLimitHorse();
+			break;
+		default:
 			lowerLimitPrice = 100;
 			break;
 		}
@@ -517,6 +547,14 @@ public class SettingApplication {
 	public int getUpperLimitBreedingCattle() {
 		return reInt(upperLimitBreedingCattle);
 	}
+	
+	public int getUpperLimitGoat() {
+		return reInt(upperLimitGoat);
+	}
+
+	public int getUpperLimitHorse() {
+		return reInt(upperLimitHorse);
+	}
 
 	public int getLowerLimitCalf() {
 		return reInt(lowerLimitCalf);
@@ -528,6 +566,14 @@ public class SettingApplication {
 
 	public int getLowerLimitBreedingCattle() {
 		return reInt(lowerLimitBreedingCattle);
+	}
+
+	public int getLowerLimitGoat() {
+		return reInt(lowerLimitGoat);
+	}
+
+	public int getLowerLimitHorse() {
+		return reInt(lowerLimitHorse);
 	}
 
 	public int getReAuctionCount() {
@@ -663,7 +709,9 @@ public class SettingApplication {
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_CALF_TEXT, DEFAULT_SETTING_UPPER_CALF_TEXT),
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_FATTENING_TEXT, DEFAULT_SETTING_UPPER_FATTENING_TEXT),
 				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, DEFAULT_SETTING_UPPER_BREEDING_TEXT),
-				Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2()));
+				Integer.toString(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2()),
+				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_GOAT_TEXT, DEFAULT_SETTING_UPPER_GOAT_TEXT),
+				SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SETTING_UPPER_HORSE_TEXT, DEFAULT_SETTING_UPPER_HORSE_TEXT));
 		
 		return setting;
 	}
@@ -692,6 +740,16 @@ public class SettingApplication {
 		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
 			
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 10000) {
+				isWon =  false;
+			}	
+		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_5))) {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 10000) {
+				isWon =  false;
+			}	
+		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_6))) {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 10000) {
 				isWon =  false;
 			}	
 		}
@@ -727,5 +785,7 @@ public class SettingApplication {
 		Double d = Double.parseDouble(savedSoundRate);
 		return d.intValue();
 	}
+	
+	
 	
 }

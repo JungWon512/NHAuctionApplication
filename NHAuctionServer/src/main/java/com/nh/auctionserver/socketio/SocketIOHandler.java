@@ -1638,6 +1638,12 @@ public class SocketIOHandler {
 								} else if (mAuctioneer
 										.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_3)) {
 									objLimitPrice = Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice3());
+								}else if (mAuctioneer
+										.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_5)) {
+									objLimitPrice = Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice5());
+								}else if (mAuctioneer
+										.getEntryInfo(((Bidding) parseObject).getAuctionHouseCode(), ((Bidding) parseObject).getEntryNum()).getEntryType().equals(GlobalDefineCode.AUCTION_OBJ_TYPE_6)) {
+									objLimitPrice = Integer.valueOf(mAuctioneer.getAuctionEditSetting(((Bidding) parseObject).getAuctionHouseCode()).getmAuctionLimitPrice6());
 								}
 								
 								
