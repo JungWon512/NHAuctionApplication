@@ -60,16 +60,15 @@ public class EditSetting implements FromAuctionController {
 		
 		System.out.println("message size : " + messages.length);
 		System.out.println("EditSetting message : " + messages);
-		if (messages.length > 19) {
-			if (messages[19] != null) {
+		if (messages.length > 19 && messages[19] != null) {
 				this.mCutAm = messages[19];
-				this.mAuctionLimitPrice5 = messages[20];
-				this.mAuctionLimitPrice6 = messages[21];
-			} else {
-				this.mCutAm = "";
-				this.mAuctionLimitPrice5 = "";
-				this.mAuctionLimitPrice6 = "";
-			}
+				if (messages.length > 20 && messages[20] != null) {
+					this.mAuctionLimitPrice5 = messages[20];
+					this.mAuctionLimitPrice6 = messages[21];
+				}else {
+					this.mAuctionLimitPrice5 = "";
+					this.mAuctionLimitPrice6 = "";
+				}
 		} else {
 			this.mCutAm = "";
 			this.mAuctionLimitPrice5 = "";
