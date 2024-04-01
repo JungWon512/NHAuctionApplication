@@ -17,8 +17,8 @@ public class GlobalDefine {
 
 		//public static final String RELEASE_VERION = "1.3.1"; // application 버전		
 		//public static final String RELEASE_DATE = "2023-03-16"; // 업데이트 날짜 
-		public static final String RELEASE_VERION = "1.3.2"; // application 버전		
-		public static final String RELEASE_DATE = "2024-02-27"; // 업데이트 날짜 
+		public static final String RELEASE_VERION = "1.3.3"; // application 버전		
+		public static final String RELEASE_DATE = "2024-03-04"; // 업데이트 날짜 
 
 	}
 	
@@ -79,7 +79,8 @@ public class GlobalDefine {
 
 		//public static final String AUCTION_HOST = "1.201.161.58"; // 운영 서버
 		public static final String AUCTION_HOST = "cowauction.kr"; // 운영 서버
-		public static final String DEV_AUCTION_HOST = "115.41.222.25"; // dev remote server
+		public static final String DEV_AUCTION_HOST = "xn--e20bw05b.kr"; // dev remote server
+		public static final String LOCAL_HOST = "192.168.1.53"; // dev remote server
 		
 //		public static final String DEV_AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
 //		public static final String DEV_AUCTION_HOST = "210.107.78.140"; // 출하안내 교수
@@ -110,6 +111,8 @@ public class GlobalDefine {
 		public static final int AUCTION_OBJ_DSC_2 = 2; // 경매 구분 - 비육우
 		public static final int AUCTION_OBJ_DSC_3 = 3; // 경매 구분 - 번육우
 		public static final int AUCTION_OBJ_DSC_0 = 0; // 경매 구분 - 일괄
+		public static final int AUCTION_OBJ_DSC_5 = 5; // 경매 구분 - 번육우
+		public static final int AUCTION_OBJ_DSC_6 = 6; // 경매 구분 - 번육우
 		
 		public static final String AUCTION_DNA_1 = "1"; // 친자 - 일치
 		public static final String AUCTION_DNA_2 = "2"; // 친자 - 불일치
