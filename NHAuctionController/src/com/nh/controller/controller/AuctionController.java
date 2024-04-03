@@ -744,6 +744,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			} else {
 				mBtnUpPrice.setText(mResMsg.getString("str.up.lowprice"));
 				
+				// 2024.04.03 by kih 천단위 어나운싱 적용 		 		
+				/*
 				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
 					
 					priceText = String.format(mResMsg.getString("fmt.money.unit.won"), Integer.parseInt(downPrice));
@@ -753,6 +755,22 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					priceText = String.format(mResMsg.getString("fmt.money.unit.tenthousand.won"), Integer.parseInt(downPrice));
 					
 				}
+				*/
+				if(SettingApplication.getInstance().isThound(mCurrentSpEntryInfo.getEntryType().getValue())) {
+					
+					priceText = String.format(mResMsg.getString("fmt.money.unit.thousand.won"), Integer.parseInt(downPrice));
+					
+				}
+				else if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+					
+					priceText = String.format(mResMsg.getString("fmt.money.unit.won"), Integer.parseInt(downPrice));
+					
+				}else {
+					
+					priceText = String.format(mResMsg.getString("fmt.money.unit.tenthousand.won"), Integer.parseInt(downPrice));
+					
+				}
+				
 			}
 			
 			mDeprePriceLabel.setText(priceText);
@@ -2776,11 +2794,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 								if (isRateDownLowPrice) {
 									long soundPrice = mCeilLowPrice;
 									
+									// 2024.04.03 by kih 천단위 어나운싱 적용 
+									if(SettingApplication.getInstance().isThound(mCurrentSpEntryInfo.getEntryType().getValue())) {
+										soundPrice = soundPrice * 1000;										
+									}
+									
 									String wonMsg = "";
 									
 									if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
 										if (SettingApplication.getInstance().isUsePendingCowSoundAuction()) {
-											wonMsg = mResMsg.getString("str.sound.change.low.price.short");
+											wonMsg = mResMsg.getString("str.sound.change.low.price.short");	// 최저가를 %d원 낮췄습니다.
 										} else {
 											wonMsg = mResMsg.getString("str.sound.change.low.price");
 										}
@@ -2799,6 +2822,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 									}
 								} else {
 									long soundPrice = price * -1;
+									
+									// 2024.04.03 by kih 천단위 어나운싱 적용
+									if(SettingApplication.getInstance().isThound(mCurrentSpEntryInfo.getEntryType().getValue())) {
+										soundPrice = soundPrice * 1000;										
+									}
 									
 									String wonMsg = "";
 									
@@ -4028,13 +4056,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					String succMsg = "";
 					
 					if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
-						succMsg = mResMsg.getString("str.sound.auction.result.success.won");
+						succMsg = mResMsg.getString("str.sound.auction.result.success.won");	// %s번 매수인에게 %d원에 낙찰되었습니다.
 					}else {
 						succMsg = mResMsg.getString("str.sound.auction.result.success");
 					}
 					
+					// 2024.04.03 by kih 천단위 어나운싱 적용
+					// resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));
+					if(SettingApplication.getInstance().isThound(mCurrentSpEntryInfo.getEntryType().getValue())) {
+						resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt() * 1000));						
+					} else {
+						resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));
+					}
 					
-					resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));
 				} else {
 					
 					mLogger.debug("[경매 결과 UI를 갱신합니다 - 유찰 ]");
@@ -4467,15 +4501,24 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			if (mLowPriceCheckBox.isSelected() && CommonUtils.getInstance().isValidString(mCurLowPriceLabel.getText())) {
 				entrySoundContent.append(EMPTY_SPACE);
 				
-				String wonMsg = "";
+				String wonMsg = "";				
 				
 				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
-					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");
+					// 원단위 여부 
+					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");		// ,최저가 %s원
 				}else {
-					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.10000");
+					// 만단위 여부 
+					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.10000");		// ,최저가 %s만원
 				}
-
-				entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));
+				
+				// 2024.04.03 by kih 천단위 어나운싱 적용 
+				// entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));				
+				if(SettingApplication.getInstance().isThound(mCurrentSpEntryInfo.getEntryType().getValue())) {					 
+					entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText().replace(",", "") + "000"));
+				} else {
+					entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));
+				}
+				
 				isOnlyEntryNumber = false;
 			}
 
