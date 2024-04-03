@@ -4431,9 +4431,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");
 				}else {
 					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.10000");
-				}
-
-				entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));		// 최저가 160만원
+				}				
+				
+				// 2024.04.03 by kih 천단위 어나운싱 적용 
+				// entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));				
+				if(SettingApplication.getInstance().isThound(mCurrentSpEntryInfo.getEntryType().getValue())) {					 
+					entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText().replace(",", "") + "000"));
+				} else {
+					entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));
+				}			
+				
 				entrySoundContent.append(EMPTY_SPACE);
 				entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.it.is"));	// 입니다. 
 		} 
