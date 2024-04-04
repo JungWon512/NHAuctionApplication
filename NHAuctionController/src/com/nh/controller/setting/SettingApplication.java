@@ -757,6 +757,37 @@ public class SettingApplication {
 		return isWon;
 	}
 	
+	/**
+	 * 천 단위 여부 
+	 * true 원단위 , false 만원단위
+	 * @return
+	 */
+	public boolean isThound(String aucObjDsc) {
+		
+		boolean isThound = true;
+		
+		if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() != 1000) {
+				isThound =  false;
+			}
+			
+		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() != 1000) {
+				isThound =  false;
+			}
+			
+		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() != 1000) {
+				isThound =  false;
+			}	
+		}
+		
+		return isThound;
+	}
+	
 	
 	/**
 	 * 음성 재생 속도(경매진행)
