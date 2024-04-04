@@ -66,6 +66,7 @@ public class CowInfoData {
 	private String GAP_MONTH;	// 월령 추가(2022.09.07 by pjs
 	private String RG_DSC_NM;	// 송아지혈통명(2023.03.15 by kih)
 	private String SRA_MWMNNM;	// 낙찰자명(2023.03.15 by kih)
+	private String DIVISION_PRICE_UNIT;	// 경매응찰단위 (2024.04.04)
 	
 	public CowInfoData() {
 		/* 2023.03.17 주석처리  -> EntryInfo에서 처리 
@@ -405,4 +406,13 @@ public class CowInfoData {
 	public void setSRA_MWMNNM(String sRA_MWMNNM) {
 		SRA_MWMNNM = sRA_MWMNNM;
 	}
+
+	public String getDIVISION_PRICE_UNIT() {
+		return DIVISION_PRICE_UNIT;
+	}
+
+	public void setDIVISION_PRICE_UNIT(String dIVISION_PRICE_UNIT) {
+		DIVISION_PRICE_UNIT = dIVISION_PRICE_UNIT;
+	}
+	
 }

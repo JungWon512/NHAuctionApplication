@@ -55,6 +55,11 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	private String mIsExcessCow; // 초과출장우여부
 	private String mExpAuctionIntNum; // 일괄 경매 구간 번호
 	private String mAuctionTypeCode;	//경매 회차 유형 코드 (0:일괄,1:송아지,2:비육우.3:번식우)
+	private String mPriceUnit;	
+	private String mSraMwmnName;	
+	private String mGapMonth;	
+	private String mRgDscName;	
+	
 	
 	
 	public CurrentEntryInfo(String auctionHouseCode, String entryNum, String auctionQcn, String entryType, String indNum, String indMngCd,
@@ -139,6 +144,12 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mIsExcessCow = messages[35];
 		mExpAuctionIntNum = messages[36];
 		mAuctionTypeCode = messages[37];
+		if(messages.length > 38) {
+			mSraMwmnName = messages[38];
+			mGapMonth = messages[39];
+			mRgDscName = messages[40];
+			mPriceUnit = messages[41];
+		}
 	}
 
 	public CurrentEntryInfo(EntryInfo entryInfo) {
@@ -180,6 +191,11 @@ public class CurrentEntryInfo implements FromAuctionServer {
 		mSraSbidUpPrice = Integer.toString(entryInfo.getSraSbidUpPrice());
 		mExpAuctionIntNum = entryInfo.getExpAuctionIntNum();
 		mAuctionTypeCode = entryInfo.getAuctionTypeCode();
+		mPriceUnit = entryInfo.getmPriceUnit();
+		mSraMwmnName = entryInfo.getSraMwmnName();
+		mGapMonth = entryInfo.getGapMonth();
+		mRgDscName = entryInfo.getRgDscName();
+		mPriceUnit = entryInfo.getmPriceUnit();
 	}
 
 	public String getAuctionHouseCode() {
@@ -487,10 +503,19 @@ public class CurrentEntryInfo implements FromAuctionServer {
 	}
 	
 	
+	public String getmPriceUnit() {
+		return mPriceUnit;
+	}
+
+	public void setmPriceUnit(String mPriceUnit) {
+		this.mPriceUnit = mPriceUnit;
+	}
+
 	@Override
 	public String getEncodedMessage() {
 		return String.format(
-				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s"
+				+"%c%s%c%s%c%s%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
 				mEntryNum, AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mEntryType, AuctionShareSetting.DELIMITER, mIndNum,
 				AuctionShareSetting.DELIMITER, mIndMngCd, AuctionShareSetting.DELIMITER, mFhsNum,
@@ -508,7 +533,11 @@ public class CurrentEntryInfo implements FromAuctionServer {
 				AuctionShareSetting.DELIMITER, mAuctionBidPrice, AuctionShareSetting.DELIMITER, mAuctionBidDateTime,
 				AuctionShareSetting.DELIMITER, mIsLastEntry, AuctionShareSetting.DELIMITER, mStandPosition,
 				AuctionShareSetting.DELIMITER, mIsExcessCow, AuctionShareSetting.DELIMITER, mExpAuctionIntNum,
-				AuctionShareSetting.DELIMITER, mAuctionTypeCode);
+				AuctionShareSetting.DELIMITER, mAuctionTypeCode
+				,AuctionShareSetting.DELIMITER, mSraMwmnName
+				,AuctionShareSetting.DELIMITER, mGapMonth
+				,AuctionShareSetting.DELIMITER, mRgDscName
+				,AuctionShareSetting.DELIMITER, mPriceUnit);
 	}
 
 }
