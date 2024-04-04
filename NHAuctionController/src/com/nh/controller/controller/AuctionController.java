@@ -743,16 +743,28 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				priceText = String.format(mResMsg.getString("fmt.money.unit.low.rate"), Integer.parseInt(downPrice));
 			} else {
 				mBtnUpPrice.setText(mResMsg.getString("str.up.lowprice"));
-				
-				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
-					
+
+				String aucObjDsc = mCurrentSpEntryInfo.getEntryType().getValue();
+				switch(SettingApplication.getInstance().isPriceChk(aucObjDsc)){
+				case 1000:
+					priceText = String.format(mResMsg.getString("fmt.money.unit.thousand.won"), Integer.parseInt(downPrice));
+					break;
+				case 1:
 					priceText = String.format(mResMsg.getString("fmt.money.unit.won"), Integer.parseInt(downPrice));
-					
-				}else {
-					
+					break;
+				default:
 					priceText = String.format(mResMsg.getString("fmt.money.unit.tenthousand.won"), Integer.parseInt(downPrice));
-					
+					break;					
 				}
+				//if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+				//	
+				//	priceText = String.format(mResMsg.getString("fmt.money.unit.won"), Integer.parseInt(downPrice));
+				//	
+				//}else {
+				//	
+				//	priceText = String.format(mResMsg.getString("fmt.money.unit.tenthousand.won"), Integer.parseInt(downPrice));
+				//	
+				//}
 			}
 			
 			mDeprePriceLabel.setText(priceText);
@@ -4032,6 +4044,19 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					}else {
 						succMsg = mResMsg.getString("str.sound.auction.result.success");
 					}
+
+					String aucObjDsc = mCurrentSpEntryInfo.getEntryType().getValue();
+					switch(SettingApplication.getInstance().isPriceChk(aucObjDsc)){
+					case 1000:
+						succMsg = mResMsg.getString("str.sound.auction.result.success.thousand");
+						break;
+					case 1:
+						succMsg = mResMsg.getString("str.sound.auction.result.success.won");
+						break;
+					default:
+						succMsg = mResMsg.getString("str.sound.auction.result.success");
+						break;					
+					}
 					
 					
 					resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));
@@ -4394,9 +4419,23 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				String wonMsg = "";
 				
 				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
-					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");
+					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1");
 				}else {
 					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.10000");
+				}
+
+				String aucObjDsc = mCurrentSpEntryInfo.getEntryType().getValue();
+				switch(SettingApplication.getInstance().isPriceChk(aucObjDsc)){
+				case 1000:
+					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");
+					break;
+				case 1:
+					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1");
+					break;
+				default:
+					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.10000");
+					break;
+					
 				}
 
 				entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));		// 최저가 160만원
@@ -4468,12 +4507,26 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				entrySoundContent.append(EMPTY_SPACE);
 				
 				String wonMsg = "";
-				
-				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+				String aucObjDsc = mCurrentSpEntryInfo.getEntryType().getValue();
+				switch(SettingApplication.getInstance().isPriceChk(aucObjDsc)){
+				case 1000:
 					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");
+					break;
+				case 1:
+					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1");
+					break;
+				default:
+					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.10000");
+					break;
+					
+				}
+				/*
+				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1");
 				}else {
 					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.10000");
 				}
+				*/
 
 				entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));
 				isOnlyEntryNumber = false;

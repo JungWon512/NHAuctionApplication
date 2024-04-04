@@ -139,7 +139,8 @@ public class ChooseAuctionController implements Initializable {
 		if(GlobalDefineCode.FLAG_PRD) {
 			host = GlobalDefine.AUCTION_INFO.AUCTION_HOST;
 		}else {
-			host = GlobalDefine.AUCTION_INFO.DEV_AUCTION_HOST;
+			//host = GlobalDefine.AUCTION_INFO.DEV_AUCTION_HOST;
+			host = GlobalDefine.AUCTION_INFO.LOCAL_AUCTION_HOST;
 		}
 		
 		String ip = SharedPreference.getInstance().getString(SharedPreference.PREFERENCE_SERVER_IP, host);

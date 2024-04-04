@@ -85,6 +85,7 @@ public class EntryInfo implements FromAuctionController {
 	
 	private String mRgDscName;	// 송아지혈통정보(2023.03.15 by kih)
 	private String mSraMwmnName; // 낙찰자명(2023.03.15)
+	private String mPriceUnit; // 경매응찰단위
 	
 	public EntryInfo() {
 	}
@@ -178,7 +179,10 @@ public class EntryInfo implements FromAuctionController {
 			// 2023.03.28 순서변경 
 			mSraMwmnName = messages[38];	// 2023.03.15 낙찰자명 추가 by kih 
 			mGapMonth = messages[39];		// 2023.03.15 월령 추가
-			mRgDscName = messages[40];		// 2023.03.15 송아지혈통명 추가 by kih 			
+			mRgDscName = messages[40];		// 2023.03.15 송아지혈통명 추가 by kih
+			if(messages.length>41) {
+				mPriceUnit = messages[41];		// 2023.03.15 송아지혈통명 추가 by kih				
+			}
 		}
 	}
 
@@ -239,6 +243,7 @@ public class EntryInfo implements FromAuctionController {
 		mGapMonth = cowInfoData.getGAP_MONTH();
 		mRgDscName = cowInfoData.getRG_DSC_NM() == null ? "" : cowInfoData.getRG_DSC_NM();		// 2023.03.17 송아지혈통명 null 방지 by kih 
 		mSraMwmnName = cowInfoData.getSRA_MWMNNM() == null ? "" : cowInfoData.getSRA_MWMNNM(); 	// 2023.03.175 낙찰자명 null 방지 by kih 
+		mPriceUnit = cowInfoData.getDIVISION_PRICE_UNIT() == null ? "" : cowInfoData.getDIVISION_PRICE_UNIT();
 	}
 	
 	
@@ -695,13 +700,22 @@ public class EntryInfo implements FromAuctionController {
 	public void setSraMwmnName(String sraMwmnName) {
 		mSraMwmnName = sraMwmnName;
 	}
+	
+	public String getmPriceUnit() {
+		return mPriceUnit;
+	}
+
+	public void setmPriceUnit(String mPriceUnit) {
+		this.mPriceUnit = mPriceUnit;
+	}
 
 	@Override
 	public String getEncodedMessage() {
 		// 2023.03.15 mRgDscName 송아지혈통정보추가 
 		return String.format(
 			  //"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s"
-				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+				"%c%c%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s"
+				+"%c%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER, mAuctionHouseCode, AuctionShareSetting.DELIMITER,
 				mEntryNum, AuctionShareSetting.DELIMITER, mAuctionQcn, AuctionShareSetting.DELIMITER, mEntryType,
 				AuctionShareSetting.DELIMITER, mIndNum, AuctionShareSetting.DELIMITER, mIndMngCd,
@@ -724,6 +738,7 @@ public class EntryInfo implements FromAuctionController {
 				AuctionShareSetting.DELIMITER, mSraMwmnName,		// 낙찰자명 
 				AuctionShareSetting.DELIMITER, mGapMonth,			// 월령
 				AuctionShareSetting.DELIMITER, mRgDscName			// 송아지혈통명 				
+				,AuctionShareSetting.DELIMITER, mPriceUnit			 				
 				);
 	}
 

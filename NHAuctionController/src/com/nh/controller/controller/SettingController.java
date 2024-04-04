@@ -862,6 +862,14 @@ public class SettingController implements Initializable {
 				} else {
 					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				}
+			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 1000) {
+				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				}
 			}else {
 				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				
@@ -879,6 +887,14 @@ public class SettingController implements Initializable {
 				} else {
 					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				}
+			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 1000) {
+				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				}
 			}else {
 				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				
@@ -889,7 +905,7 @@ public class SettingController implements Initializable {
 				}
 				
 			}
-			
+
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 10000) {
 				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				
@@ -897,6 +913,14 @@ public class SettingController implements Initializable {
 					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
 				} else {
 					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}
+			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 1000) {
+				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 				}
 			}else {
 				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));

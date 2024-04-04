@@ -698,6 +698,22 @@ public class SettingApplication {
 		
 		return isWon;
 	}
+	public int isPriceChk(String aucObjDsc) {
+		
+		int result = 10000;
+		
+		if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
+			return GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1();
+			
+		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2))) {
+			return GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2();
+			
+		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3))) {
+			return GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3();	
+		}
+		
+		return result;
+	}
 	
 	
 	/**

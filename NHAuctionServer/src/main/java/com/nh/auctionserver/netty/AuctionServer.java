@@ -407,7 +407,7 @@ public class AuctionServer {
 //	}
 
 	public void itemAdded(String event) {
-		// mLogger.info("HazelcastBiddings itemAdded : " + event.getItem());
+		//mLogger.info("HazelcastBiddings itemAdded : " + event);
 		switch (event.charAt(0)) {
 		case FromAuctionServer.ORIGIN:
 			FromAuctionServer serverParsedMessage = ServerMessageParser.parse(event);
@@ -716,6 +716,7 @@ public class AuctionServer {
 	public void channelItemWriteAndFlush(Object event) {
 		if (event instanceof FromAuctionServer) {
 			String message = ((FromAuctionServer) event).getEncodedMessage();
+			//mLogger.info("### channelItemWriteAndFlush :: message :: "+message);
 			String[] splitMessages = message.split(AuctionShareSetting.DELIMITER_REGEX);
 			
 			if (!message.equals("SS")) {

@@ -79,6 +79,7 @@ public class GlobalDefine {
 
 		//public static final String AUCTION_HOST = "1.201.161.58"; // 운영 서버
 		public static final String AUCTION_HOST = "cowauction.kr"; // 운영 서버
+		public static final String LOCAL_AUCTION_HOST  = "192.168.1.53"; // 운영 서버
 		public static final String DEV_AUCTION_HOST = "115.41.222.25"; // dev remote server
 		
 //		public static final String DEV_AUCTION_HOST = "192.168.0.34"; // Server Host 내꺼
