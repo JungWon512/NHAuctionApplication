@@ -948,7 +948,7 @@ public class SettingController implements Initializable {
 				}
 				
 			}
-
+			
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 10000) {
 				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				

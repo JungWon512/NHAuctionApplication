@@ -749,10 +749,11 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
 					
 					priceText = String.format(mResMsg.getString("fmt.money.unit.won"), Integer.parseInt(downPrice));
-					break;
-				default:
+					
+				}else {
+					
 					priceText = String.format(mResMsg.getString("fmt.money.unit.tenthousand.won"), Integer.parseInt(downPrice));
-					break;					
+					
 				}
 				*/
 
