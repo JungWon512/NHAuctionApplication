@@ -88,7 +88,7 @@ public class SettingController implements Initializable {
 			mPdpMaTimeTextField, mPdpDNATextField;
 	// 상한가/하한가
 	@FXML
-	private TextField mUpperLimitCalfTextField, mUpperLimitFatteningCattleTextField, mUpperLimitBreedingCattleTextField, mLowerLimitCalfTextField, mLowerLimitFatteningCattleTextField, mLowerLimitBreedingCattleTextField;
+	private TextField mUpperLimitCalfTextField, mUpperLimitFatteningCattleTextField, mUpperLimitBreedingCattleTextField, mUpperLimitGoatTextField, mLowerLimitCalfTextField, mLowerLimitFatteningCattleTextField, mLowerLimitBreedingCattleTextField, mLowerLimitGoatTextField;
 	
 	@FXML //상한가 단위
 	private Label mUpCalfMoneyUnitLabel,mUpFCattleMoneyUnitLabel,mUpBCattleMoneyUnitLabel;
@@ -268,9 +268,12 @@ public class SettingController implements Initializable {
 		mUpperLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mUpperLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mUpperLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mUpperLimitGoatTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		
 		mLowerLimitCalfTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mLowerLimitFatteningCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		mLowerLimitBreedingCattleTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
+		mLowerLimitGoatTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_1));
 		//mSoundRateTextField.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilterType_2));
 		
 	}
@@ -350,6 +353,13 @@ public class SettingController implements Initializable {
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_BREEDING_TEXT);
 		}
 		
+		// 염소 상한가 by kih 2024.04.12
+		if(CommonUtils.getInstance().isValidString(mUpperLimitGoatTextField.getText().trim())) {
+			//sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, mUpperLimitBreedingCattleTextField.getText().trim());
+		}else {
+			//sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_UPPER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_UPPER_BREEDING_TEXT);
+		}
+		
 		if(CommonUtils.getInstance().isValidString(mLowerLimitCalfTextField.getText().trim())) {
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_CALF_TEXT, mLowerLimitCalfTextField.getText().trim());
 		}else {
@@ -366,6 +376,13 @@ public class SettingController implements Initializable {
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, mLowerLimitBreedingCattleTextField.getText().trim());
 		}else {
 			sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_BREEDING_TEXT);
+		}
+		
+		// 염소 낮추기 
+		if(CommonUtils.getInstance().isValidString(mLowerLimitGoatTextField.getText().trim())) {
+			//sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, mLowerLimitBreedingCattleTextField.getText().trim());
+		}else {
+			//sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_LOWER_BREEDING_TEXT, SettingApplication.getInstance().DEFAULT_SETTING_LOWER_BREEDING_TEXT);
 		}
 		
 		// 동가재경매 횟수
@@ -385,8 +402,10 @@ public class SettingController implements Initializable {
 		// 음성경매 대기 시간
 		sharedPreference.setString(SharedPreference.PREFERENCE_SETTING_SOUND_AUCTION_WAIT_TIME, soundAuctionWaitTime);
 
-		// TTS 인증 처리 - Google API 
-		SoundUtil.getInstance().initCertification(mSoundValTextArea.getText());				
+		// TTS 인증 처리
+		if (!SettingApplication.getInstance().isTtsType()) {
+			SoundUtil.getInstance().initCertification(mSoundValTextArea.getText());
+		}
 	}
 
 	/**
@@ -486,7 +505,7 @@ public class SettingController implements Initializable {
 		//기존과 현재 설정값이 다르면 음성 설정 문구 재반영
 		if(!savedSoundRate.equals(currentSoundRate)) {
 			mLogger.debug("[재생 속도 값이 변경됐습니다.음성 설정 속도를 반영합니다.]");
-			if (!mTtsTypeCheckBox.isSelected()) {
+			if (!SettingApplication.getInstance().isTtsType()) {
 				SoundUtil.getInstance().soundSettingSpeedChanged();
 			}
 		}
@@ -850,9 +869,11 @@ public class SettingController implements Initializable {
 			mUpperLimitCalfTextField.setDisable(false);
 			mUpperLimitFatteningCattleTextField.setDisable(false);
 			mUpperLimitBreedingCattleTextField.setDisable(false);
+			mUpperLimitGoatTextField.setDisable(false);
 			mLowerLimitCalfTextField.setDisable(false);
 			mLowerLimitFatteningCattleTextField.setDisable(false);
 			mLowerLimitBreedingCattleTextField.setDisable(false);
+			mLowerLimitGoatTextField.setDisable(false);
 			
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 10000) {
 				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
@@ -861,6 +882,14 @@ public class SettingController implements Initializable {
 					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
 				} else {
 					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}
+			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 1000) {		// 2024.04.03 by kih 천단위 어나운싱 적용 
+				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 				}
 			}else {
 				mUpCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
@@ -871,6 +900,7 @@ public class SettingController implements Initializable {
 					mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				}
 			}
+			
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 10000) {
 				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				
@@ -878,6 +908,14 @@ public class SettingController implements Initializable {
 					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
 				} else {
 					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}
+			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 1000) { 		// 2024.04.03 by kih 천단위 어나운싱 적용  
+				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 				}
 			}else {
 				mUpFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
@@ -897,6 +935,14 @@ public class SettingController implements Initializable {
 					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
 				} else {
 					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				}
+			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 1000) {		// 2024.04.03 by kih 천단위 어나운싱 적용 
+				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 				}
 			}else {
 				mUpBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
@@ -1378,39 +1424,22 @@ public class SettingController implements Initializable {
 			return false;
 		}
 		
-	
-		
 		// 음성경매 체크
-		/* by kih - 2024.03.04 : 원본 주석처리 
 		if(mUseSoundAuction.isSelected() && mTtsTypeCheckBox.isSelected())
 		{
 			// 로컬 TTS 설정시, Google private-key 확인 안 함.
 			
-		} else { 
-			
-			if(CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())) { // check null,empty?						
-				if(!mSoundValTextArea.getText().contains("private_key")) {
+		} else {
+			if (mUseSoundAuction.isSelected() && !CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())) {
+				showAlert(mResMsg.getString("dialog.sound.empty.value"));
+				return false;
+			}else {
+				
+				if(CommonUtils.getInstance().isValidString(mSoundValTextArea.getText()) && !mSoundValTextArea.getText().contains("private_key")) {
 					showAlert(mResMsg.getString("dialog.sound.no.value"));
 					return false;
-				}				
-			}
-		}
-		*/		
-		if(mUseSoundAuction.isSelected()) {
-			if(mTtsTypeCheckBox.isSelected()) {
-				
-				// 로컬 TTS 설정시, Google private-key 확인 안 함.
-				
-			} else {
-				
-				// check null,empty?		
-				if(!CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())
-					|| !mSoundValTextArea.getText().contains("private_key")) { 				
-					
-					showAlert(mResMsg.getString("dialog.sound.no.value"));
-					return false;									
 				}
-			}				
+			}
 		}
 		
 		return true;
