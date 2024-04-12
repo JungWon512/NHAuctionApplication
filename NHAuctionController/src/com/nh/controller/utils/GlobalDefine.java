@@ -17,8 +17,8 @@ public class GlobalDefine {
 
 		//public static final String RELEASE_VERION = "1.3.1"; // application 버전		
 		//public static final String RELEASE_DATE = "2023-03-16"; // 업데이트 날짜 
-		public static final String RELEASE_VERION = "1.3.2"; // application 버전		
-		public static final String RELEASE_DATE = "2024-02-27"; // 업데이트 날짜 
+		public static final String RELEASE_VERION = "1.3.2.1"; // application 버전		
+		public static final String RELEASE_DATE = "2024-04-12"; // 업데이트 날짜 
 
 	}
 	
