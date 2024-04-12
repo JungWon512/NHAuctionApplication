@@ -975,8 +975,15 @@ public class SettingController implements Initializable {
 				}
 			}
 
-			
-			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() != 10000) {
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 1000) {
+				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				}
+			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 1) {
 				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				
 				if (mLowPriceRateCheckBox.isSelected()) {
@@ -993,8 +1000,15 @@ public class SettingController implements Initializable {
 					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				}
 			}
-
-			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() != 10000) {
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 1000) {
+				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				}
+			} else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 1) {
 				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				
 				if (mLowPriceRateCheckBox.isSelected()) {

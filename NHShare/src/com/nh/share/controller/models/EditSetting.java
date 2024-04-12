@@ -11,6 +11,7 @@ import com.nh.share.setting.AuctionShareSetting;
  * CE | 조합구분코드 | 경매번호노출여부 | 출하주노출여부 | 성별노출여부 | 중량노출여부 | 어미노출여부 | 계대노출여부 | 산차노출여부
  * | KPN노출여부 | 지여명노출여부 | 비고노출여부 | 최저가노출여부 | 친자노출여부 | 카운트다운초설정값(1 ~ 9) |
  * 경매유형코드(10:일괄 / 20:단일) | 경매상한가(송아지) | 경매상한가(비육우) | 경매상한가(번식우) | 비육우응찰단위(1 : 원 / 1000 : 천원 / 10000 : 만원)
+ * | cutAm 
  * | 경매상한가(염소) | 경매상한가(말)
  */
 public class EditSetting implements FromAuctionController {

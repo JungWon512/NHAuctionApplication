@@ -784,9 +784,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					priceText = String.format(mResMsg.getString("fmt.money.unit.tenthousand.won"), Integer.parseInt(downPrice));
 					
 				}
-				
+			
+			*/	
 			}
-			*/
 			mDeprePriceLabel.setText(priceText);
 			
 		});
@@ -4078,10 +4078,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 					String aucObjDsc = mCurrentSpEntryInfo.getEntryType().getValue();
 					switch(SettingApplication.getInstance().isPriceChk(aucObjDsc)){
-					case 1000:
-						succMsg = mResMsg.getString("str.sound.auction.result.success.thousand");
-						break;
 					case 1:
+					case 1000:
 						succMsg = mResMsg.getString("str.sound.auction.result.success.won");
 						break;
 					default:
@@ -4090,15 +4088,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					}
 					
 					// 2024.04.03 by kih 천단위 어나운싱 적용
-					// resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));
-					/*
+					// resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));
 					if(SettingApplication.getInstance().isThound(mCurrentSpEntryInfo.getEntryType().getValue())) {
 						resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt() * 1000));						
 					} else {
 						resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));
-					}
-					*/
-					resultStringBuffer.append(String.format(succMsg, bidder.getAuctionJoinNum().getValue(), bidder.getPriceInt()));
+					}					
 					
 				} else {
 					
@@ -4466,10 +4461,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 				String aucObjDsc = mCurrentSpEntryInfo.getEntryType().getValue();
 				switch(SettingApplication.getInstance().isPriceChk(aucObjDsc)){
-				case 1000:
-					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");
-					break;
 				case 1:
+				case 1000:
 					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1");
 					break;
 				default:
@@ -4477,7 +4470,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					break;
 					
 				}			
-				/*
+				
 				// 2024.04.03 by kih 천단위 어나운싱 적용 
 				// entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));				
 				if(SettingApplication.getInstance().isThound(mCurrentSpEntryInfo.getEntryType().getValue())) {					 
@@ -4485,9 +4478,9 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				} else {
 					entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));
 				}
-				*/
+				
 
-				entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));		// 최저가 160만원
+				//entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));		// 최저가 160만원
 				entrySoundContent.append(EMPTY_SPACE);
 				entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.it.is"));	// 입니다. 
 		} 
