@@ -653,7 +653,7 @@
                         <TextField fx:id="mUpperLimitBreedingCattleTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" />
                   <Label fx:id="mUpBCattleMoneyUnitLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
                   <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline" />
-                        <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="염소" textAlignment="CENTER" textFill="WHITE" />
+                        <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="(예약)" textAlignment="CENTER" textFill="WHITE" />
                   <TextField fx:id="mUpperLimitGoatTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" />
                </children>
                <padding>
@@ -677,7 +677,7 @@
                         <TextField fx:id="mLowerLimitBreedingCattleTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" />
                   <Label fx:id="mLowerBCattleMoneyUnitLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
                   <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline" />
-                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="염소" textAlignment="CENTER" textFill="WHITE" />
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="(예약)" textAlignment="CENTER" textFill="WHITE" />
                   <TextField fx:id="mLowerLimitGoatTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" />
                </children>
                <padding>
