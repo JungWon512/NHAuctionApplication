@@ -93,7 +93,6 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 	private StringProperty mGapMonth; // 월령(개월수) (2022.09.07)
 	private StringProperty mRgDscName; // 송아지혈통명 (2023.03.15) 
 	private StringProperty mSraMwmName; // 낙찰자명 (2023.03.15)
-	private StringProperty mPriceUnit; //경매단가
 	
 	private EntryInfo TEST;
 
@@ -159,7 +158,6 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 		this.mGapMonth = new SimpleStringProperty(entryInfo.getGapMonth());
 		this.mRgDscName = new SimpleStringProperty(entryInfo.getRgDscName());
 		this.mSraMwmName = new SimpleStringProperty(entryInfo.getSraMwmnName());
-		this.mPriceUnit = new SimpleStringProperty(entryInfo.getmPriceUnit());
 	}
 	
 	public EntryInfo getEntryInfo() {
@@ -643,14 +641,6 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 		this.mSraMwmName = sraMwmName;
 	}
 
-	public StringProperty getmPriceUnit() {
-		return mPriceUnit;
-	}
-
-	public void setmPriceUnit(StringProperty mPriceUnit) {
-		this.mPriceUnit = mPriceUnit;
-	}
-
 	public String getConvertBirthDay() {
 
 		String convertBirthDay = "";
@@ -749,8 +739,6 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 			return new SimpleStringProperty("");
 		}
 	}
-	
-	
 
 	@Override
 	public String getEncodedMessage() {
@@ -794,8 +782,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 						+ "%s%c"
 						+ "%s%c"
 						+ "%s%c"
-						+ "%s"
-						+ "%c%s",
+						+ "%s",
 				ORIGIN, TYPE, AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getAuctionHouseCode().getValue()),AuctionShareSetting.DELIMITER, 
 				CommonUtils.getInstance().replaceDelimiter(getEntryNum().getValue()),AuctionShareSetting.DELIMITER, 
@@ -829,7 +816,7 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 				CommonUtils.getInstance().replaceDelimiter(getAuctionSucBidder().getValue()),AuctionShareSetting.DELIMITER,
 				getSraSbidUpPrice().getValue(), AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getAuctionBidDateTime().getValue()),AuctionShareSetting.DELIMITER, 
-				CommonUtils.getInstance().replaceDelimiter(getIsLastEntry().getValue()),AuctionShareSetting.DELIMITER,				
+				CommonUtils.getInstance().replaceDelimiter(getIsLastEntry().getValue()),AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getStandPosition().getValue()),AuctionShareSetting.DELIMITER,
 				CommonUtils.getInstance().replaceDelimiter(getIsExcessCow().getValue()),AuctionShareSetting.DELIMITER,
 				getRgSqno().getValue(), AuctionShareSetting.DELIMITER, 				
@@ -837,7 +824,6 @@ public class SpEntryInfo implements FromAuctionController, Cloneable {
 				CommonUtils.getInstance().replaceDelimiter(getSraMwmnName().getValue()),	// 낙찰자명 (2023.03.15) : 홍길동 
 				AuctionShareSetting.DELIMITER, getGapMonth().getValue(), 					// 월령 (2023.03.15)
 				AuctionShareSetting.DELIMITER, getRgDscName().getValue()					// 송아지혈통명 (2023.03.15) : 고등,혈통,미등록우
-				, AuctionShareSetting.DELIMITER, getmPriceUnit().getValue()				
 				
 				);
 	}

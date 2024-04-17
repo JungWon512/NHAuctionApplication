@@ -4479,8 +4479,6 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));
 				}
 				
-
-				//entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));		// 최저가 160만원
 				entrySoundContent.append(EMPTY_SPACE);
 				entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.it.is"));	// 입니다. 
 		} 
