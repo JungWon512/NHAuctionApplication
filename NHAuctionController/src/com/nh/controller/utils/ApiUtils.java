@@ -7,6 +7,7 @@ import com.nh.share.api.request.ActionRequestAuctionLogin;
 import com.nh.share.api.request.ActionRequestAuctionResult;
 import com.nh.share.api.request.ActionRequestInsertBidLog;
 import com.nh.share.api.request.ActionRequestMultipleAuctionStatus;
+import com.nh.share.api.request.ActionRequestNaBzloc;
 import com.nh.share.api.request.ActionRequestSelectBidEntry;
 import com.nh.share.api.request.ActionRequestSelectBidNum;
 import com.nh.share.api.request.ActionRequestSelectCowCnt;
@@ -22,9 +23,12 @@ import com.nh.share.api.request.body.RequestLoginBody;
 import com.nh.share.api.request.body.RequestMultipleAuctionStatusBody;
 import com.nh.share.api.request.body.RequestQcnBody;
 import com.nh.share.api.request.body.RequestUpdateLowsBidAmtBody;
+import com.nh.share.api.request.body.RequestBzloc;
+
 import com.nh.share.api.response.ResponseAuctionLogin;
 import com.nh.share.api.response.ResponseAuctionResult;
 import com.nh.share.api.response.ResponseBidEntry;
+import com.nh.share.api.response.ResponseBzlocInfo;
 import com.nh.share.api.response.ResponseChangeCowInfo;
 import com.nh.share.api.response.ResponseCowInfo;
 import com.nh.share.api.response.ResponseJoinNumber;
@@ -174,6 +178,10 @@ public class ApiUtils {
 		ActionRuler.getInstance().addAction(new ActionRequestSelectBidEntry(body, listener_));
 		ActionRuler.getInstance().runNext();
 	}
-	
+
+	public void reqBzloc(RequestBzloc body,ActionResultListener<ResponseBzlocInfo> listener_) {
+		ActionRuler.getInstance().addAction(new ActionRequestNaBzloc(body,listener_));
+		ActionRuler.getInstance().runNext();
+	}
 	
 }

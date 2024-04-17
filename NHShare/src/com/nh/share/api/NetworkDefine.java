@@ -58,6 +58,7 @@ public class NetworkDefine {
 	public static final String API_REQUEST_MULTIPLE_AUCTION_STATUS = "/api/{version}/auction/status"; // 일괄경매 시작
 
 	public static final String API_REQUEST_AUCTION_BID_ENTRY = "/api/{version}/auction/select/bidentry"; // 응찰 내역 조회
+	public static final String API_REQUEST_GET_BZLOC = "/api/{version}/auction/select/bzloc"; // 응찰 내역 조회;
 
 	/**
 	 * 운영 or 개발 도메인

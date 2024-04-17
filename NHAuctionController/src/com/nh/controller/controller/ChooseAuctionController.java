@@ -22,6 +22,7 @@ import com.nh.controller.utils.SharedPreference;
 import com.nh.share.api.ActionResultListener;
 import com.nh.share.api.models.QcnData;
 import com.nh.share.api.models.StnData;
+import com.nh.share.api.request.body.RequestBzloc;
 import com.nh.share.api.request.body.RequestCowInfoBody;
 import com.nh.share.api.request.body.RequestQcnBody;
 import com.nh.share.api.response.ResponseCowInfo;
@@ -47,6 +48,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
+import com.nh.share.api.response.ResponseBzlocInfo;
 
 /**
  * 경매 선택
@@ -180,8 +182,49 @@ public class ChooseAuctionController implements Initializable {
 		default:
 			mCalfToggleButton.setSelected(true);
 		}
+		reqEtcAucObjDsc();
 		
 		GlobalDefine.AUCTION_INFO.auctionRoundData = null;
+	}
+
+	//조합정보 호출
+	private void reqEtcAucObjDsc() {
+
+		mGoatToggleButton.setVisible(false);
+		mHorseToggleButton.setVisible(false);
+		final String naBzplc = GlobalDefine.ADMIN_INFO.adminData.getNabzplc();
+		
+		RequestBzloc bzlocBody = new RequestBzloc(naBzplc);
+		ApiUtils.getInstance().reqBzloc(bzlocBody,new ActionResultListener<ResponseBzlocInfo>() {
+			@Override
+			public void onResponseResult(ResponseBzlocInfo result) {
+
+				
+
+//				Platform.runLater(()->CommonUtils.getInstance().dismissLoadingDialog());
+
+				try {
+
+					if (result != null ) {
+	
+						if (result.getSuccess()) {
+							System.out.println(result);
+						}
+	
+					}
+					
+				}catch (Exception e) {
+					e.printStackTrace();
+					SentryUtil.getInstance().sendExceptionLog(e);
+				}
+			}
+
+			@Override
+			public void onResponseError(String message) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	/**
