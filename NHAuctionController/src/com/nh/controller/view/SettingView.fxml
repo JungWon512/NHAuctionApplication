@@ -603,7 +603,7 @@
                   <TextArea fx:id="mSoundValTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="text-area" />
                </children>
             </HBox>
-            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="서버초기화" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="21">
+            <Label fx:id="mInitServerLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="label-background" text="서버초기화" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="21">
                <font>
                   <Font size="12.0" />
                </font>
@@ -642,20 +642,20 @@
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="7" GridPane.rowIndex="10">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="송아지" textAlignment="CENTER" textFill="WHITE" />
-                        <TextField fx:id="mUpperLimitCalfTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" />
-                  <Label fx:id="mUpCalfMoneyUnitLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
+                        <TextField fx:id="mUpperLimitCalfTextField" disable="true" prefWidth="110.0" promptText="가격(만원)" />
+                  <Label fx:id="mUpCalfMoneyUnitLabel" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
                         <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline" />
                   <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="비육우" textAlignment="CENTER" textFill="WHITE" />
-                        <TextField fx:id="mUpperLimitFatteningCattleTextField" disable="true" prefWidth="120.0" promptText="가격(원)" />
-                  <Label fx:id="mUpFCattleMoneyUnitLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="(원)" textAlignment="CENTER" textFill="WHITE" />
+                        <TextField fx:id="mUpperLimitFatteningCattleTextField" disable="true" prefWidth="110.0" promptText="가격(원)" />
+                  <Label fx:id="mUpFCattleMoneyUnitLabel" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="(원)" textAlignment="CENTER" textFill="WHITE" />
                         <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline" />
                         <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="번식우" textAlignment="CENTER" textFill="WHITE" />
-                        <TextField fx:id="mUpperLimitBreedingCattleTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" />
-                  <Label fx:id="mUpBCattleMoneyUnitLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
+                        <TextField fx:id="mUpperLimitBreedingCattleTextField" disable="true" prefWidth="110.0" promptText="가격(만원)" />
+                  <Label fx:id="mUpBCattleMoneyUnitLabel" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
                   <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline" />
                         <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="염소" textAlignment="CENTER" textFill="WHITE" />
-                  <TextField fx:id="mUpperLimitGoatTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" />
-                  <Label fx:id="mUpGoatMoneyUnitLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
+                  <TextField fx:id="mUpperLimitGoatTextField" disable="true" prefWidth="110.0" promptText="가격(만원)" />
+                  <Label fx:id="mUpGoatMoneyUnitLabel" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
                   <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline" />
                   <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="말" textAlignment="CENTER" textFill="WHITE" visible="false" />
                   <TextField fx:id="mUpperLimitHorseTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" visible="false" />
@@ -671,20 +671,20 @@
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="7" GridPane.rowIndex="12">
                <children>
                         <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="송아지" textAlignment="CENTER" textFill="WHITE" />
-                        <TextField fx:id="mLowerLimitCalfTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" />
-                  <Label fx:id="mLowerCalfMoneyUnitLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
+                        <TextField fx:id="mLowerLimitCalfTextField" disable="true" prefWidth="110.0" promptText="가격(만원)" />
+                  <Label fx:id="mLowerCalfMoneyUnitLabel" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
                         <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline" />
                         <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="비육우" textAlignment="CENTER" textFill="WHITE" />
-                        <TextField fx:id="mLowerLimitFatteningCattleTextField" disable="true" prefWidth="120.0" promptText="가격(원)" />
-                  <Label fx:id="mLowerFCattleMoneyUnitLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="(원)" textAlignment="CENTER" textFill="WHITE" />
+                        <TextField fx:id="mLowerLimitFatteningCattleTextField" disable="true" prefWidth="110.0" promptText="가격(원)" />
+                  <Label fx:id="mLowerFCattleMoneyUnitLabel" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="(원)" textAlignment="CENTER" textFill="WHITE" />
                         <Pane prefWidth="1.0" styleClass="underline" />
                         <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="번식우" textAlignment="CENTER" textFill="WHITE" />
-                        <TextField fx:id="mLowerLimitBreedingCattleTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" />
-                  <Label fx:id="mLowerBCattleMoneyUnitLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
+                        <TextField fx:id="mLowerLimitBreedingCattleTextField" disable="true" prefWidth="110.0" promptText="가격(만원)" />
+                  <Label fx:id="mLowerBCattleMoneyUnitLabel" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
                   <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline" />
                   <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="염소" textAlignment="CENTER" textFill="WHITE" />
-                  <TextField fx:id="mLowerLimitGoatTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" />
-                  <Label fx:id="mLowerGoatMoneyUnitLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
+                  <TextField fx:id="mLowerLimitGoatTextField" disable="true" prefWidth="110.0" promptText="가격(만원)" />
+                  <Label fx:id="mLowerGoatMoneyUnitLabel" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="(만원)" textAlignment="CENTER" textFill="WHITE" />
                   <Pane prefHeight="200.0" prefWidth="1.0" styleClass="underline" />
                   <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="60.0" text="말" textAlignment="CENTER" textFill="WHITE" visible="false" />
                   <TextField fx:id="mLowerLimitHorseTextField" disable="true" prefWidth="120.0" promptText="가격(만원)" visible="false" />

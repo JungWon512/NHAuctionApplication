@@ -37,28 +37,24 @@
             <AnchorPane />
             <VBox>
                <children>
-                  <HBox alignment="CENTER">
+                  <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="76.0" prefWidth="860.0">
                      <children>
-                        <RadioButton fx:id="mCalfToggleButton" mnemonicParsing="false" text="송아지" textFill="WHITE" userData="1">
+                        <RadioButton fx:id="mCalfToggleButton" mnemonicParsing="false" prefHeight="36.0" prefWidth="120.0" text="송아지" textFill="WHITE" userData="1">
                            <toggleGroup>
       						<ToggleGroup fx:id="cowTypeToggleGroup" />
                            </toggleGroup></RadioButton>
-                        <RadioButton fx:id="mFatteningCattleToggleButton" mnemonicParsing="false" text="비육우" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="2" />
-                        <RadioButton fx:id="mBreedingCattleToggleButton" mnemonicParsing="false" text="번식우" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="3" />
-                        <RadioButton fx:id="mAllCowToggleButton" mnemonicParsing="false" text="일괄(한우)" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="0" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER">
-                     <children>
-                        <RadioButton fx:id="mGoatToggleButton" mnemonicParsing="false" text="염소" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="5" />
-                        <RadioButton fx:id="mHorseToggleButton" mnemonicParsing="false" text="말" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="6" />
+                        <RadioButton fx:id="mFatteningCattleToggleButton" mnemonicParsing="false" prefWidth="120.0" text="비육우" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="2" />
+                        <RadioButton fx:id="mBreedingCattleToggleButton" mnemonicParsing="false" prefWidth="120.0" text="번식우" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="3" />
+                        <RadioButton fx:id="mAllCowToggleButton" mnemonicParsing="false" prefWidth="150.0" text="일괄(한우)" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="0" />
+                        <RadioButton fx:id="mGoatToggleButton" mnemonicParsing="false" prefWidth="90.0" text="염소" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="5" />
+                        <RadioButton fx:id="mHorseToggleButton" mnemonicParsing="false" prefWidth="80.0" text="말" textFill="WHITE" toggleGroup="$cowTypeToggleGroup" userData="6" />
                      </children>
                   </HBox>
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #ffffff;" styleClass="border-line-707070" VBox.vgrow="ALWAYS">
                <children>
-                  <HBox alignment="CENTER" prefHeight="279.0" prefWidth="860.0" spacing="10.0" VBox.vgrow="ALWAYS">
+                  <HBox alignment="CENTER" prefHeight="266.0" prefWidth="858.0" spacing="10.0" VBox.vgrow="ALWAYS">
                      <children>
                         <Label alignment="CENTER" text="경매일">
                            <font>
@@ -75,12 +71,12 @@
                      <children>
                         <Label fx:id="mVersionLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Ver.0.0.1" HBox.hgrow="ALWAYS">
                            <font>
-                              <Font size="10.0" />
+                              <Font size="9.0" />
                            </font>
                         </Label>
                         <Label fx:id="mReleaseDateLabel" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Date. 20210824.155140" HBox.hgrow="ALWAYS">
                            <font>
-                              <Font size="10.0" />
+                              <Font size="9.0" />
                            </font>
                         </Label>
                      </children>

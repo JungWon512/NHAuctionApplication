@@ -69,6 +69,10 @@ public class SettingController implements Initializable {
 	@FXML
 	private Button mBtnSave,mBtnInitServer;
 	// 전광판 설정 IP, PORT
+	
+	@FXML
+	private Label mInitServerLabel;	// "서버초기화" Lable 
+	
 	@FXML
 	private TextField mIpBoardTextField1, mPortBoardTextField1, mIpBoardTextField2, mPortBoardTextField2;
 	
@@ -78,6 +82,7 @@ public class SettingController implements Initializable {
 	// PDP, 응찰석, PDP3 셋톱박스 IP, PORT
 	@FXML
 	private TextField mIpPdpTextField1, mPortPdpTextField1;
+	
 	// 전광판 표출 설정
 	@FXML
 	private TextField mBoardEntryNumTextField, mBoardKpnTextField, mBoardExhibitorTextField, mBoardRegionTextField, mBoardGenderTextField, mBoardNoteTextField, mBoardWeightTextField, mBoardLowPriceTextField, mBoardMotherTextField, mBoardSucPriceTextField, mBoardPassageTextField,
@@ -98,7 +103,7 @@ public class SettingController implements Initializable {
 	
 	@FXML //가격 낮추기 단위
 	private Label mLowerCalfMoneyUnitLabel,mLowerFCattleMoneyUnitLabel,mLowerBCattleMoneyUnitLabel,mLowerGoatMoneyUnitLabel,mLowerHorseMoneyUnitLabel;
-	
+
 	// 경매종료멘트, 비고 창 설정
 	@FXML
 	private CheckBox mUseNoteCheckBox;
