@@ -118,6 +118,7 @@ public class ChooseAuctionController implements Initializable {
 		setDefaultSetting();
 		
 //		toggleAllCowDisable();
+
 	}
 
 	private void setApplicationInfo() {
@@ -161,22 +162,22 @@ public class ChooseAuctionController implements Initializable {
 		mPort.setText(Integer.toString(port));
 
 		switch (obj) {
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1:
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1:	// 송아지
 			mCalfToggleButton.setSelected(true);
 			break;
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_2:	// 번식우
 			mFatteningCattleToggleButton.setSelected(true);
 			break;
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_3:	// 비육우
 			mBreedingCattleToggleButton.setSelected(true);
 			break;
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_0:
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_0:	// 일관(한우)
 			mAllCowToggleButton.setSelected(true);
 			break;
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_5:
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_5:	// 염소
 			mGoatToggleButton.setSelected(true);
 			break;
-		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_6:
+		case GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_6:	// 말(기타) 
 			mHorseToggleButton.setSelected(true);
 			break;
 		default:
@@ -191,7 +192,10 @@ public class ChooseAuctionController implements Initializable {
 	private void reqEtcAucObjDsc() {
 
 		mGoatToggleButton.setVisible(false);
+		mGoatToggleButton.setPrefWidth(0);
 		mHorseToggleButton.setVisible(false);
+		mHorseToggleButton.setPrefWidth(0);
+		
 		GlobalDefine.ADMIN_INFO.adminData.setEtcAucObjDsc("");
 		final String naBzplc = GlobalDefine.ADMIN_INFO.adminData.getNabzplc();
 		
@@ -208,9 +212,11 @@ public class ChooseAuctionController implements Initializable {
 							if(etcAucObjDsc != null) {
 								if(etcAucObjDsc.contains("5")) {
 									mGoatToggleButton.setVisible(true);
+									mGoatToggleButton.setPrefWidth(100);
 								}
 								if(etcAucObjDsc.contains("6")) {
 									mHorseToggleButton.setVisible(true);
+									mGoatToggleButton.setPrefWidth(100);
 								}								
 							}
 						}
