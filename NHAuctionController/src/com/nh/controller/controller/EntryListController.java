@@ -170,21 +170,36 @@ public class EntryListController implements Initializable {
 				mDownPriceLabel.setVisible(true);
 				mDownPriceLabel2.setVisible(true);
 				mDownPriceLabel3.setVisible(true);
-				mDownPriceLabel5.setVisible(true);
-				mDownPriceLabel6.setVisible(true);
 				
 				mDownPriceTextField.setVisible(true);
 				mDownPriceTextField2.setVisible(true);
 				mDownPriceTextField3.setVisible(true);
-				mDownPriceTextField5.setVisible(true);
-				mDownPriceTextField6.setVisible(true);
 				mBtnDownPrice.setVisible(true);
 				
 				mLowerCalfMoneyUnitLabel.setVisible(true);
 				mLowerFCattleMoneyUnitLabel.setVisible(true);
 				mLowerBCattleMoneyUnitLabel.setVisible(true);
-				mLowerGoatMoneyUnitLabel.setVisible(true);
-				mLowerHorseMoneyUnitLabel.setVisible(true);
+
+
+				mDownPriceTextField5.setVisible(false);
+				mDownPriceTextField6.setVisible(false);
+				mDownPriceLabel5.setVisible(false);
+				mDownPriceLabel6.setVisible(false);
+				mLowerGoatMoneyUnitLabel.setVisible(false);
+				mLowerHorseMoneyUnitLabel.setVisible(false);
+				String etcAucObjDsc = GlobalDefine.ADMIN_INFO.adminData.getEtcAucObjDsc();
+				if(etcAucObjDsc !=null) {
+					if(etcAucObjDsc.contains("5")) {
+						mDownPriceTextField5.setVisible(true);
+						mDownPriceLabel5.setVisible(true);
+						mLowerGoatMoneyUnitLabel.setVisible(true);						
+					}
+					if(etcAucObjDsc.contains("6")) {
+						mDownPriceTextField6.setVisible(true);
+						mDownPriceLabel6.setVisible(true);
+						mLowerHorseMoneyUnitLabel.setVisible(true);						
+					}
+				}
 				
 				CommonUtils.getInstance().setNumberTextField(mDownPriceTextField);
 				CommonUtils.getInstance().setNumberTextField(mDownPriceTextField2);
@@ -250,43 +265,43 @@ public class EntryListController implements Initializable {
 					mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
 					mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
 				} else {
-					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 10000) {
-						mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 1) {
+						mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 					}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 1000) {
 						mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 					}else {
-						mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+						mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 					}
-					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 10000) {
-						mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 1) {
+						mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 					}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 1000) {
 						mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 					}else {
-						mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+						mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 					}
 					
-					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 10000) {
-						mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 1) {
+						mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 					}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 1000) {
 						mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 					}else {
-						mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+						mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 					}
 					
-					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 10000) {
-						mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 1) {
+						mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 					}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 1000) {
 						mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 					}else {
-						mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+						mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 					}
 					
-					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 10000) {
-						mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 1) {
+						mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 					}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 1000) {
 						mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 					}else {
-						mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+						mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 					}
 				}
 				

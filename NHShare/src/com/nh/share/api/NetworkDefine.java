@@ -70,8 +70,8 @@ public class NetworkDefine {
 		if (GlobalDefineCode.FLAG_PRD) {
 			return PRD_NH_AUCTION_API_HOST;
 		} else {
-			//return DEV_NH_AUCTION_API_HOST;
-			return LOCAL_NH_AUCTION_API_HOST;
+			return DEV_NH_AUCTION_API_HOST;
+			//return LOCAL_NH_AUCTION_API_HOST;
 		}
 	}
 }

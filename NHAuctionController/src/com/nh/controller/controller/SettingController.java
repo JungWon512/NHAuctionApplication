@@ -92,6 +92,7 @@ public class SettingController implements Initializable {
 	@FXML
 	private TextField mUpperLimitGoatTextField,mUpperLimitHorseTextField,mLowerLimitGoatTextField,mLowerLimitHorseTextField;
 	
+	
 	@FXML //상한가 단위
 	private Label mUpCalfMoneyUnitLabel,mUpFCattleMoneyUnitLabel,mUpBCattleMoneyUnitLabel,mUpGoatMoneyUnitLabel,mUpHorseMoneyUnitLabel;
 	
