@@ -192,27 +192,29 @@ public class ChooseAuctionController implements Initializable {
 
 		mGoatToggleButton.setVisible(false);
 		mHorseToggleButton.setVisible(false);
+		GlobalDefine.ADMIN_INFO.adminData.setEtcAucObjDsc("");
 		final String naBzplc = GlobalDefine.ADMIN_INFO.adminData.getNabzplc();
 		
 		RequestBzloc bzlocBody = new RequestBzloc(naBzplc);
 		ApiUtils.getInstance().reqBzloc(bzlocBody,new ActionResultListener<ResponseBzlocInfo>() {
 			@Override
 			public void onResponseResult(ResponseBzlocInfo result) {
-
-				
-
-//				Platform.runLater(()->CommonUtils.getInstance().dismissLoadingDialog());
-
 				try {
-
 					if (result != null ) {
-	
 						if (result.getSuccess()) {
-							System.out.println(result);
+							String etcAucObjDsc = result.getInfo().getETC_AUC_OBJ_DSC();
+							GlobalDefine.ADMIN_INFO.adminData.setEtcAucObjDsc(etcAucObjDsc);
+							System.out.println(etcAucObjDsc);
+							if(etcAucObjDsc != null) {
+								if(etcAucObjDsc.contains("5")) {
+									mGoatToggleButton.setVisible(true);
+								}
+								if(etcAucObjDsc.contains("6")) {
+									mHorseToggleButton.setVisible(true);
+								}								
+							}
 						}
-	
 					}
-					
 				}catch (Exception e) {
 					e.printStackTrace();
 					SentryUtil.getInstance().sendExceptionLog(e);
@@ -222,7 +224,8 @@ public class ChooseAuctionController implements Initializable {
 			@Override
 			public void onResponseError(String message) {
 				// TODO Auto-generated method stub
-				
+				mGoatToggleButton.setVisible(false);
+				mHorseToggleButton.setVisible(false);
 			}
 		});
 	}

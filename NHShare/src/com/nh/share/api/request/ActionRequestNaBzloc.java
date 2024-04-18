@@ -47,7 +47,7 @@ public class ActionRequestNaBzloc extends Action {
 		@POST(NetworkDefine.API_REQUEST_GET_BZLOC)
 		Call<ResponseBzlocInfo> requestNaBzplc(
 				@Path("version") String apiVer,
-				@FieldMap HashMap<String, String> paramBody);
+				@FieldMap HashMap<String, Object> paramBody);
 	}
 
 	private final Callback<ResponseBzlocInfo> mCallBack = new Callback<ResponseBzlocInfo>() {
@@ -56,6 +56,7 @@ public class ActionRequestNaBzloc extends Action {
 			actionDone(resultType.ACTION_RESULT_RUNNEXT);
 			Headers headers = response.headers();
 			String type = headers.get(CONTENT_TYPE);
+			
 			ResponseBzlocInfo body = response.body();
 
 			switch (response.code()) {

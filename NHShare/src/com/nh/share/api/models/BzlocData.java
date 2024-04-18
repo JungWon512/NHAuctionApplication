@@ -1,7 +1,7 @@
 package com.nh.share.api.models;
 
 /**
- * 경매 진행 프로그램 버전 정보
+ * 경매 조합 정보
  */
 public class BzlocData {
 

@@ -975,8 +975,15 @@ public class SettingController implements Initializable {
 				}
 			}
 
-			
-			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() != 10000) {
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 1000) {
+				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				}
+			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 1) {
 				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				
 				if (mLowPriceRateCheckBox.isSelected()) {
@@ -993,8 +1000,15 @@ public class SettingController implements Initializable {
 					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				}
 			}
-
-			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() != 10000) {
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 1000) {
+				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				
+				if (mLowPriceRateCheckBox.isSelected()) {
+					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
+				} else {
+					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				}
+			} else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 1) {
 				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				
 				if (mLowPriceRateCheckBox.isSelected()) {
@@ -1539,6 +1553,7 @@ public class SettingController implements Initializable {
 		}
 		
 		// 음성경매 체크
+		/* by kih - 2024.03.04 : 원본 주석처리 
 		if(mUseSoundAuction.isSelected() && mTtsTypeCheckBox.isSelected())
 		{
 			// 로컬 TTS 설정시, Google private-key 확인 안 함.
@@ -1554,6 +1569,23 @@ public class SettingController implements Initializable {
 					return false;
 				}
 			}
+		}
+		*/		
+		if(mUseSoundAuction.isSelected()) {
+			if(mTtsTypeCheckBox.isSelected()) {
+				
+				// 로컬 TTS 설정시, Google private-key 확인 안 함.
+				
+			} else {
+				
+				// check null,empty?		
+				if(!CommonUtils.getInstance().isValidString(mSoundValTextArea.getText())
+					|| !mSoundValTextArea.getText().contains("private_key")) { 				
+					
+					showAlert(mResMsg.getString("dialog.sound.no.value"));
+					return false;									
+				}
+			}				
 		}
 		
 		return true;

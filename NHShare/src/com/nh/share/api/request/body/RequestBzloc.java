@@ -5,7 +5,7 @@ import java.util.HashMap;
 /**
  *
  */
-public class RequestBzloc extends HashMap<String, String> {
+public class RequestBzloc extends HashMap<String, Object> {
 
 	public RequestBzloc(String naBzplc) {
 		this.put("naBzplc", naBzplc);	//아이디

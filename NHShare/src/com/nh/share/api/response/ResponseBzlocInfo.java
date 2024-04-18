@@ -3,20 +3,20 @@ package com.nh.share.api.response;
 import com.nh.share.api.models.BzlocData;
 
 /**
- * 경매 조합정보
+ * 조합정보
  * 
- * @see {ActionRequestApplicationVersion}
+ * @see {ActionRequestNaBzloc}
  *
  */
 public class ResponseBzlocInfo extends BaseResponse {
 
-	private BzlocData info;
+	private BzlocData data;
 
 	public BzlocData getInfo() {
-		return info;
+		return data;
 	}
 
 	public void setInfo(BzlocData info) {
-		this.info = info;
+		this.data = info;
 	}
 }

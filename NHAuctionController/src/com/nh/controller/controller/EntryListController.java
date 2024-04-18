@@ -252,29 +252,39 @@ public class EntryListController implements Initializable {
 				} else {
 					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 10000) {
 						mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice1() == 1000) {
+						mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 					}else {
 						mLowerCalfMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 					}
 					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 10000) {
 						mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice2() == 1000) {
+						mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 					}else {
 						mLowerFCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 					}
 					
 					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 10000) {
 						mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() == 1000) {
+						mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 					}else {
 						mLowerBCattleMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 					}
 					
 					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 10000) {
 						mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 1000) {
+						mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 					}else {
 						mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 					}
 					
 					if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 10000) {
 						mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+					}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 1000) {
+						mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 					}else {
 						mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 					}
