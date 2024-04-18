@@ -24,7 +24,7 @@ public class NetworkDefine {
 	public static String ADMIN_ACCESS_TOKEN = "";
 //	115.41.222.25
 //	1.201.161.58
-	public static final String LOCAL_NH_AUCTION_API_HOST = "http://192.168.0.183:8080";
+	public static final String LOCAL_NH_AUCTION_API_HOST = "http://192.168.1.53:8080";
 	public static final String DEV_NH_AUCTION_API_HOST = "https://xn--e20bw05b.kr";
 	public static final String PRD_NH_AUCTION_API_HOST = "https://www.xn--o39an74b9ldx9g.kr";
 
@@ -70,7 +70,8 @@ public class NetworkDefine {
 		if (GlobalDefineCode.FLAG_PRD) {
 			return PRD_NH_AUCTION_API_HOST;
 		} else {
-			return DEV_NH_AUCTION_API_HOST;
+			//return DEV_NH_AUCTION_API_HOST;
+			return LOCAL_NH_AUCTION_API_HOST;
 		}
 	}
 }
