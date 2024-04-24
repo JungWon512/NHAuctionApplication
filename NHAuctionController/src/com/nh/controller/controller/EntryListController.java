@@ -180,6 +180,12 @@ public class EntryListController implements Initializable {
 				mLowerFCattleMoneyUnitLabel.setVisible(true);
 				mLowerBCattleMoneyUnitLabel.setVisible(true);
 
+				mDownPriceTextField5.setVisible(true);
+				mDownPriceLabel5.setVisible(true);
+				mLowerGoatMoneyUnitLabel.setVisible(true);		
+				mDownPriceTextField6.setVisible(true);
+				mDownPriceLabel6.setVisible(true);
+				mLowerHorseMoneyUnitLabel.setVisible(true);		
 
 				mDownPriceTextField5.setVisible(false);
 				mDownPriceTextField6.setVisible(false);
@@ -187,17 +193,29 @@ public class EntryListController implements Initializable {
 				mDownPriceLabel6.setVisible(false);
 				mLowerGoatMoneyUnitLabel.setVisible(false);
 				mLowerHorseMoneyUnitLabel.setVisible(false);
-				String etcAucObjDsc = GlobalDefine.ADMIN_INFO.adminData.getEtcAucObjDsc();
-				if(etcAucObjDsc !=null) {
-					if(etcAucObjDsc.contains("5")) {
-						mDownPriceTextField5.setVisible(true);
-						mDownPriceLabel5.setVisible(true);
-						mLowerGoatMoneyUnitLabel.setVisible(true);						
-					}
-					if(etcAucObjDsc.contains("6")) {
-						mDownPriceTextField6.setVisible(true);
-						mDownPriceLabel6.setVisible(true);
-						mLowerHorseMoneyUnitLabel.setVisible(true);						
+				
+				if(GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_5
+					|| GlobalDefine.AUCTION_INFO.auctionRoundData.getAucObjDsc() == GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_6) {
+					
+					
+					String etcAucObjDsc = GlobalDefine.ADMIN_INFO.adminData.getEtcAucObjDsc();
+					if(etcAucObjDsc !=null) {
+						if(etcAucObjDsc.contains("5")) {
+							mDownPriceTextField5.setVisible(true);
+							mDownPriceLabel5.setVisible(true);
+							mLowerGoatMoneyUnitLabel.setVisible(true);		
+							mDownPriceTextField5.setPrefWidth(mDownPriceTextField5.USE_COMPUTED_SIZE);
+							mDownPriceLabel5.setPrefWidth(mDownPriceLabel5.USE_COMPUTED_SIZE);
+							mLowerGoatMoneyUnitLabel.setPrefWidth(mLowerGoatMoneyUnitLabel.USE_COMPUTED_SIZE);
+						}
+						if(etcAucObjDsc.contains("6")) {
+							mDownPriceTextField6.setVisible(true);
+							mDownPriceLabel6.setVisible(true);
+							mLowerHorseMoneyUnitLabel.setVisible(true);		
+							mDownPriceTextField6.setPrefWidth(mDownPriceTextField6.USE_COMPUTED_SIZE);
+							mDownPriceLabel6.setPrefWidth(mDownPriceLabel6.USE_COMPUTED_SIZE);
+							mLowerHorseMoneyUnitLabel.setPrefWidth(mLowerHorseMoneyUnitLabel.USE_COMPUTED_SIZE);
+						}
 					}
 				}
 				
@@ -255,8 +273,8 @@ public class EntryListController implements Initializable {
 					mDownPriceTextField.setDisable(false);
 					mDownPriceTextField2.setDisable(false);
 					mDownPriceTextField3.setDisable(false);
-					mDownPriceTextField5.setDisable(false);
-					mDownPriceTextField6.setDisable(false);
+					mDownPriceTextField5.setDisable(true);
+					mDownPriceTextField6.setDisable(true);
 				}
 				
 				//최적 가격 낮추기 단위
