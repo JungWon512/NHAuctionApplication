@@ -126,7 +126,9 @@ public class AuctionUtil {
     	ALLOBJ("0", "일괄"),
    		CALF("1", "송아지"),
    		FATTENINGCATTLE("2", "비육우"),
-   		BREEDINGCATTLE("3", "번식우");
+   		BREEDINGCATTLE("3", "번식우"),
+   		GOAT("5", "염소"),
+   		ETC("6", "기타");
     	
         private final String code;
         private final String description;
