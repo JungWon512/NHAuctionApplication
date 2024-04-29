@@ -982,7 +982,7 @@ public class SettingController implements Initializable {
 			}
 
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 1000) {
-				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				mUpGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 				
 				if (mLowPriceRateCheckBox.isSelected()) {
 					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
@@ -990,7 +990,7 @@ public class SettingController implements Initializable {
 					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 				}
 			}else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() == 1) {
-				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				mUpGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				
 				if (mLowPriceRateCheckBox.isSelected()) {
 					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
@@ -998,7 +998,7 @@ public class SettingController implements Initializable {
 					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				}
 			}else {
-				mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mUpGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				
 				if (mLowPriceRateCheckBox.isSelected()) {
 					mLowerGoatMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
@@ -1007,7 +1007,7 @@ public class SettingController implements Initializable {
 				}
 			}
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 1000) {
-				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
+				mUpHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 				
 				if (mLowPriceRateCheckBox.isSelected()) {
 					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
@@ -1015,7 +1015,7 @@ public class SettingController implements Initializable {
 					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.thousand.won"));
 				}
 			} else if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() == 1) {
-				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
+				mUpHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				
 				if (mLowPriceRateCheckBox.isSelected()) {
 					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
@@ -1023,7 +1023,7 @@ public class SettingController implements Initializable {
 					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.won"));
 				}
 			}else {
-				mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
+				mUpHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.tenthousand.won"));
 				
 				if (mLowPriceRateCheckBox.isSelected()) {
 					mLowerHorseMoneyUnitLabel.setText(mResMsg.getString("str.money.unit.rate"));
