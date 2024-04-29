@@ -4499,8 +4499,16 @@ public class AuctionController extends BaseAuctionController implements Initiali
 
 			if (mGenderCheckBox.isSelected() && CommonUtils.getInstance().isValidString(mCurGenterLabel.getText())) {
 				entrySoundContent.append(EMPTY_SPACE);
-
-				if (mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_1) || mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_2)) {
+				if (mCurrentSpEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_5)) || mCurrentSpEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_6)) ) {
+					if (mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_1)) {
+						entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.gender.etc.f"));						
+					}else if (mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_2)) {
+						entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.gender.etc.m"));						
+					}else {
+						//entrySoundContent.append(mResMsg.getString("str.sound.auction.info.entry.gender.etc"));						
+						entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender.etc"), mCurGenterLabel.getText()));
+					}
+				}else  if (mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_1) || mCurrentSpEntryInfo.getGender().getValue().equals(GlobalDefine.AUCTION_INFO.AUCTION_INDV_SEX_C_2)) {
 
 					if (mCurrentSpEntryInfo.getEntryType().getValue().equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_1))) {
 						entrySoundContent.append(String.format(mResMsg.getString("str.sound.auction.info.entry.gender.normal"), mCurGenterLabel.getText()));
@@ -4549,10 +4557,8 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				String wonMsg = "";				
 				String aucObjDsc = mCurrentSpEntryInfo.getEntryType().getValue();
 				switch(SettingApplication.getInstance().isPriceChk(aucObjDsc)){
-				case 1000:
-					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");
-					break;
 				case 1:
+				case 1000:
 					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1");
 					break;
 				default:
@@ -4561,25 +4567,21 @@ public class AuctionController extends BaseAuctionController implements Initiali
 					
 				}
 				
-				if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
-					// 원단위 여부 
-					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");		// ,최저가 %s원
-				}else {
-					// 만단위 여부 
-					wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.10000");		// ,최저가 %s만원
-				}
+				//if(SettingApplication.getInstance().isWon(mCurrentSpEntryInfo.getEntryType().getValue())) {
+				//	// 원단위 여부 
+				//	wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.1000");		// ,최저가 %s원
+				//}else {
+				//	// 만단위 여부 
+				//	wonMsg = mResMsg.getString("str.sound.auction.info.entry.low.price.10000");		// ,최저가 %s만원
+				//}
 				
 				// 2024.04.03 by kih 천단위 어나운싱 적용 
-				// entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));
-				/*
+				//entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));				
 				if(SettingApplication.getInstance().isThound(mCurrentSpEntryInfo.getEntryType().getValue())) {					 
 					entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText().replace(",", "") + "000"));
 				} else {
 					entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));
 				}
-				*/
-
-				entrySoundContent.append(String.format(wonMsg, mCurLowPriceLabel.getText()));
 				isOnlyEntryNumber = false;
 			}
 
