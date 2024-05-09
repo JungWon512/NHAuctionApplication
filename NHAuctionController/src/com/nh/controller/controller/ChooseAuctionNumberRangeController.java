@@ -71,6 +71,7 @@ public class ChooseAuctionNumberRangeController implements Initializable {
 	        		else if("3".equals(item.getAUC_OBJ_DSC())) sAucObjDscNm = "번식우";
 	        		else if("4".equals(item.getAUC_OBJ_DSC())) sAucObjDscNm = "일괄(큰소)";
 	        		else if("0".equals(item.getAUC_OBJ_DSC())) sAucObjDscNm = "일괄(전체)";
+	        		else if("5".equals(item.getAUC_OBJ_DSC())) sAucObjDscNm = "염소";
 	        		else sAucObjDscNm = "[미설정]";
 		        	
 		        	setText(String.format("%s :  %d ~ %d ",sAucObjDscNm, item.getST_AUC_NO(),item.getED_AUC_NO()));
