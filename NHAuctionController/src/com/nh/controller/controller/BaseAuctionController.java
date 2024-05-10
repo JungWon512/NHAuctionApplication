@@ -148,6 +148,8 @@ public abstract class BaseAuctionController implements NettyControllable {
 	protected boolean isPlayReAuctionSound = false; // 재경매자 사운드
 	
 	protected boolean isAutoPlay = false;
+
+	boolean isPriceChgFlag = false;
 	
 	public BaseAuctionController() {
 		init();

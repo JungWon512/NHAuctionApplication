@@ -2693,7 +2693,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 	 */
 	private void setLowPrice(long price, boolean isUp) {
 		try {
-
+			isPriceChgFlag = true;
 			Platform.runLater(() -> {
 				// 현재 선택된 row
 				SpEntryInfo spEntryInfo = mWaitTableView.getSelectionModel().getSelectedItem();
@@ -2706,12 +2706,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 				String oslpNo = spEntryInfo.getOslpNo().getValue();
 				String ledSqNo = spEntryInfo.getLedSqno().getValue();
 				int lowPriceCnt = Integer.parseInt(spEntryInfo.getLwprChgNt().getValue());
-	
-				if (isUp) {
-					lowPriceCnt -= 1;
-				} else {
-					lowPriceCnt += 1;
-				}
+				lowPriceCnt += 1;
+				//if (isUp) {
+				//	lowPriceCnt -= 1;
+				//} else {
+				//	lowPriceCnt += 1;
+				//}
 	
 				String calcPrice = null;
 				boolean isNagNum = false;
@@ -2869,9 +2869,12 @@ public class AuctionController extends BaseAuctionController implements Initiali
 							mWaitTableView.refresh();
 	
 							sendBillboardEntryData();
+							isPriceChgFlag = false;
 						} else {
 							mLogger.debug("[최저가 수정 Fail]");
 							Platform.runLater(() -> showAlertPopupOneButton(mResMsg.getString("dialog.change.low.price.fail")));
+
+							isPriceChgFlag = false;
 						}
 					}
 	
@@ -3947,6 +3950,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 			mStartAuctionSec = 0;
 			//재경매시 응찰 여부
 			isReAuctionNewBidding = false;
+			isPriceChgFlag = false;
 			
 //			if(isProgressFinishRefreshData) {
 //				isProgressFinishRefreshData = false;
@@ -4823,6 +4827,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						// 가격 높이기
 						if (ke.getCode() == KeyCode.F9 || ke.getCode() == KeyCode.ADD) {
 							mLogger.debug("[KeyCode.F9]=> " + mAuctionStatus.getState());
+							if(isPriceChgFlag) return;
 							onUpPrice(null);
 							ke.consume();
 						}
@@ -4830,6 +4835,7 @@ public class AuctionController extends BaseAuctionController implements Initiali
 						// 가격 낮추기,  2023.02.26 [-]추가 by kih
 						if (ke.getCode() == KeyCode.F10 || ke.getCode() == KeyCode.MINUS || ke.getCode() == KeyCode.SUBTRACT) {
 							mLogger.debug("[KeyCode.F10]=> " + mAuctionStatus.getState());
+							if(isPriceChgFlag) return;
 							onDownPrice(null);
 							ke.consume();
 						}
