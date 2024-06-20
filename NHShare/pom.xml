@@ -27,6 +27,9 @@
         <logging-interceptor.version>3.8.0</logging-interceptor.version>
         <okio.version>1.15.0</okio.version>
     </properties>
+    <build>
+		<sourceDirectory>src</sourceDirectory>
+	</build>
 
     <dependencies>
         <dependency>
