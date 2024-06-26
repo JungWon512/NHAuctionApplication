@@ -803,6 +803,16 @@ public class SettingApplication {
 			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice3() != 1000) {
 				isThound =  false;
 			}	
+		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_5))) {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice5() != 1000) {
+				isThound =  false;
+			}	
+		}else if(aucObjDsc.equals(Integer.toString(GlobalDefine.AUCTION_INFO.AUCTION_OBJ_DSC_6))) {
+			
+			if(GlobalDefine.AUCTION_INFO.auctionRoundData.getDivisionPrice6() != 1000) {
+				isThound =  false;
+			}	
 		}
 		
 		return isThound;
